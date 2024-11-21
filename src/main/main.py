@@ -8,7 +8,6 @@ from scapy.all import sniff, wrpcap, rdpcap, get_if_list, IP, IPv6, TCP, UDP, IC
 from scapy.layers.dns import DNS
 from scapy.layers.http import HTTP, HTTPRequest, HTTPResponse
 from scapy.layers.dhcp import DHCP, BOOTP
-from scapy.layers.tls.all import TLS, TLSClientHello, TLSServerHello, TLSClientKeyExchange, TLSServerKeyExchange, TLSNewSessionTicket
 from urllib.parse import unquote
 from queue import Queue
 
@@ -16,28 +15,26 @@ from queue import Queue
 #--------------------------------------------Default_Packet----------------------------------------------#
 # abstarct class for default packet
 class Default_Packet(ABC):
-    name = None #represents the packet name
+    protocol = None #represents the packet protocol (TCP, UDP, etc)
     packet = None #represents the packet object itself for our use later
     packetType = None #represents the packet type based on scapy known types
-    srcIP = None #represents source ip of packet 
-    dstIP = None #represents destination ip of packet
+    srcIp = None #represents source ip of packet 
+    dstIp = None #represents destination ip of packet
     srcPort = None #represents source port of packet 
     dstPort = None #represents destination port of packet
     ipParam = None #represents IPv4 / IPv6 fields as tuple (ttl, dscp) / (hopLimit, trafficClass)
-    id = None #represents the id for the packet object, for ease of use in dictionary later
     length = None #size of packet
 
     # constructor for default packet 
-    def __init__(self, name=None, packet=None, id=None):
-        self.name = name
+    def __init__(self, protocol=None, packet=None):
+        self.protocol = protocol
         self.packet = packet
-        self.id = id
         self.length = len(self.packet)
-        self.ipInfo() #initialize ip info
+        self.IpInfo() #initialize ip info
 
 
     # method for ip configuration capture
-    def ipInfo(self): 
+    def IpInfo(self): 
         if self.packet.haslayer(TCP) or self.packet.haslayer(UDP): #if packet is TCP or UDP it has port
             self.srcPort = self.packet.sport #set source port
             self.dstPort = self.packet.dport #set destination port
@@ -54,6 +51,19 @@ class Default_Packet(ABC):
             trafficClass = self.packet[IPv6].tc #represnets the traffic class in packet
             self.ipParam = (hopLimit, trafficClass) #save both as tuple
 
+
+    # method to return a normalized flow representation of a packet
+    def GetFlowTuple(self):
+        # extract flow tuple from packet
+        srcIp, srcPort, dstIp, dstPort, protocol = self.srcIp, self.srcPort, self.dstIp, self.dstPort, self.protocol
+        
+        # check if tuple isn't normalized and sort it if necessary
+        if (srcIp > dstIp) or (srcIp == dstIp and srcPort > dstPort):
+            srcIp, srcPort, dstIp, dstPort = dstIp, dstPort, srcIp, srcPort #swap src and dst to ensure normalized order
+
+        return (srcIp, srcPort, dstIp, dstPort, protocol) #return the flow tuple of packet
+
+
 #--------------------------------------------Default_Packet-END----------------------------------------------#
 
 #----------------------------------------------------TCP---------------------------------------------------#
@@ -67,8 +77,8 @@ class TCP_Packet(Default_Packet):
     optionDict = None
 
     # constructor for TCP packet 
-    def __init__(self, packet=None, id=None):
-        super().__init__('TCP', packet, id) #call parent ctor
+    def __init__(self, packet=None):
+        super().__init__('TCP', packet) #call parent ctor
         if packet.haslayer(TCP): #checks if packet is TCP
             self.packetType = TCP #specify the packet type
         self.InitTCP() #call initTCP to initialize tcp specific params
@@ -104,8 +114,8 @@ class TCP_Packet(Default_Packet):
 
 #---------------------------------------------------UDP-------------------------------------------------#
 class UDP_Packet(Default_Packet):
-    def __init__(self, packet=None, id=None): #ctor 
-        super().__init__('UDP', packet, id) #call parent ctor
+    def __init__(self, packet=None): #ctor 
+        super().__init__('UDP', packet) #call parent ctor
         if packet.haslayer(UDP): #checks if packet is UDP
             self.packetType = UDP #add packet type
 
@@ -122,15 +132,16 @@ class DNS_Packet(Default_Packet):
     dnsData = None
 
     def __init__(self, packet=None, id=None):
-        super().__init__('DNS', packet, id) #call parent ctor
+        super().__init__('DNS', packet) #call parent ctor
         if packet.haslayer(DNS): #checks if packet is DNS
             self.packetType = DNS #add packet type
+        self.dnsId = id
+
 
     #method for packet information
     def InitDNS(self):
         if self.packet.haslayer(DNS): #if packet has DNS layer
             dnsPacket = self.packet[DNS] #save the dns packet in parameter
-            self.dnsId = dnsPacket.id #id of the dns packet
             if dnsPacket.qr == 1: #means its a response packet
                 if dnsPacket.an: #if dns packet is response packet
                     self.dnsType = 'Response' #add type of packet to output
@@ -152,6 +163,7 @@ class DNS_Packet(Default_Packet):
 
 # ------------------------------------------------ARP----------------------------------------------#
 class ARP_Packet(Default_Packet):
+    arpId = None
     srcMac = None
     dstMac = None
     arpType = None
@@ -161,9 +173,10 @@ class ARP_Packet(Default_Packet):
     pLen = None
 
     def __init__(self, packet=None, id=None):
-        super().__init__('ARP', packet, id) #call parent ctor
+        super().__init__('ARP', packet) #call parent ctor
         if packet.haslayer(ARP): #checks if packet is arp
             self.packetType = ARP #add packet type
+        self.arpId = id
         self.InitARP()
 
     # method for ARP packet information
@@ -181,43 +194,99 @@ class ARP_Packet(Default_Packet):
 
 #---------------------------------------------ARP-END----------------------------------------------#
 
-packetDictionary = {} #initialize the packet dictionary
-portScanDosQueue = Queue() #represents queue of packets related to port scanning and dos
-dnsQueue = Queue() #represents queue of packets related to dns tunneling 
-arpQueue = Queue() #represents queue of packets related to arp poisoning
-packetCounter = 0 #global counter for dictionary elements
+portScanDosDict = {} #represents dict of {(flow tuple) - [packet list]} related to port scanning and dos
+dnsDict = {} #represents dict of packets related to dns tunneling 
+arpDict = {} #represents dict of packets related to arp poisoning
+dnsCounter = 0 #global counter for dns packets
+arpCounter = 0 #global counter for arp packets
+tempcounter = 0
 
 #-----------------------------------------HANDLE-FUNCTIONS-----------------------------------------#
 #method that handles TCP packets
 def handleTCP(packet):
-    global packetCounter
-    TCP_Object = TCP_Packet(packet, packetCounter) #create a new object for packet
-    packetDictionary[TCP_Object.getId()] = TCP_Object #insert it to packet dictionary
-    packetCounter += 1 #increase the counter
-    return TCP_Object #finally return the object
+    if packet.haslayer(DNS): #if we found a dns packet we also call dns handler
+        handleDNS(packet) #call our handleDNS func
+    TCP_Object = TCP_Packet(packet) #create a new object for packet
+    flowTuple = TCP_Object.GetFlowTuple() #get flow representation of packet
+    if flowTuple in portScanDosDict: #if flow tuple exists in dict
+        portScanDosDict[flowTuple].append(TCP_Object) #append to list our packet
+    else: #else we create new entry with flow tuple
+        portScanDosDict[flowTuple] = [TCP_Object] #create new list with packet
+    global tempcounter #temporary
+    tempcounter += 1
+
 
 #method that handles UDP packets
 def handleUDP(packet):
-    global packetCounter
-    UDP_Object = UDP_Packet(packet, packetCounter) #create a new object for packet
-    packetDictionary[UDP_Object.getId()] = UDP_Object #insert it to packet dictionary
-    packetCounter += 1 #increase the counter
-    return UDP_Object #finally return the object
+    if packet.haslayer(DNS): #if we found a dns packet we also call dns handler
+        handleDNS(packet) #call our handleDNS func
+    UDP_Object = UDP_Packet(packet) #create a new object for packet
+    flowTuple = UDP_Object.GetFlowTuple() #get flow representation of packet
+    if flowTuple in portScanDosDict: #if flow tuple exists in dict
+        portScanDosDict[flowTuple].append(UDP_Object) #append to list our packet
+    else: #else we create new entry with flow tuple
+        portScanDosDict[flowTuple] = [UDP_Object] #create new list with packet
+    global tempcounter #temporary
+    tempcounter += 1
+
 
 #method that handles DNS packets
 def handleDNS(packet):
-    global packetCounter
-    DNS_Object = DNS_Packet(packet, packetCounter) #create a new object for packet
-    packetDictionary[DNS_Object.getId()] = DNS_Object #insert it to packet dictionary
-    packetCounter += 1 #increase the counter
-    return DNS_Object #finally return the object
+    global dnsCounter
+    DNS_Object = DNS_Packet(packet, dnsCounter) #create a new object for packet
+    dnsDict[DNS_Object.dnsId] = DNS_Object #insert it to packet dictionary
+    dnsCounter += 1 #increase the counter
+
 
 #method that handles ARP packets
 def handleARP(packet):
-    global packetCounter
-    ARP_Object = ARP_Packet(packet, packetCounter) #create a new object for packet
-    packetDictionary[ARP_Object.getId()] = ARP_Object #insert it to packet dictionary
-    packetCounter += 1 #increase the counter
-    return ARP_Object #finally return the object
+    global arpCounter
+    ARP_Object = ARP_Packet(packet, arpCounter) #create a new object for packet
+    arpDict[ARP_Object.arpId] = ARP_Object #insert it to packet dictionary
+    arpCounter += 1 #increase the counter
 
 #-----------------------------------------HANDLE-FUNCTIONS-END-----------------------------------------#
+
+#-------------------------------------------SNIFF-FUNCTIONS------------------------------------------#
+# function for processing the portScanDosDict and creating the dataframe that will be passed to classifier
+def processPortScanDos(packetList):
+    pass
+
+
+# function for checking when to stop sniffing packets, stop condition
+def stopScan(packet):
+    return True if tempcounter >=100 else False
+
+
+# function for capturing specific packets for later analysis
+def PacketCapture(packet):
+    captureDict = {TCP: handleTCP, UDP: handleUDP, DNS: handleDNS, ARP: handleARP} #represents dict with packet type and handler func
+
+    # iterate over capture dict and find coresponding handler function for each packet
+    for packetType, handler in captureDict.items():
+        if packet.haslayer(packetType): #if we found matching packet we call its handle method
+            handler(packet) #call handler method of each packet
+
+
+# function for initialing a packet scan on desired network interface
+def ScanNetwork(interface):
+    try: #we call sniff with desired interface 
+        sniff(iface=interface, prn=PacketCapture, stop_filter=stopScan, store=0)
+    except PermissionError: #if user didn't run with administrative privileges 
+        print('Permission denied. Please run again with administrative privileges.') #print permission error message in terminal
+    except Exception as e: #we catch an exception if something happend while sniffing
+        print(f'An error occurred while sniffing: {e}') #print error message in terminal
+
+#-----------------------------------------SNIFF-FUNCTIONS-END------------------------------------------#
+
+
+if __name__ == '__main__':
+    print('Starting Network Scan...')
+
+    ScanNetwork('Ethernet') #call scan network func to initiate network scan
+
+    print('Finsihed Network Scan.\n')
+
+    # test results of flow dict
+    for key in portScanDosDict:
+        print(f'{key} : {len(portScanDosDict[key])}')

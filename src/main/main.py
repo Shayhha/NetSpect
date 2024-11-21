@@ -258,7 +258,7 @@ def GetAvailableInterfaces():
         i = 1 #counter for the interfaces 
         for interface in interfaces: #print all availabe interfaces
             if sys.platform.startswith('win32'): #if ran on windows we convert the guid number
-                print(f'{i}. {guidToStr(interface)}')
+                print(f'{i}. {GuidToStr(interface)}')
             else: #else we are on other os so we print the interface 
                 print(f'{i}. {interface}')
             i += 1

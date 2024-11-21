@@ -10,7 +10,8 @@ from scapy.layers.http import HTTP, HTTPRequest, HTTPResponse
 from scapy.layers.dhcp import DHCP, BOOTP
 from urllib.parse import unquote
 from queue import Queue
-
+from collections import defaultdict
+import numpy as np
 
 #--------------------------------------------Default_Packet----------------------------------------------#
 # abstarct class for default packet
@@ -23,13 +24,15 @@ class Default_Packet(ABC):
     srcPort = None #represents source port of packet 
     dstPort = None #represents destination port of packet
     ipParam = None #represents IPv4 / IPv6 fields as tuple (ttl, dscp) / (hopLimit, trafficClass)
-    length = None #size of packet
+    packetLen = None #size of packet (including headers)
+    payloadLen = None #size of packet (without headers)
 
     # constructor for default packet 
     def __init__(self, protocol=None, packet=None):
         self.protocol = protocol
         self.packet = packet
-        self.length = len(self.packet)
+        self.packetLen = len(self.packet)
+        self.payloadLen = len(self.packet.payload)
         self.IpInfo() #initialize ip info
 
 
@@ -101,7 +104,7 @@ class TCP_Packet(Default_Packet):
                 'ACK': (flags & 0x10) != 0, #we extract ACK flag with '&' operator with 0x10(0001 0000 in binary)
                 'URG': (flags & 0x20) != 0, #we extract URG flag with '&' operator with 0x20(0010 0000 in binary)
             }
-
+            
             #add TCP Options (if available)
             if self.packet[self.packetType].options:
                 self.optionDict = {} #initialize an empty dictionary to store TCP options
@@ -293,14 +296,96 @@ def GetNetworkInterfaces():
 #-----------------------------------------HELPER-FUNCTIONS-END-----------------------------------------#
 
 #-------------------------------------------SNIFF-FUNCTIONS------------------------------------------#
-# function for processing the portScanDosDict and creating the dataframe that will be passed to classifier
-def ProcessPortScanDos(packetList):
-    pass
+# function for processing the flowDict and creating the dataframe that will be passed to classifier
+def ProcessFlows(flowDict):
+    featuresDict = defaultdict(dict) #represents our features dict where each flow tuple has its corresponding features
+
+    # iterate over our flow dict and calculate features
+    for flow, packetList in flowDict.items():
+        fwdLengths = [] #represents length of forward packets in flow
+        bwdLengths = [] #represents length of backward packets in flow
+        packetLengths = [] #represents length of all packets in flow
+        payloadLengths = [] #represents payload length of all packets in flow
+        fwdSegmentSizes = [] #represents length of forward tcp packets in flow
+        timestamps = [] #represents timestamps of each packet in flow
+        subflowFwdBytes = 0 #represents sum of all forward packets in flow
+        pshFlags = 0 #counter for tcp with push flag set
+        urgFlags = 0 #counter for tcp with urgent flag set
+        synFlags = 0 #counter for tcp with sync flag set
+
+        # iterate over each packet in flow
+        for packet in packetList:
+            packetLengths.append(packet.packetLen) #append packet length to list
+            payloadLengths.append(packet.payloadLen) #append payload length to list
+
+            if packet.srcIp == flow[0] and packet.srcPort == flow[1]: #means forward packet
+                fwdLengths.append(packet.payloadLen)
+                subflowFwdBytes += packet.packetLen
+
+                # check if packet is tcp and calculate its specific parameters
+                if isinstance(packet, TCP_Packet):
+                    fwdSegmentSizes.append(packet.payloadLen) #append packet length to fwd segment size list (TCP only)
+                    # check each flag in tcp and increment counter if set
+                    if 'PSH' in packet.flagDict and packet.flagDict['PSH']:
+                        pshFlags += 1
+                    if 'URG' in packet.flagDict and packet.flagDict['URG']:
+                        urgFlags += 1
+                    if 'SYN' in packet.flagDict and packet.flagDict['SYN']:
+                        synFlags += 1
+
+            else: #else means backward packets
+                bwdLengths.append(packet.payloadLen)
+
+            # add packet timestamp if available
+            if hasattr(packet.packet, 'time'):
+                timestamps.append(packet.packet.time)
+
+        # destination port
+        featuresDict[flow]['Destination Port'] = flow[3]
+
+        # Packet Length Features
+        featuresDict[flow]['Min Packet Length'] = min(payloadLengths) if payloadLengths else 0
+        featuresDict[flow]['Max Packet Length'] = max(payloadLengths) if payloadLengths else 0
+        featuresDict[flow]['Packet Length Mean'] = np.mean(payloadLengths) if payloadLengths else 0
+        featuresDict[flow]['Packet Length Std'] = np.std(payloadLengths) if payloadLengths else 0
+        featuresDict[flow]['Packet Length Variance'] = np.var(payloadLengths) if payloadLengths else 0
+
+        # FWD/BWD Packet Length Features
+        featuresDict[flow]['Fwd Packet Length Max'] = max(fwdLengths) if fwdLengths else 0
+        featuresDict[flow]['Fwd Packet Length Mean'] = np.mean(fwdLengths) if fwdLengths else 0
+        featuresDict[flow]['Bwd Packet Length Max'] = max(bwdLengths) if bwdLengths else 0
+        featuresDict[flow]['Bwd Packet Length Mean'] = np.mean(bwdLengths) if bwdLengths else 0
+        featuresDict[flow]['Bwd Packet Length Min'] = min(bwdLengths) if bwdLengths else 0
+        featuresDict[flow]['Bwd Packet Length Std'] = np.std(bwdLengths) if bwdLengths else 0
+
+        # Total and average size features
+        featuresDict[flow]['Total Length of Fwd Packets'] = sum(fwdLengths)
+        featuresDict[flow]['Average Packet Size'] = (sum(packetLengths) / len(packetLengths)) if packetLengths else 0
+        featuresDict[flow]['Avg Fwd Segment Size'] = np.mean(fwdSegmentSizes) if fwdSegmentSizes else 0 
+        featuresDict[flow]['Avg Bwd Segment Size'] = np.mean(bwdLengths) if bwdLengths else 0
+
+        # PSH and URG flag counts
+        featuresDict[flow]['PSH Flag Count'] = pshFlags
+        featuresDict[flow]['URG Flag Count'] = urgFlags
+        featuresDict[flow]['SYN Flag Count'] = synFlags
+
+        # Subflow Features
+        featuresDict[flow]['Subflow Fwd Bytes'] = subflowFwdBytes
+
+        # Inter-Arrival Time Features (IAT)
+        timestamps.sort()
+        inter_arrival_times = [t2 - t1 for t1, t2 in zip(timestamps[:-1], timestamps[1:])]
+        featuresDict[flow]['Bwd IAT Total'] = sum(inter_arrival_times) if inter_arrival_times else 0
+        featuresDict[flow]['Bwd IAT Max'] = max(inter_arrival_times) if inter_arrival_times else 0
+        featuresDict[flow]['Bwd IAT Mean'] = np.mean(inter_arrival_times) if inter_arrival_times else 0 #! irrelevent
+        featuresDict[flow]['Bwd IAT Std'] = np.std(inter_arrival_times) if inter_arrival_times else 0 #! irrelevent
+
+    return dict(featuresDict)
 
 
 # function for checking when to stop sniffing packets, stop condition
 def StopScan(packet):
-    return True if tempcounter >=100 else False
+    return True if tempcounter >= 100 else False
 
 
 # function for capturing specific packets for later analysis
@@ -333,6 +418,14 @@ if __name__ == '__main__':
 
     print('Finsihed Network Scan.\n')
 
-    # test results of flow dict
-    for key in flowDict:
-        print(f'{key} : {len(flowDict[key])}')
+    # # test results of flow dict
+    # for key in flowDict:
+    #     print(f'{key} : {len(flowDict[key])}')
+
+    x = ProcessFlows(flowDict)
+    print(x)
+    for flow, features in x.items(): 
+        print(f'Flow: {flow}') 
+        for feature, value in features.items(): 
+            print(f' {feature}: {value}')
+        print('================================================================\n')

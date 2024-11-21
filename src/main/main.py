@@ -247,14 +247,59 @@ def handleARP(packet):
 
 #-----------------------------------------HANDLE-FUNCTIONS-END-----------------------------------------#
 
+#-----------------------------------------HELPER-FUNCTIONS-----------------------------------------#
+
+#method to print all available interfaces
+def GetAvailableInterfaces():
+    #get a list of all available network interfaces
+    interfaces = get_if_list() #call get_if_list method to retrieve the available interfaces
+    if interfaces: #if there are interfaces we print them
+        print('Available network interfaces:')
+        i = 1 #counter for the interfaces 
+        for interface in interfaces: #print all availabe interfaces
+            if sys.platform.startswith('win32'): #if ran on windows we convert the guid number
+                print(f'{i}. {guidToStr(interface)}')
+            else: #else we are on other os so we print the interface 
+                print(f'{i}. {interface}')
+            i += 1
+    else: #else no interfaces were found
+        print('No network interfaces found.')
+
+
+#method for retrieving interface name from GUID number (Windows only)
+def guidToStr(guid):
+    try: #we try to import the specific windows method from scapy library
+        from scapy.arch.windows import get_windows_if_list
+    except ImportError as e: #we catch an import error if occurred
+        print(f'Error importing module: {e}') #print the error
+        return None #we exit the function
+    interfaces = get_windows_if_list() #use the windows method to get list of guid number interfaces
+    for interface in interfaces: #iterating over the list of interfaces
+        if interface['guid'] == guid: #we find the matching guid number interface
+            return interface['name'] #return the name of the interface associated with guid number
+    return None #else we didnt find the guid number so we return none
+
+
+#method for retrieving the network interfaces
+def getNetworkInterfaces():
+    networkNames = ['eth', 'wlan', 'en', 'Ethernet', 'Wi-Fi'] #this list represents the usual network interfaces that are available in various platfroms
+    interfaces = get_if_list() #get a list of the network interfaces
+    if sys.platform.startswith('win32'): #if current os is Windows we convert the guid number to interface name
+        temp = [guidToStr(interface) for interface in interfaces if guidToStr(interface) is not None] #get a new list of network interfaces with correct names instead of guid numbers
+        interfaces = temp #assign the new list to our interfaces variable
+    matchedInterfaces = [interface for interface in interfaces if any(interface.startswith(name) for name in networkNames)] #we filter the list to retrieving ethernet and wifi interfaces
+    return matchedInterfaces #return the matched interfaces as list'
+
+#-----------------------------------------HELPER-FUNCTIONS-END-----------------------------------------#
+
 #-------------------------------------------SNIFF-FUNCTIONS------------------------------------------#
 # function for processing the portScanDosDict and creating the dataframe that will be passed to classifier
-def processPortScanDos(packetList):
+def ProcessPortScanDos(packetList):
     pass
 
 
 # function for checking when to stop sniffing packets, stop condition
-def stopScan(packet):
+def StopScan(packet):
     return True if tempcounter >=100 else False
 
 
@@ -271,7 +316,7 @@ def PacketCapture(packet):
 # function for initialing a packet scan on desired network interface
 def ScanNetwork(interface):
     try: #we call sniff with desired interface 
-        sniff(iface=interface, prn=PacketCapture, stop_filter=stopScan, store=0)
+        sniff(iface=interface, prn=PacketCapture, stop_filter=StopScan, store=0)
     except PermissionError: #if user didn't run with administrative privileges 
         print('Permission denied. Please run again with administrative privileges.') #print permission error message in terminal
     except Exception as e: #we catch an exception if something happend while sniffing
@@ -281,9 +326,10 @@ def ScanNetwork(interface):
 
 
 if __name__ == '__main__':
+    GetAvailableInterfaces()
     print('Starting Network Scan...')
 
-    ScanNetwork('Ethernet') #call scan network func to initiate network scan
+    ScanNetwork('Ethernet') #call scan network func to initiate network scan 'et0'
 
     print('Finsihed Network Scan.\n')
 

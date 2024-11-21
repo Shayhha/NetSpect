@@ -81,7 +81,7 @@ class TCP_Packet(Default_Packet):
         super().__init__('TCP', packet) #call parent ctor
         if packet.haslayer(TCP): #checks if packet is TCP
             self.packetType = TCP #specify the packet type
-        self.InitTCP() #call initTCP to initialize tcp specific params
+        self.InitTCP() #call method to initialize tcp specific params
 
 
     # method for TCP packet information
@@ -131,12 +131,12 @@ class DNS_Packet(Default_Packet):
     dnsNumOfReqOrRes = None
     dnsData = None
 
-    def __init__(self, packet=None, id=None):
+    def __init__(self, packet=None, dnsId=None):
         super().__init__('DNS', packet) #call parent ctor
         if packet.haslayer(DNS): #checks if packet is DNS
             self.packetType = DNS #add packet type
-        self.dnsId = id
-
+        self.dnsId = dnsId
+        self.InitDNS() #call method to initialize dns specific params
 
     #method for packet information
     def InitDNS(self):
@@ -172,12 +172,12 @@ class ARP_Packet(Default_Packet):
     hwLen = None
     pLen = None
 
-    def __init__(self, packet=None, id=None):
+    def __init__(self, packet=None, arpId=None):
         super().__init__('ARP', packet) #call parent ctor
         if packet.haslayer(ARP): #checks if packet is arp
             self.packetType = ARP #add packet type
-        self.arpId = id
-        self.InitARP()
+        self.arpId = arpId
+        self.InitARP() #call method to initialize arp specific params
 
     # method for ARP packet information
     def InitARP(self):

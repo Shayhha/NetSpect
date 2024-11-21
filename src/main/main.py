@@ -194,7 +194,7 @@ class ARP_Packet(Default_Packet):
 
 #---------------------------------------------ARP-END----------------------------------------------#
 
-portScanDosDict = {} #represents dict of {(flow tuple) - [packet list]} related to port scanning and dos
+flowDict = {} #represents dict of {(flow tuple) - [packet list]} related to port scanning and dos
 dnsDict = {} #represents dict of packets related to dns tunneling 
 arpDict = {} #represents dict of packets related to arp poisoning
 dnsCounter = 0 #global counter for dns packets
@@ -208,10 +208,10 @@ def handleTCP(packet):
         handleDNS(packet) #call our handleDNS func
     TCP_Object = TCP_Packet(packet) #create a new object for packet
     flowTuple = TCP_Object.GetFlowTuple() #get flow representation of packet
-    if flowTuple in portScanDosDict: #if flow tuple exists in dict
-        portScanDosDict[flowTuple].append(TCP_Object) #append to list our packet
+    if flowTuple in flowDict: #if flow tuple exists in dict
+        flowDict[flowTuple].append(TCP_Object) #append to list our packet
     else: #else we create new entry with flow tuple
-        portScanDosDict[flowTuple] = [TCP_Object] #create new list with packet
+        flowDict[flowTuple] = [TCP_Object] #create new list with packet
     global tempcounter #temporary
     tempcounter += 1
 
@@ -222,10 +222,10 @@ def handleUDP(packet):
         handleDNS(packet) #call our handleDNS func
     UDP_Object = UDP_Packet(packet) #create a new object for packet
     flowTuple = UDP_Object.GetFlowTuple() #get flow representation of packet
-    if flowTuple in portScanDosDict: #if flow tuple exists in dict
-        portScanDosDict[flowTuple].append(UDP_Object) #append to list our packet
+    if flowTuple in flowDict: #if flow tuple exists in dict
+        flowDict[flowTuple].append(UDP_Object) #append to list our packet
     else: #else we create new entry with flow tuple
-        portScanDosDict[flowTuple] = [UDP_Object] #create new list with packet
+        flowDict[flowTuple] = [UDP_Object] #create new list with packet
     global tempcounter #temporary
     tempcounter += 1
 
@@ -267,7 +267,7 @@ def GetAvailableInterfaces():
 
 
 #method for retrieving interface name from GUID number (Windows only)
-def guidToStr(guid):
+def GuidToStr(guid):
     try: #we try to import the specific windows method from scapy library
         from scapy.arch.windows import get_windows_if_list
     except ImportError as e: #we catch an import error if occurred
@@ -281,11 +281,11 @@ def guidToStr(guid):
 
 
 #method for retrieving the network interfaces
-def getNetworkInterfaces():
+def GetNetworkInterfaces():
     networkNames = ['eth', 'wlan', 'en', 'Ethernet', 'Wi-Fi'] #this list represents the usual network interfaces that are available in various platfroms
     interfaces = get_if_list() #get a list of the network interfaces
     if sys.platform.startswith('win32'): #if current os is Windows we convert the guid number to interface name
-        temp = [guidToStr(interface) for interface in interfaces if guidToStr(interface) is not None] #get a new list of network interfaces with correct names instead of guid numbers
+        temp = [GuidToStr(interface) for interface in interfaces if GuidToStr(interface) is not None] #get a new list of network interfaces with correct names instead of guid numbers
         interfaces = temp #assign the new list to our interfaces variable
     matchedInterfaces = [interface for interface in interfaces if any(interface.startswith(name) for name in networkNames)] #we filter the list to retrieving ethernet and wifi interfaces
     return matchedInterfaces #return the matched interfaces as list'
@@ -329,10 +329,10 @@ if __name__ == '__main__':
     GetAvailableInterfaces()
     print('Starting Network Scan...')
 
-    ScanNetwork('Ethernet') #call scan network func to initiate network scan 'et0'
+    ScanNetwork('Ethernet') #call scan network func to initiate network scan 'en6'
 
     print('Finsihed Network Scan.\n')
 
     # test results of flow dict
-    for key in portScanDosDict:
-        print(f'{key} : {len(portScanDosDict[key])}')
+    for key in flowDict:
+        print(f'{key} : {len(flowDict[key])}')

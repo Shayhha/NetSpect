@@ -306,12 +306,9 @@ def ProcessFlows(flowDict):
         bwdLengths = [] #represents length of backward packets in flow
         packetLengths = [] #represents length of all packets in flow
         payloadLengths = [] #represents payload length of all packets in flow
-        fwdSegmentSizes = [] #represents length of forward tcp packets in flow
-        timestamps = [] #represents timestamps of each packet in flow
+        bwdTimestamps = [] #represents timestamps of each packet in flow
         subflowFwdBytes = 0 #represents sum of all forward packets in flow
-        pshFlags = 0 #counter for tcp with push flag set
-        urgFlags = 0 #counter for tcp with urgent flag set
-        synFlags = 0 #counter for tcp with sync flag set
+        pshFlags, urgFlags, synFlags = 0, 0, 0 #counter for tcp flags
 
         # iterate over each packet in flow
         for packet in packetList:
@@ -320,11 +317,10 @@ def ProcessFlows(flowDict):
 
             if packet.srcIp == flow[0] and packet.srcPort == flow[1]: #means forward packet
                 fwdLengths.append(packet.payloadLen)
-                subflowFwdBytes += packet.packetLen
+                subflowFwdBytes += packet.packetLen #! according to dataset this value is like fwdlengths sum
 
                 # check if packet is tcp and calculate its specific parameters
                 if isinstance(packet, TCP_Packet):
-                    fwdSegmentSizes.append(packet.payloadLen) #append packet length to fwd segment size list (TCP only)
                     # check each flag in tcp and increment counter if set
                     if 'PSH' in packet.flagDict and packet.flagDict['PSH']:
                         pshFlags += 1
@@ -336,11 +332,11 @@ def ProcessFlows(flowDict):
             else: #else means backward packets
                 bwdLengths.append(packet.payloadLen)
 
-            # add packet timestamp if available
-            if hasattr(packet.packet, 'time'):
-                timestamps.append(packet.packet.time)
+                # add bacckward packet timestamp 
+                if hasattr(packet.packet, 'time'):
+                    bwdTimestamps.append(packet.packet.time)
 
-        # destination port
+        # Destination port
         featuresDict[flow]['Destination Port'] = flow[3]
 
         # Packet Length Features
@@ -361,7 +357,7 @@ def ProcessFlows(flowDict):
         # Total and average size features
         featuresDict[flow]['Total Length of Fwd Packets'] = sum(fwdLengths)
         featuresDict[flow]['Average Packet Size'] = (sum(packetLengths) / len(packetLengths)) if packetLengths else 0
-        featuresDict[flow]['Avg Fwd Segment Size'] = np.mean(fwdSegmentSizes) if fwdSegmentSizes else 0 
+        featuresDict[flow]['Avg Fwd Segment Size'] = np.mean(fwdLengths) if fwdLengths else 0 
         featuresDict[flow]['Avg Bwd Segment Size'] = np.mean(bwdLengths) if bwdLengths else 0
 
         # PSH and URG flag counts
@@ -373,12 +369,11 @@ def ProcessFlows(flowDict):
         featuresDict[flow]['Subflow Fwd Bytes'] = subflowFwdBytes
 
         # Inter-Arrival Time Features (IAT)
-        timestamps.sort()
-        inter_arrival_times = [t2 - t1 for t1, t2 in zip(timestamps[:-1], timestamps[1:])]
-        featuresDict[flow]['Bwd IAT Total'] = sum(inter_arrival_times) if inter_arrival_times else 0
-        featuresDict[flow]['Bwd IAT Max'] = max(inter_arrival_times) if inter_arrival_times else 0
-        featuresDict[flow]['Bwd IAT Mean'] = np.mean(inter_arrival_times) if inter_arrival_times else 0 #! irrelevent
-        featuresDict[flow]['Bwd IAT Std'] = np.std(inter_arrival_times) if inter_arrival_times else 0 #! irrelevent
+        interArrivalTimes = [t2 - t1 for t1, t2 in zip(bwdTimestamps[:-1], bwdTimestamps[1:])]
+        featuresDict[flow]['Bwd IAT Total'] = sum(interArrivalTimes) if interArrivalTimes else 0
+        featuresDict[flow]['Bwd IAT Max'] = max(interArrivalTimes) if interArrivalTimes else 0
+        featuresDict[flow]['Bwd IAT Mean'] = np.mean(interArrivalTimes) if interArrivalTimes else 0 #! irrelevent
+        featuresDict[flow]['Bwd IAT Std'] = np.std(interArrivalTimes) if interArrivalTimes else 0 #! irrelevent
 
     return dict(featuresDict)
 
@@ -418,12 +413,12 @@ if __name__ == '__main__':
 
     print('Finsihed Network Scan.\n')
 
-    # # test results of flow dict
-    # for key in flowDict:
-    #     print(f'{key} : {len(flowDict[key])}')
+    # test results of flow dict
+    for key in flowDict:
+        print(f'{key} : {len(flowDict[key])}')
 
     x = ProcessFlows(flowDict)
-    print(x)
+    # print(x)
     for flow, features in x.items(): 
         print(f'Flow: {flow}') 
         for feature, value in features.items(): 

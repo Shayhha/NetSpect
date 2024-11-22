@@ -32,7 +32,7 @@ class Default_Packet(ABC):
         self.protocol = protocol
         self.packet = packet
         self.packetLen = len(self.packet)
-        self.payloadLen = len(self.packet.payload)
+        self.payloadLen = len(self.packet[Raw].load) if Raw in self.packet else len(self.packet.payload)
         self.IpInfo() #initialize ip info
 
 

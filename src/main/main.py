@@ -2,6 +2,7 @@ import sys
 import os
 import re
 import logging
+import joblib
 from abc import ABC, abstractmethod
 import scapy.all as scapy
 from scapy.all import sniff, wrpcap, rdpcap, get_if_list, IP, IPv6, TCP, UDP, ICMP, ARP, Raw 
@@ -12,6 +13,7 @@ from urllib.parse import unquote
 from queue import Queue
 from collections import defaultdict
 import numpy as np
+import pandas as pd
 
 #--------------------------------------------Default_Packet----------------------------------------------#
 # abstarct class for default packet
@@ -372,15 +374,15 @@ def ProcessFlows(flowDict):
         interArrivalTimes = [t2 - t1 for t1, t2 in zip(bwdTimestamps[:-1], bwdTimestamps[1:])]
         featuresDict[flow]['Bwd IAT Total'] = sum(interArrivalTimes) if interArrivalTimes else 0
         featuresDict[flow]['Bwd IAT Max'] = max(interArrivalTimes) if interArrivalTimes else 0
-        featuresDict[flow]['Bwd IAT Mean'] = np.mean(interArrivalTimes) if interArrivalTimes else 0 #! irrelevent
-        featuresDict[flow]['Bwd IAT Std'] = np.std(interArrivalTimes) if interArrivalTimes else 0 #! irrelevent
+        # featuresDict[flow]['Bwd IAT Mean'] = np.mean(interArrivalTimes) if interArrivalTimes else 0 #! irrelevent
+        # featuresDict[flow]['Bwd IAT Std'] = np.std(interArrivalTimes) if interArrivalTimes else 0 #! irrelevent
 
     return dict(featuresDict)
 
 
 # function for checking when to stop sniffing packets, stop condition
 def StopScan(packet):
-    return True if tempcounter >= 100 else False
+    return True if tempcounter >= 10000 else False
 
 
 # function for capturing specific packets for later analysis
@@ -402,6 +404,39 @@ def ScanNetwork(interface):
     except Exception as e: #we catch an exception if something happend while sniffing
         print(f'An error occurred while sniffing: {e}') #print error message in terminal
 
+
+# function for predicting PortScanning and DoS attacks given flow dictionary
+def PredictPortDoS(flowDict):
+    # extract keys and values
+    keys = list(x.keys())
+    values = list(x.values())
+
+    # create DataFrame for the keys (5-tuple)
+    keysDataframe = pd.DataFrame(keys, columns=['Src IP', 'Src Port', 'Dest IP', 'Dest Port', 'Protocol'])
+
+    # create DataFrame for the values (dict), columns ensures that the order of the input matches the order of the classifier
+    valuesDataframe = pd.DataFrame(values, columns = [
+        'Destination Port', 'Total Length of Fwd Packets', 'Fwd Packet Length Max',
+        'Fwd Packet Length Mean', 'Bwd Packet Length Max', 'Bwd Packet Length Min',
+        'Bwd Packet Length Mean', 'Bwd Packet Length Std', 'Bwd IAT Total',
+        'Bwd IAT Max', 'Min Packet Length', 'Max Packet Length', 'Packet Length Mean',
+        'Packet Length Std', 'Packet Length Variance', 'SYN Flag Count', 'PSH Flag Count', 'URG Flag Count',
+        'Average Packet Size', 'Avg Fwd Segment Size', 'Avg Bwd Segment Size', 'Subflow Fwd Bytes'
+    ])
+
+    # load the PortScanning and DoS model and predict the input
+    loadedModel = joblib.load('../models/ddos_port_svm_model.pkl') 
+    predictions = loadedModel.predict(valuesDataframe)
+
+    # check for attacks
+    if 1 in predictions:
+        print('\n\n##### ATTACK ######\n\n')
+    
+    # show results of the prediction
+    keysDataframe['Result'] = predictions
+    print('Predictions:\n', keysDataframe)
+
+
 #-----------------------------------------SNIFF-FUNCTIONS-END------------------------------------------#
 
 
@@ -409,7 +444,7 @@ if __name__ == '__main__':
     GetAvailableInterfaces()
     print('Starting Network Scan...')
 
-    ScanNetwork('Ethernet') #call scan network func to initiate network scan 'en6'
+    ScanNetwork('en6') #call scan network func to initiate network scan 'en6' / 'Ethernet'
 
     print('Finsihed Network Scan.\n')
 
@@ -424,3 +459,5 @@ if __name__ == '__main__':
         for feature, value in features.items(): 
             print(f' {feature}: {value}')
         print('================================================================\n')
+
+    PredictPortDoS(x)

@@ -15,6 +15,10 @@ from collections import defaultdict
 import numpy as np
 import pandas as pd
 
+# dynamically add the src directory to sys.path, this allows us to access all moduls in the project at run time
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+from src.models import getModelPath
+
 #--------------------------------------------Default_Packet----------------------------------------------#
 # abstarct class for default packet
 class Default_Packet(ABC):
@@ -382,7 +386,7 @@ def ProcessFlows(flowDict):
 
 # function for checking when to stop sniffing packets, stop condition
 def StopScan(packet):
-    return True if tempcounter >= 10000 else False
+    return True if tempcounter >= 1000 else False
 
 
 # function for capturing specific packets for later analysis
@@ -408,8 +412,8 @@ def ScanNetwork(interface):
 # function for predicting PortScanning and DoS attacks given flow dictionary
 def PredictPortDoS(flowDict):
     # extract keys and values
-    keys = list(x.keys())
-    values = list(x.values())
+    keys = list(flowDict.keys())
+    values = list(flowDict.values())
 
     # create DataFrame for the keys (5-tuple)
     keysDataframe = pd.DataFrame(keys, columns=['Src IP', 'Src Port', 'Dest IP', 'Dest Port', 'Protocol'])
@@ -425,7 +429,10 @@ def PredictPortDoS(flowDict):
     ])
 
     # load the PortScanning and DoS model and predict the input
-    loadedModel = joblib.load('../models/ddos_port_svm_model.pkl') 
+    model_path = get_model_path("ddos_port_svm_model.pkl")
+    print("Model Path:", model_path)
+
+    loadedModel = joblib.load(model_path) 
     predictions = loadedModel.predict(valuesDataframe)
 
     # check for attacks

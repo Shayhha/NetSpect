@@ -429,10 +429,10 @@ def PredictPortDoS(flowDict):
     ])
 
     # load the PortScanning and DoS model and predict the input
-    model_path = get_model_path("ddos_port_svm_model.pkl")
-    print("Model Path:", model_path)
+    modelPath = getModelPath('ddos_port_svm_model.pkl')
+    print('Model Path:', modelPath)
 
-    loadedModel = joblib.load(model_path) 
+    loadedModel = joblib.load(modelPath) 
     predictions = loadedModel.predict(valuesDataframe)
 
     # check for attacks

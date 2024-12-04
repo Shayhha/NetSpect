@@ -208,7 +208,7 @@ class ARP_Packet(Default_Packet):
 flowDict = {} #represents dict of {(flow tuple) - [packet list]} related to port scanning and dos
 dnsDict = {} #represents dict of packets related to dns tunneling 
 arpDict = {} #represents dict of packets related to arp poisoning
-arpTable = {} #represents ARP table with known IP-MAC pairs
+arpTable = ({}, {}) #represents ARP table that is a tuple (arpTable, invArpTable) with mapping of IP->MAC and MAC -> IP in each table in tuple
 dnsCounter = 0 #global counter for dns packets
 arpCounter = 0 #global counter for arp packets
 tempcounter = 0
@@ -311,7 +311,7 @@ def GetNetworkInterfaces():
 
 # function for checking when to stop sniffing packets, stop condition
 def StopScan(packet):
-    return True if tempcounter >= 1000 else False
+    return True if arpCounter >= 10 else False
 
 
 # function for capturing specific packets for later analysis
@@ -327,19 +327,22 @@ def PacketCapture(packet):
 # function for initialing a packet scan on desired network interface
 def ScanNetwork(interface):
     global arpTable
-    arpTable = InitArpTable() #initialize our static arp table
-
-    #print arp table
-    print('ARP Table:')
-    for key, value in arpTable.items():
-        print(f'IP: {key} --> MAC: {value}')
-    print('============================\n')
-
-    try: #we call sniff with desired interface 
+    try:
         print('Starting Network Scan...')
+        arpTable = InitArpTable() #initialize our static arp table
+        #print arp table
+        print('ARP Table:')
+        for key, value in arpTable[0].items():
+            print(f'IP: {key} --> MAC: {value}')
+        print('============================\n')
+
+        #we call sniff with desired interface 
         sniff(iface=interface, prn=PacketCapture, stop_filter=StopScan, store=0)
     except PermissionError: #if user didn't run with administrative privileges 
         print('Permission denied. Please run again with administrative privileges.') #print permission error message in terminal
+    except ArpSpoofingException as e: #if we recived ArpSpoofingException we alert the user
+        print('\n##### ARP SPOOFING ATTACK ######\n')
+        print(e)
     except Exception as e: #we catch an exception if something happend while sniffing
         print(f'An error occurred while sniffing: {e}') #print error message in terminal
     finally:
@@ -348,47 +351,104 @@ def ScanNetwork(interface):
 #-----------------------------------------SNIFF-FUNCTIONS-END------------------------------------------#
 
 #---------------------------------------------ARP-SPOOFING---------------------------------------------#
+class ArpSpoofingException(Exception):
+    def __init__(self, message, state, details):
+        super().__init__(message)
+        self.state = state #represents the state of attack, 1 means we found ip assigned to many macs, 2 means mac assigned to many ips
+        self.details = details #represents additional details about the spoofing
+
 
 # fucntion that initializes the static arp table for testing IP-MAC pairs 
 def InitArpTable(ipRange='192.168.1.0/24'):
-    arpTable = {} #represents our arp table dict
+    arpTable = {} #represents our arp table dict (ip to macc)
+    invArpTable = {} #represents our inverse (mac to ip), used for verification
     arpRequest = ARP(pdst=ipRange) #create arp request packet with destination ip range
     broadcast = Ether(dst='ff:ff:ff:ff:ff:ff')  #create broadcast ethernet frame broadcast
     arpRequestBroadcast = broadcast / arpRequest #combine both arp request and ethernet frame 
-    
-    # send the ARP request and capture the responses within a timeout of 2 seconds
+     
+    # send the ARP request and capture the responses
     # srp function retunes tuple (response packet, received device)
-    answeredList = srp(arpRequestBroadcast, timeout=2, verbose=False)[0]
+    answeredList = srp(arpRequestBroadcast, timeout=1, verbose=False)[0]
     
-    #iterate over all devices that answered to our arp request packet and add them to our table
+    # iterate over all devices that answered to our arp request packet and add them to our table
     for device in answeredList:
-        arpTable[device[1].psrc] = device[1].hwsrc #add the device ip as key and its mac address in value of arp table dict
+        ip, mac = device[1].psrc, device[1].hwsrc #represents ip and mac for given device
+
+        # add ip mac pair to arp table
+        if ip not in arpTable and mac: #means ip not in arp table, we add it with its mac address
+            arpTable[ip] = [mac] #create new list of macs in ip index
+        elif mac not in arpTable[ip]: #else mac not in ip index, we add it
+            arpTable[ip].append(mac) #add mac to ip index
+
+        # add mac ip pair to inverse arp table
+        if mac not in invArpTable: #means mac not in inverse arp table, we add it with its ip address
+            invArpTable[mac] = [ip] #create new list of ips in mac index
+        elif ip not in invArpTable[mac]: #else ip not in mac index, we add it
+            invArpTable[mac].append(ip) #add ip to mac index
+
+    # iterate over arp table and check for ARP spoofing (multiple MACs for a single IP)
+    for ip, macs in arpTable.items():
+        if len(macs) > 1: #means an ip has more then one mac address
+            raise ArpSpoofingException(
+                f'ARP Spoofing Detected! IP {ip} has multiple MACs: {macs}', state=1, details={'ip': ip, 'macs': macs})
+        elif len(macs) == 1: #else ip has one mac address
+            arpTable[ip] = macs[0] #set the mac address to be single item isntead of array
+    
+    # iterate over inverse arp table and check for ARP spoofing (multiple IPs for a single MAC)
+    for mac, ips in invArpTable.items():
+        #! remeber that locally shay's arp table is spoofed... (20:1e:88:d8:3a:ce)
+        if len(ips) > 1 and mac == '20:1e:88:d8:3a:ce':
+            invArpTable[mac] = ips[0]
+        elif len(ips) > 1: #means a mac has more then one ip address 
+            raise ArpSpoofingException(
+                f'ARP Spoofing Detected! MAC {mac} has multiple IPs: {ips}', state=2, details={'mac': mac, 'ips': ips})
+        elif len(ips) == 1: #else mac has one ip address
+            invArpTable[mac] = ips[0] #set the ip address to be single item isntead of array
         
-    return arpTable 
+    return arpTable, invArpTable
 
 
 # function for processing arp packets and check for arp spoofing attacks
 def ProcessARP():
     global arpTable
-    if arpTable:
-        # iterate over our arp dictionary and check each packet for inconsistencies
-        for packet in arpDict.values():
-            # we check that packet has a source ip and also that its not assinged to a temporary ip (0.0.0.0)
-            if isinstance(packet, ARP_Packet) and packet.srcIp != None and packet.srcIp != '0.0.0.0':
-                if packet.srcIp not in arpTable: #if true we need to add the ip to arp table 
-                    #we need to check if mac address was present before, it may got assigned to new ip, we remove old entry
-                    for ip, mac in list(arpTable.items()):
-                        if mac == packet.srcMac: #found mac address's old ip entry in dict
-                            del arpTable[ip] #delete the old entry
-                            break
-                    #!we need to check that new ip is not spoofed, if two answer we flag it as spoofing
-                    arpTable[packet.srcIp] = packet.srcMac #assign the mac address to its ip in our arp table
-                else: #means ip is present in our arp table, we check its parameters
-                    if arpTable[packet.srcIp] != packet.srcMac: #if true that means we have a spoofed mac address
-                        print(f'IP {packet.srcIp} is assinged to {arpTable[packet.srcIp]}, got {packet.srcMac}')
-                        print('\n##### ARP SPOOFING ATTACK ######\n')
-    else:
-        raise RuntimeError('Error, cannot process ARP packets, ARP table is not initalized.')
+    try:
+        if arpTable[0]:
+            # iterate over our arp dictionary and check each packet for inconsistencies
+            for packet in arpDict.values():
+                # we check that packet has a source ip and also that its not assinged to a temporary ip (0.0.0.0)
+                if isinstance(packet, ARP_Packet) and packet.srcIp != None and packet.srcIp != '0.0.0.0':
+                    if packet.srcIp not in arpTable[0]: #means ip is not present in our arp table
+                        # means mac was assinged to different ip, we assume there's a possiblility 
+                        # that this device got assigned a new ip from dhcp server
+                        if packet.srcMac in arpTable[1]:
+                            oldIp = arpTable[1][packet.srcMac] #save old ip that was assigned to this mac
+                            del arpTable[0][oldIp] #remove old ip entry from arp table
+                            del arpTable[1][packet.srcMac] #remove mac from inverse arp table
+
+                        # we create new temp arp table to check if we got valid response from only one device and that mac's match
+                        ipArpTable = InitArpTable(packet.srcIp) #initialize temp ip arp table for specific ip and check if valid
+                        if ipArpTable[0]: #we check if there's a relpay, if not we dismiss the packet
+                            if ipArpTable[0][packet.srcIp] == packet.srcMac: #means macs match, valid 
+                                arpTable[packet.srcIp] = packet.srcMac #assign the mac address to its ip in our arp table
+                            else: #means macs dont match, we alret because differnet device asnwered us
+                                ip, macs = packet.srcIp, {ipArpTable[0][packet.srcIp], packet.srcMac} #create the details for exception
+                                #raise ArpSpoofingException to indicate that we detected a spoofing attack
+                                raise ArpSpoofingException(
+                                    f'ARP Spoofing Detected! IP {ip} has multiple MACs: {macs}', state=1, details={'ip': ip, 'macs': macs})
+
+                    else: #means ip is present in our arp table, we check its parameters
+                        if arpTable[0][packet.srcIp] != packet.srcMac: #means we have a spoofed mac address
+                            ip, macs = packet.srcIp, {arpTable[0][packet.srcIp], packet.srcMac} #create the details for exception
+                            # raise ArpSpoofingException to indicate that we detected a spoofing attack
+                            raise ArpSpoofingException(
+                                f'ARP Spoofing Detected! IP {ip} has multiple MACs: {macs}', state=1, details={'ip': ip, 'macs': macs})
+        else:
+            raise RuntimeError('Error, cannot process ARP packets, ARP table is not initalized.')
+    except ArpSpoofingException as e: #if we recived ArpSpoofingException we alert the user
+        print('\n##### ARP SPOOFING ATTACK ######\n')
+        print(e)
+    except Exception as e: #we catch an exception if something happend
+        print(e)
                 
 #-------------------------------------------ARP-SPOOFING-END-------------------------------------------#
 

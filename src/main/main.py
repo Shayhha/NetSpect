@@ -495,9 +495,14 @@ def PredictPortDoS(flowDict):
         'Average Packet Size', 'Avg Fwd Segment Size', 'Avg Bwd Segment Size', 'Subflow Fwd Bytes'
     ])
 
-    # load the PortScanning and DoS model and predict the input
+    # load the PortScanning and DoS model
     modelPath = getModelPath('ddos_port_svm_model.pkl')
+    scalerPath = getModelPath('standatd_scaler.pkl')
     loadedModel = joblib.load(modelPath) 
+    loadedScaler = joblib.load(scalerPath) 
+
+    # scale the input data and predict the scaled input
+    valuesDataframe, _ = loadedScaler.transform(valuesDataframe)
     predictions = loadedModel.predict(valuesDataframe)
 
     # check for attacks

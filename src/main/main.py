@@ -311,7 +311,7 @@ def GetNetworkInterfaces():
 
 # function for checking when to stop sniffing packets, stop condition
 def StopScan(packet):
-    return True if arpCounter >= 10 else False
+    return True if tempcounter >= 2000 else False
 
 
 # function for capturing specific packets for later analysis
@@ -556,25 +556,26 @@ def PredictPortDoS(flowDict):
     ])
 
     # load the PortScanning and DoS model
-    modelPath = getModelPath('ddos_port_svm_model.pkl')
-    scalerPath = getModelPath('standatd_scaler.pkl')
+    modelPath = getModelPath('port_svm_model.pkl')
+    scalerPath = getModelPath('standard_scaler.pkl')
     loadedModel = joblib.load(modelPath) 
     loadedScaler = joblib.load(scalerPath) 
 
     # scale the input data and predict the scaled input
-    valuesDataframe, _ = loadedScaler.transform(valuesDataframe)
+    valuesDataframe = loadedScaler.transform(valuesDataframe)
     predictions = loadedModel.predict(valuesDataframe)
 
     # check for attacks
+    # if 1 in predictions:
+    #     print('\n##### DoS ATTACK ######\n')
     if 1 in predictions:
-        print('\n##### DoS ATTACK ######\n')
-    elif 2 in predictions:
         print('\n##### PORT SCAN ATTACK ######\n')
     else:
         print('No attack')
-    
+
     # show results of the prediction
     keysDataframe['Result'] = predictions
+    print(f'number of detected attacks:\n {keysDataframe[keysDataframe['Result'] == 1]}')
     print('Predictions:\n', keysDataframe)
 
 #------------------------------------------PORT-SCANNING-DoS-END-------------------------------------------#

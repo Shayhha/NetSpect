@@ -5,7 +5,7 @@ import logging
 import joblib
 from abc import ABC, abstractmethod
 import scapy.all as scapy
-from scapy.all import sniff, wrpcap, rdpcap, get_if_list, IP, IPv6, TCP, UDP, ICMP, ARP, Raw 
+from scapy.all import sniff, wrpcap, rdpcap, get_if_list, srp, IP, IPv6, TCP, UDP, ICMP, ARP, Ether, Raw
 from scapy.layers.dns import DNS
 from scapy.layers.http import HTTP, HTTPRequest, HTTPResponse
 from scapy.layers.dhcp import DHCP, BOOTP
@@ -193,8 +193,8 @@ class ARP_Packet(Default_Packet):
         if self.packet.haslayer(ARP): #if packet has layer of arp
             self.srcMac = self.packet[ARP].hwsrc #add arp source mac address
             self.dstMac = self.packet[ARP].hwdst #add arp destination mac address
-            self.srcIP = self.packet[ARP].psrc #add arp source ip address
-            self.dstIP = self.packet[ARP].pdst #add arp destination ip address
+            self.srcIp = self.packet[ARP].psrc #add arp source ip address
+            self.dstIp = self.packet[ARP].pdst #add arp destination ip address
             self.arpType = 'Request' if self.packet[ARP].op == 1 else 'Reply' #add the arp type
             self.hwType = self.packet[ARP].hwtype #add the hardware type
             self.pType = self.packet[ARP].ptype #add protocol type to output
@@ -203,14 +203,20 @@ class ARP_Packet(Default_Packet):
 
 #---------------------------------------------ARP-END----------------------------------------------#
 
+#---------------------------------------GLOBAL-PARAMETERS------------------------------------------#
+
 flowDict = {} #represents dict of {(flow tuple) - [packet list]} related to port scanning and dos
 dnsDict = {} #represents dict of packets related to dns tunneling 
 arpDict = {} #represents dict of packets related to arp poisoning
+arpTable = {} #represents ARP table with known IP-MAC pairs
 dnsCounter = 0 #global counter for dns packets
 arpCounter = 0 #global counter for arp packets
 tempcounter = 0
 
+#--------------------------------------GLOBAL-PARAMETERS-END---------------------------------------#
+
 #-----------------------------------------HANDLE-FUNCTIONS-----------------------------------------#
+
 #method that handles TCP packets
 def handleTCP(packet):
     if packet.haslayer(DNS): #if we found a dns packet we also call dns handler
@@ -302,6 +308,92 @@ def GetNetworkInterfaces():
 #-----------------------------------------HELPER-FUNCTIONS-END-----------------------------------------#
 
 #-------------------------------------------SNIFF-FUNCTIONS------------------------------------------#
+
+# function for checking when to stop sniffing packets, stop condition
+def StopScan(packet):
+    return True if tempcounter >= 1000 else False
+
+
+# function for capturing specific packets for later analysis
+def PacketCapture(packet):
+    captureDict = {TCP: handleTCP, UDP: handleUDP, DNS: handleDNS, ARP: handleARP} #represents dict with packet type and handler func
+
+    # iterate over capture dict and find coresponding handler function for each packet
+    for packetType, handler in captureDict.items():
+        if packet.haslayer(packetType): #if we found matching packet we call its handle method
+            handler(packet) #call handler method of each packet
+
+
+# function for initialing a packet scan on desired network interface
+def ScanNetwork(interface):
+    global arpTable
+    arpTable = InitArpTable() #initialize our static arp table
+
+    #print arp table
+    print('ARP Table:')
+    for key, value in arpTable.items():
+        print(f'IP: {key} --> MAC: {value}')
+    print('============================\n')
+
+    try: #we call sniff with desired interface 
+        print('Starting Network Scan...')
+        sniff(iface=interface, prn=PacketCapture, stop_filter=StopScan, store=0)
+    except PermissionError: #if user didn't run with administrative privileges 
+        print('Permission denied. Please run again with administrative privileges.') #print permission error message in terminal
+    except Exception as e: #we catch an exception if something happend while sniffing
+        print(f'An error occurred while sniffing: {e}') #print error message in terminal
+    finally:
+        print('Finsihed Network Scan.\n')
+
+#-----------------------------------------SNIFF-FUNCTIONS-END------------------------------------------#
+
+#---------------------------------------------ARP-SPOOFING---------------------------------------------#
+
+# fucntion that initializes the static arp table for testing IP-MAC pairs 
+def InitArpTable(ipRange='192.168.1.0/24'):
+    arpTable = {} #represents our arp table dict
+    arpRequest = ARP(pdst=ipRange) #create arp request packet with destination ip range
+    broadcast = Ether(dst='ff:ff:ff:ff:ff:ff')  #create broadcast ethernet frame broadcast
+    arpRequestBroadcast = broadcast / arpRequest #combine both arp request and ethernet frame 
+    
+    # send the ARP request and capture the responses within a timeout of 2 seconds
+    # srp function retunes tuple (response packet, received device)
+    answeredList = srp(arpRequestBroadcast, timeout=2, verbose=False)[0]
+    
+    #iterate over all devices that answered to our arp request packet and add them to our table
+    for device in answeredList:
+        arpTable[device[1].psrc] = device[1].hwsrc #add the device ip as key and its mac address in value of arp table dict
+        
+    return arpTable 
+
+
+# function for processing arp packets and check for arp spoofing attacks
+def ProcessARP():
+    global arpTable
+    if arpTable:
+        # iterate over our arp dictionary and check each packet for inconsistencies
+        for packet in arpDict.values():
+            # we check that packet has a source ip and also that its not assinged to a temporary ip (0.0.0.0)
+            if isinstance(packet, ARP_Packet) and packet.srcIp != None and packet.srcIp != '0.0.0.0':
+                if packet.srcIp not in arpTable: #if true we need to add the ip to arp table 
+                    #we need to check if mac address was present before, it may got assigned to new ip, we remove old entry
+                    for ip, mac in list(arpTable.items()):
+                        if mac == packet.srcMac: #found mac address's old ip entry in dict
+                            del arpTable[ip] #delete the old entry
+                            break
+                    #!we need to check that new ip is not spoofed, if two answer we flag it as spoofing
+                    arpTable[packet.srcIp] = packet.srcMac #assign the mac address to its ip in our arp table
+                else: #means ip is present in our arp table, we check its parameters
+                    if arpTable[packet.srcIp] != packet.srcMac: #if true that means we have a spoofed mac address
+                        print(f'IP {packet.srcIp} is assinged to {arpTable[packet.srcIp]}, got {packet.srcMac}')
+                        print('\n##### ARP SPOOFING ATTACK ######\n')
+    else:
+        raise RuntimeError('Error, cannot process ARP packets, ARP table is not initalized.')
+                
+#-------------------------------------------ARP-SPOOFING-END-------------------------------------------#
+
+#------------------------------------------PORT-SCANNING-DoS-------------------------------------------#
+
 # function for processing the flowDict and creating the dataframe that will be passed to classifier
 def ProcessFlows(flowDict):
     featuresDict = defaultdict(dict) #represents our features dict where each flow tuple has its corresponding features
@@ -384,31 +476,6 @@ def ProcessFlows(flowDict):
     return dict(featuresDict)
 
 
-# function for checking when to stop sniffing packets, stop condition
-def StopScan(packet):
-    return True if tempcounter >= 1000 else False
-
-
-# function for capturing specific packets for later analysis
-def PacketCapture(packet):
-    captureDict = {TCP: handleTCP, UDP: handleUDP, DNS: handleDNS, ARP: handleARP} #represents dict with packet type and handler func
-
-    # iterate over capture dict and find coresponding handler function for each packet
-    for packetType, handler in captureDict.items():
-        if packet.haslayer(packetType): #if we found matching packet we call its handle method
-            handler(packet) #call handler method of each packet
-
-
-# function for initialing a packet scan on desired network interface
-def ScanNetwork(interface):
-    try: #we call sniff with desired interface 
-        sniff(iface=interface, prn=PacketCapture, stop_filter=StopScan, store=0)
-    except PermissionError: #if user didn't run with administrative privileges 
-        print('Permission denied. Please run again with administrative privileges.') #print permission error message in terminal
-    except Exception as e: #we catch an exception if something happend while sniffing
-        print(f'An error occurred while sniffing: {e}') #print error message in terminal
-
-
 # function for predicting PortScanning and DoS attacks given flow dictionary
 def PredictPortDoS(flowDict):
     # extract keys and values
@@ -429,42 +496,45 @@ def PredictPortDoS(flowDict):
     ])
 
     # load the PortScanning and DoS model and predict the input
-    model_path = get_model_path("ddos_port_svm_model.pkl")
-    print("Model Path:", model_path)
-
-    loadedModel = joblib.load(model_path) 
+    modelPath = getModelPath('ddos_port_svm_model.pkl')
+    loadedModel = joblib.load(modelPath) 
     predictions = loadedModel.predict(valuesDataframe)
 
     # check for attacks
     if 1 in predictions:
-        print('\n\n##### ATTACK ######\n\n')
+        print('\n##### DoS ATTACK ######\n')
+    elif 2 in predictions:
+        print('\n##### PORT SCAN ATTACK ######\n')
+    else:
+        print('No attack')
     
     # show results of the prediction
     keysDataframe['Result'] = predictions
     print('Predictions:\n', keysDataframe)
 
+#------------------------------------------PORT-SCANNING-DoS-END-------------------------------------------#
 
-#-----------------------------------------SNIFF-FUNCTIONS-END------------------------------------------#
 
 
 if __name__ == '__main__':
-    GetAvailableInterfaces()
-    print('Starting Network Scan...')
+    # GetAvailableInterfaces()
 
-    ScanNetwork('en6') #call scan network func to initiate network scan 'en6' / 'Ethernet'
+    #call scan network func to initiate network scan 'en6' / 'Ethernet'
+    ScanNetwork('Ethernet') 
 
-    print('Finsihed Network Scan.\n')
+    # #test call arp processing function and check for arp spoofing attacks
+    # ProcessARP()
 
-    # test results of flow dict
-    for key in flowDict:
-        print(f'{key} : {len(flowDict[key])}')
+    # test port scanning and dos attacks
+    flows = ProcessFlows(flowDict)
 
-    x = ProcessFlows(flowDict)
-    # print(x)
-    for flow, features in x.items(): 
-        print(f'Flow: {flow}') 
-        for feature, value in features.items(): 
-            print(f' {feature}: {value}')
-        print('================================================================\n')
+    # write result of flows captured in txt file
+    with open('detectedFlows.txt', 'w') as file:
+        for flow, features in flows.items():
+            file.write(f'Flow: {flow}\n')
+            for feature, value in features.items():
+                file.write(f' {feature}: {value}\n')
+            file.write('================================================================\n')
 
-    PredictPortDoS(x)
+    #call predict function to determine if attack is present
+    PredictPortDoS(flows)

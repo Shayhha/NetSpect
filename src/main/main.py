@@ -538,22 +538,25 @@ def ProcessFlows(flowDict):
 
 # function for predicting PortScanning and DoS attacks given flow dictionary
 def PredictPortDoS(flowDict):
-    # extract keys and values
-    keys = list(flowDict.keys())
-    values = list(flowDict.values())
-
-    # create DataFrame for the keys (5-tuple)
-    keysDataframe = pd.DataFrame(keys, columns=['Src IP', 'Src Port', 'Dest IP', 'Dest Port', 'Protocol'])
-
-    # create DataFrame for the values (dict), columns ensures that the order of the input matches the order of the classifier
-    valuesDataframe = pd.DataFrame(values, columns = [
+    selected_columns = [
         'Destination Port', 'Total Length of Fwd Packets', 'Fwd Packet Length Max',
         'Fwd Packet Length Mean', 'Bwd Packet Length Max', 'Bwd Packet Length Min',
         'Bwd Packet Length Mean', 'Bwd Packet Length Std', 'Bwd IAT Total',
         'Bwd IAT Max', 'Min Packet Length', 'Max Packet Length', 'Packet Length Mean',
         'Packet Length Std', 'Packet Length Variance', 'SYN Flag Count', 'PSH Flag Count', 'URG Flag Count',
         'Average Packet Size', 'Avg Fwd Segment Size', 'Avg Bwd Segment Size', 'Subflow Fwd Bytes'
-    ])
+    ]
+
+    # extract keys and values
+    keys = list(flowDict.keys())
+    values = list(flowDict.values())
+    ordered_values = [[value_dict[col] for col in selected_columns] for value_dict in values] #reorder the values in the same order that the models were trained on
+    
+    # create DataFrame for the keys (5-tuple)
+    keysDataframe = pd.DataFrame(keys, columns=['Src IP', 'Src Port', 'Dest IP', 'Dest Port', 'Protocol'])
+
+    # create DataFrame for the values (dict), columns ensures that the order of the input matches the order of the classifier
+    valuesDataframe = pd.DataFrame(ordered_values, columns = selected_columns)
 
     # load the PortScanning and DoS model
     modelPath = getModelPath('port_svm_model.pkl')
@@ -575,7 +578,9 @@ def PredictPortDoS(flowDict):
 
     # show results of the prediction
     keysDataframe['Result'] = predictions
-    print(f'number of detected attacks:\n {keysDataframe[keysDataframe['Result'] == 1]}')
+    labelCounts = keysDataframe['Result'].value_counts()
+    print(f'Results: {labelCounts}\n')
+    print(f'Number of detected attacks:\n {keysDataframe[keysDataframe["Result"] == 1]}\n')
     print('Predictions:\n', keysDataframe)
 
 #------------------------------------------PORT-SCANNING-DoS-END-------------------------------------------#

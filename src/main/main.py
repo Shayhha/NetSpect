@@ -32,13 +32,15 @@ class Default_Packet(ABC):
     ipParam = None #represents IPv4 / IPv6 fields as tuple (ttl, dscp) / (hopLimit, trafficClass)
     packetLen = None #size of packet (including headers)
     payloadLen = None #size of packet (without headers)
+    time = None #timestamp of packet
 
     # constructor for default packet 
     def __init__(self, protocol=None, packet=None):
         self.protocol = protocol
         self.packet = packet
         self.packetLen = len(self.packet)
-        self.payloadLen = len(self.packet[Raw].load) if Raw in self.packet else len(self.packet.payload)
+        self.payloadLen = len(self.packet[Raw].load) if Raw in self.packet else 1
+        self.time = packet.time
         self.IpInfo() #initialize ip info
 
 
@@ -465,7 +467,7 @@ def ProcessFlows(flowDict):
         packetLengths = [] #represents length of all packets in flow
         payloadLengths = [] #represents payload length of all packets in flow
         bwdTimestamps = [] #represents timestamps of each packet in flow
-        subflowFwdBytes = 0 #represents sum of all forward packets in flow
+        subflowLastPacketTS, subflowCount = -1, 0 #last timestamp of the subflow and the counter of subflows
         pshFlags, urgFlags, synFlags = 0, 0, 0 #counter for tcp flags
 
         # iterate over each packet in flow
@@ -475,7 +477,12 @@ def ProcessFlows(flowDict):
 
             if packet.srcIp == flow[0] and packet.srcPort == flow[1]: #means forward packet
                 fwdLengths.append(packet.payloadLen)
-                subflowFwdBytes += packet.packetLen #! according to dataset this value is like fwdlengths sum
+                
+                # count subflows in forward packets using counters and timestamps
+                if subflowLastPacketTS == -1:
+                    subflowLastPacketTS = packet.time
+                if (packet.time - subflowLastPacketTS) > 1.0: #check that timestamp difference is greater than 1 sec
+                    subflowCount += 1
 
                 # check if packet is tcp and calculate its specific parameters
                 if isinstance(packet, TCP_Packet):
@@ -490,9 +497,9 @@ def ProcessFlows(flowDict):
             else: #else means backward packets
                 bwdLengths.append(packet.payloadLen)
 
-                # add bacckward packet timestamp 
-                if hasattr(packet.packet, 'time'):
-                    bwdTimestamps.append(packet.packet.time)
+                # add backward packet timestamp 
+                if packet.time:
+                    bwdTimestamps.append(packet.time)
 
         # Destination port
         featuresDict[flow]['Destination Port'] = flow[3]
@@ -523,8 +530,8 @@ def ProcessFlows(flowDict):
         featuresDict[flow]['URG Flag Count'] = urgFlags
         featuresDict[flow]['SYN Flag Count'] = synFlags
 
-        # Subflow Features
-        featuresDict[flow]['Subflow Fwd Bytes'] = subflowFwdBytes
+        # Subflow Feature
+        featuresDict[flow]['Subflow Fwd Bytes'] = sum(fwdLengths) / subflowCount if subflowCount > 0 else 0
 
         # Inter-Arrival Time Features (IAT)
         interArrivalTimes = [t2 - t1 for t1, t2 in zip(bwdTimestamps[:-1], bwdTimestamps[1:])]
@@ -538,35 +545,36 @@ def ProcessFlows(flowDict):
 
 # function for predicting PortScanning and DoS attacks given flow dictionary
 def PredictPortDoS(flowDict):
-    selected_columns = [
-        'Destination Port', 'Total Length of Fwd Packets', 'Fwd Packet Length Max',
+    selectedColumns = [
+        'Dst Port', 'Total Length of Fwd Packet', 'Fwd Packet Length Max',
         'Fwd Packet Length Mean', 'Bwd Packet Length Max', 'Bwd Packet Length Min',
         'Bwd Packet Length Mean', 'Bwd Packet Length Std', 'Bwd IAT Total',
-        'Bwd IAT Max', 'Min Packet Length', 'Max Packet Length', 'Packet Length Mean',
+        'Bwd IAT Max', 'Packet Length Min', 'Packet Length Max', 'Packet Length Mean',
         'Packet Length Std', 'Packet Length Variance', 'SYN Flag Count', 'PSH Flag Count', 'URG Flag Count',
-        'Average Packet Size', 'Avg Fwd Segment Size', 'Avg Bwd Segment Size', 'Subflow Fwd Bytes'
+        'Average Packet Size', 'Fwd Segment Size Avg', 'Bwd Segment Size Avg', 'Subflow Fwd Bytes'
     ]
 
     # extract keys and values
     keys = list(flowDict.keys())
     values = list(flowDict.values())
-    ordered_values = [[value_dict[col] for col in selected_columns] for value_dict in values] #reorder the values in the same order that the models were trained on
+    ordered_values = [[value_dict[col] for col in selectedColumns] for value_dict in values] #reorder the values in the same order that the models were trained on
     
     # create DataFrame for the keys (5-tuple)
     keysDataframe = pd.DataFrame(keys, columns=['Src IP', 'Src Port', 'Dest IP', 'Dest Port', 'Protocol'])
 
     # create DataFrame for the values (dict), columns ensures that the order of the input matches the order of the classifier
-    valuesDataframe = pd.DataFrame(ordered_values, columns = selected_columns)
+    valuesDataframe = pd.DataFrame(ordered_values, columns = selectedColumns)
 
     # load the PortScanning and DoS model
-    modelPath = getModelPath('port_svm_model.pkl')
+    modelPath = getModelPath('port_svm_model_2.pkl')
     scalerPath = getModelPath('standard_scaler.pkl')
     loadedModel = joblib.load(modelPath) 
     loadedScaler = joblib.load(scalerPath) 
 
     # scale the input data and predict the scaled input
-    valuesDataframe = loadedScaler.transform(valuesDataframe)
-    predictions = loadedModel.predict(valuesDataframe)
+    scaledValues = loadedScaler.transform(valuesDataframe)
+    scaledDataframe = pd.DataFrame(scaledValues, columns = selectedColumns)
+    predictions = loadedModel.predict(scaledDataframe)
 
     # check for attacks
     # if 1 in predictions:

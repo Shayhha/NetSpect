@@ -511,11 +511,11 @@ def ProcessFlows(flowDict):
                     bwdTimestamps.append(packet.time)
 
         # Destination port
-        featuresDict[flow]['Destination Port'] = flow[3]
+        featuresDict[flow]['Dst Port'] = flow[3]
 
         # Packet Length Features
-        featuresDict[flow]['Min Packet Length'] = min(payloadLengths) if payloadLengths else 0
-        featuresDict[flow]['Max Packet Length'] = max(payloadLengths) if payloadLengths else 0
+        featuresDict[flow]['Packet Length Min'] = min(payloadLengths) if payloadLengths else 0
+        featuresDict[flow]['Packet Length Max'] = max(payloadLengths) if payloadLengths else 0
         featuresDict[flow]['Packet Length Mean'] = np.mean(payloadLengths) if payloadLengths else 0
         featuresDict[flow]['Packet Length Std'] = np.std(payloadLengths) if payloadLengths else 0
         featuresDict[flow]['Packet Length Variance'] = np.var(payloadLengths) if payloadLengths else 0
@@ -529,10 +529,10 @@ def ProcessFlows(flowDict):
         featuresDict[flow]['Bwd Packet Length Std'] = np.std(bwdLengths) if bwdLengths else 0
 
         # Total and average size features
-        featuresDict[flow]['Total Length of Fwd Packets'] = sum(fwdLengths)
+        featuresDict[flow]['Total Length of Fwd Packet'] = sum(fwdLengths)
         featuresDict[flow]['Average Packet Size'] = (sum(packetLengths) / len(packetLengths)) if packetLengths else 0
-        featuresDict[flow]['Avg Fwd Segment Size'] = np.mean(fwdLengths) if fwdLengths else 0 
-        featuresDict[flow]['Avg Bwd Segment Size'] = np.mean(bwdLengths) if bwdLengths else 0
+        featuresDict[flow]['Fwd Segment Size Avg'] = np.mean(fwdLengths) if fwdLengths else 0 
+        featuresDict[flow]['Bwd Segment Size Avg'] = np.mean(bwdLengths) if bwdLengths else 0
 
         # PSH and URG flag counts
         featuresDict[flow]['PSH Flag Count'] = pshFlags

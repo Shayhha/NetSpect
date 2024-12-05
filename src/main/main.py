@@ -210,7 +210,7 @@ class ARP_Packet(Default_Packet):
 flowDict = {} #represents dict of {(flow tuple) - [packet list]} related to port scanning and dos
 dnsDict = {} #represents dict of packets related to dns tunneling 
 arpDict = {} #represents dict of packets related to arp poisoning
-arpTable = ({}, {}) #represents ARP table that is a tuple (arpTable, invArpTable) with mapping of IP->MAC and MAC -> IP in each table in tuple
+arpTable = ({}, {}) #represents ARP table that is a tuple (arpTable, invArpTable) with mapping of IP->MAC and MAC->IP in each table in tuple
 dnsCounter = 0 #global counter for dns packets
 arpCounter = 0 #global counter for arp packets
 tempcounter = 0
@@ -358,10 +358,10 @@ class ArpSpoofingException(Exception):
         self.state = state #represents the state of attack, 1 means we found ip assigned to many macs, 2 means mac assigned to many ips
         self.details = details #represents additional details about the spoofing
 
+    # str representation of arp spoofing exception for showing results
     def __str__(self):
-        # Format the exception message nicely
-        print('\n##### ARP SPOOFING ATTACK ######\n')
-        detailsList = '\n'.join([f'[*] {key} ==> {", ".join(value)}' for key, value in self.details.items()])
+        detailsList = '\n##### ARP SPOOFING ATTACK ######\n'
+        detailsList += '\n'.join([f'[*] {key} ==> {", ".join(value)}' for key, value in self.details.items()])
         return f'{self.args[0]}\nDetails:\n{detailsList}\n'
 
 

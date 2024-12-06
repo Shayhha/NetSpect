@@ -2,16 +2,15 @@ import sys
 import os
 import re
 import logging
+import socket
 import joblib
+import numpy as np
+import pandas as pd
 from abc import ABC, abstractmethod
 import scapy.all as scapy
 from scapy.all import sniff, get_if_list, srp, IP, IPv6, TCP, UDP, ICMP, ARP, Ether, Raw
 from scapy.layers.dns import DNS
-from urllib.parse import unquote
-from queue import Queue
 from collections import defaultdict
-import numpy as np
-import pandas as pd
 
 # dynamically add the src directory to sys.path, this allows us to access all moduls in the project at run time
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
@@ -63,12 +62,14 @@ class Default_Packet(ABC):
 
     # method to return a normalized flow representation of a packet
     def GetFlowTuple(self):
+        global ipAddresses
         # extract flow tuple from packet
         srcIp, srcPort, dstIp, dstPort, protocol = self.srcIp, self.srcPort, self.dstIp, self.dstPort, self.protocol
-        
-        # check if tuple isn't normalized and sort it if necessary
-        if (srcIp > dstIp) or (srcIp == dstIp and srcPort > dstPort):
-            srcIp, srcPort, dstIp, dstPort = dstIp, dstPort, srcIp, srcPort #swap src and dst to ensure normalized order
+
+        #we create the flow tuple based on lexicographic order if it does not contain host ip address to ensure consistency
+        if srcIp not in ipAddresses and dstIp not in ipAddresses: #check if src ip and dst ip are'nt our ip addresses
+            if (srcIp > dstIp) or (srcIp == dstIp and srcPort > dstPort): #check if tuple isn't normalized and sort it if necessary
+                return (dstIp, dstPort, srcIp, srcPort, protocol) #swap src and dst to ensure normalized order
 
         return (srcIp, srcPort, dstIp, dstPort, protocol) #return the flow tuple of packet
 
@@ -205,10 +206,11 @@ class ARP_Packet(Default_Packet):
 
 #---------------------------------------GLOBAL-PARAMETERS------------------------------------------#
 
+ipAddresses = set() #represents set of all known ip addresses of host
+arpTable = ({}, {}) #represents ARP table that is a tuple (arpTable, invArpTable) with mapping of IP->MAC and MAC->IP in each table in tuple
 flowDict = {} #represents dict of {(flow tuple) - [packet list]} related to port scanning and dos
 dnsDict = {} #represents dict of packets related to dns tunneling 
 arpDict = {} #represents dict of packets related to arp poisoning
-arpTable = ({}, {}) #represents ARP table that is a tuple (arpTable, invArpTable) with mapping of IP->MAC and MAC->IP in each table in tuple
 dnsCounter = 0 #global counter for dns packets
 arpCounter = 0 #global counter for arp packets
 tempcounter = 0
@@ -305,6 +307,26 @@ def GetNetworkInterfaces():
     matchedInterfaces = [interface for interface in interfaces if any(interface.startswith(name) for name in networkNames)] #we filter the list to retrieving ethernet and wifi interfaces
     return matchedInterfaces #return the matched interfaces as list'
 
+
+# function that returns all ipv4 and ipv6 addresses of host
+def GetIpAddresses():
+    hostname = socket.gethostname() #represents host name 
+    addresses = set() #represents set of all known ip addresses of host
+
+    # get IPv4 addresses
+    ipv4Addresses = socket.getaddrinfo(hostname, None, socket.AF_INET)
+    for addr in ipv4Addresses:
+        ip = addr[4][0] #get ipv4 address 
+        addresses.add(ip) #appand address to our list
+
+    # get IPv6 addresses
+    ipv6Addresses = socket.getaddrinfo(hostname, None, socket.AF_INET6)
+    for addr in ipv6Addresses:
+        ip = addr[4][0] #get ipv6 address 
+        addresses.add(ip) #appand address to our list
+
+    return addresses
+
 #-----------------------------------------HELPER-FUNCTIONS-END-----------------------------------------#
 
 #-------------------------------------------SNIFF-FUNCTIONS------------------------------------------#
@@ -326,10 +348,13 @@ def PacketCapture(packet):
 
 # function for initialing a packet scan on desired network interface
 def ScanNetwork(interface):
+    global ipAddresses
     global arpTable
     try:
         print('Starting Network Scan...')
+        ipAddresses = GetIpAddresses() #initialize our ip addresses list
         arpTable = InitArpTable() #initialize our static arp table
+        print(ipAddresses)
         #print arp table
         print('ARP Table:')
         for key, value in arpTable[0].items():
@@ -563,8 +588,8 @@ def PredictPortDoS(flowDict):
     valuesDataframe = pd.DataFrame(ordered_values, columns=selectedColumns)
 
     # load the PortScanning and DoS model
-    modelPath = getModelPath('port_svm_model_2.pkl')
-    scalerPath = getModelPath('port_scaler.pkl')
+    modelPath = getModelPath('zeros_dos_svm_model_2.pkl')
+    scalerPath = getModelPath('zeros_dos_scaler.pkl')
     loadedModel = joblib.load(modelPath) 
     loadedScaler = joblib.load(scalerPath) 
 

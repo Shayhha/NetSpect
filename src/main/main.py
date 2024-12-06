@@ -67,9 +67,11 @@ class Default_Packet(ABC):
         srcIp, srcPort, dstIp, dstPort, protocol = self.srcIp, self.srcPort, self.dstIp, self.dstPort, self.protocol
 
         #we create the flow tuple based on lexicographic order if it does not contain host ip address to ensure consistency
-        if srcIp not in ipAddresses and dstIp not in ipAddresses: #check if src ip and dst ip are'nt our ip addresses
-            if (srcIp > dstIp) or (srcIp == dstIp and srcPort > dstPort): #check if tuple isn't normalized and sort it if necessary
-                return (dstIp, dstPort, srcIp, srcPort, protocol) #swap src and dst to ensure normalized order
+        if srcIp in ipAddresses: #check if src ip in our ip addresses
+            return (srcIp, srcPort, dstIp, dstPort, protocol) #return the flow tuple of packet with host ip as source ip in tuple
+
+        elif (dstIp in ipAddresses) or (srcIp > dstIp) or (srcIp == dstIp and srcPort > dstPort): #check if tuple dst ip is our ip address or if its not normalized 
+            return (dstIp, dstPort, srcIp, srcPort, protocol) #swap src and dst to ensure normalized order and that our ip is source ip
 
         return (srcIp, srcPort, dstIp, dstPort, protocol) #return the flow tuple of packet
 

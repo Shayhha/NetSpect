@@ -5,10 +5,8 @@ import logging
 import joblib
 from abc import ABC, abstractmethod
 import scapy.all as scapy
-from scapy.all import sniff, wrpcap, rdpcap, get_if_list, srp, IP, IPv6, TCP, UDP, ICMP, ARP, Ether, Raw
+from scapy.all import sniff, get_if_list, srp, IP, IPv6, TCP, UDP, ICMP, ARP, Ether, Raw
 from scapy.layers.dns import DNS
-from scapy.layers.http import HTTP, HTTPRequest, HTTPResponse
-from scapy.layers.dhcp import DHCP, BOOTP
 from urllib.parse import unquote
 from queue import Queue
 from collections import defaultdict
@@ -473,7 +471,6 @@ def ProcessFlows(flowDict):
     for flow, packetList in flowDict.items():
         fwdLengths = [] #represents length of forward packets in flow
         bwdLengths = [] #represents length of backward packets in flow
-        packetLengths = [] #represents length of all packets in flow
         payloadLengths = [] #represents payload length of all packets in flow
         bwdTimestamps = [] #represents timestamps of each packet in flow
         subflowLastPacketTS, subflowCount = -1, 0 #last timestamp of the subflow and the counter of subflows
@@ -481,8 +478,17 @@ def ProcessFlows(flowDict):
 
         # iterate over each packet in flow
         for packet in packetList:
-            packetLengths.append(packet.packetLen) #append packet length to list #!maybe irrelevent
             payloadLengths.append(packet.payloadLen) #append payload length to list
+
+            # check if packet is tcp and calculate its specific parameters
+            if isinstance(packet, TCP_Packet):
+                # check each flag in tcp and increment counter if set
+                if 'PSH' in packet.flagDict and packet.flagDict['PSH']:
+                    pshFlags += 1
+                if 'URG' in packet.flagDict and packet.flagDict['URG']:
+                    urgFlags += 1
+                if 'SYN' in packet.flagDict and packet.flagDict['SYN']:
+                    synFlags += 1
 
             if packet.srcIp == flow[0] and packet.srcPort == flow[1]: #means forward packet
                 fwdLengths.append(packet.payloadLen)
@@ -492,16 +498,6 @@ def ProcessFlows(flowDict):
                     subflowLastPacketTS = packet.time
                 if (packet.time - subflowLastPacketTS) > 1.0: #check that timestamp difference is greater than 1 sec
                     subflowCount += 1
-
-                # check if packet is tcp and calculate its specific parameters
-                if isinstance(packet, TCP_Packet):
-                    # check each flag in tcp and increment counter if set
-                    if 'PSH' in packet.flagDict and packet.flagDict['PSH']:
-                        pshFlags += 1
-                    if 'URG' in packet.flagDict and packet.flagDict['URG']:
-                        urgFlags += 1
-                    if 'SYN' in packet.flagDict and packet.flagDict['SYN']:
-                        synFlags += 1
 
             else: #else means backward packets
                 bwdLengths.append(packet.payloadLen)
@@ -567,8 +563,8 @@ def PredictPortDoS(flowDict):
     valuesDataframe = pd.DataFrame(ordered_values, columns=selectedColumns)
 
     # load the PortScanning and DoS model
-    modelPath = getModelPath('dos_ddos_port_svm_model_2.pkl')
-    scalerPath = getModelPath('dos_ddos_port_scaler.pkl')
+    modelPath = getModelPath('port_svm_model_2.pkl')
+    scalerPath = getModelPath('port_scaler.pkl')
     loadedModel = joblib.load(modelPath) 
     loadedScaler = joblib.load(scalerPath) 
 
@@ -580,10 +576,10 @@ def PredictPortDoS(flowDict):
     # check for attacks
     if 1 in predictions:
         print('\n##### DoS ATTACK ######\n')
-    if 2 in predictions:
-        print('\n##### DDoS ATTACK ######\n')
-    if 3 in predictions:
-        print('\n##### Port Scan ATTACK ######\n')
+    # if 2 in predictions:
+    #     print('\n##### DDoS ATTACK ######\n')
+    # if 3 in predictions:
+    #     print('\n##### Port Scan ATTACK ######\n')
     else:
         print('No attack')
 
@@ -592,8 +588,8 @@ def PredictPortDoS(flowDict):
     labelCounts = keysDataframe['Result'].value_counts()
     print(f'Results: {labelCounts}\n')
     print(f'Num of DoS ips: {keysDataframe[keysDataframe["Result"] == 1]["Src IP"].unique()}\n')
-    print(f'Num of DDoS ips: {keysDataframe[keysDataframe["Result"] == 2]["Src IP"].unique()}\n')
-    print(f'Num of Port Scan ips: {keysDataframe[keysDataframe["Result"] == 3]["Src IP"].unique()}\n')
+    # print(f'Num of DDoS ips: {keysDataframe[keysDataframe["Result"] == 2]["Src IP"].unique()}\n')
+    # print(f'Num of Port Scan ips: {keysDataframe[keysDataframe["Result"] == 3]["Src IP"].unique()}\n')
     print(f'Number of detected attacks:\n {keysDataframe[keysDataframe["Result"] == 1]}\n')
     print('Predictions:\n', keysDataframe)
 

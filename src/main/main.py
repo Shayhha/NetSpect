@@ -39,7 +39,7 @@ class Default_Packet(ABC):
         self.protocol = protocol
         self.packet = packet
         self.packetLen = len(self.packet)
-        self.payloadLen = len(self.packet[Raw].load) if Raw in self.packet else 1
+        self.payloadLen = len(self.packet[Raw].load) if Raw in self.packet else 0
         self.time = packet.time
         self.IpInfo() #initialize ip info
 
@@ -210,7 +210,7 @@ class ARP_Packet(Default_Packet):
 flowDict = {} #represents dict of {(flow tuple) - [packet list]} related to port scanning and dos
 dnsDict = {} #represents dict of packets related to dns tunneling 
 arpDict = {} #represents dict of packets related to arp poisoning
-arpTable = ({}, {}) #represents ARP table that is a tuple (arpTable, invArpTable) with mapping of IP->MAC and MAC -> IP in each table in tuple
+arpTable = ({}, {}) #represents ARP table that is a tuple (arpTable, invArpTable) with mapping of IP->MAC and MAC->IP in each table in tuple
 dnsCounter = 0 #global counter for dns packets
 arpCounter = 0 #global counter for arp packets
 tempcounter = 0
@@ -358,10 +358,10 @@ class ArpSpoofingException(Exception):
         self.state = state #represents the state of attack, 1 means we found ip assigned to many macs, 2 means mac assigned to many ips
         self.details = details #represents additional details about the spoofing
 
+    # str representation of arp spoofing exception for showing results
     def __str__(self):
-        # Format the exception message nicely
-        print('\n##### ARP SPOOFING ATTACK ######\n')
-        detailsList = '\n'.join([f'[*] {key} ==> {", ".join(value)}' for key, value in self.details.items()])
+        detailsList = '\n##### ARP SPOOFING ATTACK ######\n'
+        detailsList += '\n'.join([f'[*] {key} ==> {", ".join(value)}' for key, value in self.details.items()])
         return f'{self.args[0]}\nDetails:\n{detailsList}\n'
 
 
@@ -481,7 +481,7 @@ def ProcessFlows(flowDict):
 
         # iterate over each packet in flow
         for packet in packetList:
-            packetLengths.append(packet.packetLen) #append packet length to list
+            packetLengths.append(packet.packetLen) #append packet length to list #!maybe irrelevent
             payloadLengths.append(packet.payloadLen) #append payload length to list
 
             if packet.srcIp == flow[0] and packet.srcPort == flow[1]: #means forward packet
@@ -530,7 +530,7 @@ def ProcessFlows(flowDict):
 
         # Total and average size features
         featuresDict[flow]['Total Length of Fwd Packet'] = sum(fwdLengths)
-        featuresDict[flow]['Average Packet Size'] = (sum(packetLengths) / len(packetLengths)) if packetLengths else 0
+        featuresDict[flow]['Average Packet Size'] =  np.mean(payloadLengths) if payloadLengths else 0
         featuresDict[flow]['Fwd Segment Size Avg'] = np.mean(fwdLengths) if fwdLengths else 0 
         featuresDict[flow]['Bwd Segment Size Avg'] = np.mean(bwdLengths) if bwdLengths else 0
 
@@ -597,6 +597,7 @@ def PredictPortDoS(flowDict):
     keysDataframe['Result'] = predictions
     labelCounts = keysDataframe['Result'].value_counts()
     print(f'Results: {labelCounts}\n')
+    print(f'Num of source ips: {keysDataframe[keysDataframe["Result"] == 1]['Src IP'].unique()}')
     print(f'Number of detected attacks:\n {keysDataframe[keysDataframe["Result"] == 1]}\n')
     print('Predictions:\n', keysDataframe)
 

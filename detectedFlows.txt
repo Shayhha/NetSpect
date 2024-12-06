@@ -1,0 +1,2832 @@
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 50976, '2a03:2880:f0a5:18:face:b00c:0:2', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 32
+ Packet Length Mean: 17.142857142857142
+ Packet Length Std: 14.922931265372108
+ Packet Length Variance: 222.69387755102042
+ Fwd Packet Length Max: 32
+ Fwd Packet Length Mean: 12.8
+ Bwd Packet Length Max: 28
+ Bwd Packet Length Mean: 28.0
+ Bwd Packet Length Min: 28
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 64
+ Average Packet Size: 17.142857142857142
+ Fwd Segment Size Avg: 12.8
+ Bwd Segment Size Avg: 28.0
+ PSH Flag Count: 2
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 16.0
+ Bwd IAT Total: 15.09057903289795
+ Bwd IAT Max: 15.09057903289795
+================================================================
+Flow: ('2a00:a040:3:8::f', 443, '2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 53638, 'UDP')
+ Dst Port: 53638
+ Packet Length Min: 23
+ Packet Length Max: 1230
+ Packet Length Mean: 728.9108241082411
+ Packet Length Std: 587.6630397253365
+ Packet Length Variance: 345347.8482592224
+ Fwd Packet Length Max: 1230
+ Fwd Packet Length Mean: 1221.4436932178323
+ Bwd Packet Length Max: 1230
+ Bwd Packet Length Mean: 42.67059169855755
+ Bwd Packet Length Min: 32
+ Bwd Packet Length Std: 65.54652463705519
+ Total Length of Fwd Packet: 5781093
+ Average Packet Size: 728.9108241082411
+ Fwd Segment Size Avg: 1221.4436932178323
+ Bwd Segment Size Avg: 42.67059169855755
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 1528.176843774782
+ Bwd IAT Total: 42.18573594093323
+ Bwd IAT Max: 20.799618005752563
+================================================================
+Flow: ('192.168.1.121', 8001, '224.0.0.7', 8001, 'UDP')
+ Dst Port: 8001
+ Packet Length Min: 196
+ Packet Length Max: 196
+ Packet Length Mean: 196.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 196
+ Fwd Packet Length Mean: 196.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 4312
+ Average Packet Size: 196.0
+ Fwd Segment Size Avg: 196.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 205.33333333333334
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('2a00:1450:4028:806::200e', 443, '2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 50641, 'UDP')
+ Dst Port: 50641
+ Packet Length Min: 22
+ Packet Length Max: 831
+ Packet Length Mean: 42.316326530612244
+ Packet Length Std: 88.01838826188482
+ Packet Length Variance: 7747.236672219903
+ Fwd Packet Length Max: 279
+ Fwd Packet Length Mean: 38.69387755102041
+ Bwd Packet Length Max: 831
+ Bwd Packet Length Mean: 45.93877551020408
+ Bwd Packet Length Min: 29
+ Bwd Packet Length Std: 113.32532331576677
+ Total Length of Fwd Packet: 1896
+ Average Packet Size: 42.316326530612244
+ Fwd Segment Size Avg: 38.69387755102041
+ Bwd Segment Size Avg: 45.93877551020408
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 39.5
+ Bwd IAT Total: 43.258533000946045
+ Bwd IAT Max: 6.413937091827393
+================================================================
+Flow: ('192.168.1.121', 53806, '239.255.255.250', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 51173, '52.182.143.211', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 465
+ Packet Length Mean: 97.8
+ Packet Length Std: 183.83514353898713
+ Packet Length Variance: 33795.36
+ Fwd Packet Length Max: 24
+ Fwd Packet Length Mean: 8.0
+ Bwd Packet Length Max: 465
+ Bwd Packet Length Mean: 232.5
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 232.5
+ Total Length of Fwd Packet: 24
+ Average Packet Size: 97.8
+ Fwd Segment Size Avg: 8.0
+ Bwd Segment Size Avg: 232.5
+ PSH Flag Count: 1
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0.15578007698059082
+ Bwd IAT Max: 0.15578007698059082
+================================================================
+Flow: ('192.168.1.173', 8001, '224.0.0.7', 8001, 'UDP')
+ Dst Port: 8001
+ Packet Length Min: 200
+ Packet Length Max: 200
+ Packet Length Mean: 200.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 200
+ Fwd Packet Length Mean: 200.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 4200
+ Average Packet Size: 200.0
+ Fwd Segment Size Avg: 200.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 210.0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.173', 46919, '192.168.1.255', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.58', 8009, '192.168.1.59', 65425, 'TCP')
+ Dst Port: 65425
+ Packet Length Min: 0
+ Packet Length Max: 110
+ Packet Length Mean: 70.4
+ Packet Length Std: 52.800000000000004
+ Packet Length Variance: 2787.84
+ Fwd Packet Length Max: 110
+ Fwd Packet Length Mean: 110.0
+ Bwd Packet Length Max: 110
+ Bwd Packet Length Mean: 51.76470588235294
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 54.9047618333084
+ Total Length of Fwd Packet: 880
+ Average Packet Size: 70.4
+ Fwd Segment Size Avg: 110.0
+ Bwd Segment Size Avg: 51.76470588235294
+ PSH Flag Count: 8
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 125.71428571428571
+ Bwd IAT Total: 40.20573806762695
+ Bwd IAT Max: 5.019835948944092
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 50965, '2a03:2880:f0a5:18:face:b00c:0:2', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 32
+ Packet Length Mean: 20.0
+ Packet Length Std: 14.236104336041748
+ Packet Length Variance: 202.66666666666666
+ Fwd Packet Length Max: 32
+ Fwd Packet Length Mean: 16.0
+ Bwd Packet Length Max: 28
+ Bwd Packet Length Mean: 28.0
+ Bwd Packet Length Min: 28
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 96
+ Average Packet Size: 20.0
+ Fwd Segment Size Avg: 16.0
+ Bwd Segment Size Avg: 28.0
+ PSH Flag Count: 3
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 24.0
+ Bwd IAT Total: 32.003106117248535
+ Bwd IAT Max: 16.010369062423706
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 50971, '2a03:2880:f0a5:18:face:b00c:0:2', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 32
+ Packet Length Mean: 20.0
+ Packet Length Std: 14.236104336041748
+ Packet Length Variance: 202.66666666666666
+ Fwd Packet Length Max: 32
+ Fwd Packet Length Mean: 16.0
+ Bwd Packet Length Max: 28
+ Bwd Packet Length Mean: 28.0
+ Bwd Packet Length Min: 28
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 96
+ Average Packet Size: 20.0
+ Fwd Segment Size Avg: 16.0
+ Bwd Segment Size Avg: 28.0
+ PSH Flag Count: 3
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 24.0
+ Bwd IAT Total: 32.002326011657715
+ Bwd IAT Max: 16.010605096817017
+================================================================
+Flow: ('192.168.1.253', 8009, '192.168.1.59', 65476, 'TCP')
+ Dst Port: 65476
+ Packet Length Min: 0
+ Packet Length Max: 110
+ Packet Length Mean: 73.33333333333333
+ Packet Length Std: 51.85449728701349
+ Packet Length Variance: 2688.888888888889
+ Fwd Packet Length Max: 110
+ Fwd Packet Length Mean: 110.0
+ Bwd Packet Length Max: 110
+ Bwd Packet Length Mean: 55.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 55.0
+ Total Length of Fwd Packet: 880
+ Average Packet Size: 73.33333333333333
+ Fwd Segment Size Avg: 110.0
+ Bwd Segment Size Avg: 55.0
+ PSH Flag Count: 8
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 125.71428571428571
+ Bwd IAT Total: 36.09178304672241
+ Bwd IAT Max: 4.971813917160034
+================================================================
+Flow: ('192.168.1.121', 60299, '192.168.1.255', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.173', 54012, '239.255.255.250', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.121', 40560, '239.255.255.250', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('2a00:1450:4028:800::200e', 443, '2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 64009, 'UDP')
+ Dst Port: 64009
+ Packet Length Min: 23
+ Packet Length Max: 1230
+ Packet Length Mean: 465.33734939759034
+ Packet Length Std: 527.3401608369388
+ Packet Length Variance: 278087.64523152856
+ Fwd Packet Length Max: 1230
+ Fwd Packet Length Mean: 355.2857142857143
+ Bwd Packet Length Max: 1230
+ Bwd Packet Length Mean: 578.0731707317074
+ Bwd Packet Length Min: 33
+ Bwd Packet Length Std: 543.3743887536116
+ Total Length of Fwd Packet: 14922
+ Average Packet Size: 465.33734939759034
+ Fwd Segment Size Avg: 355.2857142857143
+ Bwd Segment Size Avg: 578.0731707317074
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 414.5
+ Bwd IAT Total: 36.52455186843872
+ Bwd IAT Max: 8.63306999206543
+================================================================
+Flow: ('192.168.1.59', 56951, '213.57.22.5', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 55656, '213.57.22.5', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 61265, '213.57.22.5', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('2a00:1450:4028:800::200e', 443, '2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 59910, 'UDP')
+ Dst Port: 59910
+ Packet Length Min: 21
+ Packet Length Max: 1230
+ Packet Length Mean: 524.0645161290323
+ Packet Length Std: 552.258818208711
+ Packet Length Variance: 304989.80228928203
+ Fwd Packet Length Max: 1230
+ Fwd Packet Length Mean: 537.7647058823529
+ Bwd Packet Length Max: 1230
+ Bwd Packet Length Mean: 507.42857142857144
+ Bwd Packet Length Min: 29
+ Bwd Packet Length Std: 552.0490032966425
+ Total Length of Fwd Packet: 9142
+ Average Packet Size: 524.0645161290323
+ Fwd Segment Size Avg: 537.7647058823529
+ Bwd Segment Size Avg: 507.42857142857144
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0.6702160835266113
+ Bwd IAT Max: 0.21656298637390137
+================================================================
+Flow: ('192.168.1.173', 52720, '192.168.1.255', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 50969, '2a03:2880:f0a5:2:face:b00c:0:6206', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 412
+ Packet Length Mean: 33.303030303030305
+ Packet Length Std: 67.39210674421244
+ Packet Length Variance: 4541.696051423323
+ Fwd Packet Length Max: 412
+ Fwd Packet Length Mean: 48.10344827586207
+ Bwd Packet Length Max: 66
+ Bwd Packet Length Mean: 21.7027027027027
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 19.316517039394963
+ Total Length of Fwd Packet: 1395
+ Average Packet Size: 33.303030303030305
+ Fwd Segment Size Avg: 48.10344827586207
+ Bwd Segment Size Avg: 21.7027027027027
+ PSH Flag Count: 17
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 51.666666666666664
+ Bwd IAT Total: 35.96015501022339
+ Bwd IAT Max: 10.996980905532837
+================================================================
+Flow: ('192.168.1.121', 44135, '192.168.1.255', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.173', 36452, '239.255.255.250', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('13.89.179.11', 443, '192.168.1.59', 51160, 'TCP')
+ Dst Port: 51160
+ Packet Length Min: 0
+ Packet Length Max: 1219
+ Packet Length Mean: 151.80434782608697
+ Packet Length Std: 302.91817086791934
+ Packet Length Variance: 91759.41824196596
+ Fwd Packet Length Max: 99
+ Fwd Packet Length Mean: 32.86363636363637
+ Bwd Packet Length Max: 1219
+ Bwd Packet Length Mean: 260.8333333333333
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 386.60786190775906
+ Total Length of Fwd Packet: 723
+ Average Packet Size: 151.80434782608697
+ Fwd Segment Size Avg: 32.86363636363637
+ Bwd Segment Size Avg: 260.8333333333333
+ PSH Flag Count: 10
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 42.529411764705884
+ Bwd IAT Total: 33.31490397453308
+ Bwd IAT Max: 13.085798978805542
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 56165, '2a00:a041:e65d:5b00:ce19:a8ff:fed9:38df', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 65141, '2a00:a041:e65d:5b00:ce19:a8ff:fed9:38df', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 49699, '2a00:a041:e65d:5b00:ce19:a8ff:fed9:38df', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 51169, '20.189.173.10', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.121', 50559, '239.255.255.250', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.173', 3955, '239.255.255.250', 1900, 'UDP')
+ Dst Port: 1900
+ Packet Length Min: 304
+ Packet Length Max: 372
+ Packet Length Mean: 343.2
+ Packet Length Std: 26.49452773687427
+ Packet Length Variance: 701.96
+ Fwd Packet Length Max: 372
+ Fwd Packet Length Mean: 343.2
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 6864
+ Average Packet Size: 343.2
+ Fwd Segment Size Avg: 343.2
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 51134, '2a02:26f0:fd00:2a::217:d223', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 1
+ Packet Length Mean: 0.5
+ Packet Length Std: 0.5
+ Packet Length Variance: 0.25
+ Fwd Packet Length Max: 1
+ Fwd Packet Length Mean: 1.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 1
+ Average Packet Size: 0.5
+ Fwd Segment Size Avg: 1.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.173', 57364, '192.168.1.255', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 50967, '2a03:2880:f289:ca:face:b00c:0:1cc9', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 71
+ Packet Length Mean: 35.0
+ Packet Length Std: 35.00714212842859
+ Packet Length Variance: 1225.5
+ Fwd Packet Length Max: 69
+ Fwd Packet Length Mean: 34.5
+ Bwd Packet Length Max: 71
+ Bwd Packet Length Mean: 35.5
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 35.5
+ Total Length of Fwd Packet: 69
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 34.5
+ Bwd Segment Size Avg: 35.5
+ PSH Flag Count: 1
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0.13194704055786133
+ Bwd IAT Max: 0.13194704055786133
+================================================================
+Flow: ('192.168.1.121', 35239, '192.168.1.255', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 50476, '2a02:26f0:1700:a::b856:670d', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0.0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 50473, '2a02:26f0:1700:a::b856:670c', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0.0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 50475, '2a02:26f0:1700:a::b856:670d', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0.0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 50477, '2a02:26f0:1700:a::b856:670d', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0.0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 50474, '2a02:26f0:1700:a::b856:670d', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0.0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 50478, '2a02:26f0:1700:a::b856:670d', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0.0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 50479, '2a02:26f0:1700:a::b856:670d', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0.0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 51174, '2a02:26f0:1700:a::b856:670c', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 1440
+ Packet Length Mean: 222.18965517241378
+ Packet Length Std: 430.2412497616109
+ Packet Length Variance: 185107.53299643286
+ Fwd Packet Length Max: 990
+ Fwd Packet Length Mean: 95.03846153846153
+ Bwd Packet Length Max: 1440
+ Bwd Packet Length Mean: 325.5
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 512.7685272128156
+ Total Length of Fwd Packet: 2471
+ Average Packet Size: 222.18965517241378
+ Fwd Segment Size Avg: 95.03846153846153
+ Bwd Segment Size Avg: 325.5
+ PSH Flag Count: 8
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 308.875
+ Bwd IAT Total: 5.888617038726807
+ Bwd IAT Max: 3.8385841846466064
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 51175, '2a02:26f0:1700:a::b856:670c', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 765
+ Packet Length Mean: 67.625
+ Packet Length Std: 164.13328235004624
+ Packet Length Variance: 26939.734375
+ Fwd Packet Length Max: 765
+ Fwd Packet Length Mean: 79.66666666666667
+ Bwd Packet Length Max: 287
+ Bwd Packet Length Mean: 55.583333333333336
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 100.10366154919386
+ Total Length of Fwd Packet: 956
+ Average Packet Size: 67.625
+ Fwd Segment Size Avg: 79.66666666666667
+ Bwd Segment Size Avg: 55.583333333333336
+ PSH Flag Count: 4
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 318.6666666666667
+ Bwd IAT Total: 20.165088891983032
+ Bwd IAT Max: 19.840179920196533
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 58107, '2a00:a041:e65d:5b00:ce19:a8ff:fed9:38df', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0.0
+ Bwd IAT Total: 3.097945213317871
+ Bwd IAT Max: 1.962205171585083
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 61397, '2a00:a041:e65d:5b00:ce19:a8ff:fed9:38df', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0.0
+ Bwd IAT Total: 3.1149699687957764
+ Bwd IAT Max: 1.9787349700927734
+================================================================
+Flow: ('192.168.1.173', 55739, '239.255.255.250', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 51176, '40.126.53.15', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 6726
+ Packet Length Mean: 798.5507246376811
+ Packet Length Std: 1235.4063995563129
+ Packet Length Variance: 1526228.9720646923
+ Fwd Packet Length Max: 6726
+ Fwd Packet Length Mean: 464.0967741935484
+ Bwd Packet Length Max: 1460
+ Bwd Packet Length Mean: 1071.3947368421052
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 628.9420749612078
+ Total Length of Fwd Packet: 14387
+ Average Packet Size: 798.5507246376811
+ Fwd Segment Size Avg: 464.0967741935484
+ Bwd Segment Size Avg: 1071.3947368421052
+ PSH Flag Count: 6
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0.8664109706878662
+ Bwd IAT Max: 0.2128770351409912
+================================================================
+Flow: ('192.168.1.59', 51177, '40.126.53.15', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 6722
+ Packet Length Mean: 762.5526315789474
+ Packet Length Std: 1193.8735209694628
+ Packet Length Variance: 1425333.9840720221
+ Fwd Packet Length Max: 6722
+ Fwd Packet Length Mean: 433.47058823529414
+ Bwd Packet Length Max: 1460
+ Bwd Packet Length Mean: 1028.952380952381
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 643.3267314877504
+ Total Length of Fwd Packet: 7369
+ Average Packet Size: 762.5526315789474
+ Fwd Segment Size Avg: 433.47058823529414
+ Bwd Segment Size Avg: 1028.952380952381
+ PSH Flag Count: 4
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0.4089980125427246
+ Bwd IAT Max: 0.1813960075378418
+================================================================
+Flow: ('192.168.1.59', 51178, '40.126.53.15', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 6728
+ Packet Length Mean: 709.0
+ Packet Length Std: 1149.9773506364133
+ Packet Length Variance: 1322447.9069767443
+ Fwd Packet Length Max: 6728
+ Fwd Packet Length Mean: 335.22727272727275
+ Bwd Packet Length Max: 1460
+ Bwd Packet Length Mean: 1100.5714285714287
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 602.736424383753
+ Total Length of Fwd Packet: 7375
+ Average Packet Size: 709.0
+ Fwd Segment Size Avg: 335.22727272727275
+ Bwd Segment Size Avg: 1100.5714285714287
+ PSH Flag Count: 4
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0.4747447967529297
+ Bwd IAT Max: 0.18053412437438965
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 51180, '2a02:26f0:1700:a::b856:670d', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 764
+ Packet Length Mean: 64.88
+ Packet Length Std: 161.18866461386173
+ Packet Length Variance: 25981.7856
+ Fwd Packet Length Max: 764
+ Fwd Packet Length Mean: 73.46153846153847
+ Bwd Packet Length Max: 287
+ Bwd Packet Length Mean: 55.583333333333336
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 100.10366154919386
+ Total Length of Fwd Packet: 955
+ Average Packet Size: 64.88
+ Fwd Segment Size Avg: 73.46153846153847
+ Bwd Segment Size Avg: 55.583333333333336
+ PSH Flag Count: 4
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 318.3333333333333
+ Bwd IAT Total: 20.230265855789185
+ Bwd IAT Max: 19.862054109573364
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 51179, '2a02:26f0:1700:a::b856:670d', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 748
+ Packet Length Mean: 66.91666666666667
+ Packet Length Std: 161.13139479595182
+ Packet Length Variance: 25963.32638888889
+ Fwd Packet Length Max: 748
+ Fwd Packet Length Mean: 78.25
+ Bwd Packet Length Max: 287
+ Bwd Packet Length Mean: 55.583333333333336
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 100.10366154919386
+ Total Length of Fwd Packet: 939
+ Average Packet Size: 66.91666666666667
+ Fwd Segment Size Avg: 78.25
+ Bwd Segment Size Avg: 55.583333333333336
+ PSH Flag Count: 4
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 313.0
+ Bwd IAT Total: 20.211375951766968
+ Bwd IAT Max: 19.902652978897095
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 51181, '2a02:26f0:1700:a::b856:670d', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 748
+ Packet Length Mean: 63.6
+ Packet Length Std: 157.54821484231422
+ Packet Length Variance: 24821.44
+ Fwd Packet Length Max: 748
+ Fwd Packet Length Mean: 72.23076923076923
+ Bwd Packet Length Max: 271
+ Bwd Packet Length Mean: 54.25
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 97.0731038959814
+ Total Length of Fwd Packet: 939
+ Average Packet Size: 63.6
+ Fwd Segment Size Avg: 72.23076923076923
+ Bwd Segment Size Avg: 54.25
+ PSH Flag Count: 4
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 313.0
+ Bwd IAT Total: 20.155397176742554
+ Bwd IAT Max: 19.839230060577393
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 51182, '2a02:26f0:1700:a::b856:670d', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 748
+ Packet Length Mean: 58.888888888888886
+ Packet Length Std: 152.51310407168376
+ Packet Length Variance: 23260.246913580242
+ Fwd Packet Length Max: 748
+ Fwd Packet Length Mean: 67.07142857142857
+ Bwd Packet Length Max: 271
+ Bwd Packet Length Mean: 50.07692307692308
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 94.3785027172392
+ Total Length of Fwd Packet: 939
+ Average Packet Size: 58.888888888888886
+ Fwd Segment Size Avg: 67.07142857142857
+ Bwd Segment Size Avg: 50.07692307692308
+ PSH Flag Count: 4
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 313.0
+ Bwd IAT Total: 20.211375951766968
+ Bwd IAT Max: 19.875339031219482
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 51183, '2a02:26f0:1700:a::b856:670d', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 764
+ Packet Length Mean: 62.38461538461539
+ Packet Length Std: 158.55018058429835
+ Packet Length Variance: 25138.159763313615
+ Fwd Packet Length Max: 764
+ Fwd Packet Length Mean: 68.21428571428571
+ Bwd Packet Length Max: 287
+ Bwd Packet Length Mean: 55.583333333333336
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 100.10366154919386
+ Total Length of Fwd Packet: 955
+ Average Packet Size: 62.38461538461539
+ Fwd Segment Size Avg: 68.21428571428571
+ Bwd Segment Size Avg: 55.583333333333336
+ PSH Flag Count: 4
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 238.75
+ Bwd IAT Total: 20.464097023010254
+ Bwd IAT Max: 19.849838972091675
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 51184, '2a02:26f0:1700:a::b856:670d', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 1440
+ Packet Length Mean: 472.320987654321
+ Packet Length Std: 614.8260182924881
+ Packet Length Variance: 378011.0327693949
+ Fwd Packet Length Max: 1218
+ Fwd Packet Length Mean: 78.57894736842105
+ Bwd Packet Length Max: 1440
+ Bwd Packet Length Mean: 820.2790697674419
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 640.1812361693528
+ Total Length of Fwd Packet: 2986
+ Average Packet Size: 472.320987654321
+ Fwd Segment Size Avg: 78.57894736842105
+ Bwd Segment Size Avg: 820.2790697674419
+ PSH Flag Count: 14
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0.21005702018737793
+ Bwd IAT Max: 0.0653691291809082
+================================================================
+Flow: ('104.208.16.89', 443, '192.168.1.59', 51185, 'TCP')
+ Dst Port: 51185
+ Packet Length Min: 0
+ Packet Length Max: 1460
+ Packet Length Mean: 368.48
+ Packet Length Std: 538.7691245793508
+ Packet Length Variance: 290272.16959999996
+ Fwd Packet Length Max: 1460
+ Fwd Packet Length Mean: 626.4545454545455
+ Bwd Packet Length Max: 1074
+ Bwd Packet Length Mean: 165.78571428571428
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 306.6857811626534
+ Total Length of Fwd Packet: 6891
+ Average Packet Size: 368.48
+ Fwd Segment Size Avg: 626.4545454545455
+ Bwd Segment Size Avg: 165.78571428571428
+ PSH Flag Count: 5
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0.6346659660339355
+ Bwd IAT Max: 0.1599268913269043
+================================================================
+Flow: ('192.168.1.59', 51186, '40.126.53.15', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 6831
+ Packet Length Mean: 764.9047619047619
+ Packet Length Std: 1169.6759585768027
+ Packet Length Variance: 1368141.8480725624
+ Fwd Packet Length Max: 6831
+ Fwd Packet Length Mean: 395.2631578947368
+ Bwd Packet Length Max: 1460
+ Bwd Packet Length Mean: 1070.2608695652175
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 620.8170084928621
+ Total Length of Fwd Packet: 7510
+ Average Packet Size: 764.9047619047619
+ Fwd Segment Size Avg: 395.2631578947368
+ Bwd Segment Size Avg: 1070.2608695652175
+ PSH Flag Count: 4
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0.4729421138763428
+ Bwd IAT Max: 0.17415881156921387
+================================================================
+Flow: ('2620:1ec:12::239', 443, '2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 51162, 'TCP')
+ Dst Port: 51162
+ Packet Length Min: 0
+ Packet Length Max: 1
+ Packet Length Mean: 0.5
+ Packet Length Std: 0.5
+ Packet Length Variance: 0.25
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 1
+ Bwd Packet Length Mean: 1.0
+ Bwd Packet Length Min: 1
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.5
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 1.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 51187, '192.168.1.69', 7680, 'TCP')
+ Dst Port: 7680
+ Packet Length Min: 0
+ Packet Length Max: 75
+ Packet Length Mean: 22.181818181818183
+ Packet Length Std: 30.534088794532526
+ Packet Length Variance: 932.3305785123968
+ Fwd Packet Length Max: 75
+ Fwd Packet Length Mean: 20.333333333333332
+ Bwd Packet Length Max: 75
+ Bwd Packet Length Mean: 24.4
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 31.167932238119356
+ Total Length of Fwd Packet: 122
+ Average Packet Size: 22.181818181818183
+ Fwd Segment Size Avg: 20.333333333333332
+ Bwd Segment Size Avg: 24.4
+ PSH Flag Count: 2
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0.01970696449279785
+ Bwd IAT Max: 0.008253812789916992
+================================================================
+Flow: ('2603:1046:c12:1400::2', 443, '2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 50202, 'TCP')
+ Dst Port: 50202
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 18.951725006103516
+ Bwd IAT Max: 9.615460872650146
+================================================================
+Flow: ('2603:1046:c12:1400::2', 443, '2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 50203, 'TCP')
+ Dst Port: 50203
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 18.95163583755493
+ Bwd IAT Max: 9.615460872650146
+================================================================
+Flow: ('2603:1046:c12:1400::2', 443, '2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 51188, 'TCP')
+ Dst Port: 51188
+ Packet Length Min: 0
+ Packet Length Max: 1062
+ Packet Length Mean: 196.14285714285714
+ Packet Length Std: 336.8313532678003
+ Packet Length Variance: 113455.36054421768
+ Fwd Packet Length Max: 938
+ Fwd Packet Length Mean: 216.11111111111111
+ Bwd Packet Length Max: 1062
+ Bwd Packet Length Mean: 181.16666666666666
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 364.69046997267264
+ Total Length of Fwd Packet: 1945
+ Average Packet Size: 196.14285714285714
+ Fwd Segment Size Avg: 216.11111111111111
+ Bwd Segment Size Avg: 181.16666666666666
+ PSH Flag Count: 7
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0.2508399486541748
+ Bwd IAT Max: 0.22867703437805176
+================================================================
+Flow: ('192.168.1.59', 51189, '204.79.197.222', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 1460
+ Packet Length Mean: 508.8
+ Packet Length Std: 631.4637080192769
+ Packet Length Variance: 398746.41454545455
+ Fwd Packet Length Max: 732
+ Fwd Packet Length Mean: 74.17391304347827
+ Bwd Packet Length Max: 1460
+ Bwd Packet Length Mean: 821.1875
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 654.8805443313689
+ Total Length of Fwd Packet: 1706
+ Average Packet Size: 508.8
+ Fwd Segment Size Avg: 74.17391304347827
+ Bwd Segment Size Avg: 821.1875
+ PSH Flag Count: 6
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 853.0
+ Bwd IAT Total: 3.3955018520355225
+ Bwd IAT Max: 3.2454640865325928
+================================================================
+Flow: ('192.168.1.59', 51190, '20.223.35.26', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 2601
+ Packet Length Mean: 401.2857142857143
+ Packet Length Std: 689.4093671471284
+ Packet Length Variance: 475285.2755102041
+ Fwd Packet Length Max: 2601
+ Fwd Packet Length Mean: 239.92857142857142
+ Bwd Packet Length Max: 1460
+ Bwd Packet Length Mean: 562.6428571428571
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 674.012145624231
+ Total Length of Fwd Packet: 3359
+ Average Packet Size: 401.2857142857143
+ Fwd Segment Size Avg: 239.92857142857142
+ Bwd Segment Size Avg: 562.6428571428571
+ PSH Flag Count: 5
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0.429516077041626
+ Bwd IAT Max: 0.25339293479919434
+================================================================
+Flow: ('2603:1026:3000:258::80', 443, '2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 51191, 'TCP')
+ Dst Port: 51191
+ Packet Length Min: 0
+ Packet Length Max: 1440
+ Packet Length Mean: 398.0
+ Packet Length Std: 575.1445780969215
+ Packet Length Variance: 330791.28571428574
+ Fwd Packet Length Max: 1440
+ Fwd Packet Length Mean: 657.75
+ Bwd Packet Length Max: 184
+ Bwd Packet Length Mean: 51.666666666666664
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 74.96147158522318
+ Total Length of Fwd Packet: 5262
+ Average Packet Size: 398.0
+ Fwd Segment Size Avg: 657.75
+ Bwd Segment Size Avg: 51.666666666666664
+ PSH Flag Count: 4
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0.31389784812927246
+ Bwd IAT Max: 0.2120199203491211
+================================================================
+Flow: ('2606:2800:233:fa02:67b:9ff6:6107:833', 80, '2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 51192, 'TCP')
+ Dst Port: 51192
+ Packet Length Min: 0
+ Packet Length Max: 471
+ Packet Length Mean: 67.28571428571429
+ Packet Length Std: 164.8156669786967
+ Packet Length Variance: 27164.204081632655
+ Fwd Packet Length Max: 471
+ Fwd Packet Length Mean: 157.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 471
+ Average Packet Size: 67.28571428571429
+ Fwd Segment Size Avg: 157.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 1
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0.18954896926879883
+ Bwd IAT Max: 0.11936688423156738
+================================================================
+Flow: ('13.74.129.1', 443, '192.168.1.59', 51193, 'TCP')
+ Dst Port: 51193
+ Packet Length Min: 0
+ Packet Length Max: 1815
+ Packet Length Mean: 320.375
+ Packet Length Std: 553.7868356822867
+ Packet Length Variance: 306679.859375
+ Fwd Packet Length Max: 1460
+ Fwd Packet Length Mean: 479.8666666666667
+ Bwd Packet Length Max: 1815
+ Bwd Packet Length Mean: 179.64705882352942
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 454.0690464697387
+ Total Length of Fwd Packet: 7198
+ Average Packet Size: 320.375
+ Fwd Segment Size Avg: 479.8666666666667
+ Bwd Segment Size Avg: 179.64705882352942
+ PSH Flag Count: 6
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 7198.0
+ Bwd IAT Total: 6.974464178085327
+ Bwd IAT Max: 6.449070930480957
+================================================================
+Flow: ('2620:1ec:c11::237', 443, '2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 51194, 'TCP')
+ Dst Port: 51194
+ Packet Length Min: 0
+ Packet Length Max: 1440
+ Packet Length Mean: 286.54285714285714
+ Packet Length Std: 505.2787260714705
+ Packet Length Variance: 255306.59102040812
+ Fwd Packet Length Max: 1440
+ Fwd Packet Length Mean: 446.2105263157895
+ Bwd Packet Length Max: 724
+ Bwd Packet Length Mean: 96.9375
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 221.58899700515366
+ Total Length of Fwd Packet: 8478
+ Average Packet Size: 286.54285714285714
+ Fwd Segment Size Avg: 446.2105263157895
+ Bwd Segment Size Avg: 96.9375
+ PSH Flag Count: 6
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 4239.0
+ Bwd IAT Total: 6.674236059188843
+ Bwd IAT Max: 6.527519941329956
+================================================================
+Flow: ('192.168.1.121', 37306, '239.255.255.250', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 51195, '20.189.173.10', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 16406
+ Packet Length Mean: 1420.0642201834862
+ Packet Length Std: 3899.839338669659
+ Packet Length Variance: 15208746.867435401
+ Fwd Packet Length Max: 16406
+ Fwd Packet Length Mean: 4434.060606060606
+ Bwd Packet Length Max: 1460
+ Bwd Packet Length Mean: 111.35526315789474
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 339.88719893313856
+ Total Length of Fwd Packet: 146324
+ Average Packet Size: 1420.0642201834862
+ Fwd Segment Size Avg: 4434.060606060606
+ Bwd Segment Size Avg: 111.35526315789474
+ PSH Flag Count: 21
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 7701.263157894737
+ Bwd IAT Total: 6.121485948562622
+ Bwd IAT Max: 3.7017760276794434
+================================================================
+Flow: ('192.168.1.173', 45125, '192.168.1.255', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 61397, '213.57.2.5', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 58107, '213.57.2.5', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 51715, '2a00:a041:e65d:5b00:ce19:a8ff:fed9:38df', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 56399, '2a00:a041:e65d:5b00:ce19:a8ff:fed9:38df', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0.7240829467773438
+ Bwd IAT Max: 0.7240829467773438
+================================================================
+Flow: ('192.168.1.59', 51715, '213.57.2.5', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('13.107.51.254', 443, '192.168.1.59', 51196, 'TCP')
+ Dst Port: 51196
+ Packet Length Min: 0
+ Packet Length Max: 1460
+ Packet Length Mean: 273.09375
+ Packet Length Std: 477.6698231633829
+ Packet Length Variance: 228168.4599609375
+ Fwd Packet Length Max: 1460
+ Fwd Packet Length Mean: 451.0
+ Bwd Packet Length Max: 476
+ Bwd Packet Length Mean: 71.46666666666667
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 136.1983194544713
+ Total Length of Fwd Packet: 7667
+ Average Packet Size: 273.09375
+ Fwd Segment Size Avg: 451.0
+ Bwd Segment Size Avg: 71.46666666666667
+ PSH Flag Count: 7
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0.6353111267089844
+ Bwd IAT Max: 0.15736794471740723
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 62790, '2a00:a041:e65d:5b00:ce19:a8ff:fed9:38df', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 56399, '213.57.2.5', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 62790, '213.57.2.5', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('2603:1020:600::1c4', 443, '2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 51197, 'TCP')
+ Dst Port: 51197
+ Packet Length Min: 0
+ Packet Length Max: 1440
+ Packet Length Mean: 297.6296296296296
+ Packet Length Std: 497.264602649345
+ Packet Length Variance: 247272.08504801098
+ Fwd Packet Length Max: 1440
+ Fwd Packet Length Mean: 577.4166666666666
+ Bwd Packet Length Max: 503
+ Bwd Packet Length Mean: 73.8
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 142.45897655114612
+ Total Length of Fwd Packet: 6929
+ Average Packet Size: 297.6296296296296
+ Fwd Segment Size Avg: 577.4166666666666
+ Bwd Segment Size Avg: 73.8
+ PSH Flag Count: 6
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0.35517406463623047
+ Bwd IAT Max: 0.07204294204711914
+================================================================
+Flow: ('192.168.1.59', 61832, '20.250.77.142', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 66
+ Packet Length Mean: 41.666666666666664
+ Packet Length Std: 29.601051032391098
+ Packet Length Variance: 876.2222222222222
+ Fwd Packet Length Max: 66
+ Fwd Packet Length Mean: 66.0
+ Bwd Packet Length Max: 59
+ Bwd Packet Length Mean: 29.5
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 29.5
+ Total Length of Fwd Packet: 66
+ Average Packet Size: 41.666666666666664
+ Fwd Segment Size Avg: 66.0
+ Bwd Segment Size Avg: 29.5
+ PSH Flag Count: 1
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0.05213594436645508
+ Bwd IAT Max: 0.05213594436645508
+================================================================
+Flow: ('192.168.1.173', 33127, '239.255.255.250', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.121', 33374, '239.255.255.250', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.173', 59828, '192.168.1.255', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.1', 1900, '239.255.255.250', 1900, 'UDP')
+ Dst Port: 1900
+ Packet Length Min: 276
+ Packet Length Max: 350
+ Packet Length Mean: 312.75
+ Packet Length Std: 32.59888801784503
+ Packet Length Variance: 1062.6875
+ Fwd Packet Length Max: 350
+ Fwd Packet Length Mean: 312.75
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 2502
+ Average Packet Size: 312.75
+ Fwd Segment Size Avg: 312.75
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.121', 54481, '192.168.1.255', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.173', 51361, '239.255.255.250', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.121', 54471, '239.255.255.250', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('152.199.19.160', 443, '192.168.1.59', 51198, 'TCP')
+ Dst Port: 51198
+ Packet Length Min: 0
+ Packet Length Max: 2067
+ Packet Length Mean: 766.6438356164383
+ Packet Length Std: 712.4655506185297
+ Packet Length Variance: 507607.1608181647
+ Fwd Packet Length Max: 1460
+ Fwd Packet Length Mean: 1167.6888888888889
+ Bwd Packet Length Max: 2067
+ Bwd Packet Length Mean: 122.10714285714286
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 410.6242059601555
+ Total Length of Fwd Packet: 52546
+ Average Packet Size: 766.6438356164383
+ Fwd Segment Size Avg: 1167.6888888888889
+ Bwd Segment Size Avg: 122.10714285714286
+ PSH Flag Count: 23
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0.253201961517334
+ Bwd IAT Max: 0.0657958984375
+================================================================
+Flow: ('192.168.1.173', 46884, '192.168.1.255', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 5353, '224.0.0.251', 5353, 'UDP')
+ Dst Port: 5353
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('fe80::98f3:1186:184a:78f0', 5353, 'ff02::fb', 5353, 'UDP')
+ Dst Port: 5353
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 63011, '213.57.22.5', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 57995, '213.57.22.5', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 56391, '213.57.22.5', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('2a00:a040:0:4:face:b00c:0:a7', 443, '2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 57727, 'UDP')
+ Dst Port: 57727
+ Packet Length Min: 34
+ Packet Length Max: 1232
+ Packet Length Mean: 437.1818181818182
+ Packet Length Std: 500.3035111867446
+ Packet Length Variance: 250303.60330578507
+ Fwd Packet Length Max: 1232
+ Fwd Packet Length Mean: 358.8333333333333
+ Bwd Packet Length Max: 1230
+ Bwd Packet Length Mean: 531.2
+ Bwd Packet Length Min: 34
+ Bwd Packet Length Std: 570.8258578585942
+ Total Length of Fwd Packet: 2153
+ Average Packet Size: 437.1818181818182
+ Fwd Segment Size Avg: 358.8333333333333
+ Bwd Segment Size Avg: 531.2
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0.010067939758300781
+ Bwd IAT Max: 0.006524085998535156
+================================================================
+Flow: ('192.168.1.121', 36887, '192.168.1.255', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.173', 59463, '239.255.255.250', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.121', 55942, '239.255.255.250', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 51199, '20.42.73.31', 443, 'TCP')
+ Dst Port: 443
+ Packet Length Min: 0
+ Packet Length Max: 7817
+ Packet Length Mean: 710.0
+ Packet Length Std: 1611.5910582807396
+ Packet Length Variance: 2597225.7391304346
+ Fwd Packet Length Max: 7817
+ Fwd Packet Length Mean: 852.7272727272727
+ Bwd Packet Length Max: 1460
+ Bwd Packet Length Mean: 579.1666666666666
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 647.1520729747805
+ Total Length of Fwd Packet: 9380
+ Average Packet Size: 710.0
+ Fwd Segment Size Avg: 852.7272727272727
+ Bwd Segment Size Avg: 579.1666666666666
+ PSH Flag Count: 4
+ URG Flag Count: 0
+ SYN Flag Count: 1
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0.2552189826965332
+ Bwd IAT Max: 0.1272590160369873
+================================================================
+Flow: ('192.168.1.173', 41892, '192.168.1.255', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 60515, '213.57.22.5', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 65235, '213.57.22.5', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 62970, '213.57.22.5', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 56899, '2a03:2880:f189:80:face:b00c:0:25de', 443, 'UDP')
+ Dst Port: 443
+ Packet Length Min: 34
+ Packet Length Max: 1232
+ Packet Length Mean: 540.3709677419355
+ Packet Length Std: 550.3657503489185
+ Packet Length Variance: 302902.45915712806
+ Fwd Packet Length Max: 1230
+ Fwd Packet Length Mean: 327.5344827586207
+ Bwd Packet Length Max: 1232
+ Bwd Packet Length Mean: 727.4090909090909
+ Bwd Packet Length Min: 39
+ Bwd Packet Length Std: 537.0597556412848
+ Total Length of Fwd Packet: 18997
+ Average Packet Size: 540.3709677419355
+ Fwd Segment Size Avg: 327.5344827586207
+ Bwd Segment Size Avg: 727.4090909090909
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 395.7708333333333
+ Bwd IAT Total: 6.0115439891815186
+ Bwd IAT Max: 5.30016303062439
+================================================================
+Flow: ('192.168.1.121', 36668, '192.168.1.255', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.173', 60146, '239.255.255.250', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 61998, '213.57.22.5', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 57235, '213.57.22.5', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 58462, '213.57.22.5', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 49261, '2a03:2880:f0a5:19:face:b00c:0:3', 443, 'UDP')
+ Dst Port: 443
+ Packet Length Min: 34
+ Packet Length Max: 1232
+ Packet Length Mean: 376.2307692307692
+ Packet Length Std: 479.55302166884104
+ Packet Length Variance: 229971.10059171595
+ Fwd Packet Length Max: 1230
+ Fwd Packet Length Mean: 448.5
+ Bwd Packet Length Max: 1232
+ Bwd Packet Length Mean: 314.2857142857143
+ Bwd Packet Length Min: 39
+ Bwd Packet Length Std: 395.8783053579234
+ Total Length of Fwd Packet: 2691
+ Average Packet Size: 376.2307692307692
+ Fwd Segment Size Avg: 448.5
+ Bwd Segment Size Avg: 314.2857142857143
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0.06528806686401367
+ Bwd IAT Max: 0.06473302841186523
+================================================================
+Flow: ('192.168.1.173', 59365, '192.168.1.255', 15600, 'UDP')
+ Dst Port: 15600
+ Packet Length Min: 35
+ Packet Length Max: 35
+ Packet Length Mean: 35.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 35
+ Fwd Packet Length Mean: 35.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0
+ Total Length of Fwd Packet: 35
+ Average Packet Size: 35.0
+ Fwd Segment Size Avg: 35.0
+ Bwd Segment Size Avg: 0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 52449, '213.57.22.5', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 63295, '213.57.22.5', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('192.168.1.59', 53842, '213.57.22.5', 53, 'UDP')
+ Dst Port: 53
+ Packet Length Min: 0
+ Packet Length Max: 0
+ Packet Length Mean: 0.0
+ Packet Length Std: 0.0
+ Packet Length Variance: 0.0
+ Fwd Packet Length Max: 0
+ Fwd Packet Length Mean: 0.0
+ Bwd Packet Length Max: 0
+ Bwd Packet Length Mean: 0.0
+ Bwd Packet Length Min: 0
+ Bwd Packet Length Std: 0.0
+ Total Length of Fwd Packet: 0
+ Average Packet Size: 0.0
+ Fwd Segment Size Avg: 0.0
+ Bwd Segment Size Avg: 0.0
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0
+ Bwd IAT Max: 0
+================================================================
+Flow: ('2a00:a040:0:4:face:b00c:0:a7', 443, '2a00:a041:e65d:5b00:9d64:73ac:2a86:f4a', 58400, 'UDP')
+ Dst Port: 58400
+ Packet Length Min: 30
+ Packet Length Max: 1232
+ Packet Length Mean: 466.44444444444446
+ Packet Length Std: 511.14806629685324
+ Packet Length Variance: 261272.3456790123
+ Fwd Packet Length Max: 1232
+ Fwd Packet Length Mean: 658.5531914893617
+ Bwd Packet Length Max: 1230
+ Bwd Packet Length Mean: 200.88235294117646
+ Bwd Packet Length Min: 34
+ Bwd Packet Length Std: 300.1366124936602
+ Total Length of Fwd Packet: 30952
+ Average Packet Size: 466.44444444444446
+ Fwd Segment Size Avg: 658.5531914893617
+ Bwd Segment Size Avg: 200.88235294117646
+ PSH Flag Count: 0
+ URG Flag Count: 0
+ SYN Flag Count: 0
+ Subflow Fwd Bytes: 0
+ Bwd IAT Total: 0.48366308212280273
+ Bwd IAT Max: 0.1453540325164795
+================================================================

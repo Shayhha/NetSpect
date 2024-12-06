@@ -1,9 +1,4 @@
-import sys
-import os
-import re
-import logging
-import socket
-import joblib
+import sys, os, re, logging, socket, joblib
 import numpy as np
 import pandas as pd
 from abc import ABC, abstractmethod
@@ -67,14 +62,13 @@ class Default_Packet(ABC):
         srcIp, srcPort, dstIp, dstPort, protocol = self.srcIp, self.srcPort, self.dstIp, self.dstPort, self.protocol
 
         #we create the flow tuple based on lexicographic order if it does not contain host ip address to ensure consistency
-        if srcIp in ipAddresses: #check if src ip in our ip addresses
-            return (srcIp, srcPort, dstIp, dstPort, protocol) #return the flow tuple of packet with host ip as source ip in tuple
+        if dstIp in ipAddresses: #check if dst ip is our ip address
+            return (srcIp, srcPort, dstIp, dstPort, protocol) #return the flow tuple of packet with host ip as dst ip in tuple
 
-        elif (dstIp in ipAddresses) or (srcIp > dstIp) or (srcIp == dstIp and srcPort > dstPort): #check if tuple dst ip is our ip address or if its not normalized 
-            return (dstIp, dstPort, srcIp, srcPort, protocol) #swap src and dst to ensure normalized order and that our ip is source ip
+        elif (srcIp in ipAddresses) or (srcIp > dstIp) or (srcIp == dstIp and srcPort > dstPort): #check if tuple src ip is our ip address or if its not normalized 
+            return (dstIp, dstPort, srcIp, srcPort, protocol) #return tuple in normalized order and also ensure that our ip is dst ip in flow
 
         return (srcIp, srcPort, dstIp, dstPort, protocol) #return the flow tuple of packet
-
 
 #--------------------------------------------Default_Packet-END----------------------------------------------#
 
@@ -314,19 +308,16 @@ def GetNetworkInterfaces():
 def GetIpAddresses():
     hostname = socket.gethostname() #represents host name 
     addresses = set() #represents set of all known ip addresses of host
-
     # get IPv4 addresses
     ipv4Addresses = socket.getaddrinfo(hostname, None, socket.AF_INET)
     for addr in ipv4Addresses:
         ip = addr[4][0] #get ipv4 address 
         addresses.add(ip) #appand address to our list
-
     # get IPv6 addresses
     ipv6Addresses = socket.getaddrinfo(hostname, None, socket.AF_INET6)
     for addr in ipv6Addresses:
         ip = addr[4][0] #get ipv6 address 
         addresses.add(ip) #appand address to our list
-
     return addresses
 
 #-----------------------------------------HELPER-FUNCTIONS-END-----------------------------------------#
@@ -356,7 +347,8 @@ def ScanNetwork(interface):
         print('Starting Network Scan...')
         ipAddresses = GetIpAddresses() #initialize our ip addresses list
         arpTable = InitArpTable() #initialize our static arp table
-        print(ipAddresses)
+
+        print(ipAddresses) #print host ip addresses
         #print arp table
         print('ARP Table:')
         for key, value in arpTable[0].items():
@@ -554,13 +546,13 @@ def ProcessFlows(flowDict):
             'Average Packet Size': np.mean(payloadLengths) if payloadLengths else 0,
             'Fwd Segment Size Avg': np.mean(fwdLengths) if fwdLengths else 0,
             'Bwd Segment Size Avg': np.mean(bwdLengths) if bwdLengths else 0,
-            'PSH Flag Count': pshFlags, # PSH and URG flag counts
+            'PSH Flag Count': pshFlags, # PSH, URG and SYN flag counts
             'URG Flag Count': urgFlags,
             'SYN Flag Count': synFlags,
             'Subflow Fwd Bytes': np.sum(fwdLengths) / subflowCount if subflowCount > 0 else 0, # subflow feature
             'Bwd IAT Total': np.sum(interArrivalTimes) if interArrivalTimes else 0, # inter-arrival time features (IAT)
-            'Bwd IAT Max': np.max(interArrivalTimes) if interArrivalTimes else 0,
-            #'Bwd IAT Mean': np.mean(interArrivalTimes) if interArrivalTimes else 0, #! irrelevent,
+            'Bwd IAT Max': np.max(interArrivalTimes) if interArrivalTimes else 0, 
+            #'Bwd IAT Mean': np.mean(interArrivalTimes) if interArrivalTimes else 0, #! irrelevent
             #'Bwd IAT Std': np.std(interArrivalTimes) if interArrivalTimes else 0, #! irrelevent
         }   
         featuresDict[flow] = flowParametes #save the dictionary of values into the featuresDict

@@ -510,45 +510,37 @@ def ProcessFlows(flowDict):
                 if packet.time:
                     bwdTimestamps.append(packet.time)
 
-        # Destination port
-        featuresDict[flow]['Dst Port'] = flow[3]
-
-        # Packet Length Features
-        featuresDict[flow]['Packet Length Min'] = min(payloadLengths) if payloadLengths else 0
-        featuresDict[flow]['Packet Length Max'] = max(payloadLengths) if payloadLengths else 0
-        featuresDict[flow]['Packet Length Mean'] = np.mean(payloadLengths) if payloadLengths else 0
-        featuresDict[flow]['Packet Length Std'] = np.std(payloadLengths) if payloadLengths else 0
-        featuresDict[flow]['Packet Length Variance'] = np.var(payloadLengths) if payloadLengths else 0
-
-        # FWD/BWD Packet Length Features
-        featuresDict[flow]['Fwd Packet Length Max'] = max(fwdLengths) if fwdLengths else 0
-        featuresDict[flow]['Fwd Packet Length Mean'] = np.mean(fwdLengths) if fwdLengths else 0
-        featuresDict[flow]['Bwd Packet Length Max'] = max(bwdLengths) if bwdLengths else 0
-        featuresDict[flow]['Bwd Packet Length Mean'] = np.mean(bwdLengths) if bwdLengths else 0
-        featuresDict[flow]['Bwd Packet Length Min'] = min(bwdLengths) if bwdLengths else 0
-        featuresDict[flow]['Bwd Packet Length Std'] = np.std(bwdLengths) if bwdLengths else 0
-
-        # Total and average size features
-        featuresDict[flow]['Total Length of Fwd Packet'] = sum(fwdLengths)
-        featuresDict[flow]['Average Packet Size'] =  np.mean(payloadLengths) if payloadLengths else 0
-        featuresDict[flow]['Fwd Segment Size Avg'] = np.mean(fwdLengths) if fwdLengths else 0 
-        featuresDict[flow]['Bwd Segment Size Avg'] = np.mean(bwdLengths) if bwdLengths else 0
-
-        # PSH and URG flag counts
-        featuresDict[flow]['PSH Flag Count'] = pshFlags
-        featuresDict[flow]['URG Flag Count'] = urgFlags
-        featuresDict[flow]['SYN Flag Count'] = synFlags
-
-        # Subflow Feature
-        featuresDict[flow]['Subflow Fwd Bytes'] = sum(fwdLengths) / subflowCount if subflowCount > 0 else 0
-
-        # Inter-Arrival Time Features (IAT)
+        # inter-arrival time features (IAT)
         interArrivalTimes = [t2 - t1 for t1, t2 in zip(bwdTimestamps[:-1], bwdTimestamps[1:])]
-        featuresDict[flow]['Bwd IAT Total'] = sum(interArrivalTimes) if interArrivalTimes else 0
-        featuresDict[flow]['Bwd IAT Max'] = max(interArrivalTimes) if interArrivalTimes else 0
-        # featuresDict[flow]['Bwd IAT Mean'] = np.mean(interArrivalTimes) if interArrivalTimes else 0 #! irrelevent
-        # featuresDict[flow]['Bwd IAT Std'] = np.std(interArrivalTimes) if interArrivalTimes else 0 #! irrelevent
 
+        # calculate the value dictionary for the current flow and insert it into the featuresDict
+        flowParametes = {
+            'Dst Port': flow[3],
+            'Packet Length Min': np.min(payloadLengths) if payloadLengths else 0, # packet length features
+            'Packet Length Max': np.max(payloadLengths) if payloadLengths else 0,
+            'Packet Length Mean': np.mean(payloadLengths) if payloadLengths else 0,
+            'Packet Length Std': np.std(payloadLengths) if payloadLengths else 0,
+            'Packet Length Variance': np.var(payloadLengths) if payloadLengths else 0,
+            'Fwd Packet Length Max': np.max(fwdLengths) if fwdLengths else 0, # FWD/BWD packet length features
+            'Fwd Packet Length Mean': np.mean(fwdLengths) if fwdLengths else 0,
+            'Bwd Packet Length Max': np.max(bwdLengths) if bwdLengths else 0,
+            'Bwd Packet Length Mean': np.mean(bwdLengths) if bwdLengths else 0,
+            'Bwd Packet Length Min': np.min(bwdLengths) if bwdLengths else 0,
+            'Bwd Packet Length Std': np.std(bwdLengths) if bwdLengths else 0,
+            'Total Length of Fwd Packet': np.sum(fwdLengths), # total and average size features
+            'Average Packet Size': np.mean(payloadLengths) if payloadLengths else 0,
+            'Fwd Segment Size Avg': np.mean(fwdLengths) if fwdLengths else 0,
+            'Bwd Segment Size Avg': np.mean(bwdLengths) if bwdLengths else 0,
+            'PSH Flag Count': pshFlags, # PSH and URG flag counts
+            'URG Flag Count': urgFlags,
+            'SYN Flag Count': synFlags,
+            'Subflow Fwd Bytes': np.sum(fwdLengths) / subflowCount if subflowCount > 0 else 0, # subflow feature
+            'Bwd IAT Total': np.sum(interArrivalTimes) if interArrivalTimes else 0, # inter-arrival time features (IAT)
+            'Bwd IAT Max': np.max(interArrivalTimes) if interArrivalTimes else 0,
+            #'Bwd IAT Mean': np.mean(interArrivalTimes) if interArrivalTimes else 0, #! irrelevent,
+            #'Bwd IAT Std': np.std(interArrivalTimes) if interArrivalTimes else 0, #! irrelevent
+        }   
+        featuresDict[flow] = flowParametes #save the dictionary of values into the featuresDict
     return dict(featuresDict)
 
 
@@ -575,8 +567,8 @@ def PredictPortDoS(flowDict):
     valuesDataframe = pd.DataFrame(ordered_values, columns=selectedColumns)
 
     # load the PortScanning and DoS model
-    modelPath = getModelPath('port_svm_model_2.pkl')
-    scalerPath = getModelPath('standard_scaler.pkl')
+    modelPath = getModelPath('dos_ddos_port_svm_model_2.pkl')
+    scalerPath = getModelPath('dos_ddos_port_scaler.pkl')
     loadedModel = joblib.load(modelPath) 
     loadedScaler = joblib.load(scalerPath) 
 
@@ -586,10 +578,12 @@ def PredictPortDoS(flowDict):
     predictions = loadedModel.predict(valuesDataframe)
 
     # check for attacks
-    # if 1 in predictions:
-    #     print('\n##### DoS ATTACK ######\n')
     if 1 in predictions:
-        print('\n##### PORT SCAN ATTACK ######\n')
+        print('\n##### DoS ATTACK ######\n')
+    if 2 in predictions:
+        print('\n##### DDoS ATTACK ######\n')
+    if 3 in predictions:
+        print('\n##### Port Scan ATTACK ######\n')
     else:
         print('No attack')
 
@@ -597,7 +591,9 @@ def PredictPortDoS(flowDict):
     keysDataframe['Result'] = predictions
     labelCounts = keysDataframe['Result'].value_counts()
     print(f'Results: {labelCounts}\n')
-    print(f'Num of source ips: {keysDataframe[keysDataframe["Result"] == 1]['Src IP'].unique()}')
+    print(f'Num of DoS ips: {keysDataframe[keysDataframe["Result"] == 1]["Src IP"].unique()}\n')
+    print(f'Num of DDoS ips: {keysDataframe[keysDataframe["Result"] == 2]["Src IP"].unique()}\n')
+    print(f'Num of Port Scan ips: {keysDataframe[keysDataframe["Result"] == 3]["Src IP"].unique()}\n')
     print(f'Number of detected attacks:\n {keysDataframe[keysDataframe["Result"] == 1]}\n')
     print('Predictions:\n', keysDataframe)
 

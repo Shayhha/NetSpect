@@ -1,19 +1,11 @@
-import sys
-import os
-import re
-import logging
-import joblib
-from abc import ABC, abstractmethod
-import scapy.all as scapy
-from scapy.all import sniff, wrpcap, rdpcap, get_if_list, srp, IP, IPv6, TCP, UDP, ICMP, ARP, Ether, Raw
-from scapy.layers.dns import DNS
-from scapy.layers.http import HTTP, HTTPRequest, HTTPResponse
-from scapy.layers.dhcp import DHCP, BOOTP
-from urllib.parse import unquote
-from queue import Queue
-from collections import defaultdict
+import sys, os, re, logging, socket, joblib
 import numpy as np
 import pandas as pd
+from abc import ABC, abstractmethod
+import scapy.all as scapy
+from scapy.all import sniff, get_if_list, srp, IP, IPv6, TCP, UDP, ICMP, ARP, Ether, Raw
+from scapy.layers.dns import DNS
+from collections import defaultdict
 
 # dynamically add the src directory to sys.path, this allows us to access all moduls in the project at run time
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
@@ -65,15 +57,18 @@ class Default_Packet(ABC):
 
     # method to return a normalized flow representation of a packet
     def GetFlowTuple(self):
+        global ipAddresses
         # extract flow tuple from packet
         srcIp, srcPort, dstIp, dstPort, protocol = self.srcIp, self.srcPort, self.dstIp, self.dstPort, self.protocol
-        
-        # check if tuple isn't normalized and sort it if necessary
-        if (srcIp > dstIp) or (srcIp == dstIp and srcPort > dstPort):
-            srcIp, srcPort, dstIp, dstPort = dstIp, dstPort, srcIp, srcPort #swap src and dst to ensure normalized order
+
+        #we create the flow tuple based on lexicographic order if it does not contain host ip address to ensure consistency
+        if dstIp in ipAddresses: #check if dst ip is our ip address
+            return (srcIp, srcPort, dstIp, dstPort, protocol) #return the flow tuple of packet with host ip as dst ip in tuple
+
+        elif (srcIp in ipAddresses) or (srcIp > dstIp) or (srcIp == dstIp and srcPort > dstPort): #check if tuple src ip is our ip address or if its not normalized 
+            return (dstIp, dstPort, srcIp, srcPort, protocol) #return tuple in normalized order and also ensure that our ip is dst ip in flow
 
         return (srcIp, srcPort, dstIp, dstPort, protocol) #return the flow tuple of packet
-
 
 #--------------------------------------------Default_Packet-END----------------------------------------------#
 
@@ -207,10 +202,11 @@ class ARP_Packet(Default_Packet):
 
 #---------------------------------------GLOBAL-PARAMETERS------------------------------------------#
 
+ipAddresses = set() #represents set of all known ip addresses of host
+arpTable = ({}, {}) #represents ARP table that is a tuple (arpTable, invArpTable) with mapping of IP->MAC and MAC->IP in each table in tuple
 flowDict = {} #represents dict of {(flow tuple) - [packet list]} related to port scanning and dos
 dnsDict = {} #represents dict of packets related to dns tunneling 
 arpDict = {} #represents dict of packets related to arp poisoning
-arpTable = ({}, {}) #represents ARP table that is a tuple (arpTable, invArpTable) with mapping of IP->MAC and MAC->IP in each table in tuple
 dnsCounter = 0 #global counter for dns packets
 arpCounter = 0 #global counter for arp packets
 tempcounter = 0
@@ -307,6 +303,23 @@ def GetNetworkInterfaces():
     matchedInterfaces = [interface for interface in interfaces if any(interface.startswith(name) for name in networkNames)] #we filter the list to retrieving ethernet and wifi interfaces
     return matchedInterfaces #return the matched interfaces as list'
 
+
+# function that returns all ipv4 and ipv6 addresses of host
+def GetIpAddresses():
+    hostname = socket.gethostname() #represents host name 
+    addresses = set() #represents set of all known ip addresses of host
+    # get IPv4 addresses
+    ipv4Addresses = socket.getaddrinfo(hostname, None, socket.AF_INET)
+    for addr in ipv4Addresses:
+        ip = addr[4][0] #get ipv4 address 
+        addresses.add(ip) #appand address to our list
+    # get IPv6 addresses
+    ipv6Addresses = socket.getaddrinfo(hostname, None, socket.AF_INET6)
+    for addr in ipv6Addresses:
+        ip = addr[4][0] #get ipv6 address 
+        addresses.add(ip) #appand address to our list
+    return addresses
+
 #-----------------------------------------HELPER-FUNCTIONS-END-----------------------------------------#
 
 #-------------------------------------------SNIFF-FUNCTIONS------------------------------------------#
@@ -328,10 +341,14 @@ def PacketCapture(packet):
 
 # function for initialing a packet scan on desired network interface
 def ScanNetwork(interface):
+    global ipAddresses
     global arpTable
     try:
         print('Starting Network Scan...')
+        ipAddresses = GetIpAddresses() #initialize our ip addresses list
         arpTable = InitArpTable() #initialize our static arp table
+
+        print(ipAddresses) #print host ip addresses
         #print arp table
         print('ARP Table:')
         for key, value in arpTable[0].items():
@@ -473,7 +490,6 @@ def ProcessFlows(flowDict):
     for flow, packetList in flowDict.items():
         fwdLengths = [] #represents length of forward packets in flow
         bwdLengths = [] #represents length of backward packets in flow
-        packetLengths = [] #represents length of all packets in flow
         payloadLengths = [] #represents payload length of all packets in flow
         bwdTimestamps = [] #represents timestamps of each packet in flow
         subflowLastPacketTS, subflowCount = -1, 0 #last timestamp of the subflow and the counter of subflows
@@ -481,8 +497,17 @@ def ProcessFlows(flowDict):
 
         # iterate over each packet in flow
         for packet in packetList:
-            packetLengths.append(packet.packetLen) #append packet length to list #!maybe irrelevent
             payloadLengths.append(packet.payloadLen) #append payload length to list
+
+            # check if packet is tcp and calculate its specific parameters
+            if isinstance(packet, TCP_Packet):
+                # check each flag in tcp and increment counter if set
+                if 'PSH' in packet.flagDict and packet.flagDict['PSH']:
+                    pshFlags += 1
+                if 'URG' in packet.flagDict and packet.flagDict['URG']:
+                    urgFlags += 1
+                if 'SYN' in packet.flagDict and packet.flagDict['SYN']:
+                    synFlags += 1
 
             if packet.srcIp == flow[0] and packet.srcPort == flow[1]: #means forward packet
                 fwdLengths.append(packet.payloadLen)
@@ -492,16 +517,6 @@ def ProcessFlows(flowDict):
                     subflowLastPacketTS = packet.time
                 if (packet.time - subflowLastPacketTS) > 1.0: #check that timestamp difference is greater than 1 sec
                     subflowCount += 1
-
-                # check if packet is tcp and calculate its specific parameters
-                if isinstance(packet, TCP_Packet):
-                    # check each flag in tcp and increment counter if set
-                    if 'PSH' in packet.flagDict and packet.flagDict['PSH']:
-                        pshFlags += 1
-                    if 'URG' in packet.flagDict and packet.flagDict['URG']:
-                        urgFlags += 1
-                    if 'SYN' in packet.flagDict and packet.flagDict['SYN']:
-                        synFlags += 1
 
             else: #else means backward packets
                 bwdLengths.append(packet.payloadLen)
@@ -531,13 +546,13 @@ def ProcessFlows(flowDict):
             'Average Packet Size': np.mean(payloadLengths) if payloadLengths else 0,
             'Fwd Segment Size Avg': np.mean(fwdLengths) if fwdLengths else 0,
             'Bwd Segment Size Avg': np.mean(bwdLengths) if bwdLengths else 0,
-            'PSH Flag Count': pshFlags, # PSH and URG flag counts
+            'PSH Flag Count': pshFlags, # PSH, URG and SYN flag counts
             'URG Flag Count': urgFlags,
             'SYN Flag Count': synFlags,
             'Subflow Fwd Bytes': np.sum(fwdLengths) / subflowCount if subflowCount > 0 else 0, # subflow feature
             'Bwd IAT Total': np.sum(interArrivalTimes) if interArrivalTimes else 0, # inter-arrival time features (IAT)
-            'Bwd IAT Max': np.max(interArrivalTimes) if interArrivalTimes else 0,
-            #'Bwd IAT Mean': np.mean(interArrivalTimes) if interArrivalTimes else 0, #! irrelevent,
+            'Bwd IAT Max': np.max(interArrivalTimes) if interArrivalTimes else 0, 
+            #'Bwd IAT Mean': np.mean(interArrivalTimes) if interArrivalTimes else 0, #! irrelevent
             #'Bwd IAT Std': np.std(interArrivalTimes) if interArrivalTimes else 0, #! irrelevent
         }   
         featuresDict[flow] = flowParametes #save the dictionary of values into the featuresDict
@@ -567,8 +582,8 @@ def PredictPortDoS(flowDict):
     valuesDataframe = pd.DataFrame(ordered_values, columns=selectedColumns)
 
     # load the PortScanning and DoS model
-    modelPath = getModelPath('dos_ddos_port_svm_model_2.pkl')
-    scalerPath = getModelPath('dos_ddos_port_scaler.pkl')
+    modelPath = getModelPath('zeros_dos_svm_model_2.pkl')
+    scalerPath = getModelPath('zeros_dos_scaler.pkl')
     loadedModel = joblib.load(modelPath) 
     loadedScaler = joblib.load(scalerPath) 
 
@@ -580,10 +595,10 @@ def PredictPortDoS(flowDict):
     # check for attacks
     if 1 in predictions:
         print('\n##### DoS ATTACK ######\n')
-    if 2 in predictions:
-        print('\n##### DDoS ATTACK ######\n')
-    if 3 in predictions:
-        print('\n##### Port Scan ATTACK ######\n')
+    # if 2 in predictions:
+    #     print('\n##### DDoS ATTACK ######\n')
+    # if 3 in predictions:
+    #     print('\n##### Port Scan ATTACK ######\n')
     else:
         print('No attack')
 
@@ -592,8 +607,8 @@ def PredictPortDoS(flowDict):
     labelCounts = keysDataframe['Result'].value_counts()
     print(f'Results: {labelCounts}\n')
     print(f'Num of DoS ips: {keysDataframe[keysDataframe["Result"] == 1]["Src IP"].unique()}\n')
-    print(f'Num of DDoS ips: {keysDataframe[keysDataframe["Result"] == 2]["Src IP"].unique()}\n')
-    print(f'Num of Port Scan ips: {keysDataframe[keysDataframe["Result"] == 3]["Src IP"].unique()}\n')
+    # print(f'Num of DDoS ips: {keysDataframe[keysDataframe["Result"] == 2]["Src IP"].unique()}\n')
+    # print(f'Num of Port Scan ips: {keysDataframe[keysDataframe["Result"] == 3]["Src IP"].unique()}\n')
     print(f'Number of detected attacks:\n {keysDataframe[keysDataframe["Result"] == 1]}\n')
     print('Predictions:\n', keysDataframe)
 

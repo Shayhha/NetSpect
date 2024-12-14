@@ -1,4 +1,4 @@
-import sys, os, re, logging, socket, joblib
+import sys, os, re, logging, socket, joblib, time
 import numpy as np
 import pandas as pd
 from abc import ABC, abstractmethod
@@ -59,16 +59,16 @@ class Default_Packet(ABC):
     def GetFlowTuple(self):
         global ipAddresses
         # extract flow tuple from packet
-        srcIp, srcPort, dstIp, dstPort, protocol = self.srcIp, self.srcPort, self.dstIp, self.dstPort, self.protocol
+        srcIp, dstIp, protocol = self.srcIp, self.dstIp, self.protocol
 
         #we create the flow tuple based on lexicographic order if it does not contain host ip address to ensure consistency
         if dstIp in ipAddresses: #check if dst ip is our ip address
-            return (srcIp, srcPort, dstIp, dstPort, protocol) #return the flow tuple of packet with host ip as dst ip in tuple
+            return (srcIp, dstIp, protocol) #return the flow tuple of packet with host ip as dst ip in tuple
 
-        elif (srcIp in ipAddresses) or (srcIp > dstIp) or (srcIp == dstIp and srcPort > dstPort): #check if tuple src ip is our ip address or if its not normalized 
-            return (dstIp, dstPort, srcIp, srcPort, protocol) #return tuple in normalized order and also ensure that our ip is dst ip in flow
+        elif (srcIp in ipAddresses) or (srcIp > dstIp): #check if tuple src ip is our ip address or if its not normalized 
+            return (dstIp, srcIp, protocol) #return tuple in normalized order and also ensure that our ip is dst ip in flow
 
-        return (srcIp, srcPort, dstIp, dstPort, protocol) #return the flow tuple of packet
+        return (srcIp, dstIp, protocol) #return the flow tuple of packet
 
 #--------------------------------------------Default_Packet-END----------------------------------------------#
 
@@ -209,7 +209,18 @@ dnsDict = {} #represents dict of packets related to dns tunneling
 arpDict = {} #represents dict of packets related to arp poisoning
 dnsCounter = 0 #global counter for dns packets
 arpCounter = 0 #global counter for arp packets
-tempcounter = 0
+tempcounter = 0 #global counter for tcp and udp packets
+startTime = None #global variable to capture the start time of the scan
+timeoutTime = 40 #global variable that indicates when to stop the scan
+threshold = 10000 #global variable the indicates when to stop scanning tcp and udp packets
+selectedColumns = [
+    'Number of Ports', 'Average Packet Size', 'Packet Length Min', 'Packet Length Max', 
+    'Packet Length Mean', 'Packet Length Std', 'Packet Length Variance', 'Total Length of Fwd Packet', 
+    'Fwd Packet Length Max', 'Fwd Packet Length Mean', 'Bwd Packet Length Max', 'Bwd Packet Length Mean', 
+    'Bwd Packet Length Min', 'Bwd Packet Length Std', 'Fwd Segment Size Avg', 'Bwd Segment Size Avg', 
+    'Subflow Fwd Bytes', 'SYN Flag Count', 'ACK Flag Count', 'RST Flag Count', 'Flow Duration', 
+    'Packets Per Second', 'IAT Total', 'IAT Max', 'IAT Mean', 'IAT Std'
+]
 
 #--------------------------------------GLOBAL-PARAMETERS-END---------------------------------------#
 
@@ -326,7 +337,8 @@ def GetIpAddresses():
 
 # function for checking when to stop sniffing packets, stop condition
 def StopScan(packet):
-    return True if tempcounter >= 10000 else False
+    global start_time, timeoutTime, threshold
+    return True if ( ((time.time() - start_time) > timeoutTime) or (tempcounter >= threshold) ) else False
 
 
 # function for capturing specific packets for later analysis
@@ -354,6 +366,9 @@ def ScanNetwork(interface):
         for key, value in arpTable[0].items():
             print(f'IP: {key} --> MAC: {value}')
         print('============================\n')
+
+        global start_time #starting a timer to determin when to stop the sniffer
+        start_time = time.time()
 
         #we call sniff with desired interface 
         sniff(iface=interface, prn=PacketCapture, stop_filter=StopScan, store=0)
@@ -488,28 +503,45 @@ def ProcessFlows(flowDict):
 
     # iterate over our flow dict and calculate features
     for flow, packetList in flowDict.items():
+        numOfPorts = 0 #represents number of unique destination ports we found in given flow
+        uniquePorts = set() #represents the unique destination ports in flow
         fwdLengths = [] #represents length of forward packets in flow
         bwdLengths = [] #represents length of backward packets in flow
         payloadLengths = [] #represents payload length of all packets in flow
-        bwdTimestamps = [] #represents timestamps of each packet in flow
+        timestamps = [] #represents timestamps of each packet in flow
         subflowLastPacketTS, subflowCount = -1, 0 #last timestamp of the subflow and the counter of subflows
-        pshFlags, urgFlags, synFlags = 0, 0, 0 #counter for tcp flags
+        synFlags, ackFlags, rstFlags = 0, 0, 0 #counter for tcp flags
+        firstSeenPacket, lastSeenPacket = 0, 0 #represnts timestemps for first and last packets
 
         # iterate over each packet in flow
         for packet in packetList:
             payloadLengths.append(packet.payloadLen) #append payload length to list
 
+            # append ech packet timestemp to out list for IAT
+            if packet.time:
+                timestamps.append(packet.time)
+
+            # check for unique destination ports and add it if new port
+            if packet.dstPort not in uniquePorts:
+                uniquePorts.add(packet.dstPort) #add the port to the set
+                numOfPorts += 1 #increment the counter for unique ports
+            
+            # for calculating flow duration
+            if firstSeenPacket == 0:
+                firstSeenPacket = packet.time
+            lastSeenPacket = packet.time
+
             # check if packet is tcp and calculate its specific parameters
             if isinstance(packet, TCP_Packet):
                 # check each flag in tcp and increment counter if set
-                if 'PSH' in packet.flagDict and packet.flagDict['PSH']:
-                    pshFlags += 1
-                if 'URG' in packet.flagDict and packet.flagDict['URG']:
-                    urgFlags += 1
                 if 'SYN' in packet.flagDict and packet.flagDict['SYN']:
                     synFlags += 1
+                if 'ACK' in packet.flagDict and packet.flagDict['ACK']:
+                    ackFlags += 1
+                if 'RST' in packet.flagDict and packet.flagDict['RST']:
+                    rstFlags += 1
 
-            if packet.srcIp == flow[0] and packet.srcPort == flow[1]: #means forward packet
+            if packet.srcIp == flow[0]: #means forward packet
                 fwdLengths.append(packet.payloadLen)
                 
                 # count subflows in forward packets using counters and timestamps
@@ -521,39 +553,39 @@ def ProcessFlows(flowDict):
             else: #else means backward packets
                 bwdLengths.append(packet.payloadLen)
 
-                # add backward packet timestamp 
-                if packet.time:
-                    bwdTimestamps.append(packet.time)
 
-        # inter-arrival time features (IAT)
-        interArrivalTimes = [t2 - t1 for t1, t2 in zip(bwdTimestamps[:-1], bwdTimestamps[1:])]
+        # inter-arrival time features (IAT) and flow duration
+        interArrivalTimes = [t2 - t1 for t1, t2 in zip(timestamps[:-1], timestamps[1:])]
+        flowDuration = lastSeenPacket - firstSeenPacket
 
         # calculate the value dictionary for the current flow and insert it into the featuresDict
         flowParametes = {
-            'Dst Port': flow[3],
+            'Number of Ports': numOfPorts,
+            'Average Packet Size': np.mean(payloadLengths) if payloadLengths else 0,
             'Packet Length Min': np.min(payloadLengths) if payloadLengths else 0, # packet length features
             'Packet Length Max': np.max(payloadLengths) if payloadLengths else 0,
             'Packet Length Mean': np.mean(payloadLengths) if payloadLengths else 0,
             'Packet Length Std': np.std(payloadLengths) if payloadLengths else 0,
             'Packet Length Variance': np.var(payloadLengths) if payloadLengths else 0,
+            'Total Length of Fwd Packet': np.sum(fwdLengths), # total and average size features
             'Fwd Packet Length Max': np.max(fwdLengths) if fwdLengths else 0, # FWD/BWD packet length features
             'Fwd Packet Length Mean': np.mean(fwdLengths) if fwdLengths else 0,
             'Bwd Packet Length Max': np.max(bwdLengths) if bwdLengths else 0,
             'Bwd Packet Length Mean': np.mean(bwdLengths) if bwdLengths else 0,
             'Bwd Packet Length Min': np.min(bwdLengths) if bwdLengths else 0,
             'Bwd Packet Length Std': np.std(bwdLengths) if bwdLengths else 0,
-            'Total Length of Fwd Packet': np.sum(fwdLengths), # total and average size features
-            'Average Packet Size': np.mean(payloadLengths) if payloadLengths else 0,
             'Fwd Segment Size Avg': np.mean(fwdLengths) if fwdLengths else 0,
             'Bwd Segment Size Avg': np.mean(bwdLengths) if bwdLengths else 0,
-            'PSH Flag Count': pshFlags, # PSH, URG and SYN flag counts
-            'URG Flag Count': urgFlags,
-            'SYN Flag Count': synFlags,
             'Subflow Fwd Bytes': np.sum(fwdLengths) / subflowCount if subflowCount > 0 else 0, # subflow feature
-            'Bwd IAT Total': np.sum(interArrivalTimes) if interArrivalTimes else 0, # inter-arrival time features (IAT)
-            'Bwd IAT Max': np.max(interArrivalTimes) if interArrivalTimes else 0, 
-            #'Bwd IAT Mean': np.mean(interArrivalTimes) if interArrivalTimes else 0, #! irrelevent
-            #'Bwd IAT Std': np.std(interArrivalTimes) if interArrivalTimes else 0, #! irrelevent
+            'SYN Flag Count': synFlags, # SYN, ACK and RST flag counts
+            'ACK Flag Count': ackFlags,
+            'RST Flag Count': rstFlags,
+            'Flow Duration': flowDuration, # flow duration and packets per second in flow
+            'Packets Per Second': len(packetList) / flowDuration if flowDuration > 0 else 0,
+            'IAT Total': np.sum(interArrivalTimes) if interArrivalTimes else 0, # inter-arrival time features (IAT)
+            'IAT Max': np.max(interArrivalTimes) if interArrivalTimes else 0, 
+            'IAT Mean': np.mean(interArrivalTimes) if interArrivalTimes else 0,
+            'IAT Std': np.std(interArrivalTimes) if interArrivalTimes else 0
         }   
         featuresDict[flow] = flowParametes #save the dictionary of values into the featuresDict
     return dict(featuresDict)
@@ -561,25 +593,18 @@ def ProcessFlows(flowDict):
 
 # function for predicting PortScanning and DoS attacks given flow dictionary
 def PredictPortDoS(flowDict):
-    selectedColumns = [
-        'Dst Port', 'Total Length of Fwd Packet', 'Fwd Packet Length Max',
-        'Fwd Packet Length Mean', 'Bwd Packet Length Max', 'Bwd Packet Length Min',
-        'Bwd Packet Length Mean', 'Bwd Packet Length Std', 'Bwd IAT Total',
-        'Bwd IAT Max', 'Packet Length Min', 'Packet Length Max', 'Packet Length Mean',
-        'Packet Length Std', 'Packet Length Variance', 'SYN Flag Count', 'PSH Flag Count', 'URG Flag Count',
-        'Average Packet Size', 'Fwd Segment Size Avg', 'Bwd Segment Size Avg', 'Subflow Fwd Bytes'
-    ]
+    global selectedColumns
 
     # extract keys and values
     keys = list(flowDict.keys())
     values = list(flowDict.values())
-    ordered_values = [[value_dict[col] for col in selectedColumns] for value_dict in values] #reorder the values in the same order that the models were trained on
+    orderedValues = [[valueDict[col] for col in selectedColumns] for valueDict in values] #reorder the values in the same order that the models were trained on
     
     # create DataFrame for the keys (5-tuple)
-    keysDataframe = pd.DataFrame(keys, columns=['Src IP', 'Src Port', 'Dest IP', 'Dest Port', 'Protocol'])
+    keysDataframe = pd.DataFrame(keys, columns=['Src IP', 'Dst IP', 'Protocol'])
 
     # create DataFrame for the values (dict), columns ensures that the order of the input matches the order of the classifier
-    valuesDataframe = pd.DataFrame(ordered_values, columns=selectedColumns)
+    valuesDataframe = pd.DataFrame(orderedValues, columns=selectedColumns)
 
     # load the PortScanning and DoS model
     modelPath = getModelPath('zeros_dos_svm_model_2.pkl')
@@ -596,8 +621,6 @@ def PredictPortDoS(flowDict):
     if 1 in predictions:
         print('\n##### DoS ATTACK ######\n')
     # if 2 in predictions:
-    #     print('\n##### DDoS ATTACK ######\n')
-    # if 3 in predictions:
     #     print('\n##### Port Scan ATTACK ######\n')
     else:
         print('No attack')
@@ -607,13 +630,32 @@ def PredictPortDoS(flowDict):
     labelCounts = keysDataframe['Result'].value_counts()
     print(f'Results: {labelCounts}\n')
     print(f'Num of DoS ips: {keysDataframe[keysDataframe["Result"] == 1]["Src IP"].unique()}\n')
-    # print(f'Num of DDoS ips: {keysDataframe[keysDataframe["Result"] == 2]["Src IP"].unique()}\n')
     # print(f'Num of Port Scan ips: {keysDataframe[keysDataframe["Result"] == 3]["Src IP"].unique()}\n')
     print(f'Number of detected attacks:\n {keysDataframe[keysDataframe["Result"] == 1]}\n')
     print('Predictions:\n', keysDataframe)
 
 #------------------------------------------PORT-SCANNING-DoS-END-------------------------------------------#
 
+#------------------------------------------SAVING-COLLECTED-DATA-------------------------------------------#
+
+def SaveCollectedData(flows):
+    global selectedColumns
+
+    # create a dataframe from the collected data
+    values = list(flows.values())
+    ordered_values = [[valueDict[col] for col in selectedColumns] for valueDict in values] #reorder the values in the same order that the models were trained on
+    valuesDataframe = pd.DataFrame(ordered_values, columns=selectedColumns)
+
+    if not os.path.isfile('test_dataset.csv'):
+        valuesDataframe.to_csv('test_dataset.csv', index=False) #save the new data if needed
+    else:
+        # open an existing file and merge the collected data to it
+        readBenignCsv = pd.read_csv('test_dataset.csv')
+        mergedDataframe = pd.concat([readBenignCsv , valuesDataframe], axis=0)
+        mergedDataframe.to_csv('test_dataset.csv', index=False)
+        print(f'Found {valuesDataframe.shape[0]} rows.')
+
+#------------------------------------------SAVING-COLLECTED-DATA-END-------------------------------------------#
 
 
 if __name__ == '__main__':
@@ -636,5 +678,8 @@ if __name__ == '__main__':
                 file.write(f' {feature}: {value}\n')
             file.write('================================================================\n')
 
+    # save the collected data
+    # SaveCollectedData(flows)
+
     #call predict function to determine if attack is present
-    PredictPortDoS(flows)
+    # PredictPortDoS(flows)

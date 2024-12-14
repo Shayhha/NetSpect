@@ -1,4 +1,4 @@
-import sys, os, re, logging, socket, joblib
+import sys, os, re, logging, socket, joblib, time
 import numpy as np
 import pandas as pd
 from abc import ABC, abstractmethod
@@ -209,7 +209,18 @@ dnsDict = {} #represents dict of packets related to dns tunneling
 arpDict = {} #represents dict of packets related to arp poisoning
 dnsCounter = 0 #global counter for dns packets
 arpCounter = 0 #global counter for arp packets
-tempcounter = 0
+tempcounter = 0 #global counter for tcp and udp packets
+startTime = None #global variable to capture the start time of the scan
+timeoutTime = 40 #global variable that indicates when to stop the scan
+threshold = 10000 #global variable the indicates when to stop scanning tcp and udp packets
+selectedColumns = [
+    'Number of Ports', 'Average Packet Size', 'Packet Length Min', 'Packet Length Max', 
+    'Packet Length Mean', 'Packet Length Std', 'Packet Length Variance', 'Total Length of Fwd Packet', 
+    'Fwd Packet Length Max', 'Fwd Packet Length Mean', 'Bwd Packet Length Max', 'Bwd Packet Length Mean', 
+    'Bwd Packet Length Min', 'Bwd Packet Length Std', 'Fwd Segment Size Avg', 'Bwd Segment Size Avg', 
+    'Subflow Fwd Bytes', 'SYN Flag Count', 'ACK Flag Count', 'RST Flag Count', 'Flow Duration', 
+    'Packets Per Second', 'IAT Total', 'IAT Max', 'IAT Mean', 'IAT Std'
+]
 
 #--------------------------------------GLOBAL-PARAMETERS-END---------------------------------------#
 
@@ -326,7 +337,8 @@ def GetIpAddresses():
 
 # function for checking when to stop sniffing packets, stop condition
 def StopScan(packet):
-    return True if tempcounter >= 10000 else False
+    global start_time, timeoutTime, threshold
+    return True if ( ((time.time() - start_time) > timeoutTime) or (tempcounter >= threshold) ) else False
 
 
 # function for capturing specific packets for later analysis
@@ -354,6 +366,9 @@ def ScanNetwork(interface):
         for key, value in arpTable[0].items():
             print(f'IP: {key} --> MAC: {value}')
         print('============================\n')
+
+        global start_time #starting a timer to determin when to stop the sniffer
+        start_time = time.time()
 
         #we call sniff with desired interface 
         sniff(iface=interface, prn=PacketCapture, stop_filter=StopScan, store=0)
@@ -578,14 +593,7 @@ def ProcessFlows(flowDict):
 
 # function for predicting PortScanning and DoS attacks given flow dictionary
 def PredictPortDoS(flowDict):
-    selectedColumns = [
-        'Number of Ports', 'Average Packet Size', 'Packet Length Min', 'Packet Length Max', 
-        'Packet Length Mean', 'Packet Length Std', 'Packet Length Variance', 'Total Length of Fwd Packet', 
-        'Fwd Packet Length Max', 'Fwd Packet Length Mean', 'Bwd Packet Length Max', 'Bwd Packet Length Mean', 
-        'Bwd Packet Length Min', 'Bwd Packet Length Std', 'Fwd Segment Size Avg', 'Bwd Segment Size Avg', 
-        'Subflow Fwd Bytes', 'SYN Flag Count', 'ACK Flag Count', 'RST Flag Count', 'Flow Duration', 
-        'Packets Per Second', 'IAT Total', 'IAT Max', 'IAT Mean', 'IAT Std'
-    ]
+    global selectedColumns
 
     # extract keys and values
     keys = list(flowDict.keys())
@@ -628,6 +636,26 @@ def PredictPortDoS(flowDict):
 
 #------------------------------------------PORT-SCANNING-DoS-END-------------------------------------------#
 
+#------------------------------------------SAVING-COLLECTED-DATA-------------------------------------------#
+
+def SaveCollectedData(flows):
+    global selectedColumns
+
+    # create a dataframe from the collected data
+    values = list(flows.values())
+    ordered_values = [[valueDict[col] for col in selectedColumns] for valueDict in values] #reorder the values in the same order that the models were trained on
+    valuesDataframe = pd.DataFrame(ordered_values, columns=selectedColumns)
+
+    if not os.path.isfile('test_dataset.csv'):
+        valuesDataframe.to_csv('test_dataset.csv', index=False) #save the new data if needed
+    else:
+        # open an existing file and merge the collected data to it
+        readBenignCsv = pd.read_csv('test_dataset.csv')
+        mergedDataframe = pd.concat([readBenignCsv , valuesDataframe], axis=0)
+        mergedDataframe.to_csv('test_dataset.csv', index=False)
+        print(f'Found {valuesDataframe.shape[0]} rows.')
+
+#------------------------------------------SAVING-COLLECTED-DATA-END-------------------------------------------#
 
 
 if __name__ == '__main__':
@@ -649,6 +677,9 @@ if __name__ == '__main__':
             for feature, value in features.items():
                 file.write(f' {feature}: {value}\n')
             file.write('================================================================\n')
+
+    # save the collected data
+    # SaveCollectedData(flows)
 
     #call predict function to determine if attack is present
     # PredictPortDoS(flows)

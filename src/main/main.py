@@ -358,14 +358,14 @@ def ScanNetwork(interface):
     try:
         print('Starting Network Scan...')
         ipAddresses = GetIpAddresses() #initialize our ip addresses list
-        arpTable = InitArpTable() #initialize our static arp table
+        # arpTable = InitArpTable() #initialize our static arp table
 
-        print(ipAddresses) #print host ip addresses
-        #print arp table
-        print('ARP Table:')
-        for key, value in arpTable[0].items():
-            print(f'IP: {key} --> MAC: {value}')
-        print('============================\n')
+        # print(ipAddresses) #print host ip addresses
+        # #print arp table
+        # print('ARP Table:')
+        # for key, value in arpTable[0].items():
+        #     print(f'IP: {key} --> MAC: {value}')
+        # print('============================\n')
 
         global start_time #starting a timer to determin when to stop the sniffer
         start_time = time.time()
@@ -517,19 +517,14 @@ def ProcessFlows(flowDict):
         for packet in packetList:
             payloadLengths.append(packet.payloadLen) #append payload length to list
 
-            # append ech packet timestemp to out list for IAT
+            # append each packet timestemp to out list for IAT
             if packet.time:
                 timestamps.append(packet.time)
-
-            # check for unique destination ports and add it if new port
-            if packet.dstPort not in uniquePorts:
-                uniquePorts.add(packet.dstPort) #add the port to the set
-                numOfPorts += 1 #increment the counter for unique ports
             
-            # for calculating flow duration
-            if firstSeenPacket == 0:
-                firstSeenPacket = packet.time
-            lastSeenPacket = packet.time
+                # for calculating flow duration
+                if firstSeenPacket == 0:
+                    firstSeenPacket = packet.time
+                lastSeenPacket = packet.time
 
             # check if packet is tcp and calculate its specific parameters
             if isinstance(packet, TCP_Packet):
@@ -543,6 +538,11 @@ def ProcessFlows(flowDict):
 
             if packet.srcIp == flow[0]: #means forward packet
                 fwdLengths.append(packet.payloadLen)
+
+                # check for unique destination ports and add it if new port
+                if packet.dstPort not in uniquePorts:
+                    uniquePorts.add(packet.dstPort) #add the port to the set
+                    numOfPorts += 1 #increment the counter for unique ports
                 
                 # count subflows in forward packets using counters and timestamps
                 if subflowLastPacketTS == -1:
@@ -671,12 +671,12 @@ if __name__ == '__main__':
     flows = ProcessFlows(flowDict)
 
     # # write result of flows captured in txt file
-    # with open('detectedFlows.txt', 'w') as file:
-    #     for flow, features in flows.items():
-    #         file.write(f'Flow: {flow}\n')
-    #         for feature, value in features.items():
-    #             file.write(f' {feature}: {value}\n')
-    #         file.write('================================================================\n')
+    with open('detectedFlows.txt', 'w') as file:
+        for flow, features in flows.items():
+            file.write(f'Flow: {flow}\n')
+            for feature, value in features.items():
+                file.write(f' {feature}: {value}\n')
+            file.write('================================================================\n')
 
     # save the collected data
     SaveCollectedData(flows)

@@ -317,18 +317,13 @@ def GetNetworkInterfaces():
 
 # function that returns all ipv4 and ipv6 addresses of host
 def GetIpAddresses():
-    hostname = socket.gethostname() #represents host name 
+    hostname = socket.gethostname() #represents host name
+    hostAddresses = socket.getaddrinfo(hostname, None, socket.AF_UNSPEC) #represents host's known network addresses
     addresses = set() #represents set of all known ip addresses of host
-    # get IPv4 addresses
-    ipv4Addresses = socket.getaddrinfo(hostname, None, socket.AF_INET)
-    for addr in ipv4Addresses:
-        ip = addr[4][0] #get ipv4 address 
-        addresses.add(ip) #appand address to our list
-    # get IPv6 addresses
-    ipv6Addresses = socket.getaddrinfo(hostname, None, socket.AF_INET6)
-    for addr in ipv6Addresses:
-        ip = addr[4][0] #get ipv6 address 
-        addresses.add(ip) #appand address to our list
+    # iterate over host addresses list and find all ipv4 and ipv6 addresses
+    for address in hostAddresses:
+        ip = address[4][0] #get ipv4/ipv6 address 
+        addresses.add(ip) #appand address to our set
     return addresses
 
 #-----------------------------------------HELPER-FUNCTIONS-END-----------------------------------------#

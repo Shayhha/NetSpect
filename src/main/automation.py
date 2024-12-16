@@ -9,7 +9,7 @@ while True:
     try:
         # Run the script
         print(f'[{time.strftime("%d-%m-%Y %H:%M:%S", time.gmtime(time.time()))}]: Running...')
-        subprocess.run(['python', scriptToRun], check=True) #for Windows: ['python', script_to_run]
+        subprocess.run(['python', scriptToRun], check=True) #for Windows: ['python', scriptToRun]   MacOS: ['sudo', 'python3', scriptToRun]
     except subprocess.CalledProcessError as e:
         print(f'An error occurred while running the script: {e}')
         break

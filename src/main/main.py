@@ -630,9 +630,9 @@ def PredictPortDoS(flowDict):
     print('Predictions:\n', keysDataframe)
 
     # temporary code for saving false positive if the occure during scans
-    import shutil
-    if len(keysDataframe[keysDataframe["Result"] == 1]["Src IP"].unique()) != 0:
-        shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_{"detectedFlows.txt"}')
+    # import shutil
+    # if len(keysDataframe[keysDataframe["Result"] == 1]["Src IP"].unique()) != 0:
+    #     shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_{"detectedFlows.txt"}')
     
 
 #------------------------------------------PORT-SCANNING-DoS-END-------------------------------------------#
@@ -672,15 +672,15 @@ if __name__ == '__main__':
     flows = ProcessFlows(flowDict)
 
     # # write result of flows captured in txt file
-    with open('detectedFlows.txt', 'w') as file:
-        for flow, features in flows.items():
-            file.write(f'Flow: {flow}\n')
-            for feature, value in features.items():
-                file.write(f' {feature}: {value}\n')
-            file.write('================================================================\n')
+    # with open('detectedFlows.txt', 'w') as file:
+    #     for flow, features in flows.items():
+    #         file.write(f'Flow: {flow}\n')
+    #         for feature, value in features.items():
+    #             file.write(f' {feature}: {value}\n')
+    #         file.write('================================================================\n')
 
     # save the collected data
     SaveCollectedData(flows)
 
     #call predict function to determine if attack is present
-    PredictPortDoS(flows)
+    # PredictPortDoS(flows)

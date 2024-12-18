@@ -602,8 +602,8 @@ def PredictPortDoS(flowDict):
     valuesDataframe = pd.DataFrame(orderedValues, columns=selectedColumns)
 
     # load the PortScanning and DoS model
-    modelPath = getModelPath('new_flows_port_svm_model.pkl')
-    scalerPath = getModelPath('new_flows_port_scaler.pkl')
+    modelPath = getModelPath('new_flows_port_dos_svm_model.pkl')
+    scalerPath = getModelPath('new_flows_port_dos_scaler.pkl')
     loadedModel = joblib.load(modelPath) 
     loadedScaler = joblib.load(scalerPath) 
 
@@ -613,10 +613,10 @@ def PredictPortDoS(flowDict):
     predictions = loadedModel.predict(valuesDataframe)
 
     # check for attacks
-    # if 1 in predictions:
-    #     print('\n##### DoS ATTACK ######\n')
     if 1 in predictions:
         print('\n##### Port Scan ATTACK ######\n')
+    if 2 in predictions:
+        print('\n##### DoS ATTACK ######\n')
     else:
         print('No attack')
 
@@ -624,14 +624,14 @@ def PredictPortDoS(flowDict):
     keysDataframe['Result'] = predictions
     labelCounts = keysDataframe['Result'].value_counts()
     print(f'Results: {labelCounts}\n')
-    # print(f'Num of DoS ips: {keysDataframe[keysDataframe["Result"] == 1]["Src IP"].unique()}\n')
     print(f'Num of Port Scan ips: {keysDataframe[keysDataframe["Result"] == 1]["Src IP"].unique()}\n')
-    print(f'Number of detected attacks:\n {keysDataframe[keysDataframe["Result"] == 1]}\n')
+    print(f'Num of DoS ips: {keysDataframe[keysDataframe["Result"] == 2]["Src IP"].unique()}\n')
+    print(f'Number of detected attacks:\n {keysDataframe[keysDataframe["Result"] != 0]}\n')
     print('Predictions:\n', keysDataframe)
 
     # temporary code for saving false positive if the occure during scans
     import shutil
-    if len(keysDataframe[keysDataframe["Result"] == 1]["Src IP"].unique()) != 0:
+    if len(keysDataframe[keysDataframe["Result"] != 0]["Src IP"].unique()) != 0:
         shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_{"detectedFlows.txt"}')
     
 

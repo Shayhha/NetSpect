@@ -647,13 +647,13 @@ def SaveCollectedData(flows):
     ordered_values = [[valueDict[col] for col in selectedColumns] for valueDict in values] #reorder the values in the same order that the models were trained on
     valuesDataframe = pd.DataFrame(ordered_values, columns=selectedColumns)
 
-    if not os.path.isfile('bengin_dataset.csv'):
-        valuesDataframe.to_csv('bengin_dataset.csv', index=False) #save the new data if needed
+    if not os.path.isfile('benign_dataset.csv'):
+        valuesDataframe.to_csv('benign_dataset.csv', index=False) #save the new data if needed
     else:
         # open an existing file and merge the collected data to it
-        readBenignCsv = pd.read_csv('bengin_dataset.csv')
+        readBenignCsv = pd.read_csv('benign_dataset.csv')
         mergedDataframe = pd.concat([readBenignCsv , valuesDataframe], axis=0)
-        mergedDataframe.to_csv('bengin_dataset.csv', index=False)
+        mergedDataframe.to_csv('benign_dataset.csv', index=False)
         print(f'Found {valuesDataframe.shape[0]} rows.')
 
 #------------------------------------------SAVING-COLLECTED-DATA-END-------------------------------------------#

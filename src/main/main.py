@@ -602,8 +602,8 @@ def PredictPortDoS(flowDict):
     valuesDataframe = pd.DataFrame(orderedValues, columns=selectedColumns)
 
     # load the PortScanning and DoS model
-    modelPath = getModelPath('new_flows_port_dos_hulk_svm_model.pkl')
-    scalerPath = getModelPath('new_flows_port_dos_hulk_scaler.pkl')
+    modelPath = getModelPath('new_flows_port_dos_hulk_goldeneye_svm_model.pkl')
+    scalerPath = getModelPath('new_flows_port_dos_hulk_goldeneye_scaler.pkl')
     loadedModel = joblib.load(modelPath) 
     loadedScaler = joblib.load(scalerPath) 
 

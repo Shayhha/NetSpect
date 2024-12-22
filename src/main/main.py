@@ -11,7 +11,7 @@ from collections import defaultdict
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 from src.models import getModelPath
 
-#--------------------------------------------Default_Packet----------------------------------------------#
+#----------------------------------------------Default_Packet------------------------------------------------#
 # abstarct class for default packet
 class Default_Packet(ABC):
     protocol = None #represents the packet protocol (TCP, UDP, etc)
@@ -72,7 +72,7 @@ class Default_Packet(ABC):
 
 #--------------------------------------------Default_Packet-END----------------------------------------------#
 
-#----------------------------------------------------TCP---------------------------------------------------#
+#----------------------------------------------------TCP-----------------------------------------------------#
 class TCP_Packet(Default_Packet):
     srcPort = None
     dstPort = None
@@ -116,18 +116,18 @@ class TCP_Packet(Default_Packet):
                     optionValue = option[1]
                     self.optionDict[optionType] = optionValue #add option type with its matcing value to optionDict
 
-#-------------------------------------------------TCP-END------------------------------------------------#
+#---------------------------------------------------TCP-END--------------------------------------------------#
 
-#---------------------------------------------------UDP-------------------------------------------------#
+#-----------------------------------------------------UDP----------------------------------------------------#
 class UDP_Packet(Default_Packet):
     def __init__(self, packet=None): #ctor 
         super().__init__('UDP', packet) #call parent ctor
         if packet.haslayer(UDP): #checks if packet is UDP
             self.packetType = UDP #add packet type
 
-#----------------------------------------------UDP-END----------------------------------------------#
+#---------------------------------------------------UDP-END--------------------------------------------------#
 
-#---------------------------------------------------DNS------------------------------------------------#
+#----------------------------------------------------DNS-----------------------------------------------------#
 class DNS_Packet(Default_Packet):
     dnsId = None
     dnsType = None
@@ -165,9 +165,9 @@ class DNS_Packet(Default_Packet):
                     self.dnsClass = dnsPacket.qd.qclass #add request class to output
                     self.dnsNumOfReqOrRes = len(dnsPacket.qd) #add num of requests to output
     
-#-------------------------------------------------DNS-END----------------------------------------------#
+#--------------------------------------------------DNS-END---------------------------------------------------#
 
-# ------------------------------------------------ARP----------------------------------------------#
+# ---------------------------------------------------ARP-----------------------------------------------------#
 class ARP_Packet(Default_Packet):
     arpId = None
     srcMac = None
@@ -198,9 +198,9 @@ class ARP_Packet(Default_Packet):
             self.hwLen = self.packet[ARP].hwlen #add hardware length to output
             self.pLen = self.packet[ARP].plen #add protocol length to output
 
-#---------------------------------------------ARP-END----------------------------------------------#
+#--------------------------------------------------ARP-END---------------------------------------------------#
 
-#---------------------------------------GLOBAL-PARAMETERS------------------------------------------#
+#--------------------------------------------GLOBAL-PARAMETERS-----------------------------------------------#
 
 ipAddresses = set() #represents set of all known ip addresses of host
 arpTable = ({}, {}) #represents ARP table that is a tuple (arpTable, invArpTable) with mapping of IP->MAC and MAC->IP in each table in tuple
@@ -222,9 +222,9 @@ selectedColumns = [
     'Packets Per Second', 'IAT Total', 'IAT Max', 'IAT Mean', 'IAT Std'
 ]
 
-#--------------------------------------GLOBAL-PARAMETERS-END---------------------------------------#
+#------------------------------------------GLOBAL-PARAMETERS-END---------------------------------------------#
 
-#-----------------------------------------HANDLE-FUNCTIONS-----------------------------------------#
+#--------------------------------------------HANDLE-FUNCTIONS------------------------------------------------#
 
 #method that handles TCP packets
 def handleTCP(packet):
@@ -269,9 +269,9 @@ def handleARP(packet):
     arpDict[ARP_Object.arpId] = ARP_Object #insert it to packet dictionary
     arpCounter += 1 #increase the counter
 
-#-----------------------------------------HANDLE-FUNCTIONS-END-----------------------------------------#
+#------------------------------------------HANDLE-FUNCTIONS-END----------------------------------------------#
 
-#-----------------------------------------HELPER-FUNCTIONS-----------------------------------------#
+#--------------------------------------------HELPER-FUNCTIONS------------------------------------------------#
 
 #method to print all available interfaces
 def GetAvailableInterfaces():
@@ -326,9 +326,9 @@ def GetIpAddresses():
         addresses.add(ip) #appand address to our set
     return addresses
 
-#-----------------------------------------HELPER-FUNCTIONS-END-----------------------------------------#
+#-------------------------------------------HELPER-FUNCTIONS-END---------------------------------------------#
 
-#-------------------------------------------SNIFF-FUNCTIONS------------------------------------------#
+#---------------------------------------------SNIFF-FUNCTIONS------------------------------------------------#
 
 # function for checking when to stop sniffing packets, stop condition
 def StopScan(packet):
@@ -376,9 +376,9 @@ def ScanNetwork(interface):
     finally:
         print('Finsihed Network Scan.\n')
 
-#-----------------------------------------SNIFF-FUNCTIONS-END------------------------------------------#
+#--------------------------------------------SNIFF-FUNCTIONS-END---------------------------------------------#
 
-#---------------------------------------------ARP-SPOOFING---------------------------------------------#
+#-----------------------------------------------ARP-SPOOFING-------------------------------------------------#
 class ArpSpoofingException(Exception):
     def __init__(self, message, state, details):
         super().__init__(message)
@@ -394,7 +394,7 @@ class ArpSpoofingException(Exception):
 
 # fucntion that initializes the static arp table for testing IP-MAC pairs 
 def InitArpTable(ipRange='192.168.1.0/24'):
-    arpTable = {} #represents our arp table dict (ip to macc)
+    arpTable = {} #represents our arp table dict (ip to mac)
     invArpTable = {} #represents our inverse (mac to ip), used for verification
     attacksDict = {'ipToMac': {}, 'macToIp': {}} #represents attack dict with anomalies
     arpRequest = ARP(pdst=ipRange) #create arp request packet with destination ip range
@@ -421,22 +421,22 @@ def InitArpTable(ipRange='192.168.1.0/24'):
         elif invArpTable[mac] != ip and mac != '20:1e:88:d8:3a:ce': #else ip do not match with known ip in mac index
             attacksDict['macToIp'].setdefault(mac, set()).update([invArpTable[mac], ip]) #add an anomaly: same MAC, different IP
 
-        #! remeber that locally shay's arp table is spoofed... (20:1e:88:d8:3a:ce)
-        #we check if one of the attack dicts is not empty, means we have an attack
-        if attacksDict['ipToMac']: #means we have an ip that has many macs
-            #throw an exeption to inform user of its presence
-            raise ArpSpoofingException(
-                'Detected ARP spoofing incidents: IP-to-MAC anomalies',
-                state=1,
-                details={ip: list(macs) for ip, macs in attacksDict['ipToMac'].items()}
-            )
-        elif attacksDict['macToIp']: #means we have a mac that has many ips
-            #throw an exeption to inform user of its presence
-            raise ArpSpoofingException(
-                'Detected ARP spoofing incidents: MAC-to-IP anomalies',
-                state=2,
-                details={mac: list(ips) for mac, ips in attacksDict['macToIp'].items()}
-            )
+    #! remeber that locally shay's arp table is spoofed... (20:1e:88:d8:3a:ce)
+    #we check if one of the attack dicts is not empty, means we have an attack
+    if attacksDict['ipToMac']: #means we have an ip that has many macs
+        #throw an exeption to inform user of its presence
+        raise ArpSpoofingException(
+            'Detected ARP spoofing incidents: IP-to-MAC anomalies',
+            state=1,
+            details={ip: list(macs) for ip, macs in attacksDict['ipToMac'].items()}
+        )
+    elif attacksDict['macToIp']: #means we have a mac that has many ips
+        #throw an exeption to inform user of its presence
+        raise ArpSpoofingException(
+            'Detected ARP spoofing incidents: MAC-to-IP anomalies',
+            state=2,
+            details={mac: list(ips) for mac, ips in attacksDict['macToIp'].items()}
+        )
         
     return arpTable, invArpTable
 
@@ -488,9 +488,9 @@ def ProcessARP():
     except Exception as e: #we catch an exception if something happend
         print(f'Error occurred: {e}')
                 
-#-------------------------------------------ARP-SPOOFING-END-------------------------------------------#
+#----------------------------------------------ARP-SPOOFING-END----------------------------------------------#
 
-#------------------------------------------PORT-SCANNING-DoS-------------------------------------------#
+#----------------------------------------------PORT-SCANNING-DoS---------------------------------------------#
 
 # function for processing the flowDict and creating the dataframe that will be passed to classifier
 def ProcessFlows(flowDict):
@@ -635,9 +635,9 @@ def PredictPortDoS(flowDict):
         shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_{"detectedFlows.txt"}')
     
 
-#------------------------------------------PORT-SCANNING-DoS-END-------------------------------------------#
+#--------------------------------------------PORT-SCANNING-DoS-END-------------------------------------------#
 
-#------------------------------------------SAVING-COLLECTED-DATA-------------------------------------------#
+#--------------------------------------------SAVING-COLLECTED-DATA-------------------------------------------#
 
 def SaveCollectedData(flows):
     global selectedColumns
@@ -656,7 +656,7 @@ def SaveCollectedData(flows):
         mergedDataframe.to_csv('benign_dataset.csv', index=False)
         print(f'Found {valuesDataframe.shape[0]} rows.')
 
-#------------------------------------------SAVING-COLLECTED-DATA-END-------------------------------------------#
+#------------------------------------------SAVING-COLLECTED-DATA-END-----------------------------------------#
 
 
 if __name__ == '__main__':

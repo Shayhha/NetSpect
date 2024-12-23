@@ -57,15 +57,15 @@ class Default_Packet(ABC):
 
     # method to return a normalized flow representation of a packet
     def GetFlowTuple(self):
-        global ipAddresses
+        global networkInfo # tuple (ipAddresses, subnet)
         # extract flow tuple from packet
         srcIp, dstIp, protocol = self.srcIp, self.dstIp, self.protocol
 
         #we create the flow tuple based on lexicographic order if it does not contain host ip address to ensure consistency
-        if dstIp in ipAddresses: #check if dst ip is our ip address
+        if dstIp in networkInfo[0]: #check if dst ip is our ip address
             return (srcIp, dstIp, protocol) #return the flow tuple of packet with host ip as dst ip in tuple
 
-        elif (srcIp in ipAddresses) or (srcIp > dstIp): #check if tuple src ip is our ip address or if its not normalized 
+        elif (srcIp in networkInfo[0]) or (srcIp > dstIp): #check if tuple src ip is our ip address or if its not normalized 
             return (dstIp, srcIp, protocol) #return tuple in normalized order and also ensure that our ip is dst ip in flow
 
         return (srcIp, dstIp, protocol) #return the flow tuple of packet
@@ -202,7 +202,7 @@ class ARP_Packet(Default_Packet):
 
 #--------------------------------------------GLOBAL-PARAMETERS-----------------------------------------------#
 
-ipAddresses = set() #represents set of all known ip addresses of host
+networkInfo = (set(), None) #represents tuple of all ipv4 and ipv6 addresses and also host subnet (ipAddresses, subnet)
 arpTable = ({}, {}) #represents ARP table that is a tuple (arpTable, invArpTable) with mapping of IP->MAC and MAC->IP in each table in tuple
 flowDict = {} #represents dict of {(flow tuple) - [packet list]} related to port scanning and dos
 dnsDict = {} #represents dict of packets related to dns tunneling 
@@ -315,16 +315,23 @@ def GetNetworkInterfaces():
     return matchedInterfaces #return the matched interfaces as list'
 
 
-# function that returns all ipv4 and ipv6 addresses of host
-def GetIpAddresses():
+# function that finds all ipv4 and ipv6 addresses of host and returns tuple of ip's and subnet
+def GetNetworkInfo():
     hostname = socket.gethostname() #represents host name
     hostAddresses = socket.getaddrinfo(hostname, None, socket.AF_UNSPEC) #represents host's known network addresses
     addresses = set() #represents set of all known ip addresses of host
+    subnet = None #repreents our subnet in network
+
     # iterate over host addresses list and find all ipv4 and ipv6 addresses
     for address in hostAddresses:
-        ip = address[4][0] #get ipv4/ipv6 address 
+        ip = address[4][0] #get ipv4/ipv6 address
+        # check if IPv4 address and not loopback and save subnet
+        if subnet == None and '.' in ip and not ip.startswith('127.'):
+            octets = ip.split('.') # split the IP into octets
+            subnet = f'{octets[0]}.{octets[1]}.{octets[2]}.0/24' #save our subnet for later use
+            # subnet = f'{'.'.join(ip.split('.')[:3])}.0/24' #save our subnet for later use
         addresses.add(ip) #appand address to our set
-    return addresses
+    return addresses, subnet
 
 #-------------------------------------------HELPER-FUNCTIONS-END---------------------------------------------#
 
@@ -348,15 +355,15 @@ def PacketCapture(packet):
 
 # function for initialing a packet scan on desired network interface
 def ScanNetwork(interface):
-    global ipAddresses
+    global networkInfo
     global arpTable
     try:
         print('Starting Network Scan...')
-        ipAddresses = GetIpAddresses() #initialize our ip addresses list
-        # arpTable = InitArpTable() #initialize our static arp table
+        networkInfo = GetNetworkInfo() #initialize our ip addresses set and subnet
+        # arpTable = InitArpTable(networkInfo[1]) #initialize our static arp table with subnet
 
-        # print(ipAddresses) #print host ip addresses
-        # #print arp table
+        print(networkInfo) #print host ip addresses
+        #print arp table
         # print('ARP Table:')
         # for key, value in arpTable[0].items():
         #     print(f'IP: {key} --> MAC: {value}')

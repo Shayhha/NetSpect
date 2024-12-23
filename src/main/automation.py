@@ -24,7 +24,7 @@ while True:
 
     # clean up resources
     gc.collect()
-    print(f'[{time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())}]: Finished.\n')
+    print(f'[{time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())}]: Finished. Iteration Number: {counter}\n')
 
     counter += 1
     if counter >= whenToStop:

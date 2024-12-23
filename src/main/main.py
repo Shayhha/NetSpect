@@ -327,9 +327,7 @@ def GetNetworkInfo():
         ip = address[4][0] #get ipv4/ipv6 address
         # check if IPv4 address and not loopback and save subnet
         if subnet == None and '.' in ip and not ip.startswith('127.'):
-            octets = ip.split('.') # split the IP into octets
-            subnet = f'{octets[0]}.{octets[1]}.{octets[2]}.0/24' #save our subnet for later use
-            # subnet = f'{'.'.join(ip.split('.')[:3])}.0/24' #save our subnet for later use
+            subnet = f'{'.'.join(ip.split('.')[:3])}.0/24' #save our subnet for later use
         addresses.add(ip) #appand address to our set
     return addresses, subnet
 

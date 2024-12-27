@@ -496,6 +496,22 @@ def ProcessARP():
 #----------------------------------------------ARP-SPOOFING-END----------------------------------------------#
 
 #----------------------------------------------PORT-SCANNING-DoS---------------------------------------------#
+class PortScanDoSException(Exception):
+    def __init__(self, message, state, flows):
+        super().__init__(message)
+        self.state = state #represents the state of attack, 1 means we detected PortScan attack, 2 means we detected DoS attack
+        self.flows = flows #represents the flow in which the attack was detected
+
+    # str representation of arp spoofing exception for showing results
+    def __str__(self):
+        attackName = 'PortScan' if self.state == 1 else 'DoS'
+        if self.state == 3:
+            attackName = 'PortScan and DoS' 
+
+        detailsList = f'\n##### {attackName.upper()} ATTACK ######\n'
+        detailsList += '\n'.join([f'[*] Source IP: {flow['Src IP']} , Destination IP: {flow['Dst IP']} , Protocol: {flow['Protocol']} , Attack: {attackName}' for flow in self.flows])
+        return f'{self.args[0]}\nDetails:\n{detailsList}\n'
+    
 
 # function for processing the flowDict and creating the dataframe that will be passed to classifier
 def ProcessFlows(flowDict):
@@ -595,50 +611,69 @@ def ProcessFlows(flowDict):
 def PredictPortDoS(flowDict):
     global selectedColumns
 
-    # extract keys and values
-    keys = list(flowDict.keys())
-    values = list(flowDict.values())
-    orderedValues = [[valueDict[col] for col in selectedColumns] for valueDict in values] #reorder the values in the same order that the models were trained on
-    
-    # create DataFrame for the keys (5-tuple)
-    keysDataframe = pd.DataFrame(keys, columns=['Src IP', 'Dst IP', 'Protocol'])
+    try: 
+        # extract keys and values
+        keys = list(flowDict.keys())
+        values = list(flowDict.values())
+        orderedValues = [[valueDict[col] for col in selectedColumns] for valueDict in values] #reorder the values in the same order that the models were trained on
+        
+        # create DataFrame for the keys (3-tuple)
+        keysDataframe = pd.DataFrame(keys, columns=['Src IP', 'Dst IP', 'Protocol'])
 
-    # create DataFrame for the values (dict), columns ensures that the order of the input matches the order of the classifier
-    valuesDataframe = pd.DataFrame(orderedValues, columns=selectedColumns)
+        # create DataFrame for the values (dict), columns ensures that the order of the input matches the order of the classifier
+        valuesDataframe = pd.DataFrame(orderedValues, columns=selectedColumns)
 
-    # load the PortScanning and DoS model
-    modelPath = getModelPath('new_flows_port_dos_hulk_goldeneye_svm_model.pkl')
-    scalerPath = getModelPath('new_flows_port_dos_hulk_goldeneye_scaler.pkl')
-    loadedModel = joblib.load(modelPath) 
-    loadedScaler = joblib.load(scalerPath) 
+        # load the PortScanning and DoS model
+        modelPath = getModelPath('new_flows_port_dos_hulk_goldeneye_svm_model.pkl')
+        scalerPath = getModelPath('new_flows_port_dos_hulk_goldeneye_scaler.pkl')
+        loadedModel = joblib.load(modelPath) 
+        loadedScaler = joblib.load(scalerPath) 
 
-    # scale the input data and predict the scaled input
-    scaledDataframe = loadedScaler.transform(valuesDataframe)
-    valuesDataframe = pd.DataFrame(scaledDataframe, columns=selectedColumns)
-    predictions = loadedModel.predict(valuesDataframe)
+        # scale the input data and predict the scaled input
+        scaledDataframe = loadedScaler.transform(valuesDataframe)
+        valuesDataframe = pd.DataFrame(scaledDataframe, columns=selectedColumns)
+        predictions = loadedModel.predict(valuesDataframe)
+        keysDataframe['Result'] = predictions
 
-    # check for attacks
-    if 1 in predictions:
-        print('\n##### Port Scan ATTACK ######\n')
-    if 2 in predictions:
-        print('\n##### DoS ATTACK ######\n')
-    else:
-        print('No attack')
+        # check for attacks in model predictions
+        if (1 in predictions) and (2 in predictions):#1 and 2 means PortScan and DoS attacks together
+            raise PortScanDoSException( #throw an exeption to inform user of its presence
+                'Detected PortScan and DoS attack',
+                state=3,
+                flows=keysDataframe[keysDataframe['Result'] != 0].to_dict(orient='records')
+            )
 
-    # show results of the prediction
-    keysDataframe['Result'] = predictions
-    labelCounts = keysDataframe['Result'].value_counts()
-    print(f'Results: {labelCounts}\n')
-    print(f'Num of Port Scan ips: {keysDataframe[keysDataframe["Result"] == 1]["Src IP"].unique()}\n')
-    print(f'Num of DoS ips: {keysDataframe[keysDataframe["Result"] == 2]["Src IP"].unique()}\n')
-    print(f'Number of detected attacks:\n {keysDataframe[keysDataframe["Result"] != 0]}\n')
-    print('Predictions:\n', keysDataframe)
+        elif 1 in predictions: #1 means PortScan attack
+            raise PortScanDoSException( #throw an exeption to inform user of its presence
+                'Detected PortScan attack',
+                state=1,
+                flows=keysDataframe[keysDataframe['Result'] == 1].to_dict(orient='records')
+            )
+        
+        elif 2 in predictions: #2 means DoS attack
+            raise PortScanDoSException( #throw an exeption to inform user of its presence
+                'Detected DoS attack',
+                state=2,
+                flows=keysDataframe[keysDataframe['Result'] == 2].to_dict(orient='records')
+            )
 
-    # temporary code for saving false positive if the occure during scans
-    import shutil
-    if len(keysDataframe[keysDataframe["Result"] != 0]["Src IP"].unique()) != 0:
-        shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_{"detectedFlows.txt"}')
-    
+        # show results of the prediction
+        labelCounts = keysDataframe['Result'].value_counts()
+        print(f'Results: {labelCounts}\n')
+        print(f'Num of Port Scan ips: {keysDataframe[keysDataframe['Result'] == 1]['Src IP'].unique()}\n')
+        print(f'Num of DoS ips: {keysDataframe[keysDataframe['Result'] == 2]['Src IP'].unique()}\n')
+        print(f'Number of detected attacks:\n {keysDataframe[keysDataframe['Result'] != 0]}\n')
+        print('Predictions:\n', keysDataframe)
+
+        # temporary code for saving false positive if the occure during scans
+        if len(keysDataframe[keysDataframe['Result'] != 0]['Src IP'].unique()) != 0:
+            import shutil
+            shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_{"detectedFlows.txt"}')
+
+    except PortScanDoSException as e: #if we recived ArpSpoofingException we alert the user
+        print(e)
+    except Exception as e: #we catch an exception if something happend
+        print(f'Error occurred: {e}')
 
 #--------------------------------------------PORT-SCANNING-DoS-END-------------------------------------------#
 
@@ -685,7 +720,7 @@ if __name__ == '__main__':
     #         file.write('================================================================\n')
 
     # save the collected data
-    SaveCollectedData(flows)
+    # SaveCollectedData(flows)
 
     #call predict function to determine if attack is present
     PredictPortDoS(flows)

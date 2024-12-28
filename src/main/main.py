@@ -803,7 +803,7 @@ if __name__ == '__main__':
     # ProcessARP()
 
     # test port scanning and dos attacks
-    flows = ProcessDNSFlows(dnsDict)
+    flows = ProcessFlows(flowDict)
 
     # write result of flows captured in txt file
     # with open('detectedFlows.txt', 'w') as file:

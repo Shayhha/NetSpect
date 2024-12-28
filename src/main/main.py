@@ -25,6 +25,7 @@ class Default_Packet(ABC):
     packetLen = None #size of packet (including headers)
     payloadLen = None #size of packet (without headers)
     ipHeaderLen = None #size of ip header
+    ipFlagDict = {} #represents ip flags
     time = None #timestamp of packet
 
     # constructor for default packet 
@@ -49,6 +50,13 @@ class Default_Packet(ABC):
             dscp = self.packet[IP].tos #represents dscp parameter in packet
             self.ipParam = (ttl, dscp) #save both as tuple
             self.ipHeaderLen = len(self.packet[IP]) #save size of ip header
+            # we extract the binary number that represents the ipv4 flags
+            ipFlags = self.packet[IP].flags #represents flags of ip
+            self.ipFlagDict = {
+                'RB': (ipFlags & 0x1) != 0, #Reserved Bit flag
+                'DF': (ipFlags & 0x2) != 0, #Don't Fragment flag
+                'MF': (ipFlags & 0x4) != 0, #More Fragments flag
+            }
         elif self.packet.haslayer(IPv6): #if packet has ipv6 layer
             self.srcIp = self.packet[IPv6].src #represents the source ip
             self.dstIp = self.packet[IPv6].dst #represents the destination ip
@@ -82,8 +90,8 @@ class TCP_Packet(Default_Packet):
     seqNum = None
     ackNum = None
     windowSize = None
-    flagDict = None
-    optionDict = None
+    flagDict = {}
+    optionDict = {}
 
     # constructor for TCP packet 
     def __init__(self, packet=None):
@@ -703,7 +711,19 @@ def ProcessDNSFlows(dnsFlowDict):
 
         # iterate over each packet in flow
         for packet in packetList:
-            if isinstance(packet, DNS_Packet):
+            if isinstance(packet, DNS_Packet):                
+                # add packet length and ip header length to lists
+                packetLengths.append(packet.packetLen)
+                ipHeaderLengths.append(packet.ipHeaderLen)
+
+                # check each flag in ipv4 and increment counter if set
+                if 'RB' in packet.ipFlagDict and packet.ipFlagDict['RB']:
+                    ipRbFlags += 1
+                if 'DF' in packet.ipFlagDict and packet.ipFlagDict['DF']:
+                    ipDfFlags += 1
+                if 'MF' in packet.ipFlagDict and packet.ipFlagDict['MF']:
+                    ipMfFlags += 1
+                
                 if packet.srcIp == flow[0] and packet.dnsType == 'Response': #means response packet
                     if packet.dnsSubType == 1: #means A record
                         fwdARecord += 1
@@ -713,37 +733,18 @@ def ProcessDNSFlows(dnsFlowDict):
                         fwdTxtRecord += 1
                     
                     # add response data to response data list
-                    if isinstance(packet.dnsData, list): #if data is list we convert it
-                        totalLength = np.sum(len(response) for response in packet.dnsData)
-                        responseDataLengths.append(totalLength)
-                    elif isinstance(packet.dnsData, dict): #if data is dict we convert it
-                        totalLength = np.sum(len(value) for value in packet.dnsData.values())
-                        responseDataLengths.append(totalLength)
-                    else: #else its regular data object
-                        responseDataLengths.append(len(packet.dnsData))
+                    if packet.dnsData:
+                        if isinstance(packet.dnsData, list): #if data is list we convert it
+                            totalLength = np.sum(len(response) for response in packet.dnsData)
+                            responseDataLengths.append(totalLength)
+                        elif isinstance(packet.dnsData, dict): #if data is dict we convert it
+                            totalLength = np.sum(len(value) for value in packet.dnsData.values())
+                            responseDataLengths.append(totalLength)
+                        else: #else its regular data object
+                            responseDataLengths.append(len(packet.dnsData))
 
                 elif packet.srcIp == flow[1] and packet.dnsType == 'Request': #means request packet
                     domainNameLengths.append(len(packet.dnsDomainName)) #add domian name length
-                
-                # add packet length and ip header length to lists
-                packetLengths.append(packet.payloadLen)
-                ipHeaderLengths.append(packet.ipHeaderLen)
-
-                # we count out ip flgas if we encounter ipv4 packet
-                if packet.packet.haslayer(IP):
-                    ipFlags = packet.packet[IP].flags #represents flags of ip
-                    ipFlagDict = {
-                        'RB': (ipFlags & 0b100) != 0, #Reserved Bit flag
-                        'DF': (ipFlags & 0b010) != 0, #Don't Fragment flag
-                        'MF': (ipFlags & 0b001) != 0, #More Fragments flag
-                    }
-                    # check each flag in ipv4 and increment counter if set
-                    if 'RB' in ipFlagDict and ipFlagDict['RB']:
-                        ipRbFlags += 1
-                    if 'DF' in ipFlagDict and ipFlagDict['DF']:
-                        ipDfFlags += 1
-                    if 'MF' in ipFlagDict and ipFlagDict['MF']:
-                        ipMfFlags += 1
 
         # calculate the value dictionary for the current flow and insert it into the featuresDict
         flowParametes = {
@@ -762,9 +763,9 @@ def ProcessDNSFlows(dnsFlowDict):
             'Average IP Header Length': np.mean(ipHeaderLengths) if ipHeaderLengths else 0,
             'Min IP Header Length': np.min(ipHeaderLengths) if ipHeaderLengths else 0,
             'Max IP Header Length': np.max(ipHeaderLengths) if ipHeaderLengths else 0,
+            'RB Flag Count': ipRbFlags,
             'DF Flag Count': ipDfFlags,
             'MF Flag Count': ipMfFlags,
-            'RB Flag Count': ipRbFlags
         }
         featuresDict[flow] = flowParametes #save the dictionary of values into the featuresDict
     return dict(featuresDict)

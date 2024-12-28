@@ -24,6 +24,7 @@ class Default_Packet(ABC):
     ipParam = None #represents IPv4 / IPv6 fields as tuple (ttl, dscp) / (hopLimit, trafficClass)
     packetLen = None #size of packet (including headers)
     payloadLen = None #size of packet (without headers)
+    ipHeaderLen = None #size of ip header
     time = None #timestamp of packet
 
     # constructor for default packet 
@@ -47,12 +48,14 @@ class Default_Packet(ABC):
             ttl = self.packet[IP].ttl #represents ttl parameter in packet
             dscp = self.packet[IP].tos #represents dscp parameter in packet
             self.ipParam = (ttl, dscp) #save both as tuple
+            self.ipHeaderLen = len(self.packet[IP]) #save size of ip header
         elif self.packet.haslayer(IPv6): #if packet has ipv6 layer
             self.srcIp = self.packet[IPv6].src #represents the source ip
             self.dstIp = self.packet[IPv6].dst #represents the destination ip
             hopLimit = self.packet[IPv6].hlim #represents the hop limit parameter in packet
             trafficClass = self.packet[IPv6].tc #represnets the traffic class in packet
             self.ipParam = (hopLimit, trafficClass) #save both as tuple
+            self.ipHeaderLen = len(self.packet[IPv6]) #save size of ip header
 
 
     # method to return a normalized flow representation of a packet
@@ -257,8 +260,14 @@ def handleUDP(packet):
 #method that handles DNS packets
 def handleDNS(packet):
     global dnsCounter
-    DNS_Object = DNS_Packet(packet, dnsCounter) #create a new object for packet
-    dnsDict[DNS_Object.dnsId] = DNS_Object #insert it to packet dictionary
+    # DNS_Object = DNS_Packet(packet, dnsCounter) #create a new object for packet
+    # dnsDict[DNS_Object.dnsId] = DNS_Object #insert it to packet dictionary
+    DNS_Object = DNS_Packet(packet) #create a new object for packet
+    flowTuple = DNS_Object.GetFlowTuple() #get flow representation of packet
+    if flowTuple in dnsDict: #if flow tuple exists in dict
+        dnsDict[flowTuple].append(DNS_Object) #append to list our packet
+    else: #else we create new entry with flow tuple
+        dnsDict[flowTuple] = [DNS_Object] #create new list with packet
     dnsCounter += 1 #increase the counter
 
 
@@ -502,7 +511,7 @@ class PortScanDoSException(Exception):
         self.state = state #represents the state of attack, 1 means we detected PortScan attack, 2 means we detected DoS attack
         self.flows = flows #represents the flow in which the attack was detected
 
-    # str representation of arp spoofing exception for showing results
+    # str representation of port scan and dos exception for showing results
     def __str__(self):
         attackName = 'PortScan' if self.state == 1 else 'DoS'
         if self.state == 3:
@@ -677,6 +686,91 @@ def PredictPortDoS(flowDict):
 
 #--------------------------------------------PORT-SCANNING-DoS-END-------------------------------------------#
 
+#-----------------------------------------------DNS-TUNNELING------------------------------------------------#
+def ProcessDNSFlows(dnsFlowDict): 
+    featuresDict = defaultdict(dict) #represents our features dict where each flow tuple has its corresponding features
+
+    # iterate over our flow dict and calculate features
+    for flow, packetList in dnsFlowDict.items():
+        fwdTxtRecord = 0 #represennts number of txt record response packets in flow
+        fwdARecord = 0 #represennts number of A record (ipv4) response packets in flow
+        fwd4ARecord = 0 #represennts number of AAAA record (ipv6) response packets in flow
+        domainNameLengths = [] #represents the domian name lengths
+        responseDataLengths = [] #represents the response data lengths
+        packetLengths = [] #represents packet lengths
+        ipHeaderLengths = [] #represents ip header lengths
+        ipRbFlags, ipDfFlags, ipMfFlags = 0, 0, 0 #represents flags of ip header
+
+        # iterate over each packet in flow
+        for packet in packetList:
+            if isinstance(packet, DNS_Packet):
+                if packet.srcIp == flow[0] and packet.dnsType == 'Response': #means response packet
+                    if packet.dnsSubType == 1: #means A record
+                        fwdARecord += 1
+                    elif packet.dnsSubType == 28: #means AAAA record
+                        fwd4ARecord += 1
+                    elif packet.dnsSubType == 16: #means TXT record
+                        fwdTxtRecord += 1
+                    
+                    # add response data to response data list
+                    if isinstance(packet.dnsData, list): #if data is list we convert it
+                        totalLength = np.sum(len(response) for response in packet.dnsData)
+                        responseDataLengths.append(totalLength)
+                    elif isinstance(packet.dnsData, dict): #if data is dict we convert it
+                        totalLength = np.sum(len(value) for value in packet.dnsData.values())
+                        responseDataLengths.append(totalLength)
+                    else: #else its regular data object
+                        responseDataLengths.append(len(packet.dnsData))
+
+                elif packet.srcIp == flow[1] and packet.dnsType == 'Request': #means request packet
+                    domainNameLengths.append(len(packet.dnsDomainName)) #add domian name length
+                
+                # add packet length and ip header length to lists
+                packetLengths.append(packet.payloadLen)
+                ipHeaderLengths.append(packet.ipHeaderLen)
+
+                # we count out ip flgas if we encounter ipv4 packet
+                if packet.packet.haslayer(IP):
+                    ipFlags = packet.packet[IP].flags #represents flags of ip
+                    ipFlagDict = {
+                        'RB': (ipFlags & 0b100) != 0, #Reserved Bit flag
+                        'DF': (ipFlags & 0b010) != 0, #Don't Fragment flag
+                        'MF': (ipFlags & 0b001) != 0, #More Fragments flag
+                    }
+                    # check each flag in ipv4 and increment counter if set
+                    if 'RB' in ipFlagDict and ipFlagDict['RB']:
+                        ipRbFlags += 1
+                    if 'DF' in ipFlagDict and ipFlagDict['DF']:
+                        ipDfFlags += 1
+                    if 'MF' in ipFlagDict and ipFlagDict['MF']:
+                        ipMfFlags += 1
+
+        # calculate the value dictionary for the current flow and insert it into the featuresDict
+        flowParametes = {
+            'Fwd A Record': fwdARecord,
+            'Fwd AAAA Record': fwd4ARecord,
+            'Fwd TXT Record': fwdTxtRecord,
+            'Average Response Data Length': np.mean(responseDataLengths) if responseDataLengths else 0,
+            'Min Response Data Length': np.min(responseDataLengths) if responseDataLengths else 0,
+            'Max Response Data Length': np.max(responseDataLengths) if responseDataLengths else 0,
+            'Average Domain Name Length': np.mean(domainNameLengths) if domainNameLengths else 0,
+            'Min Domain Name Length': np.min(domainNameLengths) if domainNameLengths else 0,
+            'Max Domain Name Length': np.max(domainNameLengths) if domainNameLengths else 0,
+            'Average Packet Length': np.mean(packetLengths) if packetLengths else 0,
+            'Min Packet Length': np.min(packetLengths) if packetLengths else 0,
+            'Max Packet Length': np.max(packetLengths) if packetLengths else 0,
+            'Average IP Header Length': np.mean(ipHeaderLengths) if ipHeaderLengths else 0,
+            'Min IP Header Length': np.min(ipHeaderLengths) if ipHeaderLengths else 0,
+            'Max IP Header Length': np.max(ipHeaderLengths) if ipHeaderLengths else 0,
+            'DF Flag Count': ipDfFlags,
+            'MF Flag Count': ipMfFlags,
+            'RB Flag Count': ipRbFlags
+        }
+        featuresDict[flow] = flowParametes #save the dictionary of values into the featuresDict
+    return dict(featuresDict)
+
+#----------------------------------------------DNS-TUNNELING-END---------------------------------------------#
+
 #--------------------------------------------SAVING-COLLECTED-DATA-------------------------------------------#
 
 def SaveCollectedData(flows):
@@ -709,9 +803,9 @@ if __name__ == '__main__':
     # ProcessARP()
 
     # test port scanning and dos attacks
-    flows = ProcessFlows(flowDict)
+    flows = ProcessDNSFlows(dnsDict)
 
-    # # write result of flows captured in txt file
+    # write result of flows captured in txt file
     # with open('detectedFlows.txt', 'w') as file:
     #     for flow, features in flows.items():
     #         file.write(f'Flow: {flow}\n')
@@ -720,7 +814,7 @@ if __name__ == '__main__':
     #         file.write('================================================================\n')
 
     # save the collected data
-    # SaveCollectedData(flows)
+    SaveCollectedData(flows)
 
     #call predict function to determine if attack is present
     PredictPortDoS(flows)

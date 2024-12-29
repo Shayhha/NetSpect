@@ -267,7 +267,6 @@ def handleUDP(packet):
 
 #method that handles DNS packets
 def handleDNS(packet):
-    global dnsCounter
     # DNS_Object = DNS_Packet(packet, dnsCounter) #create a new object for packet
     # dnsDict[DNS_Object.dnsId] = DNS_Object #insert it to packet dictionary
     DNS_Object = DNS_Packet(packet) #create a new object for packet
@@ -276,7 +275,8 @@ def handleDNS(packet):
         dnsDict[flowTuple].append(DNS_Object) #append to list our packet
     else: #else we create new entry with flow tuple
         dnsDict[flowTuple] = [DNS_Object] #create new list with packet
-    dnsCounter += 1 #increase the counter
+    global dnsCounter
+    dnsCounter += 1
 
 
 #method that handles ARP packets
@@ -440,10 +440,10 @@ def InitArpTable(ipRange='192.168.1.0/24'):
         # add mac ip pair to inverse arp table
         if mac not in invArpTable: #means mac not in inv arp table, we add it with its ip address
             invArpTable[mac] = ip #set the ip address in mac index
+        #! remeber that locally shay's arp table is spoofed... (20:1e:88:d8:3a:ce)
         elif invArpTable[mac] != ip and mac != '20:1e:88:d8:3a:ce': #else ip do not match with known ip in mac index
             attacksDict['macToIp'].setdefault(mac, set()).update([invArpTable[mac], ip]) #add an anomaly: same MAC, different IP
 
-    #! remeber that locally shay's arp table is spoofed... (20:1e:88:d8:3a:ce)
     #we check if one of the attack dicts is not empty, means we have an attack
     if attacksDict['ipToMac']: #means we have an ip that has many macs
         #throw an exeption to inform user of its presence
@@ -485,7 +485,7 @@ def ProcessARP():
 
                     # we create new temp arp table to check if we got valid response from only one device and that mac's match
                     ipArpTable = InitArpTable(packet.srcIp) #initialize temp ip arp table for specific ip and check if valid
-                    if ipArpTable[0]: #we check if there's a relpay, if not we dismiss the packet
+                    if ipArpTable[0]: #we check if there's a reply, if not we dismiss the packet
                         if ipArpTable[0][packet.srcIp] == packet.srcMac: #means macs match, valid 
                             arpTable[0][packet.srcIp] = packet.srcMac #assign the mac address to its ip in our arp table
                         else: #means macs dont match, we alret because differnet device asnwered us

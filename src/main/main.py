@@ -1,15 +1,21 @@
-import sys, os, re, logging, socket, joblib, time
+import sys, os, logging, socket, joblib, time
 import numpy as np
 import pandas as pd
 from abc import ABC, abstractmethod
-import scapy.all as scapy
-from scapy.all import sniff, get_if_list, srp, IP, IPv6, TCP, UDP, ICMP, ARP, Ether, Raw
+from ipaddress import ip_address, ip_network, IPv4Interface
+from psutil import net_if_addrs, net_if_stats, AF_LINK
+from scapy.all import sniff, get_if_list, srp, IP, IPv6, TCP, UDP, ICMP, ARP, Ether, Raw, conf 
 from scapy.layers.dns import DNS
 from collections import defaultdict
 
 # dynamically add the src directory to sys.path, this allows us to access all moduls in the project at run time
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from src.models import getModelPath
+
+# constant values for interface info
+IPV4 = socket.AF_INET
+IPV6 = socket.AF_INET6
+MAC_ADDRESS = AF_LINK
 
 #----------------------------------------------Default_Packet------------------------------------------------#
 # abstarct class for default packet
@@ -68,15 +74,16 @@ class Default_Packet(ABC):
 
     # method to return a normalized flow representation of a packet
     def GetFlowTuple(self):
-        global networkInfo # tuple (ipAddresses, subnet)
+        currentInterface = SniffNetwork.networkInfo.get(SniffNetwork.selectedInterface) #the values of the selected network interface
+
         # extract flow tuple from packet
         srcIp, dstIp, protocol = self.srcIp, self.dstIp, self.protocol
 
         #we create the flow tuple based on lexicographic order if it does not contain host ip address to ensure consistency
-        if dstIp in networkInfo[0]: #check if dst ip is our ip address
+        if (dstIp in currentInterface.get('ipv4Addrs')) or (dstIp in currentInterface.get('ipv6Addrs')): #check if dst ip is our ip address
             return (srcIp, dstIp, protocol) #return the flow tuple of packet with host ip as dst ip in tuple
 
-        elif (srcIp in networkInfo[0]) or (srcIp > dstIp): #check if tuple src ip is our ip address or if its not normalized 
+        elif (srcIp in currentInterface.get('ipv4Addrs')) or (srcIp in currentInterface.get('ipv6Addrs')) or (srcIp > dstIp): #check if tuple src ip is our ip address or if its not normalized 
             return (dstIp, srcIp, protocol) #return tuple in normalized order and also ensure that our ip is dst ip in flow
 
         return (srcIp, dstIp, protocol) #return the flow tuple of packet
@@ -211,193 +218,229 @@ class ARP_Packet(Default_Packet):
 
 #--------------------------------------------------ARP-END---------------------------------------------------#
 
-#--------------------------------------------GLOBAL-PARAMETERS-----------------------------------------------#
+#----------------------------------------------SNIFF-NETWORK-------------------------------------------------#
 
-networkInfo = (set(), None) #represents tuple of all ipv4 and ipv6 addresses and also host subnet (ipAddresses, subnet)
-arpTable = ({}, {}) #represents ARP table that is a tuple (arpTable, invArpTable) with mapping of IP->MAC and MAC->IP in each table in tuple
-flowDict = {} #represents dict of {(flow tuple) - [packet list]} related to port scanning and dos
-dnsDict = {} #represents dict of packets related to dns tunneling 
-arpDict = {} #represents dict of packets related to arp poisoning
-dnsCounter = 0 #global counter for dns packets
-arpCounter = 0 #global counter for arp packets
-tempcounter = 0 #global counter for tcp and udp packets
-startTime = None #global variable to capture the start time of the scan
-timeoutTime = 40 #global variable that indicates when to stop the scan
-threshold = 10000 #global variable the indicates when to stop scanning tcp and udp packets
-selectedColumns = [
-    'Number of Ports', 'Average Packet Size', 'Packet Length Min', 'Packet Length Max', 
-    'Packet Length Mean', 'Packet Length Std', 'Packet Length Variance', 'Total Length of Fwd Packet', 
-    'Fwd Packet Length Max', 'Fwd Packet Length Mean', 'Bwd Packet Length Max', 'Bwd Packet Length Mean', 
-    'Bwd Packet Length Min', 'Bwd Packet Length Std', 'Fwd Segment Size Avg', 'Bwd Segment Size Avg', 
-    'Subflow Fwd Bytes', 'SYN Flag Count', 'ACK Flag Count', 'RST Flag Count', 'Flow Duration', 
-    'Packets Per Second', 'IAT Total', 'IAT Max', 'IAT Mean', 'IAT Std'
-]
+# static class that represents the main functionality of the program, to sniff network packets and collect data about them in-order to detect attacks
+class SniffNetwork(ABC):
+    networkInfo = None #represents a dict of dicts where each inner dict represents an available network interface
+    selectedInterface = None #the user-selected interface name: 'Ethernet' / 'en6'
+    startTime, timeoutTime, threshold = None, 40, 10000 #represents our stop conditions for the sniffing, stopping after x time or a max amount of packets reached
+    portScanDosDict = {} #represents dict of {(flow tuple) - [packet list]} related to port scanning and dos
+    dnsDict = {} #represents dict of packets related to dns tunneling 
+    arpDict = {} #represents dict of packets related to arp poisoning
+    tcpUdpCounter = 0 #global counter for tcp and udp packets
+    dnsCounter = 0 #global counter for dns packets
+    arpCounter = 0 #global counter for arp packets
 
-#------------------------------------------GLOBAL-PARAMETERS-END---------------------------------------------#
+    # function for initializing the dict of data about all available interfaces
+    @staticmethod
+    def InitNetworkInfo():
+        SniffNetwork.networkInfo = SniffNetwork.GetNetworkInterfaces() #find all available network interface and collect all data about these interfaces
+        return SniffNetwork.networkInfo.keys() #return all available interface names for the user to select
+    
 
-#--------------------------------------------HANDLE-FUNCTIONS------------------------------------------------#
+    # function for initialing a packet scan on desired network interface
+    @staticmethod
+    def ScanNetwork():
+        try:
+            print('Starting Network Scan...')
+            availableInterfaces = SniffNetwork.InitNetworkInfo() #find all available network interfaces
+            ArpSpoofing.InitAllArpTables(SniffNetwork.networkInfo.get(SniffNetwork.selectedInterface)) #initialize all of our static arp tables with subnets
 
-#method that handles TCP packets
-def handleTCP(packet):
-    if packet.haslayer(DNS): #if we found a dns packet we also call dns handler
-        handleDNS(packet) #call our handleDNS func
-    TCP_Object = TCP_Packet(packet) #create a new object for packet
-    flowTuple = TCP_Object.GetFlowTuple() #get flow representation of packet
-    if flowTuple in flowDict: #if flow tuple exists in dict
-        flowDict[flowTuple].append(TCP_Object) #append to list our packet
-    else: #else we create new entry with flow tuple
-        flowDict[flowTuple] = [TCP_Object] #create new list with packet
-    global tempcounter #temporary
-    tempcounter += 1
+            print(f'\n{SniffNetwork.networkInfo.get(SniffNetwork.selectedInterface)}\n') #print host selected interface info (name, ip addresses, mac, etc.)
+            ArpSpoofing.printArpTables() #print all initialized arp tables
 
-
-#method that handles UDP packets
-def handleUDP(packet):
-    if packet.haslayer(DNS): #if we found a dns packet we also call dns handler
-        handleDNS(packet) #call our handleDNS func
-    UDP_Object = UDP_Packet(packet) #create a new object for packet
-    flowTuple = UDP_Object.GetFlowTuple() #get flow representation of packet
-    if flowTuple in flowDict: #if flow tuple exists in dict
-        flowDict[flowTuple].append(UDP_Object) #append to list our packet
-    else: #else we create new entry with flow tuple
-        flowDict[flowTuple] = [UDP_Object] #create new list with packet
-    global tempcounter #temporary
-    tempcounter += 1
+            # call scapy sniff function with desired interface and sniff network packets
+            SniffNetwork.startTime = time.time() #starting a timer to determin when to stop the sniffer
+            sniff(iface=SniffNetwork.selectedInterface, prn=SniffNetwork.PacketCapture, stop_filter=SniffNetwork.StopScan, store=0)
+        except PermissionError: #if user didn't run with administrative privileges 
+            print('Permission denied. Please run again with administrative privileges.') #print permission error message in terminal
+        except ArpSpoofingException as e: #if we recived ArpSpoofingException we alert the user
+            print(e)
+        except Exception as e: #we catch an exception if something happend while sniffing
+            print(f'An error occurred while sniffing: {e}') #print error message in terminal
+        finally:
+            print('Finsihed Network Scan.\n')
 
 
-#method that handles DNS packets
-def handleDNS(packet):
-    # DNS_Object = DNS_Packet(packet, dnsCounter) #create a new object for packet
-    # dnsDict[DNS_Object.dnsId] = DNS_Object #insert it to packet dictionary
-    DNS_Object = DNS_Packet(packet) #create a new object for packet
-    flowTuple = DNS_Object.GetFlowTuple() #get flow representation of packet
-    if flowTuple in dnsDict: #if flow tuple exists in dict
-        dnsDict[flowTuple].append(DNS_Object) #append to list our packet
-    else: #else we create new entry with flow tuple
-        dnsDict[flowTuple] = [DNS_Object] #create new list with packet
-    global dnsCounter
-    dnsCounter += 1
+    # function for checking when to stop sniffing packets, stop condition
+    @staticmethod
+    def StopScan(packet):
+        if SniffNetwork.arpCounter >= 20:
+            SniffNetwork.startTime = time.time() - SniffNetwork.startTime
+            return True
+        #return True if ( ((time.time() - SniffNetwork.startTime) > SniffNetwork.timeoutTime) or (SniffNetwork.arpCounter >= 20) ) else False
 
 
-#method that handles ARP packets
-def handleARP(packet):
-    global arpCounter
-    ARP_Object = ARP_Packet(packet, arpCounter) #create a new object for packet
-    arpDict[ARP_Object.arpId] = ARP_Object #insert it to packet dictionary
-    arpCounter += 1 #increase the counter
+    # function for capturing specific packets for later analysis
+    @staticmethod
+    def PacketCapture(packet):
+        captureDict = {TCP: SniffNetwork.handleTCP, UDP: SniffNetwork.handleUDP, DNS: SniffNetwork.handleDNS, ARP: SniffNetwork.handleARP} #represents dict with packet type and handler func
 
-#------------------------------------------HANDLE-FUNCTIONS-END----------------------------------------------#
-
-#--------------------------------------------HELPER-FUNCTIONS------------------------------------------------#
-
-# method to print all available interfaces
-def GetAvailableInterfaces():
-    #get a list of all available network interfaces
-    interfaces = get_if_list() #call get_if_list method to retrieve the available interfaces
-    if interfaces: #if there are interfaces we print them
-        print('Available network interfaces:')
-        i = 1 #counter for the interfaces 
-        for interface in interfaces: #print all availabe interfaces
-            if sys.platform.startswith('win32'): #if ran on windows we convert the guid number
-                print(f'{i}. {GuidToStr(interface)}')
-            else: #else we are on other os so we print the interface 
-                print(f'{i}. {interface}')
-            i += 1
-    else: #else no interfaces were found
-        print('No network interfaces found.')
+        # iterate over capture dict and find coresponding handler function for each packet
+        for packetType, handler in captureDict.items():
+            if packet.haslayer(packetType): #if we found matching packet we call its handle method
+                handler(packet) #call handler method of each packet
 
 
-# method for retrieving interface name from GUID number (Windows only)
-def GuidToStr(guid):
-    try: #we try to import the specific windows method from scapy library
-        from scapy.arch.windows import get_windows_if_list
-    except ImportError as e: #we catch an import error if occurred
-        print(f'Error importing module: {e}') #print the error
-        return guid #we exit the function
-    interfaces = get_windows_if_list() #use the windows method to get list of guid number interfaces
-    for interface in interfaces: #iterating over the list of interfaces
-        if interface['guid'] == guid: #we find the matching guid number interface
-            return interface['name'] #return the name of the interface associated with guid number
-    return guid #else we didnt find the guid number so we return given guid
+    #--------------------------------------------HANDLE-FUNCTIONS------------------------------------------------#
+
+    # method that handles TCP packets
+    @staticmethod
+    def handleTCP(packet):
+        if packet.haslayer(DNS): #if we found a dns packet we also call dns handler
+            SniffNetwork.handleDNS(packet) #call our handleDNS func
+        TCP_Object = TCP_Packet(packet) #create a new object for packet
+        flowTuple = TCP_Object.GetFlowTuple() #get flow representation of packet
+        if flowTuple in SniffNetwork.portScanDosDict: #if flow tuple exists in dict
+            SniffNetwork.portScanDosDict[flowTuple].append(TCP_Object) #append to list our packet
+        else: #else we create new entry with flow tuple
+            SniffNetwork.portScanDosDict[flowTuple] = [TCP_Object] #create new list with packet
+        SniffNetwork.tcpUdpCounter += 1
 
 
-# method for retrieving the network interfaces
-def GetNetworkInterfaces():
-    networkNames = ['eth', 'wlan', 'en', 'enp', 'wlp', 'lo', 'Ethernet', 'Wi-Fi', '\\Device\\NPF_Loopback'] #this list represents the usual network interfaces that are available in various platfroms
-    interfaces = get_if_list() #get a list of the network interfaces
-    if sys.platform.startswith('win32'): #if current os is Windows we convert the guid number to interface name
-        interfaces = [GuidToStr(interface) for interface in interfaces] #get a new list of network interfaces with correct names instead of guid numbers
-    matchedInterfaces = [interface for interface in interfaces if any(interface.startswith(name) for name in networkNames)] #we filter the list to retrieving ethernet and wifi interfaces
-    return matchedInterfaces #return the matched interfaces as list
+    # method that handles UDP packets
+    @staticmethod
+    def handleUDP(packet):
+        if packet.haslayer(DNS): #if we found a dns packet we also call dns handler
+            SniffNetwork.handleDNS(packet) #call our handleDNS func
+        UDP_Object = UDP_Packet(packet) #create a new object for packet
+        flowTuple = UDP_Object.GetFlowTuple() #get flow representation of packet
+        if flowTuple in SniffNetwork.portScanDosDict: #if flow tuple exists in dict
+            SniffNetwork.portScanDosDict[flowTuple].append(UDP_Object) #append to list our packet
+        else: #else we create new entry with flow tuple
+            SniffNetwork.portScanDosDict[flowTuple] = [UDP_Object] #create new list with packet
+        SniffNetwork.tcpUdpCounter += 1
 
 
-# function that finds all ipv4 and ipv6 addresses of host and returns tuple of ip's and subnet
-def GetNetworkInfo():
-    hostname = socket.gethostname() #represents host name
-    hostAddresses = socket.getaddrinfo(hostname, None, socket.AF_UNSPEC) #represents host's known network addresses
-    addresses = set() #represents set of all known ip addresses of host
-    subnet = None #repreents our subnet in network
-
-    # iterate over host addresses list and find all ipv4 and ipv6 addresses
-    for address in hostAddresses:
-        ip = address[4][0] #get ipv4/ipv6 address
-        # check if IPv4 address and not loopback and save subnet
-        if subnet == None and '.' in ip and not ip.startswith('127.'):
-            subnet = f'{'.'.join(ip.split('.')[:3])}.0/24' #save our subnet for later use
-        addresses.add(ip) #appand address to our set
-    return addresses, subnet
-
-#-------------------------------------------HELPER-FUNCTIONS-END---------------------------------------------#
-
-#---------------------------------------------SNIFF-FUNCTIONS------------------------------------------------#
-
-# function for checking when to stop sniffing packets, stop condition
-def StopScan(packet):
-    global start_time, timeoutTime, threshold
-    return True if ( ((time.time() - start_time) > timeoutTime) or (tempcounter >= threshold) ) else False
+    # method that handles DNS packets
+    @staticmethod
+    def handleDNS(packet):
+        # DNS_Object = DNS_Packet(packet, dnsCounter) #create a new object for packet
+        # dnsDict[DNS_Object.dnsId] = DNS_Object #insert it to packet dictionary
+        DNS_Object = DNS_Packet(packet) #create a new object for packet
+        flowTuple = DNS_Object.GetFlowTuple() #get flow representation of packet
+        if flowTuple in SniffNetwork.dnsDict: #if flow tuple exists in dict
+            SniffNetwork.dnsDict[flowTuple].append(DNS_Object) #append to list our packet
+        else: #else we create new entry with flow tuple
+            SniffNetwork.dnsDict[flowTuple] = [DNS_Object] #create new list with packet
+        SniffNetwork.dnsCounter += 1
 
 
-# function for capturing specific packets for later analysis
-def PacketCapture(packet):
-    captureDict = {TCP: handleTCP, UDP: handleUDP, DNS: handleDNS, ARP: handleARP} #represents dict with packet type and handler func
+    # method that handles ARP packets
+    @staticmethod
+    def handleARP(packet):
+        ARP_Object = ARP_Packet(packet, SniffNetwork.arpCounter) #create a new object for packet
+        SniffNetwork.arpDict[ARP_Object.arpId] = ARP_Object #insert it to packet dictionary
+        SniffNetwork.arpCounter += 1 #increase the counter
 
-    # iterate over capture dict and find coresponding handler function for each packet
-    for packetType, handler in captureDict.items():
-        if packet.haslayer(packetType): #if we found matching packet we call its handle method
-            handler(packet) #call handler method of each packet
+    #------------------------------------------HANDLE-FUNCTIONS-END----------------------------------------------#
+
+    #--------------------------------------------HELPER-FUNCTIONS------------------------------------------------#
+
+    # method to print all available interfaces
+    @staticmethod
+    def GetAvailableInterfaces():
+        # get a list of all available network interfaces
+        interfaces = get_if_list() #call get_if_list method to retrieve the available interfaces
+        if interfaces: #if there are interfaces we print them
+            print('Available network interfaces:')
+            i = 1 #counter for the interfaces 
+            for interface in interfaces: #print all availabe interfaces
+                if sys.platform.startswith('win32'): #if ran on windows we convert the guid number
+                    print(f'{i}. {SniffNetwork.GuidToStr(interface)}')
+                else: #else we are on other os so we print the interface 
+                    print(f'{i}. {interface}')
+                i += 1
+        else: #else no interfaces were found
+            print('No network interfaces found.')
 
 
-# function for initialing a packet scan on desired network interface
-def ScanNetwork(interface):
-    global networkInfo
-    global arpTable
-    try:
-        print('Starting Network Scan...')
-        networkInfo = GetNetworkInfo() #initialize our ip addresses set and subnet
-        # arpTable = InitArpTable(networkInfo[1]) #initialize our static arp table with subnet
+    # method for retrieving interface name from GUID number (Windows only)
+    @staticmethod
+    def GuidToStr(guid):
+        try: #we try to import the specific windows method from scapy library
+            from scapy.arch.windows import get_windows_if_list
+        except ImportError as e: #we catch an import error if occurred
+            print(f'Error importing module: {e}') #print the error
+            return guid #we exit the function
+        interfaces = get_windows_if_list() #use the windows method to get list of guid number interfaces
+        for interface in interfaces: #iterating over the list of interfaces
+            if interface['guid'] == guid: #we find the matching guid number interface
+                return interface['name'] #return the name of the interface associated with guid number
+        return guid #else we didnt find the guid number so we return given guid
 
-        print(networkInfo) #print host ip addresses
-        #print arp table
-        # print('ARP Table:')
-        # for key, value in arpTable[0].items():
-        #     print(f'IP: {key} --> MAC: {value}')
-        # print('============================\n')
 
-        global start_time #starting a timer to determin when to stop the sniffer
-        start_time = time.time()
+    # method for retrieving the network interfaces
+    @staticmethod
+    def GetNetworkInterfaces_OLD():
+        networkNames = ['eth', 'wlan', 'en', 'enp', 'wlp', 'lo', 'Ethernet', 'Wi-Fi', '\\Device\\NPF_Loopback'] #this list represents the usual network interfaces that are available in various platfroms
+        interfaces = get_if_list() #get a list of the network interfaces
+        if sys.platform.startswith('win32'): #if current os is Windows we convert the guid number to interface name
+            interfaces = [SniffNetwork.GuidToStr(interface) for interface in interfaces] #get a new list of network interfaces with correct names instead of guid numbers
+        matchedInterfaces = [interface for interface in interfaces if any(interface.startswith(name) for name in networkNames)] #we filter the list to retrieving ethernet and wifi interfaces
+        return matchedInterfaces #return the matched interfaces as list
 
-        #we call sniff with desired interface 
-        sniff(iface=interface, prn=PacketCapture, stop_filter=StopScan, store=0)
-    except PermissionError: #if user didn't run with administrative privileges 
-        print('Permission denied. Please run again with administrative privileges.') #print permission error message in terminal
-    except ArpSpoofingException as e: #if we recived ArpSpoofingException we alert the user
-        print(e)
-    except Exception as e: #we catch an exception if something happend while sniffing
-        print(f'An error occurred while sniffing: {e}') #print error message in terminal
-    finally:
-        print('Finsihed Network Scan.\n')
 
-#--------------------------------------------SNIFF-FUNCTIONS-END---------------------------------------------#
+    # function for collecting all available interfaces on the current machine and as much data about them as possible including name, speed, ip addresses, subnets and more
+    @staticmethod
+    def GetNetworkInterfaces():
+        supportedInterfaces = ['eth', 'wlan', 'en', 'enp', 'wlp', 'lo', 'Ethernet', 'Wi-Fi', '\\Device\\NPF_Loopback'] #this list represents the usual network interfaces that are available in various platfroms
+        networkInterfaces = {} #represents network interfaces dict where keys are name of interface and value is interface dict
+        ifaceDict = net_if_addrs()
+        ifaceStats = net_if_stats()
+
+        for ifaceName in ifaceDict.keys():
+            # make sure that we are only collecting info about supported network interfaces
+            if any(ifaceName.startswith(name) for name in supportedInterfaces):
+                ipv4Addrs, ipv6Addrs, ipv4Subnets, ipv6Subnets = [], [], [], set()
+                macAddress = 'None'
+
+                # iterate over each interface's information and collect data such as IP addresses and subnets
+                for ifaceInfo in ifaceDict.get(ifaceName, []):
+                    # get IP address and netmask (address can also be mac address)
+                    ipAddress = ifaceInfo.address
+                    netmask = ifaceInfo.netmask
+
+                    if ifaceInfo.family == IPV4: 
+                        # calculate the subnet using the IP address and netmask
+                        ipv4Addrs.append(ipAddress)
+                        if ipAddress and netmask:
+                            subnet = IPv4Interface(f'{ipAddress}/{netmask}').network
+                            ipv4Subnets.append((str(subnet), f'{'.'.join(ipAddress.split('.')[:3])}.0/24', netmask)) #list of tuples such that (subnet (real), range(/24), netmask)
+
+                    elif ifaceInfo.family == IPV6:
+                        # estimate subnet for IPv6 using a /64 mask
+                        ipv6Addrs.append(ipAddress)
+                        if ipAddress and (not ipAddress.startswith('::1')) and (not ipAddress.endswith('::1')): #exclude loopback
+                            ipv6Subnets.add(f'{':'.join(ipAddress.split(':')[:4])}::/64') # /64 subnet estimation
+
+                    elif ifaceInfo.family == MAC_ADDRESS: #if Mac Address exists
+                        macAddress = ipAddress
+
+                # continue to next interface if this one does not have any ip address
+                if (len(ipv4Addrs) == 0) and (len(ipv6Addrs) == 0): continue
+                
+                # initialize interface dict without subnets yet
+                interfaceDict = {
+                    'name': ifaceName if ifaceName else 'None',
+                    'description': conf.ifaces.get(ifaceName).description if conf.ifaces.get(ifaceName) else 'None',
+                    'status': ifaceStats.get(ifaceName).isup if ifaceStats.get(ifaceName) else 'None',
+                    'maxSpeed': ifaceStats.get(ifaceName).speed if ifaceStats.get(ifaceName) else 'None',
+                    'maxTransmitionUnit': ifaceStats.get(ifaceName).mtu if ifaceStats.get(ifaceName) else 'None',
+                    'mac': macAddress,
+                    'ipv4Addrs': ipv4Addrs,
+                    'ipv4Info': ipv4Subnets,
+                    'ipv6Addrs': ipv6Addrs,
+                    'ipv6Info': list(ipv6Subnets)
+                }
+                networkInterfaces[interfaceDict['name']] = interfaceDict #add interface to our network interfaces
+            
+        return networkInterfaces
+
+    #-------------------------------------------HELPER-FUNCTIONS-END---------------------------------------------#
+
+#---------------------------------------------SNIFF-NETWORK-END----------------------------------------------#
 
 #-----------------------------------------------ARP-SPOOFING-------------------------------------------------#
 class ArpSpoofingException(Exception):
@@ -409,106 +452,177 @@ class ArpSpoofingException(Exception):
     # str representation of arp spoofing exception for showing results
     def __str__(self):
         detailsList = '\n##### ARP SPOOFING ATTACK ######\n'
-        detailsList += '\n'.join([f'[*] {key} ==> {", ".join(value)}' for key, value in self.details.items()])
+        detailsList += '\n'.join([f'[*] {key} ==> {', '.join(value)}' for key, value in self.details.items()])
         return f'{self.args[0]}\nDetails:\n{detailsList}\n'
 
 
-# fucntion that initializes the static arp table for testing IP-MAC pairs 
-def InitArpTable(ipRange='192.168.1.0/24'):
-    arpTable = {} #represents our arp table dict (ip to mac)
-    invArpTable = {} #represents our inverse (mac to ip), used for verification
-    attacksDict = {'ipToMac': {}, 'macToIp': {}} #represents attack dict with anomalies
-    arpRequest = ARP(pdst=ipRange) #create arp request packet with destination ip range
-    broadcast = Ether(dst='ff:ff:ff:ff:ff:ff')  #create broadcast ethernet frame broadcast
-    arpRequestBroadcast = broadcast / arpRequest #combine both arp request and ethernet frame 
-     
-    # send the ARP request and capture the responses
-    # srp function retunes tuple (response packet, received device)
-    answeredList = srp(arpRequestBroadcast, timeout=1, verbose=False)[0]
-    
-    # iterate over all devices that answered to our arp request packet and add them to our table
-    for device in answeredList:
-        ip, mac = device[1].psrc, device[1].hwsrc #represents ip and mac for given device
+# class that represents a single ARP table, contains an IP to MAC table and an inverse table, has a static method for initing both ARP tables
+class ArpTable():
+    subnet = None #3-tuple (subnet(real) , range(/24) , netmask)
+    arpTable = None #regular IP to MAC ARP table
+    invArpTable = None #inverse ARP table, MAC to IP
 
-        # add ip mac pair to arp table
-        if ip not in arpTable: #means ip not in arp table, we add it with its mac address
-            arpTable[ip] = mac #set the mac address in ip index
-        elif arpTable[ip] != mac: #else mac do not match with known mac in ip index
-            attacksDict['ipToMac'].setdefault(ip, set()).update([arpTable[ip], mac]) #add an anomaly: same IP, different MAC
+    def __init__(self, subnet):
+        self.subnet = subnet 
+        self.arpTable, self.invArpTable = ArpTable.InitArpTable(subnet[1])
 
-        # add mac ip pair to inverse arp table
-        if mac not in invArpTable: #means mac not in inv arp table, we add it with its ip address
-            invArpTable[mac] = ip #set the ip address in mac index
-        #! remeber that locally shay's arp table is spoofed... (20:1e:88:d8:3a:ce)
-        elif invArpTable[mac] != ip and mac != '20:1e:88:d8:3a:ce': #else ip do not match with known ip in mac index
-            attacksDict['macToIp'].setdefault(mac, set()).update([invArpTable[mac], ip]) #add an anomaly: same MAC, different IP
 
-    #we check if one of the attack dicts is not empty, means we have an attack
-    if attacksDict['ipToMac']: #means we have an ip that has many macs
-        #throw an exeption to inform user of its presence
-        raise ArpSpoofingException(
-            'Detected ARP spoofing incidents: IP-to-MAC anomalies',
-            state=1,
-            details={ip: list(macs) for ip, macs in attacksDict['ipToMac'].items()}
-        )
-    elif attacksDict['macToIp']: #means we have a mac that has many ips
-        #throw an exeption to inform user of its presence
-        raise ArpSpoofingException(
-            'Detected ARP spoofing incidents: MAC-to-IP anomalies',
-            state=2,
-            details={mac: list(ips) for mac, ips in attacksDict['macToIp'].items()}
-        )
+    # fucntion that initializes the static arp table for testing IP-MAC pairs 
+    @staticmethod
+    def InitArpTable(ipRange='192.168.1.0/24'):
+        arpTable = {} #represents our arp table dict (ip to mac)
+        invArpTable = {} #represents our inverse (mac to ip), used for verification
+        attacksDict = {'ipToMac': {}, 'macToIp': {}} #represents attack dict with anomalies
+        arpRequest = ARP(pdst=ipRange) #create arp request packet with destination ip range
+        broadcast = Ether(dst='ff:ff:ff:ff:ff:ff')  #create broadcast ethernet frame broadcast
+        arpRequestBroadcast = broadcast / arpRequest #combine both arp request and ethernet frame 
         
-    return arpTable, invArpTable
-
-
-# function for processing arp packets and check for arp spoofing attacks
-def ProcessARP():
-    global arpTable
-    attacksDict = {} #represents attack dict with anomalies
-    try:
-        if not arpTable[0]: #check that arpTable is initialzied
-            raise RuntimeError('Error, cannot process ARP packets, ARP table is not initalized.')
-
-        # iterate over our arp dictionary and check each packet for inconsistencies
-        for packet in arpDict.values():
-            # we check that packet has a source ip and also that its not assinged to a temporary ip (0.0.0.0)
-            if isinstance(packet, ARP_Packet) and packet.srcIp != None and packet.srcIp != '0.0.0.0':
-                if packet.srcIp not in arpTable[0]: #means ip is not present in our arp table
-                    # means mac was assinged to different ip, we assume there's a possiblility 
-                    # that this device got assigned a new ip from dhcp server
-                    if packet.srcMac in arpTable[1]:
-                        oldIp = arpTable[1][packet.srcMac] #save old ip that was assigned to this mac
-                        del arpTable[0][oldIp] #remove old ip entry from arp table
-                        del arpTable[1][packet.srcMac] #remove mac from inverse arp table
-
-                    # we create new temp arp table to check if we got valid response from only one device and that mac's match
-                    ipArpTable = InitArpTable(packet.srcIp) #initialize temp ip arp table for specific ip and check if valid
-                    if ipArpTable[0]: #we check if there's a reply, if not we dismiss the packet
-                        if ipArpTable[0][packet.srcIp] == packet.srcMac: #means macs match, valid 
-                            arpTable[0][packet.srcIp] = packet.srcMac #assign the mac address to its ip in our arp table
-                        else: #means macs dont match, we alret because differnet device asnwered us
-                            ip, macs = packet.srcIp, {ipArpTable[0][packet.srcIp], packet.srcMac} #create the details for exception
-                            attacksDict.setdefault(ip, set()).update(macs) #add an anomaly: same IP, different MAC
-
-                else: #means ip is present in our arp table, we check its parameters
-                    if arpTable[0][packet.srcIp] != packet.srcMac: #means we have a spoofed mac address
-                        ip, macs = packet.srcIp, {arpTable[0][packet.srcIp], packet.srcMac} #create the details for exception
-                        attacksDict.setdefault(ip, set()).update(macs) #add an anomaly: same IP, different MAC
+        # send the ARP request and capture the responses
+        # srp function retunes tuple (response packet, received device)
+        answeredList = srp(arpRequestBroadcast, timeout=0.75, verbose=False)[0]
         
-        if attacksDict: #means we detected an attack
+        # iterate over all devices that answered to our arp request packet and add them to our table
+        for device in answeredList:
+            ip, mac = device[1].psrc, device[1].hwsrc #represents ip and mac for given device
+
+            # add ip mac pair to arp table
+            if ip not in arpTable: #means ip not in arp table, we add it with its mac address
+                arpTable[ip] = mac #set the mac address in ip index
+            elif arpTable[ip] != mac: #else mac do not match with known mac in ip index
+                attacksDict['ipToMac'].setdefault(ip, set()).update([arpTable[ip], mac]) #add an anomaly: same IP, different MAC
+
+            # add mac ip pair to inverse arp table
+            if mac not in invArpTable: #means mac not in inv arp table, we add it with its ip address
+                invArpTable[mac] = ip #set the ip address in mac index
+            #! remeber that locally shay's arp table is spoofed... (20:1e:88:d8:3a:ce)
+            elif invArpTable[mac] != ip and mac != '20:1e:88:d8:3a:ce': #else ip do not match with known ip in mac index
+                attacksDict['macToIp'].setdefault(mac, set()).update([invArpTable[mac], ip]) #add an anomaly: same MAC, different IP
+
+        # we check if one of the attack dicts is not empty, means we have an attack
+        if attacksDict['ipToMac']: #means we have an ip that has many macs
             #throw an exeption to inform user of its presence
             raise ArpSpoofingException(
                 'Detected ARP spoofing incidents: IP-to-MAC anomalies',
                 state=1,
-                details={ip: list(macs) for ip, macs in attacksDict.items()}
+                details={ip: list(macs) for ip, macs in attacksDict['ipToMac'].items()}
             )
+        elif attacksDict['macToIp']: #means we have a mac that has many ips
+            # throw an exeption to inform user of its presence
+            raise ArpSpoofingException(
+                'Detected ARP spoofing incidents: MAC-to-IP anomalies',
+                state=2,
+                details={mac: list(ips) for mac, ips in attacksDict['macToIp'].items()}
+            )
+        
+        return arpTable, invArpTable
 
-    except ArpSpoofingException as e: #if we recived ArpSpoofingException we alert the user
-        print(e)
-    except Exception as e: #we catch an exception if something happend
-        print(f'Error occurred: {e}')
-                
+
+# static class that represents the detection of ARP Spoofing attack using an algorithem to detect duplications in ARP tables based on collected ARP packets
+class ArpSpoofing(ABC):
+    arpTables = {} #represents all ARP tables where the key of the table is the subnet, each inner ARP table is a tuple (arpTable, invArpTable) with mapping of IP->MAC and MAC->IP in each table in tuple
+    cache = {} #represents a dict with cache of all ip addresses that matched a subnet
+    interfaceInfo = {} #represents the dict with all data about the user-selected network interface
+
+    # function that iterates over available ipv4 subnets and inits an ARP table for each one
+    @staticmethod
+    def InitAllArpTables(interfaceInfo):
+        # iterate over all given subnets, for each check if an ARP table exists for it
+        for subnet in interfaceInfo.get('ipv4Info'):
+            if not ArpSpoofing.arpTables.get(subnet[0]):
+                # init a new ARP tabel if an ARP table for that subnet is not initialized
+                subnetObject = ip_network(subnet[0])
+                ArpSpoofing.arpTables[subnetObject] = ArpTable(subnet) 
+
+
+    # function for getting the correct arp table given an IP address
+    @staticmethod
+    def getSubnetForIP(ipAddress): 
+        try:
+            if ipAddress in ArpSpoofing.cache: #check if the given IP address was cached
+                return ArpSpoofing.cache[ipAddress]
+
+            # check if the IP address object is in the subnet list
+            ipObject = ip_address(ipAddress) #convert to IP address to ipaddress object
+            for subnet in ArpSpoofing.arpTables.keys():
+                if ipObject in subnet:
+                    ArpSpoofing.cache[ipAddress] = subnet
+                    return subnet
+            
+            ArpSpoofing.cache[ipAddress] = None
+            return None
+        except ValueError as e:
+            print(f'Invalid IP or Subnet: {e}')
+            return None
+  
+
+    # function for printing all arp tables
+    @staticmethod
+    def printArpTables():
+        if ArpSpoofing.arpTables:
+            print('All ARP Tables:')
+            for subnet, arpTableObject in ArpSpoofing.arpTables.items():
+                if arpTableObject:
+                    print(f'ARP Table: {subnet}\n')
+                    for key, value in arpTableObject.arpTable.items():
+                        print(f'IP: {key} --> MAC: {value}')
+                    print('===========================================\n')
+        print('\n')
+
+
+    # function for processing arp packets and check for arp spoofing attacks
+    @staticmethod
+    def ProcessARP():
+        attacksDict = {} #represents attack dict with anomalies
+        try:
+            if not ArpSpoofing.arpTables: #check that arpTable is initialzied
+                raise RuntimeError('Error, cannot process ARP packets, ARP tables are not initalized.')
+
+            # iterate over our arp dictionary and check each packet for inconsistencies
+            for packet in SniffNetwork.arpDict.values():
+                # we check that packet has a source ip and also that its not assinged to a temporary ip (0.0.0.0)
+                if isinstance(packet, ARP_Packet) and packet.srcIp != None and packet.srcIp != '0.0.0.0':
+                    subnet = ArpSpoofing.getSubnetForIP(packet.srcIp)
+                    if subnet == None: 
+                        print(f'Error, received an ARP packet from an outside subnet, no arp table mached the ARP packet source IP address "{packet.srcIp}"')
+                        continue
+                    arpTableObject = ArpSpoofing.arpTables.get(subnet) #get the specific arpTable using the correct subnet
+
+                    if packet.srcIp not in arpTableObject.arpTable: #means ip is not present in our arp table
+                        # means mac was assinged to different ip, we assume there's a possiblility 
+                        # that this device got assigned a new ip from dhcp server
+                        if packet.srcMac in arpTableObject.invArpTable:
+                            oldIp = arpTableObject.invArpTable[packet.srcMac] #save old ip that was assigned to this mac
+                            del arpTableObject.arpTable[oldIp] #remove old ip entry from arp table
+                            del arpTableObject.invArpTable[packet.srcMac] #remove mac from inverse arp table
+
+                        # we create new temp arp table to check if we got valid response from only one device and that mac's match
+                        ipArpTable = ArpTable.InitArpTable(packet.srcIp) #initialize temp ip arp table for specific ip and check if valid
+                        if ipArpTable[0]: #we check if there's a reply, if not we dismiss the packet
+                            if ipArpTable[0][packet.srcIp] == packet.srcMac: #means macs match, valid 
+                                arpTableObject.arpTable[packet.srcIp] = packet.srcMac #assign the mac address to its ip in our arp table
+                                arpTableObject.invArpTable[packet.srcMac] = packet.srcIp #assign to the inverse arp table
+                            else: #means macs dont match, we alret because differnet device asnwered us
+                                ip, macs = packet.srcIp, {ipArpTable[0][packet.srcIp], packet.srcMac} #create the details for exception
+                                attacksDict.setdefault(ip, set()).update(macs) #add an anomaly: same IP, different MAC
+
+                    else: #means ip is present in our arp table, we check its parameters
+                        if arpTableObject.arpTable[packet.srcIp] != packet.srcMac: #means we have a spoofed mac address
+                            ip, macs = packet.srcIp, {arpTableObject.arpTable[packet.srcIp], packet.srcMac} #create the details for exception
+                            attacksDict.setdefault(ip, set()).update(macs) #add an anomaly: same IP, different MAC
+
+            if attacksDict: #means we detected an attack
+                # throw an exeption to inform user of its presence
+                raise ArpSpoofingException(
+                    'Detected ARP spoofing incidents: IP-to-MAC anomalies',
+                    state=1,
+                    details={ip: list(macs) for ip, macs in attacksDict.items()}
+                )
+
+        except ArpSpoofingException as e: #if we recived ArpSpoofingException we alert the user
+            print(e)
+        except Exception as e: #we catch an exception if something happend
+            print(f'Error occurred: {e}')
+
 #----------------------------------------------ARP-SPOOFING-END----------------------------------------------#
 
 #----------------------------------------------PORT-SCANNING-DoS---------------------------------------------#
@@ -529,292 +643,332 @@ class PortScanDoSException(Exception):
         return f'{self.args[0]}\nDetails:\n{detailsList}\n'
     
 
-# function for processing the flowDict and creating the dataframe that will be passed to classifier
-def ProcessFlows(flowDict):
-    featuresDict = defaultdict(dict) #represents our features dict where each flow tuple has its corresponding features
+# static class that represents the collection and detection of PortScan and DoS attacks 
+class PortScanDoS(ABC):
+    selectedColumns = [
+        'Number of Ports', 'Average Packet Size', 'Packet Length Min', 'Packet Length Max', 
+        'Packet Length Mean', 'Packet Length Std', 'Packet Length Variance', 'Total Length of Fwd Packet', 
+        'Fwd Packet Length Max', 'Fwd Packet Length Mean', 'Bwd Packet Length Max', 'Bwd Packet Length Mean', 
+        'Bwd Packet Length Min', 'Bwd Packet Length Std', 'Fwd Segment Size Avg', 'Bwd Segment Size Avg', 
+        'Subflow Fwd Bytes', 'SYN Flag Count', 'ACK Flag Count', 'RST Flag Count', 'Flow Duration', 
+        'Packets Per Second', 'IAT Total', 'IAT Max', 'IAT Mean', 'IAT Std'
+    ]
 
-    # iterate over our flow dict and calculate features
-    for flow, packetList in flowDict.items():
-        numOfPorts = 0 #represents number of unique destination ports we found in given flow
-        uniquePorts = set() #represents the unique destination ports in flow
-        fwdLengths = [] #represents length of forward packets in flow
-        bwdLengths = [] #represents length of backward packets in flow
-        payloadLengths = [] #represents payload length of all packets in flow
-        timestamps = [] #represents timestamps of each packet in flow
-        subflowLastPacketTS, subflowCount = -1, 0 #last timestamp of the subflow and the counter of subflows
-        synFlags, ackFlags, rstFlags = 0, 0, 0 #counter for tcp flags
-        firstSeenPacket, lastSeenPacket = 0, 0 #represnts timestemps for first and last packets
+    # function for processing the flowDict and creating the dataframe that will be passed to classifier
+    @staticmethod
+    def ProcessFlows():
+        featuresDict = defaultdict(dict) #represents our features dict where each flow tuple has its corresponding features
 
-        # iterate over each packet in flow
-        for packet in packetList:
-            payloadLengths.append(packet.payloadLen) #append payload length to list
+        # iterate over our flow dict and calculate features
+        for flow, packetList in SniffNetwork.portScanDosDict.items():
+            numOfPorts = 0 #represents number of unique destination ports we found in given flow
+            uniquePorts = set() #represents the unique destination ports in flow
+            fwdLengths = [] #represents length of forward packets in flow
+            bwdLengths = [] #represents length of backward packets in flow
+            payloadLengths = [] #represents payload length of all packets in flow
+            timestamps = [] #represents timestamps of each packet in flow
+            subflowLastPacketTS, subflowCount = -1, 0 #last timestamp of the subflow and the counter of subflows
+            synFlags, ackFlags, rstFlags = 0, 0, 0 #counter for tcp flags
+            firstSeenPacket, lastSeenPacket = 0, 0 #represnts timestemps for first and last packets
 
-            # append each packet timestemp to out list for IAT
-            if packet.time:
-                timestamps.append(packet.time)
-            
-                # for calculating flow duration
-                if firstSeenPacket == 0:
-                    firstSeenPacket = packet.time
-                lastSeenPacket = packet.time
+            # iterate over each packet in flow
+            for packet in packetList:
+                payloadLengths.append(packet.payloadLen) #append payload length to list
 
-            # check if packet is tcp and calculate its specific parameters
-            if isinstance(packet, TCP_Packet):
-                # check each flag in tcp and increment counter if set
-                if 'SYN' in packet.flagDict and packet.flagDict['SYN']:
-                    synFlags += 1
-                if 'ACK' in packet.flagDict and packet.flagDict['ACK']:
-                    ackFlags += 1
-                if 'RST' in packet.flagDict and packet.flagDict['RST']:
-                    rstFlags += 1
-
-            if packet.srcIp == flow[0]: #means forward packet
-                fwdLengths.append(packet.payloadLen)
-
-                # check for unique destination ports and add it if new port
-                if packet.dstPort not in uniquePorts:
-                    uniquePorts.add(packet.dstPort) #add the port to the set
-                    numOfPorts += 1 #increment the counter for unique ports
+                # append each packet timestemp to out list for IAT
+                if packet.time:
+                    timestamps.append(packet.time)
                 
-                # count subflows in forward packets using counters and timestamps
-                if subflowLastPacketTS == -1:
-                    subflowLastPacketTS = packet.time
-                if (packet.time - subflowLastPacketTS) > 1.0: #check that timestamp difference is greater than 1 sec
-                    subflowCount += 1
+                    # for calculating flow duration
+                    if firstSeenPacket == 0:
+                        firstSeenPacket = packet.time
+                    lastSeenPacket = packet.time
 
-            else: #else means backward packets
-                bwdLengths.append(packet.payloadLen)
+                # check if packet is tcp and calculate its specific parameters
+                if isinstance(packet, TCP_Packet):
+                    # check each flag in tcp and increment counter if set
+                    if 'SYN' in packet.flagDict and packet.flagDict['SYN']:
+                        synFlags += 1
+                    if 'ACK' in packet.flagDict and packet.flagDict['ACK']:
+                        ackFlags += 1
+                    if 'RST' in packet.flagDict and packet.flagDict['RST']:
+                        rstFlags += 1
 
+                if packet.srcIp == flow[0]: #means forward packet
+                    fwdLengths.append(packet.payloadLen)
 
-        # inter-arrival time features (IAT) and flow duration
-        interArrivalTimes = [t2 - t1 for t1, t2 in zip(timestamps[:-1], timestamps[1:])]
-        flowDuration = lastSeenPacket - firstSeenPacket
+                    # check for unique destination ports and add it if new port
+                    if packet.dstPort not in uniquePorts:
+                        uniquePorts.add(packet.dstPort) #add the port to the set
+                        numOfPorts += 1 #increment the counter for unique ports
+                    
+                    # count subflows in forward packets using counters and timestamps
+                    if subflowLastPacketTS == -1:
+                        subflowLastPacketTS = packet.time
+                    if (packet.time - subflowLastPacketTS) > 1.0: #check that timestamp difference is greater than 1 sec
+                        subflowCount += 1
 
-        # calculate the value dictionary for the current flow and insert it into the featuresDict
-        flowParametes = {
-            'Number of Ports': numOfPorts,
-            'Average Packet Size': np.mean(payloadLengths) if payloadLengths else 0,
-            'Packet Length Min': np.min(payloadLengths) if payloadLengths else 0, # packet length features
-            'Packet Length Max': np.max(payloadLengths) if payloadLengths else 0,
-            'Packet Length Mean': np.mean(payloadLengths) if payloadLengths else 0,
-            'Packet Length Std': np.std(payloadLengths) if payloadLengths else 0,
-            'Packet Length Variance': np.var(payloadLengths) if payloadLengths else 0,
-            'Total Length of Fwd Packet': np.sum(fwdLengths), # total and average size features
-            'Fwd Packet Length Max': np.max(fwdLengths) if fwdLengths else 0, # FWD/BWD packet length features
-            'Fwd Packet Length Mean': np.mean(fwdLengths) if fwdLengths else 0,
-            'Bwd Packet Length Max': np.max(bwdLengths) if bwdLengths else 0,
-            'Bwd Packet Length Mean': np.mean(bwdLengths) if bwdLengths else 0,
-            'Bwd Packet Length Min': np.min(bwdLengths) if bwdLengths else 0,
-            'Bwd Packet Length Std': np.std(bwdLengths) if bwdLengths else 0,
-            'Fwd Segment Size Avg': np.mean(fwdLengths) if fwdLengths else 0,
-            'Bwd Segment Size Avg': np.mean(bwdLengths) if bwdLengths else 0,
-            'Subflow Fwd Bytes': np.sum(fwdLengths) / subflowCount if subflowCount > 0 else 0, # subflow feature
-            'SYN Flag Count': synFlags, # SYN, ACK and RST flag counts
-            'ACK Flag Count': ackFlags,
-            'RST Flag Count': rstFlags,
-            'Flow Duration': flowDuration, # flow duration and packets per second in flow
-            'Packets Per Second': len(packetList) / flowDuration if flowDuration > 0 else 0,
-            'IAT Total': np.sum(interArrivalTimes) if interArrivalTimes else 0, # inter-arrival time features (IAT)
-            'IAT Max': np.max(interArrivalTimes) if interArrivalTimes else 0, 
-            'IAT Mean': np.mean(interArrivalTimes) if interArrivalTimes else 0,
-            'IAT Std': np.std(interArrivalTimes) if interArrivalTimes else 0
-        }   
-        featuresDict[flow] = flowParametes #save the dictionary of values into the featuresDict
-    return dict(featuresDict)
+                else: #else means backward packets
+                    bwdLengths.append(packet.payloadLen)
 
 
-# function for predicting PortScanning and DoS attacks given flow dictionary
-def PredictPortDoS(flowDict):
-    global selectedColumns
+            # inter-arrival time features (IAT) and flow duration
+            interArrivalTimes = [t2 - t1 for t1, t2 in zip(timestamps[:-1], timestamps[1:])]
+            flowDuration = lastSeenPacket - firstSeenPacket
 
-    try: 
-        # extract keys and values
-        keys = list(flowDict.keys())
-        values = list(flowDict.values())
-        orderedValues = [[valueDict[col] for col in selectedColumns] for valueDict in values] #reorder the values in the same order that the models were trained on
-        
-        # create DataFrame for the keys (3-tuple)
-        keysDataframe = pd.DataFrame(keys, columns=['Src IP', 'Dst IP', 'Protocol'])
+            # calculate the value dictionary for the current flow and insert it into the featuresDict
+            flowParametes = {
+                'Number of Ports': numOfPorts,
+                'Average Packet Size': np.mean(payloadLengths) if payloadLengths else 0,
+                'Packet Length Min': np.min(payloadLengths) if payloadLengths else 0, # packet length features
+                'Packet Length Max': np.max(payloadLengths) if payloadLengths else 0,
+                'Packet Length Mean': np.mean(payloadLengths) if payloadLengths else 0,
+                'Packet Length Std': np.std(payloadLengths) if payloadLengths else 0,
+                'Packet Length Variance': np.var(payloadLengths) if payloadLengths else 0,
+                'Total Length of Fwd Packet': np.sum(fwdLengths), # total and average size features
+                'Fwd Packet Length Max': np.max(fwdLengths) if fwdLengths else 0, # FWD/BWD packet length features
+                'Fwd Packet Length Mean': np.mean(fwdLengths) if fwdLengths else 0,
+                'Bwd Packet Length Max': np.max(bwdLengths) if bwdLengths else 0,
+                'Bwd Packet Length Mean': np.mean(bwdLengths) if bwdLengths else 0,
+                'Bwd Packet Length Min': np.min(bwdLengths) if bwdLengths else 0,
+                'Bwd Packet Length Std': np.std(bwdLengths) if bwdLengths else 0,
+                'Fwd Segment Size Avg': np.mean(fwdLengths) if fwdLengths else 0,
+                'Bwd Segment Size Avg': np.mean(bwdLengths) if bwdLengths else 0,
+                'Subflow Fwd Bytes': np.sum(fwdLengths) / subflowCount if subflowCount > 0 else 0, # subflow feature
+                'SYN Flag Count': synFlags, # SYN, ACK and RST flag counts
+                'ACK Flag Count': ackFlags,
+                'RST Flag Count': rstFlags,
+                'Flow Duration': flowDuration, # flow duration and packets per second in flow
+                'Packets Per Second': len(packetList) / flowDuration if flowDuration > 0 else 0,
+                'IAT Total': np.sum(interArrivalTimes) if interArrivalTimes else 0, # inter-arrival time features (IAT)
+                'IAT Max': np.max(interArrivalTimes) if interArrivalTimes else 0, 
+                'IAT Mean': np.mean(interArrivalTimes) if interArrivalTimes else 0,
+                'IAT Std': np.std(interArrivalTimes) if interArrivalTimes else 0
+            }   
+            featuresDict[flow] = flowParametes #save the dictionary of values into the featuresDict
+        return dict(featuresDict)
 
-        # create DataFrame for the values (dict), columns ensures that the order of the input matches the order of the classifier
-        valuesDataframe = pd.DataFrame(orderedValues, columns=selectedColumns)
 
-        # load the PortScanning and DoS model
-        modelPath = getModelPath('new_flows_port_dos_hulk_goldeneye_svm_model.pkl')
-        scalerPath = getModelPath('new_flows_port_dos_hulk_goldeneye_scaler.pkl')
-        loadedModel = joblib.load(modelPath) 
-        loadedScaler = joblib.load(scalerPath) 
+    # function for predicting PortScanning and DoS attacks given flow dictionary
+    @staticmethod
+    def PredictPortDoS(flowDict):
+        try: 
+            # extract keys and values
+            keys = list(flowDict.keys()) #todo: find a way to make flowDict be a dataframe by default such that we will not need the conversion
+            values = list(flowDict.values())
+            orderedValues = [[valueDict[col] for col in PortScanDoS.selectedColumns] for valueDict in values] #reorder the values in the same order that the models were trained on
+            
+            # create DataFrame for the keys (3-tuple)
+            keysDataframe = pd.DataFrame(keys, columns=['Src IP', 'Dst IP', 'Protocol'])
 
-        # scale the input data and predict the scaled input
-        scaledDataframe = loadedScaler.transform(valuesDataframe)
-        valuesDataframe = pd.DataFrame(scaledDataframe, columns=selectedColumns)
-        predictions = loadedModel.predict(valuesDataframe)
-        keysDataframe['Result'] = predictions
+            # create DataFrame for the values (dict), columns ensures that the order of the input matches the order of the classifier
+            valuesDataframe = pd.DataFrame(orderedValues, columns=PortScanDoS.selectedColumns)
 
-        # check for attacks in model predictions
-        if (1 in predictions) and (2 in predictions):#1 and 2 means PortScan and DoS attacks together
-            raise PortScanDoSException( #throw an exeption to inform user of its presence
-                'Detected PortScan and DoS attack',
-                state=3,
-                flows=keysDataframe[keysDataframe['Result'] != 0].to_dict(orient='records')
-            )
+            # load the PortScanning and DoS model
+            modelPath = getModelPath('new_flows_port_dos_hulk_goldeneye_svm_model.pkl')
+            scalerPath = getModelPath('new_flows_port_dos_hulk_goldeneye_scaler.pkl')
+            loadedModel = joblib.load(modelPath) 
+            loadedScaler = joblib.load(scalerPath) 
 
-        elif 1 in predictions: #1 means PortScan attack
-            raise PortScanDoSException( #throw an exeption to inform user of its presence
-                'Detected PortScan attack',
-                state=1,
-                flows=keysDataframe[keysDataframe['Result'] == 1].to_dict(orient='records')
-            )
-        
-        elif 2 in predictions: #2 means DoS attack
-            raise PortScanDoSException( #throw an exeption to inform user of its presence
-                'Detected DoS attack',
-                state=2,
-                flows=keysDataframe[keysDataframe['Result'] == 2].to_dict(orient='records')
-            )
+            # scale the input data and predict the scaled input
+            scaledDataframe = loadedScaler.transform(valuesDataframe)
+            valuesDataframe = pd.DataFrame(scaledDataframe, columns=PortScanDoS.selectedColumns)
+            predictions = loadedModel.predict(valuesDataframe)
+            keysDataframe['Result'] = predictions
 
-        # show results of the prediction
-        labelCounts = keysDataframe['Result'].value_counts()
-        print(f'Results: {labelCounts}\n')
-        print(f'Num of Port Scan ips: {keysDataframe[keysDataframe['Result'] == 1]['Src IP'].unique()}\n')
-        print(f'Num of DoS ips: {keysDataframe[keysDataframe['Result'] == 2]['Src IP'].unique()}\n')
-        print(f'Number of detected attacks:\n {keysDataframe[keysDataframe['Result'] != 0]}\n')
-        print('Predictions:\n', keysDataframe)
+            # check for attacks in model predictions
+            if (1 in predictions) and (2 in predictions):#1 and 2 means PortScan and DoS attacks together
+                raise PortScanDoSException( #throw an exeption to inform user of its presence
+                    'Detected PortScan and DoS attack',
+                    state=3,
+                    flows=keysDataframe[keysDataframe['Result'] != 0].to_dict(orient='records')
+                )
 
-        # temporary code for saving false positive if the occure during scans
-        if len(keysDataframe[keysDataframe['Result'] != 0]['Src IP'].unique()) != 0:
-            import shutil
-            shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_{"detectedFlows.txt"}')
+            elif 1 in predictions: #1 means PortScan attack
+                raise PortScanDoSException( #throw an exeption to inform user of its presence
+                    'Detected PortScan attack',
+                    state=1,
+                    flows=keysDataframe[keysDataframe['Result'] == 1].to_dict(orient='records')
+                )
+            
+            elif 2 in predictions: #2 means DoS attack
+                raise PortScanDoSException( #throw an exeption to inform user of its presence
+                    'Detected DoS attack',
+                    state=2,
+                    flows=keysDataframe[keysDataframe['Result'] == 2].to_dict(orient='records')
+                )
 
-    except PortScanDoSException as e: #if we recived ArpSpoofingException we alert the user
-        print(e)
-    except Exception as e: #we catch an exception if something happend
-        print(f'Error occurred: {e}')
+            # show results of the prediction
+            labelCounts = keysDataframe['Result'].value_counts()
+            print(f'Results: {labelCounts}\n')
+            print(f'Num of Port Scan ips: {keysDataframe[keysDataframe['Result'] == 1]['Src IP'].unique()}\n')
+            print(f'Num of DoS ips: {keysDataframe[keysDataframe['Result'] == 2]['Src IP'].unique()}\n')
+            print(f'Number of detected attacks:\n {keysDataframe[keysDataframe['Result'] != 0]}\n')
+            print('Predictions:\n', keysDataframe)
+
+            # temporary code for saving false positive if the occure during scans
+            if len(keysDataframe[keysDataframe['Result'] != 0]['Src IP'].unique()) != 0:
+                import shutil
+                shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows.txt')
+
+        except PortScanDoSException as e: #if we recived ArpSpoofingException we alert the user
+            print(e)
+        except Exception as e: #we catch an exception if something happend
+            print(f'Error occurred: {e}')
 
 #--------------------------------------------PORT-SCANNING-DoS-END-------------------------------------------#
 
 #-----------------------------------------------DNS-TUNNELING------------------------------------------------#
-def ProcessDNSFlows(dnsFlowDict): 
-    featuresDict = defaultdict(dict) #represents our features dict where each flow tuple has its corresponding features
+class DNSTunnelingException(Exception):
+    def __init__(self, message, state, details):
+        super().__init__(message)
+        self.state = state #represents the state of attack
+        self.details = details #represents additional details about the dns tunneling
 
-    # iterate over our flow dict and calculate features
-    for flow, packetList in dnsFlowDict.items():
-        fwdTxtRecord = 0 #represennts number of txt record response packets in flow
-        fwdARecord = 0 #represennts number of A record (ipv4) response packets in flow
-        fwd4ARecord = 0 #represennts number of AAAA record (ipv6) response packets in flow
-        domainNameLengths = [] #represents the domian name lengths
-        responseDataLengths = [] #represents the response data lengths
-        packetLengths = [] #represents packet lengths
-        ipHeaderLengths = [] #represents ip header lengths
-        ipRbFlags, ipDfFlags, ipMfFlags = 0, 0, 0 #represents flags of ip header
+    # str representation of dns tunneling exception for showing results
+    def __str__(self):
+        detailsList = '\n##### DNS Tunneling ATTACK ######\n'
+        return detailsList
+        # detailsList += '\n'.join([f'[*] {key} ==> {', '.join(value)}' for key, value in self.details.items()])
+        # return f'{self.args[0]}\nDetails:\n{detailsList}\n'
 
-        # iterate over each packet in flow
-        for packet in packetList:
-            if isinstance(packet, DNS_Packet):                
-                # add packet length and ip header length to lists
-                packetLengths.append(packet.packetLen)
-                ipHeaderLengths.append(packet.ipHeaderLen)
 
-                # check each flag in ipv4 and increment counter if set
-                if 'RB' in packet.ipFlagDict and packet.ipFlagDict['RB']:
-                    ipRbFlags += 1
-                if 'DF' in packet.ipFlagDict and packet.ipFlagDict['DF']:
-                    ipDfFlags += 1
-                if 'MF' in packet.ipFlagDict and packet.ipFlagDict['MF']:
-                    ipMfFlags += 1
-                
-                if packet.srcIp == flow[0] and packet.dnsType == 'Response': #means response packet
-                    if packet.dnsSubType == 1: #means A record
-                        fwdARecord += 1
-                    elif packet.dnsSubType == 28: #means AAAA record
-                        fwd4ARecord += 1
-                    elif packet.dnsSubType == 16: #means TXT record
-                        fwdTxtRecord += 1
+# static class that represents the collection and detection of DNS Tunneling attack
+class DNSTunneling(ABC):
+
+    @staticmethod
+    def ProcessFlows(flowDict): 
+        featuresDict = defaultdict(dict) #represents our features dict where each flow tuple has its corresponding features
+
+        # iterate over our flow dict and calculate features
+        for flow, packetList in flowDict.items():
+            fwdTxtRecord = 0 #represennts number of txt record response packets in flow
+            fwdARecord = 0 #represennts number of A record (ipv4) response packets in flow
+            fwd4ARecord = 0 #represennts number of AAAA record (ipv6) response packets in flow
+            domainNameLengths = [] #represents the domian name lengths
+            responseDataLengths = [] #represents the response data lengths
+            packetLengths = [] #represents packet lengths
+            ipHeaderLengths = [] #represents ip header lengths
+            ipRbFlags, ipDfFlags, ipMfFlags = 0, 0, 0 #represents flags of ip header
+
+            # iterate over each packet in flow
+            for packet in packetList:
+                if isinstance(packet, DNS_Packet):                
+                    # add packet length and ip header length to lists
+                    packetLengths.append(packet.packetLen)
+                    ipHeaderLengths.append(packet.ipHeaderLen)
+
+                    # check each flag in ipv4 and increment counter if set
+                    if 'RB' in packet.ipFlagDict and packet.ipFlagDict['RB']:
+                        ipRbFlags += 1
+                    if 'DF' in packet.ipFlagDict and packet.ipFlagDict['DF']:
+                        ipDfFlags += 1
+                    if 'MF' in packet.ipFlagDict and packet.ipFlagDict['MF']:
+                        ipMfFlags += 1
                     
-                    # add response data to response data list
-                    if packet.dnsData:
-                        if isinstance(packet.dnsData, list): #if data is list we convert it
-                            totalLength = np.sum(len(response) for response in packet.dnsData)
-                            responseDataLengths.append(totalLength)
-                        elif isinstance(packet.dnsData, dict): #if data is dict we convert it
-                            totalLength = np.sum(len(value) for value in packet.dnsData.values())
-                            responseDataLengths.append(totalLength)
-                        else: #else its regular data object
-                            responseDataLengths.append(len(packet.dnsData))
+                    if packet.srcIp == flow[0] and packet.dnsType == 'Response': #means response packet
+                        if packet.dnsSubType == 1: #means A record
+                            fwdARecord += 1
+                        elif packet.dnsSubType == 28: #means AAAA record
+                            fwd4ARecord += 1
+                        elif packet.dnsSubType == 16: #means TXT record
+                            fwdTxtRecord += 1
+                        
+                        # add response data to response data list
+                        if packet.dnsData:
+                            if isinstance(packet.dnsData, list): #if data is list we convert it
+                                totalLength = np.sum(len(response) for response in packet.dnsData)
+                                responseDataLengths.append(totalLength)
+                            elif isinstance(packet.dnsData, dict): #if data is dict we convert it
+                                totalLength = np.sum(len(value) for value in packet.dnsData.values())
+                                responseDataLengths.append(totalLength)
+                            else: #else its regular data object
+                                responseDataLengths.append(len(packet.dnsData))
 
-                elif packet.srcIp == flow[1] and packet.dnsType == 'Request': #means request packet
-                    domainNameLengths.append(len(packet.dnsDomainName)) #add domian name length
+                    elif packet.srcIp == flow[1] and packet.dnsType == 'Request': #means request packet
+                        domainNameLengths.append(len(packet.dnsDomainName)) #add domian name length
 
-        # calculate the value dictionary for the current flow and insert it into the featuresDict
-        flowParametes = {
-            'Fwd A Record': fwdARecord,
-            'Fwd AAAA Record': fwd4ARecord,
-            'Fwd TXT Record': fwdTxtRecord,
-            'Average Response Data Length': np.mean(responseDataLengths) if responseDataLengths else 0,
-            'Min Response Data Length': np.min(responseDataLengths) if responseDataLengths else 0,
-            'Max Response Data Length': np.max(responseDataLengths) if responseDataLengths else 0,
-            'Average Domain Name Length': np.mean(domainNameLengths) if domainNameLengths else 0,
-            'Min Domain Name Length': np.min(domainNameLengths) if domainNameLengths else 0,
-            'Max Domain Name Length': np.max(domainNameLengths) if domainNameLengths else 0,
-            'Average Packet Length': np.mean(packetLengths) if packetLengths else 0,
-            'Min Packet Length': np.min(packetLengths) if packetLengths else 0,
-            'Max Packet Length': np.max(packetLengths) if packetLengths else 0,
-            'Average IP Header Length': np.mean(ipHeaderLengths) if ipHeaderLengths else 0,
-            'Min IP Header Length': np.min(ipHeaderLengths) if ipHeaderLengths else 0,
-            'Max IP Header Length': np.max(ipHeaderLengths) if ipHeaderLengths else 0,
-            'RB Flag Count': ipRbFlags,
-            'DF Flag Count': ipDfFlags,
-            'MF Flag Count': ipMfFlags,
-        }
-        featuresDict[flow] = flowParametes #save the dictionary of values into the featuresDict
-    return dict(featuresDict)
+            # calculate the value dictionary for the current flow and insert it into the featuresDict
+            flowParametes = {
+                'Fwd A Record': fwdARecord,
+                'Fwd AAAA Record': fwd4ARecord,
+                'Fwd TXT Record': fwdTxtRecord,
+                'Average Response Data Length': np.mean(responseDataLengths) if responseDataLengths else 0,
+                'Min Response Data Length': np.min(responseDataLengths) if responseDataLengths else 0,
+                'Max Response Data Length': np.max(responseDataLengths) if responseDataLengths else 0,
+                'Average Domain Name Length': np.mean(domainNameLengths) if domainNameLengths else 0,
+                'Min Domain Name Length': np.min(domainNameLengths) if domainNameLengths else 0,
+                'Max Domain Name Length': np.max(domainNameLengths) if domainNameLengths else 0,
+                'Average Packet Length': np.mean(packetLengths) if packetLengths else 0,
+                'Min Packet Length': np.min(packetLengths) if packetLengths else 0,
+                'Max Packet Length': np.max(packetLengths) if packetLengths else 0,
+                'Average IP Header Length': np.mean(ipHeaderLengths) if ipHeaderLengths else 0,
+                'Min IP Header Length': np.min(ipHeaderLengths) if ipHeaderLengths else 0,
+                'Max IP Header Length': np.max(ipHeaderLengths) if ipHeaderLengths else 0,
+                'RB Flag Count': ipRbFlags,
+                'DF Flag Count': ipDfFlags,
+                'MF Flag Count': ipMfFlags,
+            }
+            featuresDict[flow] = flowParametes #save the dictionary of values into the featuresDict
+        return dict(featuresDict)
 
 #----------------------------------------------DNS-TUNNELING-END---------------------------------------------#
 
 #--------------------------------------------SAVING-COLLECTED-DATA-------------------------------------------#
 
-def SaveCollectedData(flows):
-    global selectedColumns
+# static class that has some basic functionality for saving the collected data from the sniffer
+class SaveData(ABC):
 
-    # create a dataframe from the collected data
-    values = list(flows.values())
-    ordered_values = [[valueDict[col] for col in selectedColumns] for valueDict in values] #reorder the values in the same order that the models were trained on
-    valuesDataframe = pd.DataFrame(ordered_values, columns=selectedColumns)
+    # function for saving the collected flows into a CSV file (used to collect benign data)
+    @staticmethod
+    def SaveCollectedData(flows, filename='benign_dataset.csv', selectedColumns=PortScanDoS.selectedColumns):
+        # create a dataframe from the collected data
+        values = list(flows.values())
+        ordered_values = [[valueDict[col] for col in selectedColumns] for valueDict in values] #reorder the values in the same order that the models were trained on
+        valuesDataframe = pd.DataFrame(ordered_values, columns=selectedColumns)
 
-    if not os.path.isfile('benign_dataset.csv'):
-        valuesDataframe.to_csv('benign_dataset.csv', index=False) #save the new data if needed
-    else:
-        # open an existing file and merge the collected data to it
-        readBenignCsv = pd.read_csv('benign_dataset.csv')
-        mergedDataframe = pd.concat([readBenignCsv , valuesDataframe], axis=0)
-        mergedDataframe.to_csv('benign_dataset.csv', index=False)
-        print(f'Found {valuesDataframe.shape[0]} rows.')
+        if not os.path.isfile(filename):
+            valuesDataframe.to_csv(filename, index=False) #save the new data if needed
+        else:
+            # open an existing file and merge the collected data to it
+            readBenignCsv = pd.read_csv(filename)
+            mergedDataframe = pd.concat([readBenignCsv , valuesDataframe], axis=0)
+            mergedDataframe.to_csv(filename, index=False)
+            print(f'Found {valuesDataframe.shape[0]} rows.')
+
+    
+    # function for saving the collected flows into a txt file
+    @staticmethod
+    def saveFlowsInFile(flows, filename='detectedFlows.txt'):
+        # write result of flows captured in txt file
+        with open(filename, 'w') as file:
+            for flow, features in flows.items():
+                file.write(f'Flow: {flow}\n')
+                for feature, value in features.items():
+                    file.write(f' {feature}: {value}\n')
+                file.write('================================================================\n')
 
 #------------------------------------------SAVING-COLLECTED-DATA-END-----------------------------------------#
 
+#-------------------------------------------------MAIN-START-------------------------------------------------#
 
 if __name__ == '__main__':
-    # GetAvailableInterfaces()
 
-    #call scan network func to initiate network scan 'en6' / 'Ethernet'
-    ScanNetwork('Ethernet') 
+    # call scan network func to initiate network scan 'en6' / 'Ethernet'
+    SniffNetwork.selectedInterface = 'en6' #mimicking a user selected interface from spinbox
 
-    # #test call arp processing function and check for arp spoofing attacks
-    # ProcessARP()
+    SniffNetwork.ScanNetwork() 
 
-    # test port scanning and dos attacks
-    flows = ProcessFlows(flowDict)
+    # call arp processing function and check for arp spoofing attacks
+    ArpSpoofing.ProcessARP()
 
-    # write result of flows captured in txt file
-    # with open('detectedFlows.txt', 'w') as file:
-    #     for flow, features in flows.items():
-    #         file.write(f'Flow: {flow}\n')
-    #         for feature, value in features.items():
-    #             file.write(f' {feature}: {value}\n')
-    #         file.write('================================================================\n')
+    # call port scanning and dos processing function
+    portScanFlows = PortScanDoS.ProcessFlows()
 
-    # save the collected data
-    SaveCollectedData(flows)
+    SaveData.saveFlowsInFile(portScanFlows) #save the collected data in txt format
+    SaveData.SaveCollectedData(portScanFlows) #save the collected data in CSV format
 
-    #call predict function to determine if attack is present
-    PredictPortDoS(flows)
+    # call predict function to determine if attack is present
+    PortScanDoS.PredictPortDoS(portScanFlows)
+
+#--------------------------------------------------MAIN-END--------------------------------------------------#

@@ -763,8 +763,8 @@ class PortScanDoS(ABC):
             valuesDataframe = pd.DataFrame(orderedValues, columns=PortScanDoS.selectedColumns)
 
             # load the PortScanning and DoS model
-            modelPath = getModelPath('new_flows_port_dos_hulk_goldeneye_svm_model.pkl')
-            scalerPath = getModelPath('new_flows_port_dos_hulk_goldeneye_scaler.pkl')
+            modelPath = getModelPath('port_dos_svm_model.pkl')
+            scalerPath = getModelPath('port_dos_scaler.pkl')
             loadedModel = joblib.load(modelPath) 
             loadedScaler = joblib.load(scalerPath) 
 
@@ -958,7 +958,7 @@ if __name__ == '__main__':
     SniffNetwork.ScanNetwork() 
 
     # call arp processing function and check for arp spoofing attacks
-    ArpSpoofing.ProcessARP()
+    # ArpSpoofing.ProcessARP()
 
     # call port scanning and dos processing function
     portScanFlows = PortScanDoS.ProcessFlows()

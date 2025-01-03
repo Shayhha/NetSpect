@@ -763,8 +763,8 @@ class PortScanDoS(ABC):
             valuesDataframe = pd.DataFrame(orderedValues, columns=PortScanDoS.selectedColumns)
 
             # load the PortScanning and DoS model
-            modelPath = getModelPath('port_dos_svm_model.pkl')
-            scalerPath = getModelPath('port_dos_scaler.pkl')
+            modelPath = getModelPath('port_scan_dos_svm_model.pkl')
+            scalerPath = getModelPath('port_scan_dos_scaler.pkl')
             loadedModel = joblib.load(modelPath) 
             loadedScaler = joblib.load(scalerPath) 
 

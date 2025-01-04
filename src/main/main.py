@@ -1,9 +1,9 @@
-import sys, os, logging, socket, joblib, time
+import sys, os, logging, joblib, time
 import numpy as np
 import pandas as pd
 from abc import ABC, abstractmethod
 from ipaddress import ip_address, ip_network, IPv4Interface
-from psutil import net_if_addrs, net_if_stats, AF_LINK
+from psutil import net_if_addrs, net_if_stats
 from scapy.all import sniff, get_if_list, srp, IP, IPv6, TCP, UDP, ICMP, ARP, Ether, Raw, conf 
 from scapy.layers.dns import DNS
 from collections import defaultdict
@@ -11,11 +11,6 @@ from collections import defaultdict
 # dynamically add the src directory to sys.path, this allows us to access all moduls in the project at run time
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from src.models import getModelPath
-
-# constant values for interface info
-IPV4 = socket.AF_INET
-IPV6 = socket.AF_INET6
-MAC_ADDRESS = AF_LINK
 
 #----------------------------------------------Default_Packet------------------------------------------------#
 # abstarct class for default packet
@@ -385,56 +380,60 @@ class SniffNetwork(ABC):
     def GetNetworkInterfaces():
         supportedInterfaces = ['eth', 'wlan', 'en', 'enp', 'wlp', 'lo', 'Ethernet', 'Wi-Fi', '\\Device\\NPF_Loopback'] #this list represents the usual network interfaces that are available in various platfroms
         networkInterfaces = {} #represents network interfaces dict where keys are name of interface and value is interface dict
-        ifaceDict = net_if_addrs()
-        ifaceStats = net_if_stats()
+        ifaceStats = net_if_stats() #for getting extra info about each interface using stats function
 
-        for ifaceName in ifaceDict.keys():
-            # make sure that we are only collecting info about supported network interfaces
-            if any(ifaceName.startswith(name) for name in supportedInterfaces):
-                ipv4Addrs, ipv6Addrs, ipv4Subnets, ipv6Subnets = [], [], [], set()
-                macAddress = 'None'
+        # iterate through all network interfaces and initialize our network interfaces dict
+        for iface in conf.ifaces.values():
+            # we add only interfaces we support with scapy and that are up
+            if iface.ips and any(iface.name.startswith(name) for name in supportedInterfaces):
+                # initialize our ipv4 and ipv6 addresses (always dict of two elements: 4: ipv4Addrs, 6: ipv6Addrs)
+                ipv4Addrs, ipv6Addrs, ipv4Subnets, ipv6Subnets = iface.ips[4], iface.ips[6], [], set()
 
-                # iterate over each interface's information and collect data such as IP addresses and subnets
-                for ifaceInfo in ifaceDict.get(ifaceName, []):
-                    # get IP address and netmask (address can also be mac address)
-                    ipAddress = ifaceInfo.address
-                    netmask = ifaceInfo.netmask
+                # initialize ipv4 subnets based on ipv4 ips we found
+                for ipAddress in ipv4Addrs:
+                    netmask = SniffNetwork.GetNetmaskFromIp(ipAddress) #get netmask with our function
+                    if ipAddress and netmask:
+                        subnet = IPv4Interface(f'{ipAddress}/{netmask}').network
+                        ipv4Subnets.append((str(subnet), f'{'.'.join(ipAddress.split('.')[:3])}.0/24', netmask)) #list of tuples such that (subnet (real), range(/24), netmask)
 
-                    if ifaceInfo.family == IPV4: 
-                        # calculate the subnet using the IP address and netmask
-                        ipv4Addrs.append(ipAddress)
-                        if ipAddress and netmask:
-                            subnet = IPv4Interface(f'{ipAddress}/{netmask}').network
-                            ipv4Subnets.append((str(subnet), f'{'.'.join(ipAddress.split('.')[:3])}.0/24', netmask)) #list of tuples such that (subnet (real), range(/24), netmask)
-
-                    elif ifaceInfo.family == IPV6:
-                        # estimate subnet for IPv6 using a /64 mask
-                        ipv6Addrs.append(ipAddress)
-                        if ipAddress and (not ipAddress.startswith('::1')) and (not ipAddress.endswith('::1')): #exclude loopback
-                            ipv6Subnets.add(f'{':'.join(ipAddress.split(':')[:4])}::/64') # /64 subnet estimation
-
-                    elif ifaceInfo.family == MAC_ADDRESS: #if Mac Address exists
-                        macAddress = ipAddress
+                # initialize ipv6 subnets based on ipv6 ips we found, excluding loopback
+                for ipAddress in ipv6Addrs:
+                    if ipAddress and (not ipAddress.startswith('::1')) and (not ipAddress.endswith('::1')): #exclude loopback
+                        ipv6Subnets.add(f'{':'.join(ipAddress.split(':')[:4])}::/64') #represents /64 subnet estimation
 
                 # continue to next interface if this one does not have any ip address
                 if (len(ipv4Addrs) == 0) and (len(ipv6Addrs) == 0): continue
-                
-                # initialize interface dict without subnets yet
+
+                # initialize interface dict with all given information
                 interfaceDict = {
-                    'name': ifaceName if ifaceName else 'None',
-                    'description': conf.ifaces.get(ifaceName).description if conf.ifaces.get(ifaceName) else 'None',
-                    'status': ifaceStats.get(ifaceName).isup if ifaceStats.get(ifaceName) else 'None',
-                    'maxSpeed': ifaceStats.get(ifaceName).speed if ifaceStats.get(ifaceName) else 'None',
-                    'maxTransmitionUnit': ifaceStats.get(ifaceName).mtu if ifaceStats.get(ifaceName) else 'None',
-                    'mac': macAddress,
+                    'name': iface.name if iface.name else '',
+                    'description': iface.description if iface.description else '',
+                    'status': ifaceStats.get(iface.name).isup if ifaceStats.get(iface.name) else 'None',
+                    'maxSpeed': ifaceStats.get(iface.name).speed if ifaceStats.get(iface.name) else 'None',
+                    'maxTransmitionUnit': ifaceStats.get(iface.name).mtu if ifaceStats.get(iface.name) else 'None',
+                    'mac': iface.mac if iface.mac else '',
                     'ipv4Addrs': ipv4Addrs,
                     'ipv4Info': ipv4Subnets,
                     'ipv6Addrs': ipv6Addrs,
                     'ipv6Info': list(ipv6Subnets)
                 }
                 networkInterfaces[interfaceDict['name']] = interfaceDict #add interface to our network interfaces
-            
-        return networkInterfaces
+        
+        return networkInterfaces #return the filtered and matched interfaces
+
+
+    # function for getting a correct netmask for a given IP address using psutil
+    @staticmethod
+    def GetNetmaskFromIp(ipAddress):
+        interfaces = net_if_addrs()
+
+        # iterate over each interface and find correct netmask
+        for addresses in interfaces.values():
+            for addr in addresses:
+                if addr.family.name == 'AF_INET' and addr.address == ipAddress:
+                    return addr.netmask #return the subnet mask if the IP matches
+                    
+        return None #return None if the IP is not found
 
     #-------------------------------------------HELPER-FUNCTIONS-END---------------------------------------------#
 
@@ -953,7 +952,7 @@ class SaveData(ABC):
 if __name__ == '__main__':
 
     # call scan network func to initiate network scan 'en6' / 'Ethernet'
-    SniffNetwork.selectedInterface = 'en6' #mimicking a user selected interface from spinbox
+    SniffNetwork.selectedInterface = 'Ethernet' #mimicking a user selected interface from spinbox
 
     SniffNetwork.ScanNetwork() 
 

@@ -149,12 +149,14 @@ class DNS_Packet(Default_Packet):
     dnsDomainName = None
     dnsNumOfReqOrRes = None
     dnsData = None
+    dnsPacketLen = None
 
     def __init__(self, packet=None, dnsId=None):
         super().__init__('DNS', packet) #call parent ctor
         if packet.haslayer(DNS): #checks if packet is DNS
             self.packetType = DNS #add packet type
         self.dnsId = dnsId
+        self.dnsPacketLen = len(self.packet[DNS])
         self.InitDNS() #call method to initialize dns specific params
 
     #method for packet information
@@ -659,7 +661,6 @@ class PortScanDoS(ABC):
 
         # iterate over our flow dict and calculate features
         for flow, packetList in SniffNetwork.portScanDosDict.items():
-            numOfPorts = 0 #represents number of unique destination ports we found in given flow
             uniquePorts = set() #represents the unique destination ports in flow
             fwdLengths = [] #represents length of forward packets in flow
             bwdLengths = [] #represents length of backward packets in flow
@@ -698,7 +699,6 @@ class PortScanDoS(ABC):
                     # check for unique destination ports and add it if new port
                     if packet.dstPort not in uniquePorts:
                         uniquePorts.add(packet.dstPort) #add the port to the set
-                        numOfPorts += 1 #increment the counter for unique ports
                     
                     # count subflows in forward packets using counters and timestamps
                     if subflowLastPacketTS == -1:
@@ -716,7 +716,7 @@ class PortScanDoS(ABC):
 
             # calculate the value dictionary for the current flow and insert it into the featuresDict
             flowParametes = {
-                'Number of Ports': numOfPorts,
+                'Number of Ports': len(uniquePorts), # number of unique destination ports
                 'Average Packet Size': np.mean(payloadLengths) if payloadLengths else 0,
                 'Packet Length Min': np.min(payloadLengths) if payloadLengths else 0, # packet length features
                 'Packet Length Max': np.max(payloadLengths) if payloadLengths else 0,
@@ -836,9 +836,9 @@ class DNSTunneling(ABC):
     selectedColumns = [
         'A Record Count', 'AAAA Record Count', 'TXT Record Count', 'CName Record Count', 'DF Flag Count', 'MF Flag Count',
         'Average Response Data Length', 'Min Response Data Length', 'Max Response Data Length', 'Average Domain Name Length',
-        'Min Domain Name Length', 'Max Domain Name Length', 'Average Packet Length', 'Min Packet Length', 'Max Packet Length', 
-        'Average IP Header Length', 'Min IP Header Length', 'Max IP Header Length', 'Total Length of Fwd Packet', 'Total Length of Bwd Packet', 
-        'Total Number of Packets', 'Flow Duration', 'IAT Total', 'IAT Max', 'IAT Mean', 'IAT Std'
+        'Min Domain Name Length', 'Max Domain Name Length', 'Average Domain Name Entropy', 'Min Domain Name Entropy', 'Max Domain Name Entropy',
+        'Average Packet Length', 'Min Packet Length', 'Max Packet Length', 'Average IP Header Length', 'Min IP Header Length', 'Max IP Header Length', 
+        'Number of Domian Names', 'Total Length of Fwd Packet', 'Total Length of Bwd Packet', 'Total Number of Packets', 'Flow Duration', 'IAT Total', 'IAT Max', 'IAT Mean', 'IAT Std'
     ]
 
     @staticmethod
@@ -851,6 +851,7 @@ class DNSTunneling(ABC):
             fwdARecord = 0 #represennts number of A record (ipv4) packets in flow
             fwd4ARecord = 0 #represennts number of AAAA record (ipv6) packets in flow
             fwdCNameRecord = 0 #represents number of C-Name recond packets in flow
+            uniqueDomainNames = set() #represents unique domian names in packtes
             domainNameLengths = [] #represents the domian name lengths
             responseDataLengths = [] #represents the response data lengths
             packetLengths = [] #represents packet lengths
@@ -900,23 +901,34 @@ class DNSTunneling(ABC):
                         if packet.dnsType == 'Response': #means response packet
                             # add response data to response data list
                             if packet.dnsData:
+                                totalLength = len(packet.dnsData) #represents total length of packets
                                 if isinstance(packet.dnsData, list): #if data is list we convert it
                                     totalLength = np.sum(len(response) for response in packet.dnsData)
-                                    responseDataLengths.append(totalLength)
                                 elif isinstance(packet.dnsData, dict): #if data is dict we convert it
                                     totalLength = np.sum(len(value) for value in packet.dnsData.values())
-                                    responseDataLengths.append(totalLength)
-                                else: #else its regular data object
-                                    responseDataLengths.append(len(packet.dnsData))
+                                responseDataLengths.append(totalLength) #add the total length to our list
 
                     elif packet.srcIp == flow[1]: #else means backward packets
                         bwdLengths.append(len(packet.packet[DNS]))
                         if packet.dnsType == 'Request': #means request packet
                             domainNameLengths.append(len(packet.dnsDomainName)) #add domian name length
+
+                            #check if request domain name is unique and not in our set
+                            if packet.dnsDomainName not in uniqueDomainNames:
+                                uniqueDomainNames.add(packet.dnsDomainName) #add domain name to set
+
                         
             # inter-arrival time features (IAT) and flow duration
             interArrivalTimes = [t2 - t1 for t1, t2 in zip(timestamps[:-1], timestamps[1:])]
             flowDuration = lastSeenPacket - firstSeenPacket
+
+            # calculate the entroy of request domain names in given flow
+            doaminNameEntropy = []
+            for domainName in uniqueDomainNames:
+                charCount = np.unique(list(domainName), return_counts=True)[1]
+                probabilities = charCount / charCount.sum()
+                doaminNameEntropy.append(-np.sum(probabilities * np.log2(probabilities)))
+
 
             # calculate the value dictionary for the current flow and insert it into the featuresDict
             flowParametes = {
@@ -926,13 +938,16 @@ class DNSTunneling(ABC):
                 'CName Record Count': fwdCNameRecord,
                 'DF Flag Count': ipDfFlags,
                 'MF Flag Count': ipMfFlags,
-                
+
                 'Average Response Data Length': np.mean(responseDataLengths) if responseDataLengths else 0,
                 'Min Response Data Length': np.min(responseDataLengths) if responseDataLengths else 0,
                 'Max Response Data Length': np.max(responseDataLengths) if responseDataLengths else 0,
                 'Average Domain Name Length': np.mean(domainNameLengths) if domainNameLengths else 0,
                 'Min Domain Name Length': np.min(domainNameLengths) if domainNameLengths else 0,
                 'Max Domain Name Length': np.max(domainNameLengths) if domainNameLengths else 0,
+                'Average Domain Name Entropy': np.mean(doaminNameEntropy) if doaminNameEntropy else 0,
+                'Min Domain Name Entropy': np.min(doaminNameEntropy) if doaminNameEntropy else 0,
+                'Max Domain Name Entropy': np.max(doaminNameEntropy) if doaminNameEntropy else 0,
                 'Average Packet Length': np.mean(packetLengths) if packetLengths else 0,
                 'Min Packet Length': np.min(packetLengths) if packetLengths else 0,
                 'Max Packet Length': np.max(packetLengths) if packetLengths else 0,
@@ -940,6 +955,7 @@ class DNSTunneling(ABC):
                 'Min IP Header Length': np.min(ipHeaderLengths) if ipHeaderLengths else 0,
                 'Max IP Header Length': np.max(ipHeaderLengths) if ipHeaderLengths else 0,
 
+                'Number of Domian Names': len(uniqueDomainNames) if uniqueDomainNames else 0,
                 'Total Length of Fwd Packet': np.sum(fwdLengths), # total and average size features
                 'Total Length of Bwd Packet': np.sum(bwdLengths), 
                 'Total Number of Packets': len(packetList),
@@ -951,6 +967,12 @@ class DNSTunneling(ABC):
             }
             featuresDict[flow] = flowParametes #save the dictionary of values into the featuresDict
         return dict(featuresDict)
+
+
+    # function for predicting DNS Tunneling attack given flow dictionary
+    @staticmethod
+    def PredictDNS(flowDict):
+        pass
 
 #----------------------------------------------DNS-TUNNELING-END---------------------------------------------#
 
@@ -979,7 +1001,7 @@ class SaveData(ABC):
     
     # function for saving the collected flows into a txt file
     @staticmethod
-    def saveFlowsInFile(flows, filename='detectedFlows.txt'):
+    def SaveFlowsInFile(flows, filename='detectedFlows.txt'):
         # write result of flows captured in txt file
         with open(filename, 'w') as file:
             for flow, features in flows.items():
@@ -996,21 +1018,21 @@ if __name__ == '__main__':
 
     # call scan network func to initiate network scan 'en6' / 'Ethernet'
     SniffNetwork.selectedInterface = 'Ethernet' #mimicking a user selected interface from spinbox
-
-    SniffNetwork.ScanNetwork() 
+    SniffNetwork.ScanNetwork()
 
     # call arp processing function and check for arp spoofing attacks
     # ArpSpoofing.ProcessARP()
 
-    # call port scanning and dos processing function
+    # call port scanning and dos processing function and predict attack
     # portScanFlows = PortScanDoS.ProcessFlows()
+    # SaveData.SaveFlowsInFile(portScanFlows) #save the collected data in txt format
+    # SaveData.SaveCollectedData(portScanFlows) #save the collected data in CSV format
+    # PortScanDoS.PredictPortDoS(portScanFlows) #call our predict function for detecting port dos attack
 
+    # call dns processing function and predict attack
     dnsFlows = DNSTunneling.ProcessFlows()
-
-    SaveData.saveFlowsInFile(dnsFlows, 'detectedFlowsDNS.txt') #save the collected data in txt format
+    SaveData.SaveFlowsInFile(dnsFlows, 'detectedFlowsDNS.txt') #save the collected data in txt format
     SaveData.SaveCollectedData(dnsFlows, 'benign_dns_dataset.csv', DNSTunneling.selectedColumns) #save the collected data in CSV format
-
-    # call predict function to determine if attack is present
-    # PortScanDoS.PredictPortDoS(portScanFlows)
+    # DNSTunneling.PredictDNS(dnsFlows)
 
 #--------------------------------------------------MAIN-END--------------------------------------------------#

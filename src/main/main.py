@@ -265,7 +265,7 @@ class SniffNetwork(ABC):
     def StopScan(packet):
         # return True if ( ((time.time() - SniffNetwork.startTime) > SniffNetwork.timeoutTime) or (SniffNetwork.arpCounter >= 20) ) else False
         # return True if ( ((time.time() - SniffNetwork.startTime) > SniffNetwork.timeoutTime) or (SniffNetwork.tcpUdpCounter >= SniffNetwork.threshold) ) else False
-        return True if ( ((time.time() - SniffNetwork.startTime) > SniffNetwork.timeoutTime) or (SniffNetwork.dnsCounter >= 350) ) else False
+        return True if ( ((time.time() - SniffNetwork.startTime) > SniffNetwork.timeoutTime) or (SniffNetwork.dnsCounter >= 550) ) else False
 
 
     # function for capturing specific packets for later analysis

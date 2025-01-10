@@ -836,9 +836,10 @@ class DNSTunneling(ABC):
     selectedColumns = [
         'A Record Count', 'AAAA Record Count', 'TXT Record Count', 'CName Record Count', 'DF Flag Count', 'MF Flag Count',
         'Average Response Data Length', 'Min Response Data Length', 'Max Response Data Length', 'Average Domain Name Length',
-        'Min Domain Name Length', 'Max Domain Name Length', 'Average Domain Name Entropy', 'Min Domain Name Entropy', 'Max Domain Name Entropy',
-        'Average Packet Length', 'Min Packet Length', 'Max Packet Length', 'Average IP Header Length', 'Min IP Header Length', 'Max IP Header Length', 
-        'Number of Domian Names', 'Total Length of Fwd Packet', 'Total Length of Bwd Packet', 'Total Number of Packets', 'Flow Duration', 'IAT Total', 'IAT Max', 'IAT Mean', 'IAT Std'
+        'Min Domain Name Length', 'Max Domain Name Length', 'Average Sub Domain Name Length', 'Min Sub Domain Name Length', 
+        'Max Sub Domain Name Length', 'Average Packet Length', 'Min Packet Length', 'Max Packet Length', 'Average IP Header Length', 
+        'Min IP Header Length', 'Max IP Header Length', 'Number of Domian Names', 'Number of Sub Domian Names', 'Total Length of Fwd Packet', 
+        'Total Length of Bwd Packet', 'Total Number of Packets', 'Flow Duration', 'IAT Total', 'IAT Max', 'IAT Mean', 'IAT Std'
     ]
 
     @staticmethod
@@ -851,8 +852,10 @@ class DNSTunneling(ABC):
             fwdARecord = 0 #represennts number of A record (ipv4) packets in flow
             fwd4ARecord = 0 #represennts number of AAAA record (ipv6) packets in flow
             fwdCNameRecord = 0 #represents number of C-Name recond packets in flow
-            uniqueDomainNames = set() #represents unique domian names in packtes
+            uniqueDomainNames = set() #represents unique domian names in packetes
+            uniqueSubDomainNames = set() #represents unique sub domian names in packetes
             domainNameLengths = [] #represents the domian name lengths
+            subDomainLengths = [] #represents the sub domain name lengths
             responseDataLengths = [] #represents the response data lengths
             packetLengths = [] #represents packet lengths
             ipHeaderLengths = [] #represents ip header lengths
@@ -912,22 +915,36 @@ class DNSTunneling(ABC):
                         bwdLengths.append(len(packet.packet[DNS]))
                         if packet.dnsType == 'Request': #means request packet
                             domainNameLengths.append(len(packet.dnsDomainName)) #add domian name length
+                            subdomains = str(packet.dnsDomainName).split('.') #get all subdomain names
+                            subDomainLengths.append(np.mean([len(subdomain) for subdomain in subdomains])) 
 
                             #check if request domain name is unique and not in our set
                             if packet.dnsDomainName not in uniqueDomainNames:
                                 uniqueDomainNames.add(packet.dnsDomainName) #add domain name to set
+                            
+                            # check if the subdomains are unique and not in our set
+                            for subdomain in subdomains:
+                                if subdomain not in uniqueDomainNames:
+                                    uniqueSubDomainNames.add(subdomain)
 
                         
             # inter-arrival time features (IAT) and flow duration
             interArrivalTimes = [t2 - t1 for t1, t2 in zip(timestamps[:-1], timestamps[1:])]
             flowDuration = lastSeenPacket - firstSeenPacket
 
-            # calculate the entroy of request domain names in given flow
+            # calculate the entropy of request domain names in given flow
             doaminNameEntropy = []
             for domainName in uniqueDomainNames:
                 charCount = np.unique(list(domainName), return_counts=True)[1]
                 probabilities = charCount / charCount.sum()
                 doaminNameEntropy.append(-np.sum(probabilities * np.log2(probabilities)))
+
+            # calculate the entropy of request sub domain names in given flow
+            subdoaminNameEntropy = []
+            for subdomainName in uniqueSubDomainNames:
+                charCount = np.unique(list(subdomainName), return_counts=True)[1]
+                probabilities = charCount / charCount.sum()
+                subdoaminNameEntropy.append(-np.sum(probabilities * np.log2(probabilities)))
 
 
             # calculate the value dictionary for the current flow and insert it into the featuresDict
@@ -938,24 +955,23 @@ class DNSTunneling(ABC):
                 'CName Record Count': fwdCNameRecord,
                 'DF Flag Count': ipDfFlags,
                 'MF Flag Count': ipMfFlags,
-
                 'Average Response Data Length': np.mean(responseDataLengths) if responseDataLengths else 0,
                 'Min Response Data Length': np.min(responseDataLengths) if responseDataLengths else 0,
                 'Max Response Data Length': np.max(responseDataLengths) if responseDataLengths else 0,
                 'Average Domain Name Length': np.mean(domainNameLengths) if domainNameLengths else 0,
                 'Min Domain Name Length': np.min(domainNameLengths) if domainNameLengths else 0,
                 'Max Domain Name Length': np.max(domainNameLengths) if domainNameLengths else 0,
-                'Average Domain Name Entropy': np.mean(doaminNameEntropy) if doaminNameEntropy else 0,
-                'Min Domain Name Entropy': np.min(doaminNameEntropy) if doaminNameEntropy else 0,
-                'Max Domain Name Entropy': np.max(doaminNameEntropy) if doaminNameEntropy else 0,
+                'Average Sub Domain Name Length': np.mean(subDomainLengths) if subDomainLengths else 0,
+                'Min Sub Domain Name Length': np.min(subDomainLengths) if subDomainLengths else 0,
+                'Max Sub Domain Name Length': np.max(subDomainLengths) if subDomainLengths else 0,
                 'Average Packet Length': np.mean(packetLengths) if packetLengths else 0,
                 'Min Packet Length': np.min(packetLengths) if packetLengths else 0,
                 'Max Packet Length': np.max(packetLengths) if packetLengths else 0,
                 'Average IP Header Length': np.mean(ipHeaderLengths) if ipHeaderLengths else 0,
                 'Min IP Header Length': np.min(ipHeaderLengths) if ipHeaderLengths else 0,
                 'Max IP Header Length': np.max(ipHeaderLengths) if ipHeaderLengths else 0,
-
                 'Number of Domian Names': len(uniqueDomainNames) if uniqueDomainNames else 0,
+                'Number of Sub Domian Names': len(uniqueSubDomainNames) if uniqueSubDomainNames else 0,
                 'Total Length of Fwd Packet': np.sum(fwdLengths), # total and average size features
                 'Total Length of Bwd Packet': np.sum(bwdLengths), 
                 'Total Number of Packets': len(packetList),

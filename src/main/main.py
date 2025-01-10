@@ -932,20 +932,6 @@ class DNSTunneling(ABC):
             interArrivalTimes = [t2 - t1 for t1, t2 in zip(timestamps[:-1], timestamps[1:])]
             flowDuration = lastSeenPacket - firstSeenPacket
 
-            # calculate the entropy of request domain names in given flow
-            doaminNameEntropy = []
-            for domainName in uniqueDomainNames:
-                charCount = np.unique(list(domainName), return_counts=True)[1]
-                probabilities = charCount / charCount.sum()
-                doaminNameEntropy.append(-np.sum(probabilities * np.log2(probabilities)))
-
-            # calculate the entropy of request sub domain names in given flow
-            subdoaminNameEntropy = []
-            for subdomainName in uniqueSubDomainNames:
-                charCount = np.unique(list(subdomainName), return_counts=True)[1]
-                probabilities = charCount / charCount.sum()
-                subdoaminNameEntropy.append(-np.sum(probabilities * np.log2(probabilities)))
-
 
             # calculate the value dictionary for the current flow and insert it into the featuresDict
             flowParametes = {

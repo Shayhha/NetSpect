@@ -1043,8 +1043,8 @@ class SaveData(ABC):
 
 if __name__ == '__main__':
 
-    # call scan network func to initiate network scan 'en6' / 'Ethernet'
-    SniffNetwork.selectedInterface = 'en6' #mimicking a user selected interface from spinbox
+    # call scan network func to initiate network scan 'en6' / 'Ethernet' / 'Wi-Fi'
+    SniffNetwork.selectedInterface = 'Ethernet' #mimicking a user selected interface from spinbox
     SniffNetwork.ScanNetwork()
 
     # call arp processing function and check for arp spoofing attacks

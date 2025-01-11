@@ -20,14 +20,14 @@ DNS_SERVERS = [
     '94.140.15.15',    # AdGuard Secondary DNS
     '185.228.168.9',   # CleanBrowsing DNS
     '185.228.169.9',   # CleanBrowsing Secondary DNS
-    '76.76.19.19',     # Alternate DNS
-    '76.223.122.150',  # Alternate Secondary DNS
-    '4.2.2.1',         # Level3 DNS
-    '4.2.2.2',         # Level3 Secondary DNS
-    '84.200.69.80',    # DNS.Watch
-    '84.200.70.40',    # DNS.Watch Secondary DNS
-    '8.26.56.26',      # Comodo Secure DNS
-    '8.20.247.20'      # Comodo Secure Secondary DNS
+    # '76.76.19.19',     # Alternate DNS
+    # '76.223.122.150',  # Alternate Secondary DNS
+    # '4.2.2.1',         # Level3 DNS
+    # '4.2.2.2',         # Level3 Secondary DNS
+    # '84.200.69.80',    # DNS.Watch
+    # '84.200.70.40',    # DNS.Watch Secondary DNS
+    # '8.26.56.26',      # Comodo Secure DNS
+    # '8.20.247.20'      # Comodo Secure Secondary DNS
 ]
 
 # traffic distribution for query types

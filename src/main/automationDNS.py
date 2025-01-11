@@ -4,7 +4,7 @@ import gc
 
 mainScriptToRun = 'src/main/main.py' #path to the script you want to run for example: 'src/main/main.py'
 dnsScriptToRun = 'src/main/generateDNS.py' #path to the script that generates dns traffic
-whenToStop = 5 #number of times to run the script
+whenToStop = 500 #number of times to run the script
 counter = 0 #dont touch
 
 while True:

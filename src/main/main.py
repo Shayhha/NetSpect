@@ -25,7 +25,6 @@ class Default_Packet(ABC):
     ipParam = None #represents IPv4 / IPv6 fields as tuple (ttl, dscp) / (hopLimit, trafficClass)
     packetLen = None #size of packet (including headers)
     payloadLen = None #size of packet (without headers)
-    ipHeaderLen = None #size of ip header
     ipFlagDict = {} #represents ip flags
     time = None #timestamp of packet
 
@@ -50,13 +49,12 @@ class Default_Packet(ABC):
             ttl = self.packet[IP].ttl #represents ttl parameter in packet
             dscp = self.packet[IP].tos #represents dscp parameter in packet
             self.ipParam = (ttl, dscp) #save both as tuple
-            self.ipHeaderLen = len(self.packet[IP]) #save size of ip header
             # we extract the binary number that represents the ipv4 flags
             ipFlags = self.packet[IP].flags #represents flags of ip
             self.ipFlagDict = {
-                'RB': (ipFlags & 0x1) != 0, #Reserved Bit flag
+                'MF': (ipFlags & 0x1) != 0, #More Fragments flag
                 'DF': (ipFlags & 0x2) != 0, #Don't Fragment flag
-                'MF': (ipFlags & 0x4) != 0, #More Fragments flag
+                'EVIL': (ipFlags & 0x4) != 0, #Evil flag
             }
         elif self.packet.haslayer(IPv6): #if packet has ipv6 layer
             self.srcIp = self.packet[IPv6].src #represents the source ip
@@ -64,7 +62,6 @@ class Default_Packet(ABC):
             hopLimit = self.packet[IPv6].hlim #represents the hop limit parameter in packet
             trafficClass = self.packet[IPv6].tc #represnets the traffic class in packet
             self.ipParam = (hopLimit, trafficClass) #save both as tuple
-            self.ipHeaderLen = len(self.packet[IPv6]) #save size of ip header
 
 
     # method to return a normalized flow representation of a packet
@@ -265,7 +262,7 @@ class SniffNetwork(ABC):
     def StopScan(packet):
         # return True if ( ((time.time() - SniffNetwork.startTime) > SniffNetwork.timeoutTime) or (SniffNetwork.arpCounter >= 20) ) else False
         # return True if ( ((time.time() - SniffNetwork.startTime) > SniffNetwork.timeoutTime) or (SniffNetwork.tcpUdpCounter >= SniffNetwork.threshold) ) else False
-        return True if ( ((time.time() - SniffNetwork.startTime) > SniffNetwork.timeoutTime) or (SniffNetwork.dnsCounter >= 550) ) else False
+        return True if ( ((time.time() - SniffNetwork.startTime) > SniffNetwork.timeoutTime) or (SniffNetwork.dnsCounter >= 350) ) else False
 
 
     # function for capturing specific packets for later analysis
@@ -723,7 +720,7 @@ class PortScanDoS(ABC):
                 'Packet Length Mean': np.mean(payloadLengths) if payloadLengths else 0,
                 'Packet Length Std': np.std(payloadLengths) if payloadLengths else 0,
                 'Packet Length Variance': np.var(payloadLengths) if payloadLengths else 0,
-                'Total Length of Fwd Packet': np.sum(fwdLengths), # total and average size features
+                'Total Length of Fwd Packet': np.sum(fwdLengths) if fwdLengths else 0, # total and average size features
                 'Fwd Packet Length Max': np.max(fwdLengths) if fwdLengths else 0, # FWD/BWD packet length features
                 'Fwd Packet Length Mean': np.mean(fwdLengths) if fwdLengths else 0,
                 'Bwd Packet Length Max': np.max(bwdLengths) if bwdLengths else 0,
@@ -751,16 +748,12 @@ class PortScanDoS(ABC):
     @staticmethod
     def PredictPortDoS(flowDict):
         try: 
-            # extract keys and values
-            keys = list(flowDict.keys()) #todo: find a way to make flowDict be a dataframe by default such that we will not need the conversion
-            values = list(flowDict.values())
-            orderedValues = [[valueDict[col] for col in PortScanDoS.selectedColumns] for valueDict in values] #reorder the values in the same order that the models were trained on
-            
-            # create DataFrame for the keys (3-tuple)
-            keysDataframe = pd.DataFrame(keys, columns=['Src IP', 'Dst IP', 'Protocol'])
-
-            # create DataFrame for the values (dict), columns ensures that the order of the input matches the order of the classifier
-            valuesDataframe = pd.DataFrame(orderedValues, columns=PortScanDoS.selectedColumns)
+            # extract keys and values from flowDict and save it as a DataFrame
+            keyColumns = ['Src IP', 'Dst IP', 'Protocol']
+            flowDataframe = pd.DataFrame.from_dict(flowDict, orient='index').reset_index()
+            flowDataframe.columns = keyColumns + flowDataframe.columns[3:].to_list() #rename the column names of the keys
+            keysDataframe = flowDataframe[keyColumns].copy()
+            valuesDataframe = flowDataframe.drop(keyColumns, axis=1)
 
             # load the PortScanning and DoS model
             modelPath = getModelPath('port_scan_dos_svm_model.pkl')
@@ -772,7 +765,7 @@ class PortScanDoS(ABC):
             scaledDataframe = loadedScaler.transform(valuesDataframe)
             valuesDataframe = pd.DataFrame(scaledDataframe, columns=PortScanDoS.selectedColumns)
             predictions = loadedModel.predict(valuesDataframe)
-            keysDataframe['Result'] = predictions
+            keysDataframe.loc[:, 'Result'] = predictions
 
             # check for attacks in model predictions
             if (1 in predictions) and (2 in predictions):#1 and 2 means PortScan and DoS attacks together
@@ -805,9 +798,9 @@ class PortScanDoS(ABC):
             print('Predictions:\n', keysDataframe)
 
             # temporary code for saving false positive if the occure during scans
-            if len(keysDataframe[keysDataframe['Result'] != 0]['Src IP'].unique()) != 0:
-                import shutil
-                shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows.txt')
+            # if len(keysDataframe[keysDataframe['Result'] != 0]['Src IP'].unique()) != 0:
+            #     import shutil
+            #     shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows.txt')
 
         except PortScanDoSException as e: #if we recived ArpSpoofingException we alert the user
             print(e)
@@ -818,28 +811,26 @@ class PortScanDoS(ABC):
 
 #-----------------------------------------------DNS-TUNNELING------------------------------------------------#
 class DNSTunnelingException(Exception):
-    def __init__(self, message, state, details):
+    def __init__(self, message, flows):
         super().__init__(message)
-        self.state = state #represents the state of attack
-        self.details = details #represents additional details about the dns tunneling
+        self.flows = flows #represents the flow in which the attack was detected
 
     # str representation of dns tunneling exception for showing results
     def __str__(self):
         detailsList = '\n##### DNS Tunneling ATTACK ######\n'
-        return detailsList
-        # detailsList += '\n'.join([f'[*] {key} ==> {', '.join(value)}' for key, value in self.details.items()])
-        # return f'{self.args[0]}\nDetails:\n{detailsList}\n'
+        detailsList += '\n'.join([f'[*] Source IP: {flow['Src IP']} , Destination IP: {flow['Dst IP']} , Protocol: {flow['Protocol']}' for flow in self.flows])
+        return f'{self.args[0]}\nDetails:\n{detailsList}\n'
 
 
 # static class that represents the collection and detection of DNS Tunneling attack
 class DNSTunneling(ABC):
     selectedColumns = [
-        'A Record Count', 'AAAA Record Count', 'TXT Record Count', 'CName Record Count', 'DF Flag Count', 'MF Flag Count',
+        'A Record Count', 'AAAA Record Count', 'CName Record Count', 'TXT Record Count', 'MX Record Count', 'DF Flag Count',
         'Average Response Data Length', 'Min Response Data Length', 'Max Response Data Length', 'Average Domain Name Length',
         'Min Domain Name Length', 'Max Domain Name Length', 'Average Sub Domain Name Length', 'Min Sub Domain Name Length', 
-        'Max Sub Domain Name Length', 'Average Packet Length', 'Min Packet Length', 'Max Packet Length', 'Average IP Header Length', 
-        'Min IP Header Length', 'Max IP Header Length', 'Number of Domian Names', 'Number of Sub Domian Names', 'Total Length of Fwd Packet', 
-        'Total Length of Bwd Packet', 'Total Number of Packets', 'Flow Duration', 'IAT Total', 'IAT Max', 'IAT Mean', 'IAT Std'
+        'Max Sub Domain Name Length', 'Average Packet Length', 'Min Packet Length', 'Max Packet Length', 'Number of Domian Names',
+        'Number of Sub Domian Names', 'Total Length of Fwd Packet', 'Total Length of Bwd Packet', 'Total Number of Packets', 
+        'Flow Duration', 'IAT Total', 'IAT Max', 'IAT Mean', 'IAT Std'
     ]
 
     @staticmethod
@@ -848,19 +839,18 @@ class DNSTunneling(ABC):
 
         # iterate over our flow dict and calculate features
         for flow, packetList in SniffNetwork.dnsDict.items():
-            fwdTxtRecord = 0 #represennts number of txt record packets in flow
-            fwdARecord = 0 #represennts number of A record (ipv4) packets in flow
-            fwd4ARecord = 0 #represennts number of AAAA record (ipv6) packets in flow
-            fwdCNameRecord = 0 #represents number of C-Name recond packets in flow
+            ARecordCount = 0 #represennts number of A record (ipv4) packets in flow
+            AAAARecordCount = 0 #represennts number of AAAA record (ipv6) packets in flow
+            CNameRecordCount = 0 #represents number of C-Name record packets in flow
+            TxtRecordCount = 0 #represennts number of TXT record packets in flow
+            MXRecordCount = 0 #represents number of MX record packets in flow
+            ipDfFlags = 0 #represents DF flag of ip header
             uniqueDomainNames = set() #represents unique domian names in packetes
             uniqueSubDomainNames = set() #represents unique sub domian names in packetes
             domainNameLengths = [] #represents the domian name lengths
             subDomainLengths = [] #represents the sub domain name lengths
             responseDataLengths = [] #represents the response data lengths
             packetLengths = [] #represents packet lengths
-            ipHeaderLengths = [] #represents ip header lengths
-            ipRbFlags, ipDfFlags, ipMfFlags = 0, 0, 0 #represents flags of ip header
-
             fwdLengths = [] #represents length of forward packets in flow
             bwdLengths = [] #represents length of backward packets in flow
             timestamps = [] #represents timestamps of each packet in flow
@@ -880,39 +870,37 @@ class DNSTunneling(ABC):
 
                     # add packet length and ip header length to lists
                     packetLengths.append(packet.packetLen)
-                    ipHeaderLengths.append(packet.ipHeaderLen)
 
-                    # check each flag in ipv4 and increment counter if set
-                    if 'RB' in packet.ipFlagDict and packet.ipFlagDict['RB']:
-                        ipRbFlags += 1
+                    # check the dns sub type and increment the correct counter
+                    if packet.dnsSubType == 1: #means A record
+                        ARecordCount += 1
+                    elif packet.dnsSubType == 5: #means C-Name record
+                        CNameRecordCount += 1
+                    elif packet.dnsSubType == 15: #means MX record
+                        MXRecordCount += 1
+                    elif packet.dnsSubType == 16: #means TXT record
+                        TxtRecordCount += 1
+                    elif packet.dnsSubType == 28: #means AAAA record
+                        AAAARecordCount += 1
+
+                    # check DF flag in ipv4 and increment counter if set
                     if 'DF' in packet.ipFlagDict and packet.ipFlagDict['DF']:
                         ipDfFlags += 1
-                    if 'MF' in packet.ipFlagDict and packet.ipFlagDict['MF']:
-                        ipMfFlags += 1
-
-                    if packet.dnsSubType == 1: #means A record
-                        fwdARecord += 1
-                    elif packet.dnsSubType == 5: #means C-Name record
-                        fwdCNameRecord += 1
-                    elif packet.dnsSubType == 15: #means TXT record
-                        fwdTxtRecord += 1
-                    elif packet.dnsSubType == 16: #means AAAA record
-                        fwd4ARecord += 1
                     
                     if packet.srcIp == flow[0]: #means forward packet
-                        fwdLengths.append(len(packet.packet[DNS]))
+                        fwdLengths.append(packet.dnsPacketLen)
                         if packet.dnsType == 'Response': #means response packet
                             # add response data to response data list
                             if packet.dnsData:
                                 totalLength = len(packet.dnsData) #represents total length of packets
                                 if isinstance(packet.dnsData, list): #if data is list we convert it
-                                    totalLength = np.sum(len(response) for response in packet.dnsData)
+                                    totalLength = np.sum([len(response) for response in packet.dnsData])
                                 elif isinstance(packet.dnsData, dict): #if data is dict we convert it
-                                    totalLength = np.sum(len(value) for value in packet.dnsData.values())
+                                    totalLength = np.sum([len(value) for value in packet.dnsData.values()])
                                 responseDataLengths.append(totalLength) #add the total length to our list
 
                     elif packet.srcIp == flow[1]: #else means backward packets
-                        bwdLengths.append(len(packet.packet[DNS]))
+                        bwdLengths.append(packet.dnsPacketLen)
                         if packet.dnsType == 'Request': #means request packet
                             domainNameLengths.append(len(packet.dnsDomainName)) #add domian name length
                             subdomains = str(packet.dnsDomainName).split('.') #get all subdomain names
@@ -926,41 +914,36 @@ class DNSTunneling(ABC):
                             for subdomain in subdomains:
                                 if subdomain not in uniqueDomainNames:
                                     uniqueSubDomainNames.add(subdomain)
-
                         
             # inter-arrival time features (IAT) and flow duration
             interArrivalTimes = [t2 - t1 for t1, t2 in zip(timestamps[:-1], timestamps[1:])]
             flowDuration = lastSeenPacket - firstSeenPacket
 
-
             # calculate the value dictionary for the current flow and insert it into the featuresDict
             flowParametes = {
-                'A Record Count': fwdARecord,
-                'AAAA Record Count': fwd4ARecord,
-                'TXT Record Count': fwdTxtRecord,
-                'CName Record Count': fwdCNameRecord,
+                'A Record Count': ARecordCount, # counters and flags
+                'AAAA Record Count': AAAARecordCount,
+                'CName Record Count': CNameRecordCount,
+                'TXT Record Count': TxtRecordCount,
+                'MX Record Count': MXRecordCount,
                 'DF Flag Count': ipDfFlags,
-                'MF Flag Count': ipMfFlags,
-                'Average Response Data Length': np.mean(responseDataLengths) if responseDataLengths else 0,
+                'Average Response Data Length': np.mean(responseDataLengths) if responseDataLengths else 0, # response data length
                 'Min Response Data Length': np.min(responseDataLengths) if responseDataLengths else 0,
                 'Max Response Data Length': np.max(responseDataLengths) if responseDataLengths else 0,
-                'Average Domain Name Length': np.mean(domainNameLengths) if domainNameLengths else 0,
+                'Average Domain Name Length': np.mean(domainNameLengths) if domainNameLengths else 0, # domain name length
                 'Min Domain Name Length': np.min(domainNameLengths) if domainNameLengths else 0,
                 'Max Domain Name Length': np.max(domainNameLengths) if domainNameLengths else 0,
-                'Average Sub Domain Name Length': np.mean(subDomainLengths) if subDomainLengths else 0,
+                'Average Sub Domain Name Length': np.mean(subDomainLengths) if subDomainLengths else 0, # sub domain name length
                 'Min Sub Domain Name Length': np.min(subDomainLengths) if subDomainLengths else 0,
                 'Max Sub Domain Name Length': np.max(subDomainLengths) if subDomainLengths else 0,
-                'Average Packet Length': np.mean(packetLengths) if packetLengths else 0,
+                'Average Packet Length': np.mean(packetLengths) if packetLengths else 0, # packet length
                 'Min Packet Length': np.min(packetLengths) if packetLengths else 0,
                 'Max Packet Length': np.max(packetLengths) if packetLengths else 0,
-                'Average IP Header Length': np.mean(ipHeaderLengths) if ipHeaderLengths else 0,
-                'Min IP Header Length': np.min(ipHeaderLengths) if ipHeaderLengths else 0,
-                'Max IP Header Length': np.max(ipHeaderLengths) if ipHeaderLengths else 0,
-                'Number of Domian Names': len(uniqueDomainNames) if uniqueDomainNames else 0,
+                'Number of Domian Names': len(uniqueDomainNames) if uniqueDomainNames else 0, # unique domains and sub domains
                 'Number of Sub Domian Names': len(uniqueSubDomainNames) if uniqueSubDomainNames else 0,
-                'Total Length of Fwd Packet': np.sum(fwdLengths), # total and average size features
-                'Total Length of Bwd Packet': np.sum(bwdLengths), 
-                'Total Number of Packets': len(packetList),
+                'Total Length of Fwd Packet': np.sum(fwdLengths) if fwdLengths else 0, # total length of forward and backward packets
+                'Total Length of Bwd Packet': np.sum(bwdLengths) if bwdLengths else 0, 
+                'Total Number of Packets': len(packetList) if packetList else 0,
                 'Flow Duration': flowDuration, # flow duration and packets per second in flow
                 'IAT Total': np.sum(interArrivalTimes) if interArrivalTimes else 0, # inter-arrival time features (IAT)
                 'IAT Max': np.max(interArrivalTimes) if interArrivalTimes else 0, 
@@ -974,7 +957,49 @@ class DNSTunneling(ABC):
     # function for predicting DNS Tunneling attack given flow dictionary
     @staticmethod
     def PredictDNS(flowDict):
-        pass
+        try: 
+            # extract keys and values from flowDict and save it as a DataFrame
+            keyColumns = ['Src IP', 'Dst IP', 'Protocol']
+            flowDataframe = pd.DataFrame.from_dict(flowDict, orient='index').reset_index() 
+            flowDataframe.columns = keyColumns + flowDataframe.columns[3:].to_list() #rename the column names of the keys
+            keysDataframe = flowDataframe[keyColumns].copy()
+            valuesDataframe = flowDataframe.drop(keyColumns, axis=1)
+
+            # load the PortScanning and DoS model
+            modelPath = getModelPath('dns_svm_model.pkl')
+            scalerPath = getModelPath('dns_scaler.pkl')
+            loadedModel = joblib.load(modelPath) 
+            loadedScaler = joblib.load(scalerPath) 
+
+            # scale the input data and predict the scaled input
+            scaledDataframe = loadedScaler.transform(valuesDataframe)
+            valuesDataframe = pd.DataFrame(scaledDataframe, columns=DNSTunneling.selectedColumns)
+            predictions = loadedModel.predict(valuesDataframe)
+            keysDataframe.loc[:, 'Result'] = predictions
+
+            # check for attacks in model predictions
+            if 1 in predictions: #1 means PortScan attack
+                raise DNSTunnelingException( #throw an exeption to inform user of its presence
+                    'Detected DNS Tunneling attack',
+                    flows=keysDataframe[keysDataframe['Result'] == 1].to_dict(orient='records')
+                )
+
+            # show results of the prediction
+            labelCounts = keysDataframe['Result'].value_counts()
+            print(f'Results: {labelCounts}\n')
+            print(f'Num of DNS Tunneling ips: {keysDataframe[keysDataframe['Result'] == 1]['Src IP'].unique()}\n')
+            print(f'Number of detected attacks:\n {keysDataframe[keysDataframe['Result'] != 0]}\n')
+            print('Predictions:\n', keysDataframe)
+
+            # temporary code for saving false positive if the occure during scans
+            # if len(keysDataframe[keysDataframe['Result'] != 0]['Src IP'].unique()) != 0:
+            #     import shutil
+            #     shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows.txt')
+
+        except DNSTunnelingException as e: #if we recived ArpSpoofingException we alert the user
+            print(e)
+        except Exception as e: #we catch an exception if something happend
+            print(f'Error occurred: {e}')
 
 #----------------------------------------------DNS-TUNNELING-END---------------------------------------------#
 
@@ -1019,7 +1044,7 @@ class SaveData(ABC):
 if __name__ == '__main__':
 
     # call scan network func to initiate network scan 'en6' / 'Ethernet'
-    SniffNetwork.selectedInterface = 'Ethernet' #mimicking a user selected interface from spinbox
+    SniffNetwork.selectedInterface = 'en6' #mimicking a user selected interface from spinbox
     SniffNetwork.ScanNetwork()
 
     # call arp processing function and check for arp spoofing attacks
@@ -1034,7 +1059,7 @@ if __name__ == '__main__':
     # call dns processing function and predict attack
     dnsFlows = DNSTunneling.ProcessFlows()
     SaveData.SaveFlowsInFile(dnsFlows, 'detectedFlowsDNS.txt') #save the collected data in txt format
-    SaveData.SaveCollectedData(dnsFlows, 'benign_dns_dataset.csv', DNSTunneling.selectedColumns) #save the collected data in CSV format
+    SaveData.SaveCollectedData(dnsFlows, 'dns_benign_dataset.csv', DNSTunneling.selectedColumns) #save the collected data in CSV format
     # DNSTunneling.PredictDNS(dnsFlows)
 
 #--------------------------------------------------MAIN-END--------------------------------------------------#

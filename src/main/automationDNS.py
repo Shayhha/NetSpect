@@ -11,8 +11,8 @@ while True:
     try:
         print(f'[{time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())}]: Running...')
         # for Windows: ['python', scriptToRun]   for MacOS: ['sudo', 'python3', scriptToRun]
-        process1 = subprocess.Popen(['sudo', 'python3', mainScriptToRun], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        process2 = subprocess.Popen(['sudo', 'python3', dnsScriptToRun], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        process1 = subprocess.Popen(['python', mainScriptToRun], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        process2 = subprocess.Popen(['python', dnsScriptToRun], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         process1.wait(timeout=60) #wait for up to 60 seconds
         # process2.wait(timeout=60) 
     except subprocess.TimeoutExpired:

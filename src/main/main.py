@@ -1058,8 +1058,8 @@ if __name__ == '__main__':
 
     # call dns processing function and predict attack
     dnsFlows = DNSTunneling.ProcessFlows()
-    SaveData.SaveFlowsInFile(dnsFlows, 'detectedFlowsDNS.txt') #save the collected data in txt format
-    SaveData.SaveCollectedData(dnsFlows, 'dns_benign_dataset.csv', DNSTunneling.selectedColumns) #save the collected data in CSV format
-    # DNSTunneling.PredictDNS(dnsFlows)
+    # SaveData.SaveFlowsInFile(dnsFlows, 'detectedFlowsDNS.txt') #save the collected data in txt format
+    # SaveData.SaveCollectedData(dnsFlows, 'dns_active_samples.csv', DNSTunneling.selectedColumns) #save the collected data in CSV format
+    DNSTunneling.PredictDNS(dnsFlows)
 
 #--------------------------------------------------MAIN-END--------------------------------------------------#

@@ -7,6 +7,7 @@ from psutil import net_if_addrs, net_if_stats
 from scapy.all import sniff, get_if_list, srp, IP, IPv6, TCP, UDP, ICMP, ARP, Ether, Raw, conf 
 from scapy.layers.dns import DNS
 from collections import defaultdict
+import shutil #temporary import for saving a copy of a file with false positive data
 
 # dynamically add the src directory to sys.path, this allows us to access all moduls in the project at run time
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
@@ -797,15 +798,12 @@ class PortScanDoS(ABC):
             print(f'Number of detected attacks:\n {keysDataframe[keysDataframe['Result'] != 0]}\n')
             print('Predictions:\n', keysDataframe)
 
-            # temporary code for saving false positive if the occure during scans
-            # if len(keysDataframe[keysDataframe['Result'] != 0]['Src IP'].unique()) != 0:
-            #     import shutil
-            #     shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows.txt')
-
         except PortScanDoSException as e: #if we recived ArpSpoofingException we alert the user
             print(e)
         except Exception as e: #we catch an exception if something happend
             print(f'Error occurred: {e}')
+        finally:
+            shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows.txt') # temporary code for saving false positive if the occure during scans
 
 #--------------------------------------------PORT-SCANNING-DoS-END-------------------------------------------#
 
@@ -978,28 +976,25 @@ class DNSTunneling(ABC):
             keysDataframe.loc[:, 'Result'] = predictions
 
             # check for attacks in model predictions
-            if 1 in predictions: #1 means PortScan attack
+            if 1 in predictions: #1 means DNS Tunneling attack
                 raise DNSTunnelingException( #throw an exeption to inform user of its presence
                     'Detected DNS Tunneling attack',
                     flows=keysDataframe[keysDataframe['Result'] == 1].to_dict(orient='records')
                 )
-
+            
             # show results of the prediction
             labelCounts = keysDataframe['Result'].value_counts()
             print(f'Results: {labelCounts}\n')
             print(f'Num of DNS Tunneling ips: {keysDataframe[keysDataframe['Result'] == 1]['Src IP'].unique()}\n')
             print(f'Number of detected attacks:\n {keysDataframe[keysDataframe['Result'] != 0]}\n')
-            print('Predictions:\n', keysDataframe)
-
-            # temporary code for saving false positive if the occure during scans
-            # if len(keysDataframe[keysDataframe['Result'] != 0]['Src IP'].unique()) != 0:
-            #     import shutil
-            #     shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows.txt')
+            print('Predictions:\n', keysDataframe)  
 
         except DNSTunnelingException as e: #if we recived ArpSpoofingException we alert the user
             print(e)
         except Exception as e: #we catch an exception if something happend
             print(f'Error occurred: {e}')
+        finally:
+            shutil.copy('detectedFlowsDNS.txt', f'{np.random.randint(1,1000000)}_detectedFlowsDNS.txt') # temporary code for saving false positive if the occure during scans
 
 #----------------------------------------------DNS-TUNNELING-END---------------------------------------------#
 
@@ -1058,8 +1053,8 @@ if __name__ == '__main__':
 
     # call dns processing function and predict attack
     dnsFlows = DNSTunneling.ProcessFlows()
-    # SaveData.SaveFlowsInFile(dnsFlows, 'detectedFlowsDNS.txt') #save the collected data in txt format
-    # SaveData.SaveCollectedData(dnsFlows, 'dns_active_samples.csv', DNSTunneling.selectedColumns) #save the collected data in CSV format
+    SaveData.SaveFlowsInFile(dnsFlows, 'detectedFlowsDNS.txt') #save the collected data in txt format
+    SaveData.SaveCollectedData(dnsFlows, 'dns_benign_dataset.csv', DNSTunneling.selectedColumns) #save the collected data in CSV format
     DNSTunneling.PredictDNS(dnsFlows)
 
 #--------------------------------------------------MAIN-END--------------------------------------------------#

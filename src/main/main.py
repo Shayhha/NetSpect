@@ -770,6 +770,7 @@ class PortScanDoS(ABC):
 
             # check for attacks in model predictions
             if (1 in predictions) and (2 in predictions):#1 and 2 means PortScan and DoS attacks together
+                shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_PortAndDoS.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
                     'Detected PortScan and DoS attack',
                     state=3,
@@ -777,6 +778,7 @@ class PortScanDoS(ABC):
                 )
 
             elif 1 in predictions: #1 means PortScan attack
+                shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_Port.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
                     'Detected PortScan attack',
                     state=1,
@@ -784,6 +786,7 @@ class PortScanDoS(ABC):
                 )
             
             elif 2 in predictions: #2 means DoS attack
+                shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_DoS.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
                     'Detected DoS attack',
                     state=2,
@@ -802,8 +805,6 @@ class PortScanDoS(ABC):
             print(e)
         except Exception as e: #we catch an exception if something happend
             print(f'Error occurred: {e}')
-        finally:
-            shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows.txt') # temporary code for saving false positive if the occure during scans
 
 #--------------------------------------------PORT-SCANNING-DoS-END-------------------------------------------#
 
@@ -977,6 +978,7 @@ class DNSTunneling(ABC):
 
             # check for attacks in model predictions
             if 1 in predictions: #1 means DNS Tunneling attack
+                shutil.copy('detectedFlowsDNS.txt', f'{np.random.randint(1,1000000)}_detectedFlowsDNS.txt') # temporary code for saving false positive if the occure during scans
                 raise DNSTunnelingException( #throw an exeption to inform user of its presence
                     'Detected DNS Tunneling attack',
                     flows=keysDataframe[keysDataframe['Result'] == 1].to_dict(orient='records')
@@ -993,8 +995,6 @@ class DNSTunneling(ABC):
             print(e)
         except Exception as e: #we catch an exception if something happend
             print(f'Error occurred: {e}')
-        finally:
-            shutil.copy('detectedFlowsDNS.txt', f'{np.random.randint(1,1000000)}_detectedFlowsDNS.txt') # temporary code for saving false positive if the occure during scans
 
 #----------------------------------------------DNS-TUNNELING-END---------------------------------------------#
 

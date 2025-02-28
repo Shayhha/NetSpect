@@ -95,7 +95,7 @@ QToolTip {
      </size>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="homePage">
      <widget class="QFrame" name="homepageFrame">
@@ -901,7 +901,662 @@ QTableWidget QScrollBar::handle:horizontal {
     </widget>
     <widget class="QWidget" name="reportPage"/>
     <widget class="QWidget" name="infoPage"/>
-    <widget class="QWidget" name="settingsPage"/>
+    <widget class="QWidget" name="settingsPage">
+     <widget class="QFrame" name="settingsHorizontalFrame">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1209</width>
+        <height>659</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <property name="spacing">
+        <number>20</number>
+       </property>
+       <property name="leftMargin">
+        <number>20</number>
+       </property>
+       <property name="topMargin">
+        <number>20</number>
+       </property>
+       <property name="rightMargin">
+        <number>20</number>
+       </property>
+       <property name="bottomMargin">
+        <number>20</number>
+       </property>
+       <item>
+        <widget class="QFrame" name="settingsLeftVerticalFrame">
+         <layout class="QVBoxLayout" name="verticalLayout_8">
+          <property name="spacing">
+           <number>20</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="userSettingsLabel">
+            <property name="minimumSize">
+             <size>
+              <width>185</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Cairo</family>
+              <pointsize>18</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="cursor">
+             <cursorShape>ArrowCursor</cursorShape>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">#userSettingsLabel {
+padding-left: 10px;
+color: #f3f3f3;
+}</string>
+            </property>
+            <property name="text">
+             <string>User Settings:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="horizontalFrame">
+            <layout class="QHBoxLayout" name="horizontalLayout_7">
+             <property name="spacing">
+              <number>20</number>
+             </property>
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QFrame" name="settingsChangeVerticalFrame">
+               <property name="styleSheet">
+                <string notr="true"/>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_7">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>50</number>
+                </property>
+                <property name="topMargin">
+                 <number>10</number>
+                </property>
+                <property name="rightMargin">
+                 <number>50</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>40</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="changeEmailLabel">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Cairo</family>
+                    <pointsize>14</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">#changeEmailLabel {
+color: #f3f3f3
+}</string>
+                  </property>
+                  <property name="text">
+                   <string>Change Email:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="emailLineEdit">
+                  <property name="styleSheet">
+                   <string notr="true">#emailLineEdit {
+    background-color: #f0f0f0; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;              
+    font-size: 14px;            
+    color: black;             
+	margin-bottom: 10px;
+}</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="placeholderText">
+                   <string>New Email</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="emailButonHorizontalLayout">
+                  <item>
+                   <widget class="QPushButton" name="emailPushButton">
+                    <property name="maximumSize">
+                     <size>
+                      <width>145</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="cursor">
+                     <cursorShape>PointingHandCursor</cursorShape>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">#emailPushButton  {
+    background-color: #4E4F5A; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;              
+    font-size: 14px; 
+	font-weight: bold;          
+    color: #f3f3f3;       
+}</string>
+                    </property>
+                    <property name="text">
+                     <string>Save Email</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_4">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="changeUsernameLabel">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Cairo</family>
+                    <pointsize>14</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">#changeUsernameLabel {
+color: #f3f3f3
+}</string>
+                  </property>
+                  <property name="text">
+                   <string>Change Username:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="usernameLineEdit">
+                  <property name="styleSheet">
+                   <string notr="true">#usernameLineEdit {
+    background-color: #f0f0f0; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;              
+    font-size: 14px;            
+    color: black;             
+	margin-bottom: 10px;
+}</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="placeholderText">
+                   <string>New Username</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="usernameButtonHorizontalLayout">
+                  <item>
+                   <widget class="QPushButton" name="usernamePushButton">
+                    <property name="maximumSize">
+                     <size>
+                      <width>145</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="cursor">
+                     <cursorShape>PointingHandCursor</cursorShape>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">#usernamePushButton  {
+    background-color: #4E4F5A; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;              
+    font-size: 14px; 
+	font-weight: bold;          
+    color: #f3f3f3;       
+}</string>
+                    </property>
+                    <property name="text">
+                     <string>Save Username</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_5">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="changePasswordLabel">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Cairo</family>
+                    <pointsize>14</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">#changePasswordLabel {
+color: #f3f3f3
+}</string>
+                  </property>
+                  <property name="text">
+                   <string>Change Password:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="oldPasswordLineEdit">
+                  <property name="styleSheet">
+                   <string notr="true">#oldPasswordLineEdit {
+    background-color: #f0f0f0; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;              
+    font-size: 14px;            
+    color: black;             
+	margin-bottom: 10px;
+}</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="placeholderText">
+                   <string>Old Password</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="newPasswordLineEdit">
+                  <property name="styleSheet">
+                   <string notr="true">#newPasswordLineEdit {
+    background-color: #f0f0f0; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;              
+    font-size: 14px;            
+    color: black;             
+	margin-bottom: 10px;
+}</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="placeholderText">
+                   <string>New Password</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="confirmPasswordLineEdit">
+                  <property name="styleSheet">
+                   <string notr="true">#confirmPasswordLineEdit {
+    background-color: #f0f0f0; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;              
+    font-size: 14px;            
+    color: black;             
+	margin-bottom: 10px;
+}</string>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="placeholderText">
+                   <string>Confirm Password</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="passwordButtonHorizontalLayout">
+                  <item>
+                   <widget class="QPushButton" name="passwordPushButton">
+                    <property name="maximumSize">
+                     <size>
+                      <width>145</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="cursor">
+                     <cursorShape>PointingHandCursor</cursorShape>
+                    </property>
+                    <property name="styleSheet">
+                     <string notr="true">#passwordPushButton  {
+    background-color: #4E4F5A; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;              
+    font-size: 14px; 
+	font-weight: bold;          
+    color: #f3f3f3;       
+}</string>
+                    </property>
+                    <property name="text">
+                     <string>Save Password</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_6">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QFrame" name="settingsIntefaceVerticalFrame">
+               <property name="minimumSize">
+                <size>
+                 <width>450</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_9">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>20</number>
+                </property>
+                <property name="topMargin">
+                 <number>10</number>
+                </property>
+                <property name="rightMargin">
+                 <number>20</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>20</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="interfaceSettingsLabel">
+                  <property name="minimumSize">
+                   <size>
+                    <width>185</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Cairo</family>
+                    <pointsize>14</pointsize>
+                    <weight>75</weight>
+                    <bold>true</bold>
+                   </font>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">#interfaceSettingsLabel {
+color: #f3f3f3
+}</string>
+                  </property>
+                  <property name="text">
+                   <string>Interface Settings:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="colorModeComboBox">
+                  <property name="minimumSize">
+                   <size>
+                    <width>175</width>
+                    <height>32</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>175</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <family>Cairo</family>
+                    <pointsize>-1</pointsize>
+                   </font>
+                  </property>
+                  <property name="cursor">
+                   <cursorShape>PointingHandCursor</cursorShape>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">#colorModeComboBox {
+    background-color: #f3f3f3;
+    color: black;
+    border: 2px solid lightgray; /* Fixed typo */
+    border-radius: 10px;
+    padding-left: 10px;
+    font-size: 14px;
+    height: 30px;
+}
+
+/* Style the drop-down button */
+#colorModeComboBox::drop-down {
+    border-left: 1px solid lightgray;
+    background-color: #e0e0e0;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    width: 30px;
+}
+
+/* Change appearance when hovering over the button */
+#colorModeComboBox::drop-down:hover {
+    background-color: #d0d0d0;
+}
+
+/* Style the drop-down arrow */
+#colorModeComboBox::down-arrow {
+    image: url(&quot;C:/Projects/NetSpect/src/interface/Icons/ChevronDownDark.png&quot;);
+    width: 15px;
+    height: 15px;
+}
+
+/* Dropdown (popup) styles */
+#colorModeComboBox QAbstractItemView {
+    background-color: #f3f3f3;
+    border: 1px solid lightgray;
+    selection-background-color: lightgray;
+    selection-color: black;
+    padding: 5px;
+}
+</string>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>Light Mode</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Dark Mode</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_7">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="settingsRighterticalFrame">
+         <property name="minimumSize">
+          <size>
+           <width>150</width>
+           <height>0</height>
+          </size>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_10">
+          <property name="spacing">
+           <number>20</number>
+          </property>
+          <property name="leftMargin">
+           <number>20</number>
+          </property>
+          <property name="topMargin">
+           <number>20</number>
+          </property>
+          <property name="rightMargin">
+           <number>20</number>
+          </property>
+          <property name="bottomMargin">
+           <number>20</number>
+          </property>
+          <item>
+           <spacer name="verticalSpacer_8">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="deleteAccoutPushButton">
+            <property name="minimumSize">
+             <size>
+              <width>145</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>145</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">#deleteAccoutPushButton  {
+    background-color: #D84F4F; 
+    border: 1px solid black;  
+    border-radius: 10px;         
+    padding: 5px;              
+    font-size: 14px; 
+	font-weight: bold;          
+    color: black;       
+}</string>
+            </property>
+            <property name="text">
+             <string>Delete Account</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
    </widget>
    <widget class="QFrame" name="topFrame">
     <property name="geometry">

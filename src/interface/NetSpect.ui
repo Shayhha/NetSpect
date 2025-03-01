@@ -385,7 +385,7 @@ QToolTip {
                        </widget>
                       </item>
                       <item>
-                       <widget class="QComboBox" name="networkInterfaceComboBox">
+                       <widget class="QFrame" name="networkInterfaceComboBoxFrame">
                         <property name="minimumSize">
                          <size>
                           <width>160</width>
@@ -404,70 +404,141 @@ QToolTip {
                           <pointsize>12</pointsize>
                          </font>
                         </property>
-                        <property name="cursor">
-                         <cursorShape>PointingHandCursor</cursorShape>
-                        </property>
                         <property name="styleSheet">
-                         <string notr="true">#networkInterfaceComboBox {
+                         <string notr="true">#networkInterfaceComboBoxFrame {
     background-color: #f3f3f3;
     color: black;
-    border: 2px solid lightgray; /* Fixed typo */
+    border: 2px transparent; 
     border-radius: 10px;
     padding-left: 10px;
     height: 29px;
-}
-
-/* Style the drop-down button */
-#networkInterfaceComboBox::drop-down {
-    border-left: 1px solid lightgray;
-    background-color: #e0e0e0;
+}</string>
+                        </property>
+                        <property name="frameShape">
+                         <enum>QFrame::StyledPanel</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Raised</enum>
+                        </property>
+                        <widget class="QFrame" name="networkInterfaceComboBoxFrameArrow">
+                         <property name="geometry">
+                          <rect>
+                           <x>136</x>
+                           <y>0</y>
+                           <width>24</width>
+                           <height>32</height>
+                          </rect>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>24</width>
+                           <height>32</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>22</width>
+                           <height>32</height>
+                          </size>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <family>Cairo</family>
+                           <pointsize>12</pointsize>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">#networkInterfaceComboBoxFrameArrow {
+    background-color: lightgray;
+    color: black;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
-    width: 30px;
+    padding-left: 10px;
+}</string>
+                         </property>
+                         <property name="frameShape">
+                          <enum>QFrame::StyledPanel</enum>
+                         </property>
+                         <property name="frameShadow">
+                          <enum>QFrame::Raised</enum>
+                         </property>
+                        </widget>
+                        <widget class="QComboBox" name="networkInterfaceComboBox">
+                         <property name="geometry">
+                          <rect>
+                           <x>0</x>
+                           <y>0</y>
+                           <width>160</width>
+                           <height>32</height>
+                          </rect>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>160</width>
+                           <height>32</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>160</width>
+                           <height>32</height>
+                          </size>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <family>Cairo</family>
+                           <pointsize>12</pointsize>
+                          </font>
+                         </property>
+                         <property name="cursor">
+                          <cursorShape>PointingHandCursor</cursorShape>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">#networkInterfaceComboBox {
+    background-color: transparent;
+    border-radius: 10px;
+    border-style: outset;
+    border-width: 2px;
+    border-color: transparent;	
+    padding: 4px;
 }
 
-/* Change appearance when hovering over the button */
-#networkInterfaceComboBox::drop-down:hover {
-    background-color: #d0d0d0;
-}
-
-/* Style the drop-down arrow */
-#networkInterfaceComboBox::down-arrow {
-    image: url(&quot;C:/Projects/NetSpect/src/interface/Icons/ChevronDownDark.png&quot;);
-    width: 15px;
-    height: 15px;
-}
-
-/* Dropdown (popup) styles */
 #networkInterfaceComboBox QAbstractItemView {
-    background-color: #f3f3f3;
-    border: 1px solid lightgray;
-    selection-background-color: lightgray;
-    selection-color: black;
-    padding: 5px;
+    background-color:  rgb(245,245,245);
+    selection-background-color: rgb(95, 97, 109);
+    color: rgb(0, 0, 0);    
+    padding: 10px;
+    background-radius: 10px;
+    border-radius: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
-</string>
-                        </property>
-                        <item>
-                         <property name="text">
-                          <string>Ethernet</string>
+
+#networkInterfaceComboBox QListView{
+    outline: 0px;
+}</string>
                          </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>Wi-Fi</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>eth0</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>wlan0</string>
-                         </property>
-                        </item>
+                         <item>
+                          <property name="text">
+                           <string>Ethernet</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Wi-Fi</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>eth0</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>wlan0</string>
+                          </property>
+                         </item>
+                        </widget>
                        </widget>
                       </item>
                       <item>
@@ -1200,7 +1271,7 @@ QTableWidget QScrollBar::handle:horizontal {
               <number>20</number>
              </property>
              <item>
-              <widget class="QComboBox" name="reportDurationComboBox">
+              <widget class="QFrame" name="reportDurationComboBoxFrame">
                <property name="minimumSize">
                 <size>
                  <width>210</width>
@@ -1219,55 +1290,126 @@ QTableWidget QScrollBar::handle:horizontal {
                  <pointsize>12</pointsize>
                 </font>
                </property>
-               <property name="cursor">
-                <cursorShape>PointingHandCursor</cursorShape>
-               </property>
                <property name="styleSheet">
-                <string notr="true">#reportDurationComboBox {
+                <string notr="true">#reportDurationComboBoxFrame {
     background-color: #f3f3f3;
     color: black;
-    border: 2px solid lightgray; /* Fixed typo */
+    border: 2px transparent; 
     border-radius: 10px;
     padding-left: 10px;
     height: 29px;
-}
-
-/* Style the drop-down button */
-#reportDurationComboBox::drop-down {
-    border-left: 1px solid lightgray;
-    background-color: #e0e0e0;
+}</string>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <widget class="QFrame" name="reportDurationComboBoxArrow">
+                <property name="geometry">
+                 <rect>
+                  <x>186</x>
+                  <y>0</y>
+                  <width>24</width>
+                  <height>32</height>
+                 </rect>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>24</width>
+                  <height>32</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>22</width>
+                  <height>32</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <family>Cairo</family>
+                  <pointsize>12</pointsize>
+                 </font>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">#reportDurationComboBoxArrow {
+    background-color: lightgray;
+    color: black;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
-    width: 30px;
-}
-
-/* Change appearance when hovering over the button */
-#reportDurationComboBox::drop-down:hover {
-    background-color: #d0d0d0;
-}
-
-/* Style the drop-down arrow */
-#reportDurationComboBox::down-arrow {
-    image: url(&quot;C:/Projects/NetSpect/src/interface/Icons/ChevronDownDark.png&quot;);
-    width: 15px;
-    height: 15px;
-}
-
-/* Dropdown (popup) styles */
-#reportDurationComboBox QAbstractItemView {
-    background-color: #f3f3f3;
-    border: 1px solid lightgray;
-    selection-background-color: lightgray;
-    selection-color: black;
-    padding: 5px;
-}
-</string>
-               </property>
-               <item>
-                <property name="text">
-                 <string>Last 7 Days</string>
+    padding-left: 10px;
+}</string>
                 </property>
-               </item>
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+               </widget>
+               <widget class="QComboBox" name="reportDurationComboBox">
+                <property name="geometry">
+                 <rect>
+                  <x>0</x>
+                  <y>0</y>
+                  <width>210</width>
+                  <height>32</height>
+                 </rect>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>210</width>
+                  <height>32</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>210</width>
+                  <height>32</height>
+                 </size>
+                </property>
+                <property name="font">
+                 <font>
+                  <family>Cairo</family>
+                  <pointsize>12</pointsize>
+                 </font>
+                </property>
+                <property name="cursor">
+                 <cursorShape>PointingHandCursor</cursorShape>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">#reportDurationComboBox {
+    background-color: transparent;
+    border-radius: 10px;
+    border-style: outset;
+    border-width: 2px;
+    border-color: transparent;	
+    padding: 4px;
+}
+
+#reportDurationComboBox QAbstractItemView {
+    background-color:  rgb(245,245,245);
+    selection-background-color: rgb(95, 97, 109);
+    color: rgb(0, 0, 0);    
+    padding: 10px;
+    background-radius: 10px;
+    border-radius: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+#reportDurationComboBox QListView{
+    outline: 0px;
+}</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Last 7 Days</string>
+                 </property>
+                </item>
+               </widget>
               </widget>
              </item>
              <item>
@@ -3708,17 +3850,17 @@ color: #f3f3f3
                  </widget>
                 </item>
                 <item>
-                 <widget class="QComboBox" name="colorModeComboBox">
+                 <widget class="QFrame" name="colorModeComboBoxFrame">
                   <property name="minimumSize">
                    <size>
                     <width>175</width>
-                    <height>32</height>
+                    <height>31</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
                     <width>175</width>
-                    <height>16777215</height>
+                    <height>31</height>
                    </size>
                   </property>
                   <property name="font">
@@ -3727,60 +3869,131 @@ color: #f3f3f3
                     <pointsize>12</pointsize>
                    </font>
                   </property>
-                  <property name="cursor">
-                   <cursorShape>PointingHandCursor</cursorShape>
-                  </property>
                   <property name="styleSheet">
-                   <string notr="true">#colorModeComboBox {
+                   <string notr="true">#colorModeComboBoxFrame {
     background-color: #f3f3f3;
     color: black;
-    border: 2px solid lightgray; /* Fixed typo */
+    border: 2px transparent; 
     border-radius: 10px;
     padding-left: 10px;
     height: 29px;
-}
-
-/* Style the drop-down button */
-#colorModeComboBox::drop-down {
-    border-left: 1px solid lightgray;
-    background-color: #e0e0e0;
+}</string>
+                  </property>
+                  <property name="frameShape">
+                   <enum>QFrame::StyledPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <widget class="QFrame" name="colorModeComboBoxArrow">
+                   <property name="geometry">
+                    <rect>
+                     <x>151</x>
+                     <y>0</y>
+                     <width>24</width>
+                     <height>31</height>
+                    </rect>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>24</width>
+                     <height>31</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>22</width>
+                     <height>31</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <family>Cairo</family>
+                     <pointsize>12</pointsize>
+                    </font>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">#colorModeComboBoxArrow {
+    background-color: lightgray;
+    color: black;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
-    width: 30px;
+    padding-left: 10px;
+}</string>
+                   </property>
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                  </widget>
+                  <widget class="QComboBox" name="colorModeComboBox">
+                   <property name="geometry">
+                    <rect>
+                     <x>0</x>
+                     <y>0</y>
+                     <width>175</width>
+                     <height>31</height>
+                    </rect>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>175</width>
+                     <height>31</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>175</width>
+                     <height>31</height>
+                    </size>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <family>Cairo</family>
+                     <pointsize>12</pointsize>
+                    </font>
+                   </property>
+                   <property name="cursor">
+                    <cursorShape>PointingHandCursor</cursorShape>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">#colorModeComboBox {
+    background-color: transparent;
+    border-radius: 10px;
+    border-style: outset;
+    border-width: 2px;
+    border-color: transparent;	
+    padding: 4px;
 }
 
-/* Change appearance when hovering over the button */
-#colorModeComboBox::drop-down:hover {
-    background-color: #d0d0d0;
-}
-
-/* Style the drop-down arrow */
-#colorModeComboBox::down-arrow {
-    image: url(&quot;C:/Projects/NetSpect/src/interface/Icons/ChevronDownDark.png&quot;);
-    width: 15px;
-    height: 15px;
-}
-
-/* Dropdown (popup) styles */
 #colorModeComboBox QAbstractItemView {
-    background-color: #f3f3f3;
-    border: 1px solid lightgray;
-    selection-background-color: lightgray;
-    selection-color: black;
-    padding: 5px;
+    background-color:  rgb(245,245,245);
+    selection-background-color: rgb(95, 97, 109);
+    color: rgb(0, 0, 0);    
+    padding: 10px;
+    background-radius: 10px;
+    border-radius: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
-</string>
-                  </property>
-                  <item>
-                   <property name="text">
-                    <string>Light Mode</string>
+
+#colorModeComboBox QListView{
+    outline: 0px;
+}</string>
                    </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Dark Mode</string>
-                   </property>
-                  </item>
+                   <item>
+                    <property name="text">
+                     <string>Dark Mode</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Light Mode</string>
+                    </property>
+                   </item>
+                  </widget>
                  </widget>
                 </item>
                 <item>

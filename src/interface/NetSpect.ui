@@ -95,7 +95,7 @@ QToolTip {
      </size>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="homePage">
      <widget class="QFrame" name="homepageFrame">
@@ -899,7 +899,835 @@ QTableWidget QScrollBar::handle:horizontal {
       </layout>
      </widget>
     </widget>
-    <widget class="QWidget" name="reportPage"/>
+    <widget class="QWidget" name="reportPage">
+     <widget class="QFrame" name="horizontalFrame">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1211</width>
+        <height>661</height>
+       </rect>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>1210</width>
+        <height>660</height>
+       </size>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_8">
+       <property name="spacing">
+        <number>20</number>
+       </property>
+       <property name="leftMargin">
+        <number>20</number>
+       </property>
+       <property name="topMargin">
+        <number>20</number>
+       </property>
+       <property name="rightMargin">
+        <number>20</number>
+       </property>
+       <property name="bottomMargin">
+        <number>20</number>
+       </property>
+       <item>
+        <widget class="QFrame" name="reportSelectionVerticalFrameOutside">
+         <layout class="QVBoxLayout" name="verticalLayout_16">
+          <property name="spacing">
+           <number>15</number>
+          </property>
+          <property name="leftMargin">
+           <number>20</number>
+          </property>
+          <property name="topMargin">
+           <number>20</number>
+          </property>
+          <property name="rightMargin">
+           <number>20</number>
+          </property>
+          <property name="bottomMargin">
+           <number>20</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="reportSelectionLabel">
+            <property name="minimumSize">
+             <size>
+              <width>180</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>180</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Cairo</family>
+              <pointsize>18</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">#reportSelectionLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}</string>
+            </property>
+            <property name="text">
+             <string>Report Selection</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="wordWrap">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="reportSelectionVerticalFrameInside">
+            <property name="minimumSize">
+             <size>
+              <width>250</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_11">
+             <property name="spacing">
+              <number>8</number>
+             </property>
+             <property name="leftMargin">
+              <number>20</number>
+             </property>
+             <property name="topMargin">
+              <number>20</number>
+             </property>
+             <property name="rightMargin">
+              <number>20</number>
+             </property>
+             <property name="bottomMargin">
+              <number>20</number>
+             </property>
+             <item>
+              <widget class="QComboBox" name="reportDurationComboBox">
+               <property name="minimumSize">
+                <size>
+                 <width>210</width>
+                 <height>32</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>210</width>
+                 <height>32</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Cairo</family>
+                 <pointsize>12</pointsize>
+                </font>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">#reportDurationComboBox {
+    background-color: #f3f3f3;
+    color: black;
+    border: 2px solid lightgray; /* Fixed typo */
+    border-radius: 10px;
+    padding-left: 10px;
+    height: 29px;
+}
+
+/* Style the drop-down button */
+#reportDurationComboBox::drop-down {
+    border-left: 1px solid lightgray;
+    background-color: #e0e0e0;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    width: 30px;
+}
+
+/* Change appearance when hovering over the button */
+#reportDurationComboBox::drop-down:hover {
+    background-color: #d0d0d0;
+}
+
+/* Style the drop-down arrow */
+#reportDurationComboBox::down-arrow {
+    image: url(&quot;C:/Projects/NetSpect/src/interface/Icons/ChevronDownDark.png&quot;);
+    width: 15px;
+    height: 15px;
+}
+
+/* Dropdown (popup) styles */
+#reportDurationComboBox QAbstractItemView {
+    background-color: #f3f3f3;
+    border: 1px solid lightgray;
+    selection-background-color: lightgray;
+    selection-color: black;
+    padding: 5px;
+}
+</string>
+               </property>
+               <item>
+                <property name="text">
+                 <string>Last 7 Days</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item>
+              <widget class="Line" name="horizontalLine1">
+               <property name="minimumSize">
+                <size>
+                 <width>210</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">#horizontalLine1 {
+	color: #f3f3f3;
+}</string>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Plain</enum>
+               </property>
+               <property name="lineWidth">
+                <number>2</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="arpSpoofingCheckBox">
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Cairo</family>
+                 <pointsize>-1</pointsize>
+                </font>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">#arpSpoofingCheckBox {
+    spacing: 10px; /* Space between checkbox and text */
+    font-size: 16px; /* Optional: Adjust text size */
+    color: #f3f3f3; /* Optional: Adjust text color */
+}
+
+QCheckBox::indicator {
+    width: 16px;  /* Increase checkbox size */
+    height: 16px;
+}
+
+/* Style the checkbox when checked */
+QCheckBox::indicator:checked {
+    background-color: #0078D7; /* Change color when checked */
+    border: 2px solid #005BBB;
+}
+
+/* Style the checkbox when unchecked */
+QCheckBox::indicator:unchecked {
+    background-color: white;
+    border: 2px solid gray;
+}
+
+/* Hover effect */
+QCheckBox::indicator:hover {
+    border: 2px solid black;
+}</string>
+               </property>
+               <property name="text">
+                <string>ARP Spoofing</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="portScanningCheckBox">
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Cairo</family>
+                 <pointsize>-1</pointsize>
+                </font>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">#portScanningCheckBox {
+    spacing: 10px; /* Space between checkbox and text */
+    font-size: 16px; /* Optional: Adjust text size */
+    color: #f3f3f3; /* Optional: Adjust text color */
+}
+
+QCheckBox::indicator {
+    width: 16px;  /* Increase checkbox size */
+    height: 16px;
+}
+
+/* Style the checkbox when checked */
+QCheckBox::indicator:checked {
+    background-color: #0078D7; /* Change color when checked */
+    border: 2px solid #005BBB;
+}
+
+/* Style the checkbox when unchecked */
+QCheckBox::indicator:unchecked {
+    background-color: white;
+    border: 2px solid gray;
+}
+
+/* Hover effect */
+QCheckBox::indicator:hover {
+    border: 2px solid black;
+}</string>
+               </property>
+               <property name="text">
+                <string>Port Scanning</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="denialOfServiceCheckBox">
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Cairo</family>
+                 <pointsize>-1</pointsize>
+                </font>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">#denialOfServiceCheckBox {
+    spacing: 10px; /* Space between checkbox and text */
+    font-size: 16px; /* Optional: Adjust text size */
+    color: #f3f3f3; /* Optional: Adjust text color */
+}
+
+QCheckBox::indicator {
+    width: 16px;  /* Increase checkbox size */
+    height: 16px;
+}
+
+/* Style the checkbox when checked */
+QCheckBox::indicator:checked {
+    background-color: #0078D7; /* Change color when checked */
+    border: 2px solid #005BBB;
+}
+
+/* Style the checkbox when unchecked */
+QCheckBox::indicator:unchecked {
+    background-color: white;
+    border: 2px solid gray;
+}
+
+/* Hover effect */
+QCheckBox::indicator:hover {
+    border: 2px solid black;
+}</string>
+               </property>
+               <property name="text">
+                <string>DoS - Denial of Service</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="dnsTunnelingCheckBox">
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Cairo</family>
+                 <pointsize>-1</pointsize>
+                </font>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">#dnsTunnelingCheckBox {
+    spacing: 10px; /* Space between checkbox and text */
+    font-size: 16px; /* Optional: Adjust text size */
+    color: #f3f3f3; /* Optional: Adjust text color */
+}
+
+QCheckBox::indicator {
+    width: 16px;  /* Increase checkbox size */
+    height: 16px;
+}
+
+/* Style the checkbox when checked */
+QCheckBox::indicator:checked {
+    background-color: #0078D7; /* Change color when checked */
+    border: 2px solid #005BBB;
+}
+
+/* Style the checkbox when unchecked */
+QCheckBox::indicator:unchecked {
+    background-color: white;
+    border: 2px solid gray;
+}
+
+/* Hover effect */
+QCheckBox::indicator:hover {
+    border: 2px solid black;
+}</string>
+               </property>
+               <property name="text">
+                <string>DNS Tunneling</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="Line" name="horizontalLine2">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>40</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">#horizontalLine2 {
+ color: #f3f3f3
+}</string>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Plain</enum>
+               </property>
+               <property name="lineWidth">
+                <number>2</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="machineInfoCheckBox">
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Cairo</family>
+                 <pointsize>-1</pointsize>
+                </font>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">QCheckBox::indicator {
+    width: 16px;  /* Increase checkbox size */
+    height: 16px;
+}
+
+QCheckBox {
+    spacing: 10px; /* Space between checkbox and text */
+    font-size: 16px; /* Optional: Adjust text size */
+    color: #f3f3f3; /* Optional: Adjust text color */
+}
+
+/* Style the checkbox when checked */
+QCheckBox::indicator:checked {
+    background-color: #0078D7; /* Change color when checked */
+    border: 2px solid #005BBB;
+}
+
+/* Style the checkbox when unchecked */
+QCheckBox::indicator:unchecked {
+    background-color: white;
+    border: 2px solid gray;
+}
+
+/* Hover effect */
+QCheckBox::indicator:hover {
+    border: 2px solid black;
+}</string>
+               </property>
+               <property name="text">
+                <string>Include Machine Info</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QFrame" name="downloadReportButtonFrame">
+               <layout class="QHBoxLayout" name="passwordButtonHorizontalLayout_2">
+                <property name="topMargin">
+                 <number>15</number>
+                </property>
+                <item>
+                 <widget class="QPushButton" name="downloadReportPushButton">
+                  <property name="maximumSize">
+                   <size>
+                    <width>160</width>
+                    <height>31</height>
+                   </size>
+                  </property>
+                  <property name="cursor">
+                   <cursorShape>PointingHandCursor</cursorShape>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">#downloadReportPushButton  {
+    background-color: #4E4F5A; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;              
+    font-size: 14px; 
+	font-weight: bold;          
+    color: #f3f3f3;       
+}</string>
+                  </property>
+                  <property name="text">
+                   <string>Download Report</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <spacer name="ReportVerticalSpacer">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QFrame" name="reportPreviewVerticalFrame">
+         <layout class="QVBoxLayout" name="verticalLayout_14">
+          <property name="spacing">
+           <number>15</number>
+          </property>
+          <property name="leftMargin">
+           <number>20</number>
+          </property>
+          <property name="topMargin">
+           <number>20</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="reportPreviewLabel">
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Cairo</family>
+              <pointsize>18</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">#reportPreviewLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}</string>
+            </property>
+            <property name="text">
+             <string>Preview</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="wordWrap">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="previewTableVerticalFrame">
+            <property name="styleSheet">
+             <string notr="true">#reportPreviewVerticalFrame {
+   background-color: rgba(204, 204, 204, 0.6);;
+   color: black;
+   border-radius: 15px;
+   border-style: outset;
+   border-width: 2px;
+   border-color: black;	
+}</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_12">
+             <property name="spacing">
+              <number>10</number>
+             </property>
+             <property name="leftMargin">
+              <number>5</number>
+             </property>
+             <property name="topMargin">
+              <number>5</number>
+             </property>
+             <property name="rightMargin">
+              <number>5</number>
+             </property>
+             <property name="bottomMargin">
+              <number>5</number>
+             </property>
+             <item>
+              <widget class="QTableWidget" name="reportPreviewTableWidget">
+               <property name="minimumSize">
+                <size>
+                 <width>551</width>
+                 <height>571</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Cairo</family>
+                 <pointsize>12</pointsize>
+                </font>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">QTableWidget {
+    border-radius: 8px;
+    background-color: transparent;
+    gridline-color: #bdc3c7;
+}
+
+QHeaderView::section {
+    background-color: rgba(204, 204, 204, 0.6);
+    color: black;
+    padding: 2px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+}
+
+QTableWidget QHeaderView::section:vertical {
+    background-color: rgba(204, 204, 204, 0.6);
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    padding: 4px;
+}
+
+QTableWidget::item {
+    padding: 6px;
+    border: none;
+}
+
+QTableWidget::item:selected {
+    background-color: #2980b9;
+    color: white;
+    border-radius: 4px;
+}
+
+QTableWidget::item:hover {
+    background-color: #d5e8f6;
+}
+
+QTableWidget::corner {
+    background-color: #3498db;
+    border-top-left-radius: 8px;
+}
+
+QTableWidget QScrollBar:vertical {
+    border: none;
+    background: transparent;
+    width: 8px;
+    margin: 2px;
+}
+
+QTableWidget QScrollBar::handle:vertical {
+    background: #3498db;
+    border-radius: 4px;
+}
+
+QTableWidget QScrollBar:horizontal {
+    border: none;
+    background: transparent;
+    height: 8px;
+    margin: 2px;
+}
+
+QTableWidget QScrollBar::handle:horizontal {
+    background: #3498db;
+    border-radius: 4px;
+}
+</string>
+               </property>
+               <property name="verticalScrollBarPolicy">
+                <enum>Qt::ScrollBarAsNeeded</enum>
+               </property>
+               <property name="horizontalScrollBarPolicy">
+                <enum>Qt::ScrollBarAlwaysOff</enum>
+               </property>
+               <property name="textElideMode">
+                <enum>Qt::ElideLeft</enum>
+               </property>
+               <attribute name="horizontalHeaderCascadingSectionResizes">
+                <bool>false</bool>
+               </attribute>
+               <attribute name="horizontalHeaderMinimumSectionSize">
+                <number>141</number>
+               </attribute>
+               <attribute name="horizontalHeaderDefaultSectionSize">
+                <number>140</number>
+               </attribute>
+               <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+                <bool>false</bool>
+               </attribute>
+               <attribute name="horizontalHeaderStretchLastSection">
+                <bool>false</bool>
+               </attribute>
+               <attribute name="verticalHeaderVisible">
+                <bool>false</bool>
+               </attribute>
+               <attribute name="verticalHeaderMinimumSectionSize">
+                <number>35</number>
+               </attribute>
+               <attribute name="verticalHeaderDefaultSectionSize">
+                <number>35</number>
+               </attribute>
+               <attribute name="verticalHeaderShowSortIndicator" stdset="0">
+                <bool>false</bool>
+               </attribute>
+               <attribute name="verticalHeaderStretchLastSection">
+                <bool>false</bool>
+               </attribute>
+               <row>
+                <property name="text">
+                 <string>#1</string>
+                </property>
+               </row>
+               <column>
+                <property name="text">
+                 <string>Source IP</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Destination IP</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Detected Attack</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Timestamp</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Protocol</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Risk Level</string>
+                </property>
+               </column>
+               <item row="0" column="0">
+                <property name="text">
+                 <string>192.168.1.23</string>
+                </property>
+               </item>
+               <item row="0" column="1">
+                <property name="text">
+                 <string>192.168.1.12</string>
+                </property>
+               </item>
+               <item row="0" column="2">
+                <property name="text">
+                 <string>ARP Poisioning</string>
+                </property>
+               </item>
+               <item row="0" column="3">
+                <property name="text">
+                 <string>14:33:21 12/12/25</string>
+                </property>
+               </item>
+               <item row="0" column="4">
+                <property name="text">
+                 <string>ARP Spoofing</string>
+                </property>
+               </item>
+               <item row="0" column="5">
+                <property name="text">
+                 <string>Medium</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
     <widget class="QWidget" name="infoPage"/>
     <widget class="QWidget" name="settingsPage">
      <widget class="QFrame" name="settingsHorizontalFrame">
@@ -1399,7 +2227,7 @@ color: #f3f3f3
                   <property name="font">
                    <font>
                     <family>Cairo</family>
-                    <pointsize>-1</pointsize>
+                    <pointsize>12</pointsize>
                    </font>
                   </property>
                   <property name="cursor">
@@ -1412,8 +2240,7 @@ color: #f3f3f3
     border: 2px solid lightgray; /* Fixed typo */
     border-radius: 10px;
     padding-left: 10px;
-    font-size: 14px;
-    height: 30px;
+    height: 29px;
 }
 
 /* Style the drop-down button */

@@ -43,7 +43,7 @@ CREATE TABLE Alerts (
 
 
 -- Insert two default users into our database
-INSERT INTO Users (email, userName, password, numberOfDetectedAttacks, lightMode, isDeleted)  
+INSERT INTO Users (email, userName, password)  
 VALUES  
 ('shayhha@gmail.com', 'Shay', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3'),
 ('maximsu@ac.sce.ac.il', 'Max', 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3');

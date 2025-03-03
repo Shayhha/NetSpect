@@ -164,8 +164,8 @@ QToolTip {
          </property>
          <property name="styleSheet">
           <string notr="true">#logoLabel {
-  background-color: transparent;
-  color: #f3f3f3;
+	background-color: transparent;
+  	color: #f3f3f3;
 }</string>
          </property>
          <property name="text">
@@ -650,7 +650,7 @@ QToolTip {
                    <property name="styleSheet">
                     <string notr="true">#initiateDefenceLabel {
 	background-color: transparent;
-	color: #black;
+	color: black;
 	padding-top: 5px;
 	padding-left: 5px;
 }</string>
@@ -734,18 +734,19 @@ QToolTip {
                       <property name="styleSheet">
                        <string notr="true">#startStopButton {
     border-radius: 60px;
-    background-color: #3a8e32;
+    background-color: #3A8E32;
     border: 1px solid black;
     color: black;
     font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
 }
 
 #startStopButton:hover {
-    background-color: darkgreen;
+    background-color: #4D9946;
 }
-</string>
+
+#startStopButton:pressed {
+    background-color: #2E7128;
+}</string>
                       </property>
                       <property name="text">
                        <string>START</string>
@@ -1399,7 +1400,7 @@ QToolTip {
                    <property name="styleSheet">
                     <string notr="true">#attacksDistributionLabel {
 	background-color: transparent;
-	color: #black;
+	color: black;
 	padding-top: 5px;
 	padding-left: 5px;
 }</string>
@@ -1474,7 +1475,7 @@ QToolTip {
                 <property name="styleSheet">
                  <string notr="true">#historyLabel {
 	background-color: transparent;
-	color: #black;
+	color: black;
 	padding-top: 5px;
 	padding-left: 5px;
 }</string>
@@ -1973,7 +1974,7 @@ QTableWidget QScrollBar::handle:horizontal {
                    <property name="font">
                     <font>
                      <family>Cairo</family>
-                     <pointsize>-1</pointsize>
+                     <pointsize>12</pointsize>
                     </font>
                    </property>
                    <property name="cursor">
@@ -1982,7 +1983,6 @@ QTableWidget QScrollBar::handle:horizontal {
                    <property name="styleSheet">
                     <string notr="true">#arpSpoofingCheckBox {
     spacing: 10px; /* Space between checkbox and text */
-    font-size: 16px; /* Optional: Adjust text size */
     color: #f3f3f3; /* Optional: Adjust text color */
 }
 
@@ -2024,7 +2024,7 @@ QCheckBox::indicator:hover {
                    <property name="font">
                     <font>
                      <family>Cairo</family>
-                     <pointsize>-1</pointsize>
+                     <pointsize>12</pointsize>
                     </font>
                    </property>
                    <property name="cursor">
@@ -2033,7 +2033,6 @@ QCheckBox::indicator:hover {
                    <property name="styleSheet">
                     <string notr="true">#portScanningCheckBox {
     spacing: 10px; /* Space between checkbox and text */
-    font-size: 16px; /* Optional: Adjust text size */
     color: #f3f3f3; /* Optional: Adjust text color */
 }
 
@@ -2075,7 +2074,7 @@ QCheckBox::indicator:hover {
                    <property name="font">
                     <font>
                      <family>Cairo</family>
-                     <pointsize>-1</pointsize>
+                     <pointsize>12</pointsize>
                     </font>
                    </property>
                    <property name="cursor">
@@ -2084,7 +2083,6 @@ QCheckBox::indicator:hover {
                    <property name="styleSheet">
                     <string notr="true">#denialOfServiceCheckBox {
     spacing: 10px; /* Space between checkbox and text */
-    font-size: 16px; /* Optional: Adjust text size */
     color: #f3f3f3; /* Optional: Adjust text color */
 }
 
@@ -2126,7 +2124,7 @@ QCheckBox::indicator:hover {
                    <property name="font">
                     <font>
                      <family>Cairo</family>
-                     <pointsize>-1</pointsize>
+                     <pointsize>12</pointsize>
                     </font>
                    </property>
                    <property name="cursor">
@@ -2135,7 +2133,6 @@ QCheckBox::indicator:hover {
                    <property name="styleSheet">
                     <string notr="true">#dnsTunnelingCheckBox {
     spacing: 10px; /* Space between checkbox and text */
-    font-size: 16px; /* Optional: Adjust text size */
     color: #f3f3f3; /* Optional: Adjust text color */
 }
 
@@ -2201,7 +2198,7 @@ QCheckBox::indicator:hover {
                    <property name="font">
                     <font>
                      <family>Cairo</family>
-                     <pointsize>-1</pointsize>
+                     <pointsize>12</pointsize>
                     </font>
                    </property>
                    <property name="cursor">
@@ -2215,7 +2212,6 @@ QCheckBox::indicator:hover {
 
 QCheckBox {
     spacing: 10px; /* Space between checkbox and text */
-    font-size: 16px; /* Optional: Adjust text size */
     color: #f3f3f3; /* Optional: Adjust text color */
 }
 

@@ -1,4 +1,4 @@
-import sys, os, logging, joblib, time
+import sys, os, logging, joblib
 import numpy as np
 import pandas as pd
 from abc import ABC, abstractmethod
@@ -67,7 +67,7 @@ class Default_Packet(ABC):
 
     # method to return a normalized flow representation of a packet
     def GetFlowTuple(self):
-        currentInterface = SniffNetwork.networkInfo.get(SniffNetwork.selectedInterface) #the values of the selected network interface
+        currentInterface = NetworkInformation.networkInfo.get(NetworkInformation.selectedInterface) #the values of the selected network interface
 
         # extract flow tuple from packet
         srcIp, dstIp, protocol = self.srcIp, self.dstIp, self.protocol
@@ -182,7 +182,6 @@ class DNS_Packet(Default_Packet):
 
 # ---------------------------------------------------ARP-----------------------------------------------------#
 class ARP_Packet(Default_Packet):
-    arpId = None
     srcMac = None
     dstMac = None
     arpType = None
@@ -191,11 +190,10 @@ class ARP_Packet(Default_Packet):
     hwLen = None
     pLen = None
 
-    def __init__(self, packet=None, arpId=None):
+    def __init__(self, packet=None):
         super().__init__('ARP', packet) #call parent ctor
         if packet.haslayer(ARP): #checks if packet is arp
             self.packetType = ARP #add packet type
-        self.arpId = arpId
         self.InitARP() #call method to initialize arp specific params
 
     # method for ARP packet information
@@ -213,126 +211,20 @@ class ARP_Packet(Default_Packet):
 
 #--------------------------------------------------ARP-END---------------------------------------------------#
 
-#----------------------------------------------SNIFF-NETWORK-------------------------------------------------#
-
-# static class that represents the main functionality of the program, to sniff network packets and collect data about them in-order to detect attacks
-class SniffNetwork(ABC):
+#--------------------------------------------NETWORK-INFORMATION---------------------------------------------#
+# static class that represents network information of network interfaces
+class NetworkInformation(ABC):
     networkInfo = None #represents a dict of dicts where each inner dict represents an available network interface
     selectedInterface = None #the user-selected interface name: 'Ethernet' / 'en6'
-    startTime, timeoutTime, threshold = None, 40, 10000 #represents our stop conditions for the sniffing, stopping after x time or a max amount of packets reached
-    portScanDosDict = {} #represents dict of {(flow tuple) - [packet list]} related to port scanning and dos
-    dnsDict = {} #represents dict of packets related to dns tunneling 
-    arpDict = {} #represents dict of packets related to arp poisoning
-    tcpUdpCounter = 0 #global counter for tcp and udp packets
-    dnsCounter = 0 #global counter for dns packets
-    arpCounter = 0 #global counter for arp packets
 
     # function for initializing the dict of data about all available interfaces
     @staticmethod
     def InitNetworkInfo():
-        SniffNetwork.networkInfo = SniffNetwork.GetNetworkInterfaces() #find all available network interface and collect all data about these interfaces
-        return SniffNetwork.networkInfo.keys() #return all available interface names for the user to select
+        NetworkInformation.networkInfo = NetworkInformation.GetNetworkInterfaces() #find all available network interface and collect all data about these interfaces
+        return NetworkInformation.networkInfo.keys() #return all available interface names for the user to select
     
 
-    # function for initialing a packet scan on desired network interface
-    @staticmethod
-    def ScanNetwork():
-        try:
-            print('Starting Network Scan...')
-            availableInterfaces = SniffNetwork.InitNetworkInfo() #find all available network interfaces
-            ArpSpoofing.InitAllArpTables(SniffNetwork.networkInfo.get(SniffNetwork.selectedInterface)) #initialize all of our static arp tables with subnets
-
-            print(f'\n{SniffNetwork.networkInfo.get(SniffNetwork.selectedInterface)}\n') #print host selected interface info (name, ip addresses, mac, etc.)
-            ArpSpoofing.printArpTables() #print all initialized arp tables
-
-            # call scapy sniff function with desired interface and sniff network packets
-            SniffNetwork.startTime = time.time() #starting a timer to determin when to stop the sniffer
-            sniff(iface=SniffNetwork.selectedInterface, prn=SniffNetwork.PacketCapture, stop_filter=SniffNetwork.StopScan, store=0)
-        except PermissionError: #if user didn't run with administrative privileges 
-            print('Permission denied. Please run again with administrative privileges.') #print permission error message in terminal
-        except ArpSpoofingException as e: #if we recived ArpSpoofingException we alert the user
-            print(e)
-        except Exception as e: #we catch an exception if something happend while sniffing
-            print(f'An error occurred while sniffing: {e}') #print error message in terminal
-        finally:
-            print('Finsihed Network Scan.\n')
-
-
-    # function for checking when to stop sniffing packets, stop condition
-    @staticmethod
-    def StopScan(packet):
-        # return True if ( ((time.time() - SniffNetwork.startTime) > SniffNetwork.timeoutTime) or (SniffNetwork.arpCounter >= 20) ) else False
-        # return True if ( ((time.time() - SniffNetwork.startTime) > SniffNetwork.timeoutTime) or (SniffNetwork.tcpUdpCounter >= SniffNetwork.threshold) ) else False
-        return True if ( ((time.time() - SniffNetwork.startTime) > SniffNetwork.timeoutTime) or (SniffNetwork.dnsCounter >= 350) ) else False
-
-
-    # function for capturing specific packets for later analysis
-    @staticmethod
-    def PacketCapture(packet):
-        captureDict = {TCP: SniffNetwork.handleTCP, UDP: SniffNetwork.handleUDP, DNS: SniffNetwork.handleDNS, ARP: SniffNetwork.handleARP} #represents dict with packet type and handler func
-
-        # iterate over capture dict and find coresponding handler function for each packet
-        for packetType, handler in captureDict.items():
-            if packet.haslayer(packetType): #if we found matching packet we call its handle method
-                handler(packet) #call handler method of each packet
-
-
-    #--------------------------------------------HANDLE-FUNCTIONS------------------------------------------------#
-
-    # method that handles TCP packets
-    @staticmethod
-    def handleTCP(packet):
-        if packet.haslayer(DNS): #if we found a dns packet we also call dns handler
-            SniffNetwork.handleDNS(packet) #call our handleDNS func
-        TCP_Object = TCP_Packet(packet) #create a new object for packet
-        flowTuple = TCP_Object.GetFlowTuple() #get flow representation of packet
-        if flowTuple in SniffNetwork.portScanDosDict: #if flow tuple exists in dict
-            SniffNetwork.portScanDosDict[flowTuple].append(TCP_Object) #append to list our packet
-        else: #else we create new entry with flow tuple
-            SniffNetwork.portScanDosDict[flowTuple] = [TCP_Object] #create new list with packet
-        SniffNetwork.tcpUdpCounter += 1
-
-
-    # method that handles UDP packets
-    @staticmethod
-    def handleUDP(packet):
-        if packet.haslayer(DNS): #if we found a dns packet we also call dns handler
-            SniffNetwork.handleDNS(packet) #call our handleDNS func
-        UDP_Object = UDP_Packet(packet) #create a new object for packet
-        flowTuple = UDP_Object.GetFlowTuple() #get flow representation of packet
-        if flowTuple in SniffNetwork.portScanDosDict: #if flow tuple exists in dict
-            SniffNetwork.portScanDosDict[flowTuple].append(UDP_Object) #append to list our packet
-        else: #else we create new entry with flow tuple
-            SniffNetwork.portScanDosDict[flowTuple] = [UDP_Object] #create new list with packet
-        SniffNetwork.tcpUdpCounter += 1
-
-
-    # method that handles DNS packets
-    @staticmethod
-    def handleDNS(packet):
-        # DNS_Object = DNS_Packet(packet, dnsCounter) #create a new object for packet
-        # dnsDict[DNS_Object.dnsId] = DNS_Object #insert it to packet dictionary
-        DNS_Object = DNS_Packet(packet) #create a new object for packet
-        flowTuple = DNS_Object.GetFlowTuple() #get flow representation of packet
-        if flowTuple in SniffNetwork.dnsDict: #if flow tuple exists in dict
-            SniffNetwork.dnsDict[flowTuple].append(DNS_Object) #append to list our packet
-        else: #else we create new entry with flow tuple
-            SniffNetwork.dnsDict[flowTuple] = [DNS_Object] #create new list with packet
-        SniffNetwork.dnsCounter += 1
-
-
-    # method that handles ARP packets
-    @staticmethod
-    def handleARP(packet):
-        ARP_Object = ARP_Packet(packet, SniffNetwork.arpCounter) #create a new object for packet
-        SniffNetwork.arpDict[ARP_Object.arpId] = ARP_Object #insert it to packet dictionary
-        SniffNetwork.arpCounter += 1 #increase the counter
-
-    #------------------------------------------HANDLE-FUNCTIONS-END----------------------------------------------#
-
-    #--------------------------------------------HELPER-FUNCTIONS------------------------------------------------#
-
-    # method to print all available interfaces
+    # function to print all available interfaces
     @staticmethod
     def GetAvailableInterfaces():
         # get a list of all available network interfaces
@@ -342,7 +234,7 @@ class SniffNetwork(ABC):
             i = 1 #counter for the interfaces 
             for interface in interfaces: #print all availabe interfaces
                 if sys.platform.startswith('win32'): #if ran on windows we convert the guid number
-                    print(f'{i}. {SniffNetwork.GuidToStr(interface)}')
+                    print(f'{i}. {NetworkInformation.GuidToStr(interface)}')
                 else: #else we are on other os so we print the interface 
                     print(f'{i}. {interface}')
                 i += 1
@@ -350,7 +242,7 @@ class SniffNetwork(ABC):
             print('No network interfaces found.')
 
 
-    # method for retrieving interface name from GUID number (Windows only)
+    # function for retrieving interface name from GUID number (Windows only)
     @staticmethod
     def GuidToStr(guid):
         try: #we try to import the specific windows method from scapy library
@@ -365,13 +257,13 @@ class SniffNetwork(ABC):
         return guid #else we didnt find the guid number so we return given guid
 
 
-    # method for retrieving the network interfaces
+    # function for retrieving the network interfaces
     @staticmethod
     def GetNetworkInterfaces_OLD():
         networkNames = ['eth', 'wlan', 'en', 'enp', 'wlp', 'lo', 'Ethernet', 'Wi-Fi', '\\Device\\NPF_Loopback'] #this list represents the usual network interfaces that are available in various platfroms
         interfaces = get_if_list() #get a list of the network interfaces
         if sys.platform.startswith('win32'): #if current os is Windows we convert the guid number to interface name
-            interfaces = [SniffNetwork.GuidToStr(interface) for interface in interfaces] #get a new list of network interfaces with correct names instead of guid numbers
+            interfaces = [NetworkInformation.GuidToStr(interface) for interface in interfaces] #get a new list of network interfaces with correct names instead of guid numbers
         matchedInterfaces = [interface for interface in interfaces if any(interface.startswith(name) for name in networkNames)] #we filter the list to retrieving ethernet and wifi interfaces
         return matchedInterfaces #return the matched interfaces as list
 
@@ -392,7 +284,7 @@ class SniffNetwork(ABC):
 
                 # initialize ipv4 subnets based on ipv4 ips we found
                 for ipAddress in ipv4Addrs:
-                    netmask = SniffNetwork.GetNetmaskFromIp(ipAddress) #get netmask with our function
+                    netmask = NetworkInformation.GetNetmaskFromIp(ipAddress) #get netmask with our function
                     if ipAddress and netmask:
                         subnet = IPv4Interface(f'{ipAddress}/{netmask}').network
                         ipv4Subnets.append((str(subnet), f'{'.'.join(ipAddress.split('.')[:3])}.0/24', netmask)) #list of tuples such that (subnet (real), range(/24), netmask)
@@ -436,9 +328,7 @@ class SniffNetwork(ABC):
                     
         return None #return None if the IP is not found
 
-    #-------------------------------------------HELPER-FUNCTIONS-END---------------------------------------------#
-
-#---------------------------------------------SNIFF-NETWORK-END----------------------------------------------#
+#--------------------------------------------NETWORK-INFORMATION-END-----------------------------------------#
 
 #-----------------------------------------------ARP-SPOOFING-------------------------------------------------#
 class ArpSpoofingException(Exception):
@@ -519,13 +409,12 @@ class ArpTable():
 class ArpSpoofing(ABC):
     arpTables = {} #represents all ARP tables where the key of the table is the subnet, each inner ARP table is a tuple (arpTable, invArpTable) with mapping of IP->MAC and MAC->IP in each table in tuple
     cache = {} #represents a dict with cache of all ip addresses that matched a subnet
-    interfaceInfo = {} #represents the dict with all data about the user-selected network interface
 
     # function that iterates over available ipv4 subnets and inits an ARP table for each one
     @staticmethod
-    def InitAllArpTables(interfaceInfo):
+    def InitAllArpTables(selectedInterface):
         # iterate over all given subnets, for each check if an ARP table exists for it
-        for subnet in interfaceInfo.get('ipv4Info'):
+        for subnet in selectedInterface.get('ipv4Info'):
             if not ArpSpoofing.arpTables.get(subnet[0]):
                 # init a new ARP tabel if an ARP table for that subnet is not initialized
                 subnetObject = ip_network(subnet[0])
@@ -569,14 +458,15 @@ class ArpSpoofing(ABC):
 
     # function for processing arp packets and check for arp spoofing attacks
     @staticmethod
-    def ProcessARP():
+    def ProcessARP(arpList):
+        result = (False, {}) #represents result of analysis
         attacksDict = {} #represents attack dict with anomalies
         try:
             if not ArpSpoofing.arpTables: #check that arpTable is initialzied
                 raise RuntimeError('Error, cannot process ARP packets, ARP tables are not initalized.')
 
             # iterate over our arp dictionary and check each packet for inconsistencies
-            for packet in SniffNetwork.arpDict.values():
+            for packet in arpList:
                 # we check that packet has a source ip and also that its not assinged to a temporary ip (0.0.0.0)
                 if isinstance(packet, ARP_Packet) and packet.srcIp != None and packet.srcIp != '0.0.0.0':
                     subnet = ArpSpoofing.getSubnetForIP(packet.srcIp)
@@ -607,19 +497,24 @@ class ArpSpoofing(ABC):
                         if arpTableObject.arpTable[packet.srcIp] != packet.srcMac: #means we have a spoofed mac address
                             ip, macs = packet.srcIp, {arpTableObject.arpTable[packet.srcIp], packet.srcMac} #create the details for exception
                             attacksDict.setdefault(ip, set()).update(macs) #add an anomaly: same IP, different MAC
-
+            
             if attacksDict: #means we detected an attack
+                result = (False, {ip: list(macs) for ip, macs in attacksDict.items()}) #indication of attack
                 # throw an exeption to inform user of its presence
                 raise ArpSpoofingException(
                     'Detected ARP spoofing incidents: IP-to-MAC anomalies',
                     state=1,
-                    details={ip: list(macs) for ip, macs in attacksDict.items()}
+                    details=result
                 )
+            
+            result = (True, {}) #indication for no attacks
 
         except ArpSpoofingException as e: #if we recived ArpSpoofingException we alert the user
             print(e)
         except Exception as e: #we catch an exception if something happend
             print(f'Error occurred: {e}')
+        finally:
+            return result
 
 #----------------------------------------------ARP-SPOOFING-END----------------------------------------------#
 
@@ -654,11 +549,11 @@ class PortScanDoS(ABC):
 
     # function for processing the flowDict and creating the dataframe that will be passed to classifier
     @staticmethod
-    def ProcessFlows():
+    def ProcessFlows(portScanDosDict):
         featuresDict = defaultdict(dict) #represents our features dict where each flow tuple has its corresponding features
 
         # iterate over our flow dict and calculate features
-        for flow, packetList in SniffNetwork.portScanDosDict.items():
+        for flow, packetList in portScanDosDict.items():
             uniquePorts = set() #represents the unique destination ports in flow
             fwdLengths = [] #represents length of forward packets in flow
             bwdLengths = [] #represents length of backward packets in flow
@@ -748,6 +643,7 @@ class PortScanDoS(ABC):
     # function for predicting PortScanning and DoS attacks given flow dictionary
     @staticmethod
     def PredictPortDoS(flowDict):
+        result = (False, {}) #represents result of analysis
         try: 
             # extract keys and values from flowDict and save it as a DataFrame
             keyColumns = ['Src IP', 'Dst IP', 'Protocol']
@@ -769,28 +665,31 @@ class PortScanDoS(ABC):
             keysDataframe.loc[:, 'Result'] = predictions
 
             # check for attacks in model predictions
-            if (1 in predictions) and (2 in predictions):#1 and 2 means PortScan and DoS attacks together
+            if (1 in predictions) and (2 in predictions): #1 and 2 means PortScan and DoS attacks together
+                result = (False, keysDataframe[keysDataframe['Result'] != 0].to_dict(orient='records')) #indication of PortScan and DoS attacks together
                 shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_PortAndDoS.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
                     'Detected PortScan and DoS attack',
                     state=3,
-                    flows=keysDataframe[keysDataframe['Result'] != 0].to_dict(orient='records')
+                    flows=result
                 )
 
             elif 1 in predictions: #1 means PortScan attack
+                result = (False, keysDataframe[keysDataframe['Result'] == 1].to_dict(orient='records')) #indication of PortScan attack
                 shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_Port.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
                     'Detected PortScan attack',
                     state=1,
-                    flows=keysDataframe[keysDataframe['Result'] == 1].to_dict(orient='records')
+                    flows=result
                 )
             
             elif 2 in predictions: #2 means DoS attack
+                result = (False, keysDataframe[keysDataframe['Result'] == 2].to_dict(orient='records')) #indication of DoS attack
                 shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_DoS.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
                     'Detected DoS attack',
                     state=2,
-                    flows=keysDataframe[keysDataframe['Result'] == 2].to_dict(orient='records')
+                    flows=result
                 )
 
             # show results of the prediction
@@ -801,10 +700,14 @@ class PortScanDoS(ABC):
             print(f'Number of detected attacks:\n {keysDataframe[keysDataframe['Result'] != 0]}\n')
             print('Predictions:\n', keysDataframe)
 
+            result = (True, {}) #indication for no attacks
+
         except PortScanDoSException as e: #if we recived ArpSpoofingException we alert the user
             print(e)
         except Exception as e: #we catch an exception if something happend
             print(f'Error occurred: {e}')
+        finally:
+            return result
 
 #--------------------------------------------PORT-SCANNING-DoS-END-------------------------------------------#
 
@@ -832,12 +735,13 @@ class DNSTunneling(ABC):
         'Flow Duration', 'IAT Total', 'IAT Max', 'IAT Mean', 'IAT Std'
     ]
 
+    # function for processing the flowDict and creating the dataframe that will be passed to classifier
     @staticmethod
-    def ProcessFlows(): 
+    def ProcessFlows(dnsDict): 
         featuresDict = defaultdict(dict) #represents our features dict where each flow tuple has its corresponding features
 
         # iterate over our flow dict and calculate features
-        for flow, packetList in SniffNetwork.dnsDict.items():
+        for flow, packetList in dnsDict.items():
             ARecordCount = 0 #represennts number of A record (ipv4) packets in flow
             AAAARecordCount = 0 #represennts number of AAAA record (ipv6) packets in flow
             CNameRecordCount = 0 #represents number of C-Name record packets in flow
@@ -956,6 +860,7 @@ class DNSTunneling(ABC):
     # function for predicting DNS Tunneling attack given flow dictionary
     @staticmethod
     def PredictDNS(flowDict):
+        result = (False, {}) #represents result of analysis
         try: 
             # extract keys and values from flowDict and save it as a DataFrame
             keyColumns = ['Src IP', 'Dst IP', 'Protocol']
@@ -978,10 +883,11 @@ class DNSTunneling(ABC):
 
             # check for attacks in model predictions
             if 1 in predictions: #1 means DNS Tunneling attack
+                result = (False, keysDataframe[keysDataframe['Result'] == 1].to_dict(orient='records')) #indication of DNS attack
                 shutil.copy('detectedFlowsDNS.txt', f'{np.random.randint(1,1000000)}_detectedFlowsDNS.txt') # temporary code for saving false positive if the occure during scans
                 raise DNSTunnelingException( #throw an exeption to inform user of its presence
                     'Detected DNS Tunneling attack',
-                    flows=keysDataframe[keysDataframe['Result'] == 1].to_dict(orient='records')
+                    flows=result
                 )
             
             # show results of the prediction
@@ -991,10 +897,14 @@ class DNSTunneling(ABC):
             print(f'Number of detected attacks:\n {keysDataframe[keysDataframe['Result'] != 0]}\n')
             print('Predictions:\n', keysDataframe)  
 
+            result = (True, {}) #indication for no attacks
+
         except DNSTunnelingException as e: #if we recived ArpSpoofingException we alert the user
             print(e)
         except Exception as e: #we catch an exception if something happend
             print(f'Error occurred: {e}')
+        finally:
+            return result
 
 #----------------------------------------------DNS-TUNNELING-END---------------------------------------------#
 
@@ -1036,25 +946,25 @@ class SaveData(ABC):
 
 #-------------------------------------------------MAIN-START-------------------------------------------------#
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
-    # call scan network func to initiate network scan 'en6' / 'Ethernet' / 'Wi-Fi'
-    SniffNetwork.selectedInterface = 'Ethernet' #mimicking a user selected interface from spinbox
-    SniffNetwork.ScanNetwork()
+#     # call scan network func to initiate network scan 'en6' / 'Ethernet' / 'Wi-Fi'
+#     NetworkInformation.selectedInterface = 'Ethernet' #mimicking a user selected interface from spinbox
+#     NetworkInformation.ScanNetwork()
 
-    # call arp processing function and check for arp spoofing attacks
-    # ArpSpoofing.ProcessARP()
+#     # call arp processing function and check for arp spoofing attacks
+#     # ArpSpoofing.ProcessARP(SniffNetwork.arpList)
 
-    # call port scanning and dos processing function and predict attack
-    # portScanFlows = PortScanDoS.ProcessFlows()
-    # SaveData.SaveFlowsInFile(portScanFlows) #save the collected data in txt format
-    # SaveData.SaveCollectedData(portScanFlows) #save the collected data in CSV format
-    # PortScanDoS.PredictPortDoS(portScanFlows) #call our predict function for detecting port dos attack
+#     # call port scanning and dos processing function and predict attack
+#     # portScanFlows = PortScanDoS.ProcessFlows(SniffNetwork.portScanDosDict)
+#     # SaveData.SaveFlowsInFile(portScanFlows) #save the collected data in txt format
+#     # SaveData.SaveCollectedData(portScanFlows) #save the collected data in CSV format
+#     # PortScanDoS.PredictPortDoS(portScanFlows) #call our predict function for detecting port dos attack
 
-    # call dns processing function and predict attack
-    dnsFlows = DNSTunneling.ProcessFlows()
-    SaveData.SaveFlowsInFile(dnsFlows, 'detectedFlowsDNS.txt') #save the collected data in txt format
-    SaveData.SaveCollectedData(dnsFlows, 'dns_benign_dataset.csv', DNSTunneling.selectedColumns) #save the collected data in CSV format
-    DNSTunneling.PredictDNS(dnsFlows)
+#     # call dns processing function and predict attack
+#     dnsFlows = DNSTunneling.ProcessFlows(NetworkInformation.dnsDict)
+#     SaveData.SaveFlowsInFile(dnsFlows, 'detectedFlowsDNS.txt') #save the collected data in txt format
+#     SaveData.SaveCollectedData(dnsFlows, 'dns_benign_dataset.csv', DNSTunneling.selectedColumns) #save the collected data in CSV format
+#     DNSTunneling.PredictDNS(dnsFlows)
 
 #--------------------------------------------------MAIN-END--------------------------------------------------#

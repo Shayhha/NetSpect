@@ -214,15 +214,20 @@ class ARP_Packet(Default_Packet):
 #--------------------------------------------NETWORK-INFORMATION---------------------------------------------#
 # static class that represents network information of network interfaces
 class NetworkInformation(ABC):
+    # this list represents the usual network interfaces that are available in various platfroms
+    supportedInterfaces = ['eth', 'wlan', 'en', 'enp', 'wlp', 'Ethernet', 'Wi-Fi', 'lo', '\\Device\\NPF_Loopback']
     networkInfo = None #represents a dict of dicts where each inner dict represents an available network interface
-    selectedInterface = None #the user-selected interface name: 'Ethernet' / 'en6'
+    selectedInterface = None #represents user-selected interface name: 'Ethernet' / 'en6'
+    previousInterface = None #represents previous interfcae used for network analysis
 
     # function for initializing the dict of data about all available interfaces
     @staticmethod
     def InitNetworkInfo():
         NetworkInformation.networkInfo = NetworkInformation.GetNetworkInterfaces() #find all available network interface and collect all data about these interfaces
-        return NetworkInformation.networkInfo.keys() #return all available interface names for the user to select
-    
+        #return all available interface names for the user to select in sorted order
+        return sorted(NetworkInformation.networkInfo.keys(), key=lambda x: (next((i for i, prefix 
+                in enumerate(NetworkInformation.supportedInterfaces) if x.startswith(prefix)), len(NetworkInformation.supportedInterfaces)), x))
+
 
     # function to print all available interfaces
     @staticmethod
@@ -260,25 +265,23 @@ class NetworkInformation(ABC):
     # function for retrieving the network interfaces
     @staticmethod
     def GetNetworkInterfaces_OLD():
-        networkNames = ['eth', 'wlan', 'en', 'enp', 'wlp', 'lo', 'Ethernet', 'Wi-Fi', '\\Device\\NPF_Loopback'] #this list represents the usual network interfaces that are available in various platfroms
         interfaces = get_if_list() #get a list of the network interfaces
         if sys.platform.startswith('win32'): #if current os is Windows we convert the guid number to interface name
             interfaces = [NetworkInformation.GuidToStr(interface) for interface in interfaces] #get a new list of network interfaces with correct names instead of guid numbers
-        matchedInterfaces = [interface for interface in interfaces if any(interface.startswith(name) for name in networkNames)] #we filter the list to retrieving ethernet and wifi interfaces
+        matchedInterfaces = [interface for interface in interfaces if any(interface.startswith(name) for name in NetworkInformation.supportedInterfaces)] #we filter the list to retrieving ethernet and wifi interfaces
         return matchedInterfaces #return the matched interfaces as list
 
 
     # function for collecting all available interfaces on the current machine and as much data about them as possible including name, speed, ip addresses, subnets and more
     @staticmethod
     def GetNetworkInterfaces():
-        supportedInterfaces = ['eth', 'wlan', 'en', 'enp', 'wlp', 'lo', 'Ethernet', 'Wi-Fi', '\\Device\\NPF_Loopback'] #this list represents the usual network interfaces that are available in various platfroms
         networkInterfaces = {} #represents network interfaces dict where keys are name of interface and value is interface dict
         ifaceStats = net_if_stats() #for getting extra info about each interface using stats function
 
         # iterate through all network interfaces and initialize our network interfaces dict
         for iface in conf.ifaces.values():
             # we add only interfaces we support with scapy and that are up
-            if iface.ips and any(iface.name.startswith(name) for name in supportedInterfaces):
+            if iface.ips and any(iface.name.startswith(name) for name in NetworkInformation.supportedInterfaces):
                 # initialize our ipv4 and ipv6 addresses (always dict of two elements: 4: ipv4Addrs, 6: ipv6Addrs)
                 ipv4Addrs, ipv6Addrs, ipv4Subnets, ipv6Subnets = iface.ips[4], iface.ips[6], [], set()
 
@@ -306,9 +309,9 @@ class NetworkInformation(ABC):
                     'maxTransmitionUnit': ifaceStats.get(iface.name).mtu if ifaceStats.get(iface.name) else 'None',
                     'mac': iface.mac if iface.mac else '',
                     'ipv4Addrs': ipv4Addrs,
-                    'ipv4Info': ipv4Subnets,
+                    'ipv4Subnets': ipv4Subnets,
                     'ipv6Addrs': ipv6Addrs,
-                    'ipv6Info': list(ipv6Subnets)
+                    'ipv6Subnets': list(ipv6Subnets)
                 }
                 networkInterfaces[interfaceDict['name']] = interfaceDict #add interface to our network interfaces
         
@@ -410,20 +413,27 @@ class ArpSpoofing(ABC):
     arpTables = {} #represents all ARP tables where the key of the table is the subnet, each inner ARP table is a tuple (arpTable, invArpTable) with mapping of IP->MAC and MAC->IP in each table in tuple
     cache = {} #represents a dict with cache of all ip addresses that matched a subnet
 
-    # function that iterates over available ipv4 subnets and inits an ARP table for each one
+    # function that iterates over available ipv4 subnets and initializes an ARP table for each one
     @staticmethod
-    def InitAllArpTables(selectedInterface):
-        # iterate over all given subnets, for each check if an ARP table exists for it
-        for subnet in selectedInterface.get('ipv4Info'):
-            if not ArpSpoofing.arpTables.get(subnet[0]):
-                # init a new ARP tabel if an ARP table for that subnet is not initialized
-                subnetObject = ip_network(subnet[0])
-                ArpSpoofing.arpTables[subnetObject] = ArpTable(subnet) 
+    def InitAllArpTables():
+        # we initialize our arp tables only if selected network interface has changed
+        if NetworkInformation.selectedInterface != NetworkInformation.previousInterface:
+            # clear previous interface information that was saved in our dictionaries
+            NetworkInformation.previousInterface = NetworkInformation.selectedInterface
+            ArpSpoofing.arpTables, ArpSpoofing.cache = {}, {}
+
+            # iterate over all given subnets, for each check if an ARP table exists for it
+            for subnet in NetworkInformation.networkInfo.get(NetworkInformation.selectedInterface).get('ipv4Subnets'):
+                if not ArpSpoofing.arpTables.get(subnet[0]):
+                    # init a new ARP tabel if an ARP table for that subnet is not initialized
+                    subnetObject = ip_network(subnet[0])
+                    ArpSpoofing.arpTables[subnetObject] = ArpTable(subnet)
+            ArpSpoofing.PrintArpTables() #print static arp tables
 
 
     # function for getting the correct arp table given an IP address
     @staticmethod
-    def getSubnetForIP(ipAddress): 
+    def GetSubnetForIP(ipAddress): 
         try:
             if ipAddress in ArpSpoofing.cache: #check if the given IP address was cached
                 return ArpSpoofing.cache[ipAddress]
@@ -444,7 +454,7 @@ class ArpSpoofing(ABC):
 
     # function for printing all arp tables
     @staticmethod
-    def printArpTables():
+    def PrintArpTables():
         if ArpSpoofing.arpTables:
             print('All ARP Tables:')
             for subnet, arpTableObject in ArpSpoofing.arpTables.items():
@@ -469,7 +479,7 @@ class ArpSpoofing(ABC):
             for packet in arpList:
                 # we check that packet has a source ip and also that its not assinged to a temporary ip (0.0.0.0)
                 if isinstance(packet, ARP_Packet) and packet.srcIp != None and packet.srcIp != '0.0.0.0':
-                    subnet = ArpSpoofing.getSubnetForIP(packet.srcIp)
+                    subnet = ArpSpoofing.GetSubnetForIP(packet.srcIp)
                     if subnet == None: 
                         print(f'Error, received an ARP packet from an outside subnet, no arp table mached the ARP packet source IP address "{packet.srcIp}"')
                         continue

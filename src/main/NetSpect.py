@@ -36,22 +36,30 @@ class NetSpect(QMainWindow):
     # method to initialize GUI methods and events
     def initUI(self):
         self.setWindowTitle('NetSpect') #set title of window
+        # connect timers for detection
         self.totalTimer, self.arpTimer, self.portScanDosTimer, self.dnsTimer = QTimer(self), QTimer(self), QTimer(self), QTimer(self) #initailize our timers
         self.totalTimer.timeout.connect(self.UpdateRunningTimeCounterLabel) #connect timeout event for total timer
         self.arpTimer.timeout.connect(self.SendArpList) #connect timeout event for arp timer
         self.portScanDosTimer.timeout.connect(self.SendPortScanDosDict) #connect timeout event for portScanDos timer
         # self.dnsTimer.timeout.connect(self.SendDnsDict) #connect timeout event for dns timer
+
+        # connect interface buttons to their methods
         self.startStopButton.clicked.connect(self.StartStopButtonClicked)
-        NetworkInformation.InitNetworkInfo()
-        NetworkInformation.selectedInterface = 'Ethernet'
-        ArpSpoofing.InitAllArpTables(NetworkInformation.networkInfo.get(NetworkInformation.selectedInterface)) #initialize all of our static arp tables with subnets
-        ArpSpoofing.printArpTables() #print static arp tables
         # self.CancelButton.clicked.connect(self.ShowMainWindow)
         # self.SubmitButton.clicked.connect(self.AddVoterToApp)
         # self.addVoterButton.clicked.connect(self.ShowVoterSubmit)
         # self.verifyButton.clicked.connect(self.VerifyVoter)
+
+        # connect comboboxes to their methods
+        self.networkInterfaceComboBox.clear() #clear interfaces combobox
+        self.networkInterfaceComboBox.addItems(NetworkInformation.InitNetworkInfo()) #intialize our interfaces combobox with host network info
+        self.networkInterfaceComboBox.currentIndexChanged.connect(self.ChangeNetworkInterface) #connect interfaces combobox to its method
+        self.ChangeNetworkInterface() #set default network interface from combobox 
+
+        # initialize other interface components and show interface
         # self.initValidators()
         # self.initDBConnection() #call init db method
+        ArpSpoofing.InitAllArpTables() #initialize all of our static arp tables with subnets
         self.center() #make the app open in center of screen
         self.show() #show the application
 
@@ -122,7 +130,15 @@ class NetSpect(QMainWindow):
         return digest.finalize() if not toHex else digest.finalize().hex() #return sha-256 hash of message
     
 
+    # method for updating network interface from combobox in gui
+    def ChangeNetworkInterface(self):
+        # set selected interface to chosen interfaces selected in combobox in gui
+        NetworkInformation.selectedInterface = self.networkInterfaceComboBox.currentText()
+        print(f'Selected interface: {NetworkInformation.selectedInterface}')
+
+
     # method for updating running time label in gui
+    @pyqtSlot()
     def UpdateRunningTimeCounterLabel(self):
         # increment timer by 1 second
         self.timeElapsed += timedelta(seconds=1)
@@ -317,9 +333,12 @@ class NetSpect(QMainWindow):
     @pyqtSlot(tuple)
     def CloseSnifferThread(self, state):
         self.snifferThread = None
+        # we check if it was the last thread, if so we set isDetection flag
         if not self.arpThread and not self.portScanDosThread and not self.dnsThread:
             self.isDetection = False
+        # in case of an error we stop detection and show error message
         if state[0] == False and state[1]:
+            self.StopDetection() #stop detection and stop running threads
             #! show message box
             print('Error')
     
@@ -328,9 +347,12 @@ class NetSpect(QMainWindow):
     @pyqtSlot(tuple)
     def CloseArpThread(self, state):
         self.arpThread = None
+        # we check if it was the last thread, if so we set isDetection flag
         if not self.snifferThread and not self.portScanDosThread and not self.dnsThread:
             self.isDetection = False
+        # in case of an error we stop detection and show error message
         if state[0] == False and state[1]:
+            self.StopDetection() #stop detection and stop running threads
             #! show message box
             print('Error')
 
@@ -339,9 +361,12 @@ class NetSpect(QMainWindow):
     @pyqtSlot(tuple)
     def ClosePortScanDosThread(self, state):
         self.portScanDosThread = None
+        # we check if it was the last thread, if so we set isDetection flag
         if not self.snifferThread and not self.arpThread and not self.dnsThread:
             self.isDetection = False
+        # in case of an error we stop detection and show error message
         if state[0] == False and state[1]:
+            self.StopDetection() #stop detection and stop running threads
             #! show message box
             print('Error')
 
@@ -350,9 +375,12 @@ class NetSpect(QMainWindow):
     @pyqtSlot(tuple)
     def CloseDnsThread(self, state):
         self.DnsThread = None
+        # we check if it was the last thread, if so we set isDetection flag
         if not self.snifferThread and not self.arpThread and not self.portScanDosThread:
             self.isDetection = False
+        # in case of an error we stop detection and show error message
         if state[0] == False and state[1]:
+            self.StopDetection() #stop detection and stop running threads
             #! show message box
             print('Error')
     
@@ -364,6 +392,7 @@ class NetSpect(QMainWindow):
             #! show message box
             print('Detected Arp Spoofing!')
         print('No Arp Spoofing is present.')
+
 
     # method for analyzing detection result of port scan and dos attacks 
     @pyqtSlot(tuple)
@@ -386,8 +415,7 @@ class NetSpect(QMainWindow):
     # method for stopping detection and closing threads
     def StopDetection(self):
         if self.isDetection:
-            print(f'updtcp: {self.tcpUdpCounter}, arp: {self.arpCounter}, dns: {self.dnsCounter}')
-            # we check each thread and close it ifs running
+            # we check each thread and close it if running
             if self.snifferThread:
                 self.snifferThread.SetStopFlag(True)
             if self.arpThread:
@@ -396,6 +424,7 @@ class NetSpect(QMainWindow):
                 self.portScanDosThread.SetStopFlag(True)
             # if self.dnsThread:
             #     self.dnsThread.SetStopFlag(True)
+            print(f'updtcp: {self.tcpUdpCounter}, arp: {self.arpCounter}, dns: {self.dnsCounter}')
             self.arpCounter, self.tcpUdpCounter, self.dnsCounter = 0, 0, 0 #reset our counters
             self.arpList, self.portScanDosDict, self.dnsDict = [], {}, {} #reset our packet data structures
 
@@ -404,6 +433,7 @@ class NetSpect(QMainWindow):
     def StartDetection(self):
         if not self.snifferThread and not self.arpThread and not self.portScanDosThread and not self.dnsThread:
             self.isDetection = True #set flag to true indication we started a detection
+            ArpSpoofing.InitAllArpTables() #initialize all of our static arp tables (if interface changed)
 
             # initialize sniffer thread for real time packet gathering
             self.snifferThread = Sniffing_Thread(self, NetworkInformation.selectedInterface)
@@ -426,7 +456,7 @@ class NetSpect(QMainWindow):
             self.portScanDosThread.detectionResultSignal.connect(self.PortScanDosDetectionResult)
             self.portScanDosThread.finishSignal.connect(self.ClosePortScanDosThread)
 
-            # # initialize portScanDos thread for dns tunneling detection
+            # # initialize dns thread for dns tunneling detection
             # self.dnsThread = Dns_Thread(self)
             # # connect relevant signals for portScanDos thread
             # self.dnsThread.detectionResultSignal.connect(self.DnsDetectionResult)
@@ -439,6 +469,7 @@ class NetSpect(QMainWindow):
             # self.dnsThread.start()
 
         else:
+            #! show message box
             print('One of the threads is still in process, cannot start new detection.')
 
     
@@ -639,10 +670,10 @@ class Arp_Thread(QThread):
                 # process the received arp list batch
                 result = ArpSpoofing.ProcessARP(localArpList) #call our function for cheching arp traffic
                 self.detectionResultSignal.emit(result) #send result of scan to main thread
-                print('Sent result to main thread - Arp')
+                print('Arp_Thread: Sent result to main thread.')
 
         except Exception as e: #we catch an exception if error occured
-            state = (False, f'An error occurred while sniffing: {e}.')
+            state = (False, f'An error occurred: {e}.')
             print(f'Arp_Thread: {state[1]}') #print error message in terminal
         finally:
             self.finishSignal.emit(state) #send finish signal to main thread
@@ -705,16 +736,82 @@ class PortScanDos_Thread(QThread):
                 flowDict = PortScanDoS.ProcessFlows(localPortScanDosDict) #call our function for getting flows dict
                 result = PortScanDoS.PredictPortDoS(flowDict) #call predict and send flows to classifier
                 self.detectionResultSignal.emit(result) #send result of scan to main thread
-                print('Sent result to main thread - portDos')
+                print('PortScanDos_Thread: Sent result to main thread.')
 
         except Exception as e: #we catch an exception if error occured
-            state = (False, f'An error occurred while sniffing: {e}.')
+            state = (False, f'An error occurred: {e}.')
             print(f'PortScanDos_Thread: {state[1]}') #print error message in terminal
         finally:
             self.finishSignal.emit(state) #send finish signal to main thread
             print('PortScanDos_Thread: Finsihed analysis of traffic.\n')
 
 #-----------------------------------------------------PortScanDos-THREAD-END----------------------------------------------------#
+
+#----------------------------------------------------------DNS-THREAD-----------------------------------------------------------#
+# thread for analyzing dns traffic and detecting dns tunneling attacks
+class Dns_Thread(QThread):
+    # define signals for interacting with main gui thread
+    detectionResultSignal = pyqtSignal(tuple)
+    finishSignal = pyqtSignal(tuple)
+
+    # constructor of dns thread
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.parent = parent #represents main thread
+        self.stopFlag = False #represents stop flag for indicating when we should end analysis
+        self.dnsBatch = None #represents dns dict batch of packets for us to analyzie for anomalies
+        self.mutex = QMutex() #shared mutex for thread safe operations with wait condition
+        self.waitCondition = QWaitCondition() #wait condition for thread to wait for received packet batch from main thread
+    
+
+    # method for receiving dns batch from main thread
+    @pyqtSlot(dict)
+    def ReceiveDnsBatch(self, dnsDict):
+        with QMutexLocker(self.mutex):
+            self.dnsBatch = dnsDict #set our dns dict batch received from main thread
+            self.waitCondition.wakeAll() #wake thread and process dns batch
+
+
+    # method for updating state of stop flag
+    @pyqtSlot(bool)
+    def SetStopFlag(self, state):
+        self.stopFlag = state
+        with QMutexLocker(self.mutex):
+            self.waitCondition.wakeAll() #wake thread and finish work
+
+
+    # run method for initiating dns traffic analysis and detecting dns tunneling attacks
+    def run(self):
+        state = (True, '') #represents state of thread when finishes
+        try:
+            while not self.stopFlag:
+                # wait until the batch is received
+                self.mutex.lock()
+                while self.dnsBatch is None and not self.stopFlag:
+                    self.waitCondition.wait(self.mutex) #wait until we receive the dns batch using wait condition
+                if self.stopFlag: #if true we exit and finish threads work
+                    self.mutex.unlock()
+                    break
+
+                # retrieve the dns dict batch and reset for next iteration
+                localDnsDict = self.dnsBatch
+                self.dnsBatch = None
+                self.mutex.unlock()
+
+                # process the received dns dict batch
+                flowDict = DNSTunneling.ProcessFlows(localDnsDict) #call our function for getting flows dict
+                result = DNSTunneling.PredictDNS(flowDict) #call predict and send flows to classifier
+                self.detectionResultSignal.emit(result) #send result of scan to main thread
+                print('Dns_Thread: Sent result to main thread.')
+
+        except Exception as e: #we catch an exception if error occured
+            state = (False, f'An error occurred: {e}.')
+            print(f'Dns_Thread: {state[1]}') #print error message in terminal
+        finally:
+            self.finishSignal.emit(state) #send finish signal to main thread
+            print('Dns_Thread: Finsihed analysis of traffic.\n')
+
+#--------------------------------------------------------DNS-THREAD-END---------------------------------------------------------#
 
 #------------------------------------------------------------MAIN---------------------------------------------------------------#
 

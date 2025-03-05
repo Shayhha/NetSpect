@@ -59,7 +59,6 @@ class NetSpect(QMainWindow):
         # initialize other interface components and show interface
         # self.initValidators()
         # self.initDBConnection() #call init db method
-        ArpSpoofing.InitAllArpTables() #initialize all of our static arp tables with subnets
         self.center() #make the app open in center of screen
         self.show() #show the application
 
@@ -174,17 +173,19 @@ class NetSpect(QMainWindow):
     # method for updating arp list in main thread
     @pyqtSlot(ARP_Packet)
     def UpdateArpList(self, arpPacket):
-        # we ensure thread safety with our arp mutex
-        with QMutexLocker(self.arpMutex):
-            self.arpList.append(arpPacket)
-            self.arpCounter += 1 #increment counter
+        # we check if our arp tables are initialized, if so continue
+        if ArpSpoofing.isArpTables:
+            # we ensure thread safety with our arp mutex
+            with QMutexLocker(self.arpMutex):
+                self.arpList.append(arpPacket)
+                self.arpCounter += 1 #increment counter
 
-        # check if we reached packet threshold
-        if self.arpCounter >= self.arpThreshold:
-            self.arpTimer.stop() #stopping timer
-            self.arpTimer.start(self.arpTimeout) #resetting timer
-            self.SendArpList() #call our method to send packets for analysis
-        print(arpPacket)
+            # check if we reached packet threshold
+            if self.arpCounter >= self.arpThreshold:
+                self.arpTimer.stop() #stopping timer
+                self.arpTimer.start(self.arpTimeout) #resetting timer
+                self.SendArpList() #call our method to send packets for analysis
+            print(arpPacket)
 
     
     # method for updating portScanDos dict in main thread
@@ -330,83 +331,87 @@ class NetSpect(QMainWindow):
 
 
     # method for closing sniffer thread and setting it back to none 
-    @pyqtSlot(tuple)
-    def CloseSnifferThread(self, state):
-        self.snifferThread = None
+    @pyqtSlot(dict)
+    def CloseSnifferThread(self, stateDict):
+        self.snifferThread = None #set thread to none for next detection
         # we check if it was the last thread, if so we set isDetection flag
         if not self.arpThread and not self.portScanDosThread and not self.dnsThread:
             self.isDetection = False
         # in case of an error we stop detection and show error message
-        if state[0] == False and state[1]:
+        if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
             #! show message box
             print('Error')
     
 
     # method for closing arp thread and setting it back to none 
-    @pyqtSlot(tuple)
-    def CloseArpThread(self, state):
-        self.arpThread = None
+    @pyqtSlot(dict)
+    def CloseArpThread(self, stateDict):
+        self.arpThread = None #set thread to none for next detection
+        ArpSpoofing.isArpTables = False #set our initialized flag to false for arp detection
         # we check if it was the last thread, if so we set isDetection flag
         if not self.snifferThread and not self.portScanDosThread and not self.dnsThread:
             self.isDetection = False
         # in case of an error we stop detection and show error message
-        if state[0] == False and state[1]:
+        if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
             #! show message box
             print('Error')
 
 
     # method for closing portScanDos thread and setting it back to none 
-    @pyqtSlot(tuple)
-    def ClosePortScanDosThread(self, state):
-        self.portScanDosThread = None
+    @pyqtSlot(dict)
+    def ClosePortScanDosThread(self, stateDict):
+        self.portScanDosThread = None #set thread to none for next detection
         # we check if it was the last thread, if so we set isDetection flag
         if not self.snifferThread and not self.arpThread and not self.dnsThread:
             self.isDetection = False
         # in case of an error we stop detection and show error message
-        if state[0] == False and state[1]:
+        if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
             #! show message box
             print('Error')
 
 
     # method for closing dns thread and setting it back to none 
-    @pyqtSlot(tuple)
-    def CloseDnsThread(self, state):
-        self.DnsThread = None
+    @pyqtSlot(dict)
+    def CloseDnsThread(self, stateDict):
+        self.dnsThread = None #set thread to none for next detection
         # we check if it was the last thread, if so we set isDetection flag
         if not self.snifferThread and not self.arpThread and not self.portScanDosThread:
             self.isDetection = False
         # in case of an error we stop detection and show error message
-        if state[0] == False and state[1]:
+        if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
             #! show message box
             print('Error')
     
 
     # method for analyzing detection result of arp spoofing attack
-    @pyqtSlot(tuple)
+    @pyqtSlot(dict)
     def ArpDetectionResult(self, result):
-        if result[0] == False and result[1]:
+        # we check if type is 3, means arp tables initialized
+        if result.get('type') == 3:
+            ArpSpoofing.isArpTables = True #set our initialized flag to true for arp detection
+        if result.get('state') == False and result.get('attackDict'):
             #! show message box
             print('Detected Arp Spoofing!')
         print('No Arp Spoofing is present.')
 
 
     # method for analyzing detection result of port scan and dos attacks 
-    @pyqtSlot(tuple)
+    @pyqtSlot(dict)
     def PortScanDosDetectionResult(self, result):
-        if result[0] == False and result[1]:
+        if result.get('state') == False and result.get('attackDict'):
             #! show message box
             print('Detected Port Scan / Dos attack!')
         print('No Port Scan / Dos are present.')
 
     
     # method for analyzing detection result of dns tunneling attack
-    @pyqtSlot(tuple)
+    @pyqtSlot(dict)
     def DnsDetectionResult(self, result):
-        if result[0] == False and result[1]:
+        if result.get('state') == False and result.get('attackDict'):
             #! show message box
             print('Detected DNS Tunneling attack!')
         print('No DNS Tunneling is present.')
@@ -433,7 +438,6 @@ class NetSpect(QMainWindow):
     def StartDetection(self):
         if not self.snifferThread and not self.arpThread and not self.portScanDosThread and not self.dnsThread:
             self.isDetection = True #set flag to true indication we started a detection
-            ArpSpoofing.InitAllArpTables() #initialize all of our static arp tables (if interface changed)
 
             # initialize sniffer thread for real time packet gathering
             self.snifferThread = Sniffing_Thread(self, NetworkInformation.selectedInterface)
@@ -528,7 +532,7 @@ class Sniffing_Thread(QThread):
     updateArpListSignal = pyqtSignal(ARP_Packet)
     updatePortScanDosDictSignal = pyqtSignal(tuple, Default_Packet)
     updateDnsDictSignal = pyqtSignal(tuple, DNS_Packet)
-    finishSignal = pyqtSignal(tuple)
+    finishSignal = pyqtSignal(dict)
 
     # constructor of sniffing thread
     def __init__(self, parent=None, selectedInterface=None):
@@ -560,7 +564,7 @@ class Sniffing_Thread(QThread):
 
     # run method for initialing a packet scan on desired network interface
     def run(self):
-        state = (True, '') #represents state of thread when finishes
+        stateDict = {'state': True, 'message': ''} #represents state of thread when finishes
         try:
             print('Sniffer_Thread: Starting Network Scan...')
             #starting timer to determin when to initiate each attack defence
@@ -569,14 +573,14 @@ class Sniffing_Thread(QThread):
             # call scapy sniff function with desired interface and sniff network packets
             sniff(iface=self.interface, prn=self.PacketCapture, stop_filter=self.StopScan, store=0)
         except PermissionError: #if user didn't run with administrative privileges
-            state = (False, 'Permission denied. Please run again with administrative privileges.')
-            print(f'Sniffer_Thread: {state[1]}') #print permission error message in terminal
+            stateDict.update({'state': False, 'message': 'Permission denied. Please run again with administrative privileges.'})
+            print(f'Sniffer_Thread: {stateDict['message']}') #print permission error message in terminal
         except Exception as e: #we catch an exception if something happend while sniffing
-            state = (False, f'An error occurred while sniffing: {e}.')
-            print(f'Sniffer_Thread: {state[1]}') #print error message in terminal
+            stateDict.update({'state': False, 'message': 'Permission denied. Please run again with administrative privileges.'})
+            print(f'Sniffer_Thread: {stateDict['message']}') #print error message in terminal
         finally:
             self.updateTimerSignal.emit(False)
-            self.finishSignal.emit(state) #send finish signal to main thread
+            self.finishSignal.emit(stateDict) #send finish signal to main thread
             print('Sniffer_Thread: Finsihed Network Scan.\n')
 
 
@@ -620,8 +624,8 @@ class Sniffing_Thread(QThread):
 # thread for analyzing arp traffic and detecting arp spoofing attacks
 class Arp_Thread(QThread):
     # define signals for interacting with main gui thread
-    detectionResultSignal = pyqtSignal(tuple)
-    finishSignal = pyqtSignal(tuple)
+    detectionResultSignal = pyqtSignal(dict)
+    finishSignal = pyqtSignal(dict)
 
     # constructor of arp thread
     def __init__(self, parent=None):
@@ -651,8 +655,12 @@ class Arp_Thread(QThread):
 
     # run method for initiating arp traffic analysis and detecting arp spoofing
     def run(self):
-        state = (True, '') #represents state of thread when finishes
+        stateDict = {'state': True, 'message': ''} #represents state of thread when finishes
         try:
+            #initialize all of our static arp tables and check for arp spoofing presence
+            result = ArpSpoofing.InitAllArpTables() #call our function to initialize arp tables
+            self.detectionResultSignal.emit(result) #send result of arp initialization to main thread
+
             while not self.stopFlag:
                 # wait until the batch is received
                 self.mutex.lock()
@@ -673,10 +681,10 @@ class Arp_Thread(QThread):
                 print('Arp_Thread: Sent result to main thread.')
 
         except Exception as e: #we catch an exception if error occured
-            state = (False, f'An error occurred: {e}.')
-            print(f'Arp_Thread: {state[1]}') #print error message in terminal
+            stateDict.update({'state': False, 'message': f'An error occurred: {e}.'})
+            print(f'Arp_Thread: {stateDict['message']}') #print error message in terminal
         finally:
-            self.finishSignal.emit(state) #send finish signal to main thread
+            self.finishSignal.emit(stateDict) #send finish signal to main thread
             print('Arp_Thread: Finsihed analysis of traffic.\n')
 
 #--------------------------------------------------------ARP-THREAD-END---------------------------------------------------------#
@@ -685,8 +693,8 @@ class Arp_Thread(QThread):
 # thread for analyzing tcp and udp traffic and detecting port scanning and dos attacks
 class PortScanDos_Thread(QThread):
     # define signals for interacting with main gui thread
-    detectionResultSignal = pyqtSignal(tuple)
-    finishSignal = pyqtSignal(tuple)
+    detectionResultSignal = pyqtSignal(dict)
+    finishSignal = pyqtSignal(dict)
 
     # constructor of portScanDos thread
     def __init__(self, parent=None):
@@ -716,7 +724,7 @@ class PortScanDos_Thread(QThread):
 
     # run method for initiating tcp and udp traffic analysis and detecting port scan and dos attacks
     def run(self):
-        state = (True, '') #represents state of thread when finishes
+        stateDict = {'state': True, 'message': ''} #represents state of thread when finishes
         try:
             while not self.stopFlag:
                 # wait until the batch is received
@@ -739,10 +747,10 @@ class PortScanDos_Thread(QThread):
                 print('PortScanDos_Thread: Sent result to main thread.')
 
         except Exception as e: #we catch an exception if error occured
-            state = (False, f'An error occurred: {e}.')
-            print(f'PortScanDos_Thread: {state[1]}') #print error message in terminal
+            stateDict.update({'state': False, 'message': f'An error occurred: {e}.'})
+            print(f'PortScanDos_Thread: {stateDict['message']}') #print error message in terminal
         finally:
-            self.finishSignal.emit(state) #send finish signal to main thread
+            self.finishSignal.emit(stateDict) #send finish signal to main thread
             print('PortScanDos_Thread: Finsihed analysis of traffic.\n')
 
 #-----------------------------------------------------PortScanDos-THREAD-END----------------------------------------------------#
@@ -751,8 +759,8 @@ class PortScanDos_Thread(QThread):
 # thread for analyzing dns traffic and detecting dns tunneling attacks
 class Dns_Thread(QThread):
     # define signals for interacting with main gui thread
-    detectionResultSignal = pyqtSignal(tuple)
-    finishSignal = pyqtSignal(tuple)
+    detectionResultSignal = pyqtSignal(dict)
+    finishSignal = pyqtSignal(dict)
 
     # constructor of dns thread
     def __init__(self, parent=None):
@@ -782,7 +790,7 @@ class Dns_Thread(QThread):
 
     # run method for initiating dns traffic analysis and detecting dns tunneling attacks
     def run(self):
-        state = (True, '') #represents state of thread when finishes
+        stateDict = {'state': True, 'message': ''} #represents state of thread when finishes
         try:
             while not self.stopFlag:
                 # wait until the batch is received
@@ -805,10 +813,10 @@ class Dns_Thread(QThread):
                 print('Dns_Thread: Sent result to main thread.')
 
         except Exception as e: #we catch an exception if error occured
-            state = (False, f'An error occurred: {e}.')
-            print(f'Dns_Thread: {state[1]}') #print error message in terminal
+            stateDict.update({'state': False, 'message': f'An error occurred: {e}.'})
+            print(f'PortScanDos_Thread: {stateDict['message']}') #print error message in terminal
         finally:
-            self.finishSignal.emit(state) #send finish signal to main thread
+            self.finishSignal.emit(stateDict) #send finish signal to main thread
             print('Dns_Thread: Finsihed analysis of traffic.\n')
 
 #--------------------------------------------------------DNS-THREAD-END---------------------------------------------------------#

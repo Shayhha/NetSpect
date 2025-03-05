@@ -20,7 +20,9 @@ class Default_Packet(ABC):
     packet = None #represents the packet object itself for our use later
     packetType = None #represents the packet type based on scapy known types
     srcIp = None #represents source ip of packet 
+    srcMac = None #represents the source mac address
     dstIp = None #represents destination ip of packet
+    dstMac = None #represents the destination mac address
     srcPort = None #represents source port of packet 
     dstPort = None #represents destination port of packet
     ipParam = None #represents IPv4 / IPv6 fields as tuple (ttl, dscp) / (hopLimit, trafficClass)
@@ -33,6 +35,8 @@ class Default_Packet(ABC):
     def __init__(self, protocol=None, packet=None):
         self.protocol = protocol
         self.packet = packet
+        self.srcMac = self.packet.src
+        self.dstMac = self.packet.dst
         self.packetLen = len(self.packet)
         self.payloadLen = len(self.packet[Raw].load) if Raw in self.packet else 0
         self.time = packet.time
@@ -335,16 +339,16 @@ class NetworkInformation(ABC):
 
 #-----------------------------------------------ARP-SPOOFING-------------------------------------------------#
 class ArpSpoofingException(Exception):
-    def __init__(self, message, state, details):
+    def __init__(self, message, type, attackDict):
         super().__init__(message)
-        self.state = state #represents the state of attack, 1 means we found ip assigned to many macs, 2 means mac assigned to many ips
-        self.details = details #represents additional details about the spoofing
+        self.type = type #represents the type of attack, 1 means we found ip assigned to many macs, 2 means mac assigned to many ips
+        self.attackDict = attackDict #represents attack dict of arp spoofing incident
 
     # str representation of arp spoofing exception for showing results
     def __str__(self):
-        detailsList = '\n##### ARP SPOOFING ATTACK ######\n'
-        detailsList += '\n'.join([f'[*] {key} ==> {', '.join(value)}' for key, value in self.details.items()])
-        return f'{self.args[0]}\nDetails:\n{detailsList}\n'
+        details = '\n##### ARP SPOOFING ATTACK ######\n'
+        details += '\n'.join([f'[*] {key} ==> {', '.join(value)}' for key, value in self.attackDict.items()])
+        return f'{self.args[0]}\nDetails:\n{details}\n'
 
 
 # class that represents a single ARP table, contains an IP to MAC table and an inverse table, has a static method for initing both ARP tables
@@ -353,17 +357,18 @@ class ArpTable():
     arpTable = None #regular IP to MAC ARP table
     invArpTable = None #inverse ARP table, MAC to IP
 
-    def __init__(self, subnet):
+    def __init__(self, subnet, arpTable, invArpTable):
         self.subnet = subnet 
-        self.arpTable, self.invArpTable = ArpTable.InitArpTable(subnet[1])
+        self.arpTable = arpTable
+        self.invArpTable = invArpTable
 
 
     # fucntion that initializes the static arp table for testing IP-MAC pairs 
     @staticmethod
-    def InitArpTable(ipRange='192.168.1.0/24'):
+    def InitArpTable(ipRange='192.168.1.0/24', isInit=False):
         arpTable = {} #represents our arp table dict (ip to mac)
         invArpTable = {} #represents our inverse (mac to ip), used for verification
-        attacksDict = {'ipToMac': {}, 'macToIp': {}} #represents attack dict with anomalies
+        totalAttackDict = {'ipToMac': {}, 'macToIp': {}} #represents total attack dict with anomalies
         arpRequest = ARP(pdst=ipRange) #create arp request packet with destination ip range
         broadcast = Ether(dst='ff:ff:ff:ff:ff:ff')  #create broadcast ethernet frame broadcast
         arpRequestBroadcast = broadcast / arpRequest #combine both arp request and ethernet frame 
@@ -380,42 +385,54 @@ class ArpTable():
             if ip not in arpTable: #means ip not in arp table, we add it with its mac address
                 arpTable[ip] = mac #set the mac address in ip index
             elif arpTable[ip] != mac: #else mac do not match with known mac in ip index
-                attacksDict['ipToMac'].setdefault(ip, set()).update([arpTable[ip], mac]) #add an anomaly: same IP, different MAC
+                totalAttackDict['ipToMac'].setdefault(ip, set()).update([arpTable[ip], mac]) #add an anomaly: same IP, different MAC
 
             # add mac ip pair to inverse arp table
             if mac not in invArpTable: #means mac not in inv arp table, we add it with its ip address
                 invArpTable[mac] = ip #set the ip address in mac index
             #! remeber that locally shay's arp table is spoofed... (20:1e:88:d8:3a:ce)
             elif invArpTable[mac] != ip and mac != '20:1e:88:d8:3a:ce': #else ip do not match with known ip in mac index
-                attacksDict['macToIp'].setdefault(mac, set()).update([invArpTable[mac], ip]) #add an anomaly: same MAC, different IP
+                totalAttackDict['macToIp'].setdefault(mac, set()).update([invArpTable[mac], ip]) #add an anomaly: same MAC, different IP
 
         # we check if one of the attack dicts is not empty, means we have an attack
-        if attacksDict['ipToMac']: #means we have an ip that has many macs
-            #throw an exeption to inform user of its presence
-            raise ArpSpoofingException(
-                'Detected ARP spoofing incidents: IP-to-MAC anomalies',
-                state=1,
-                details={ip: list(macs) for ip, macs in attacksDict['ipToMac'].items()}
-            )
-        elif attacksDict['macToIp']: #means we have a mac that has many ips
-            # throw an exeption to inform user of its presence
-            raise ArpSpoofingException(
-                'Detected ARP spoofing incidents: MAC-to-IP anomalies',
-                state=2,
-                details={mac: list(ips) for mac, ips in attacksDict['macToIp'].items()}
-            )
+        if totalAttackDict['ipToMac']: #means we have an ip that has many macs
+            totalAttackDict['ipToMac'] = {ip: list(macs) for ip, macs in totalAttackDict['ipToMac'].items()}
+            # we throw exception only if isInit flag is false
+            if not isInit:
+                #throw an exeption to inform user of its presence
+                raise ArpSpoofingException(
+                    'Detected ARP spoofing incidents: IP-to-MAC anomalies',
+                    type=1,
+                    attackDict=totalAttackDict['ipToMac']
+                )
+            
+        elif totalAttackDict['macToIp']: #means we have a mac that has many ips
+            totalAttackDict['macToIp'] = {mac: list(ips) for mac, ips in totalAttackDict['macToIp'].items()}
+            # we throw exception only if isInit flag is false
+            if not isInit:
+                # throw an exeption to inform user of its presence
+                raise ArpSpoofingException(
+                    'Detected ARP spoofing incidents: MAC-to-IP anomalies',
+                    type=2,
+                    attackDict=totalAttackDict['macToIp']
+                )
         
-        return arpTable, invArpTable
+        return (arpTable, invArpTable) if not isInit else (arpTable, invArpTable, totalAttackDict)
 
 
 # static class that represents the detection of ARP Spoofing attack using an algorithem to detect duplications in ARP tables based on collected ARP packets
 class ArpSpoofing(ABC):
     arpTables = {} #represents all ARP tables where the key of the table is the subnet, each inner ARP table is a tuple (arpTable, invArpTable) with mapping of IP->MAC and MAC->IP in each table in tuple
     cache = {} #represents a dict with cache of all ip addresses that matched a subnet
+    isArpTables = False #represents initialization state of arpTables dict
 
     # function that iterates over available ipv4 subnets and initializes an ARP table for each one
     @staticmethod
     def InitAllArpTables():
+        # represents result of arp initialization dictionary {state: T/F, type: 3-InitArp, attackDict: {}}
+        result = {'state': True, 'type': 3, 'attackDict': {}}
+        totalAttackDict = {'ipToMac': {}, 'macToIp': {}} #represents total attack dict with anomalies
+
         # we initialize our arp tables only if selected network interface has changed
         if NetworkInformation.selectedInterface != NetworkInformation.previousInterface:
             # clear previous interface information that was saved in our dictionaries
@@ -425,10 +442,36 @@ class ArpSpoofing(ABC):
             # iterate over all given subnets, for each check if an ARP table exists for it
             for subnet in NetworkInformation.networkInfo.get(NetworkInformation.selectedInterface).get('ipv4Subnets'):
                 if not ArpSpoofing.arpTables.get(subnet[0]):
-                    # init a new ARP tabel if an ARP table for that subnet is not initialized
+                    # initialize ARP table for subnet with init flage set
+                    arpTable, invArpTable, attackDict =  ArpTable.InitArpTable(subnet[1], True)
+
+                    # add our ARP table object into arp tables dict as ArpTable object
                     subnetObject = ip_network(subnet[0])
-                    ArpSpoofing.arpTables[subnetObject] = ArpTable(subnet)
-            ArpSpoofing.PrintArpTables() #print static arp tables
+                    ArpSpoofing.arpTables[subnetObject] = ArpTable(subnet, arpTable, invArpTable)
+
+                    # if attackDict is not empty, merge its data into totalAttackDict
+                    if attackDict:
+                        # merge the ipToMac dictionary
+                        if attackDict['ipToMac']:
+                            for ip, macs in attackDict['ipToMac'].items():
+                                totalAttackDict['ipToMac'].setdefault(ip, set()).update(macs)
+
+                        # merge the macToIp dictionary
+                        if attackDict['macToIp']:
+                            for mac, ips in attackDict['macToIp'].items():
+                                totalAttackDict['macToIp'].setdefault(mac, set()).update(ips)
+
+            # check if we have attacks detected if so we update result dict
+            if totalAttackDict['ipToMac'] or totalAttackDict['macToIp']:
+                # finally convert each set into list for later use
+                totalAttackDict['ipToMac'] = {ip: list(macs) for ip, macs in totalAttackDict['ipToMac'].items()}
+                totalAttackDict['macToIp'] = {mac: list(ips) for mac, ips in totalAttackDict['macToIp'].items()}
+                result.update({'state': False, 'type': 3, 'attackDict': totalAttackDict})
+
+            # print our static arp tables
+            ArpSpoofing.PrintArpTables()
+
+        return result
 
 
     # function for getting the correct arp table given an IP address
@@ -469,8 +512,9 @@ class ArpSpoofing(ABC):
     # function for processing arp packets and check for arp spoofing attacks
     @staticmethod
     def ProcessARP(arpList):
-        result = (False, {}) #represents result of analysis
-        attacksDict = {} #represents attack dict with anomalies
+        # represents result of analysis dictionary {state: T/F, type: 1-ipToMac / 2-macToIp, attackDict: {}}
+        result = {'state': False, 'type': 1, 'attackDict': {}}
+        attackDict = {} #represents attack dict with anomalies
         try:
             if not ArpSpoofing.arpTables: #check that arpTable is initialzied
                 raise RuntimeError('Error, cannot process ARP packets, ARP tables are not initalized.')
@@ -501,25 +545,26 @@ class ArpSpoofing(ABC):
                                 arpTableObject.invArpTable[packet.srcMac] = packet.srcIp #assign to the inverse arp table
                             else: #means macs dont match, we alret because differnet device asnwered us
                                 ip, macs = packet.srcIp, {ipArpTable[0][packet.srcIp], packet.srcMac} #create the details for exception
-                                attacksDict.setdefault(ip, set()).update(macs) #add an anomaly: same IP, different MAC
+                                attackDict.setdefault(ip, set()).update(macs) #add an anomaly: same IP, different MAC
 
                     else: #means ip is present in our arp table, we check its parameters
                         if arpTableObject.arpTable[packet.srcIp] != packet.srcMac: #means we have a spoofed mac address
                             ip, macs = packet.srcIp, {arpTableObject.arpTable[packet.srcIp], packet.srcMac} #create the details for exception
-                            attacksDict.setdefault(ip, set()).update(macs) #add an anomaly: same IP, different MAC
+                            attackDict.setdefault(ip, set()).update(macs) #add an anomaly: same IP, different MAC
             
-            if attacksDict: #means we detected an attack
-                result = (False, {ip: list(macs) for ip, macs in attacksDict.items()}) #indication of attack
+            if attackDict: #means we detected an attack
+                attackDict = {ip: list(macs) for ip, macs in attackDict.items()}
                 # throw an exeption to inform user of its presence
                 raise ArpSpoofingException(
                     'Detected ARP spoofing incidents: IP-to-MAC anomalies',
-                    state=1,
-                    details=result
+                    type=1,
+                    attackDict=attackDict
                 )
             
-            result = (True, {}) #indication for no attacks
+            result['state'] = True #indication for no attacks
 
-        except ArpSpoofingException as e: #if we recived ArpSpoofingException we alert the user
+        except ArpSpoofingException as e: #if we received ArpSpoofingException we alert the user
+            result.update({'state': False, 'type': e.type, 'attackDict': e.attackDict}) #indication of attack
             print(e)
         except Exception as e: #we catch an exception if something happend
             print(f'Error occurred: {e}')
@@ -530,20 +575,20 @@ class ArpSpoofing(ABC):
 
 #----------------------------------------------PORT-SCANNING-DoS---------------------------------------------#
 class PortScanDoSException(Exception):
-    def __init__(self, message, state, flows):
+    def __init__(self, message, type, attackDict):
         super().__init__(message)
-        self.state = state #represents the state of attack, 1 means we detected PortScan attack, 2 means we detected DoS attack
-        self.flows = flows #represents the flow in which the attack was detected
+        self.type = type #represents the type of attack, 1 means we detected PortScan attack, 2 means we detected DoS attack
+        self.attackDict = attackDict #represents the attack dict with detected attack flows
 
     # str representation of port scan and dos exception for showing results
     def __str__(self):
-        attackName = 'PortScan' if self.state == 1 else 'DoS'
-        if self.state == 3:
+        attackName = 'PortScan' if self.type == 1 else 'DoS'
+        if self.type == 3:
             attackName = 'PortScan and DoS' 
 
-        detailsList = f'\n##### {attackName.upper()} ATTACK ######\n'
-        detailsList += '\n'.join([f'[*] Source IP: {flow['Src IP']} , Destination IP: {flow['Dst IP']} , Protocol: {flow['Protocol']} , Attack: {attackName}' for flow in self.flows])
-        return f'{self.args[0]}\nDetails:\n{detailsList}\n'
+        details = f'\n##### {attackName.upper()} ATTACK ######\n'
+        details += '\n'.join([f'[*] Source IP: {flow['Src IP']} , Destination IP: {flow['Dst IP']} , Protocol: {flow['Protocol']} , Attack: {attackName}' for flow in self.attackDict])
+        return f'{self.args[0]}\nDetails:\n{details}\n'
     
 
 # static class that represents the collection and detection of PortScan and DoS attacks 
@@ -653,7 +698,8 @@ class PortScanDoS(ABC):
     # function for predicting PortScanning and DoS attacks given flow dictionary
     @staticmethod
     def PredictPortDoS(flowDict):
-        result = (False, {}) #represents result of analysis
+        # represents result of analysis dictionary {state: T/F, type: 1-PortScan / 2-DoS / 3-Together, attackDict: {}}
+        result = {'state': False, 'type': 1, 'attackDict': {}}
         try: 
             # extract keys and values from flowDict and save it as a DataFrame
             keyColumns = ['Src IP', 'Dst IP', 'Protocol']
@@ -676,30 +722,30 @@ class PortScanDoS(ABC):
 
             # check for attacks in model predictions
             if (1 in predictions) and (2 in predictions): #1 and 2 means PortScan and DoS attacks together
-                result = (False, keysDataframe[keysDataframe['Result'] != 0].to_dict(orient='records')) #indication of PortScan and DoS attacks together
+                attackDict = keysDataframe[keysDataframe['Result'] != 0].to_dict(orient='records') #indication of PortScan and DoS attacks together
                 shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_PortAndDoS.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
                     'Detected PortScan and DoS attack',
-                    state=3,
-                    flows=result
+                    type=3,
+                    attackDict=attackDict
                 )
 
             elif 1 in predictions: #1 means PortScan attack
-                result = (False, keysDataframe[keysDataframe['Result'] == 1].to_dict(orient='records')) #indication of PortScan attack
+                attackDict = keysDataframe[keysDataframe['Result'] == 1].to_dict(orient='records') #indication of PortScan attack
                 shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_Port.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
                     'Detected PortScan attack',
-                    state=1,
-                    flows=result
+                    type=1,
+                    attackDict=attackDict
                 )
             
             elif 2 in predictions: #2 means DoS attack
-                result = (False, keysDataframe[keysDataframe['Result'] == 2].to_dict(orient='records')) #indication of DoS attack
+                attackDict = keysDataframe[keysDataframe['Result'] == 2].to_dict(orient='records') #indication of DoS attack
                 shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_DoS.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
                     'Detected DoS attack',
-                    state=2,
-                    flows=result
+                    type=2,
+                    attackDict=attackDict
                 )
 
             # show results of the prediction
@@ -710,9 +756,10 @@ class PortScanDoS(ABC):
             print(f'Number of detected attacks:\n {keysDataframe[keysDataframe['Result'] != 0]}\n')
             print('Predictions:\n', keysDataframe)
 
-            result = (True, {}) #indication for no attacks
+            result['state'] = True #indication for no attacks
 
-        except PortScanDoSException as e: #if we recived ArpSpoofingException we alert the user
+        except PortScanDoSException as e: #if we received PortScanDoSException we alert the user
+            result.update({'state': False, 'type': e.type, 'attackDict': e.attackDict}) #indication of attack
             print(e)
         except Exception as e: #we catch an exception if something happend
             print(f'Error occurred: {e}')
@@ -723,15 +770,16 @@ class PortScanDoS(ABC):
 
 #-----------------------------------------------DNS-TUNNELING------------------------------------------------#
 class DNSTunnelingException(Exception):
-    def __init__(self, message, flows):
+    def __init__(self, message, type, attackDict):
         super().__init__(message)
-        self.flows = flows #represents the flow in which the attack was detected
+        self.type = type #represents the type of dns tunneling attack (default 1)
+        self.attackDict = attackDict #represents the attack dict with detected attack flows
 
     # str representation of dns tunneling exception for showing results
     def __str__(self):
-        detailsList = '\n##### DNS Tunneling ATTACK ######\n'
-        detailsList += '\n'.join([f'[*] Source IP: {flow['Src IP']} , Destination IP: {flow['Dst IP']} , Protocol: {flow['Protocol']}' for flow in self.flows])
-        return f'{self.args[0]}\nDetails:\n{detailsList}\n'
+        details = '\n##### DNS Tunneling ATTACK ######\n'
+        details += '\n'.join([f'[*] Source IP: {flow['Src IP']} , Destination IP: {flow['Dst IP']} , Protocol: {flow['Protocol']}' for flow in self.attackDict])
+        return f'{self.args[0]}\nDetails:\n{details}\n'
 
 
 # static class that represents the collection and detection of DNS Tunneling attack
@@ -870,7 +918,8 @@ class DNSTunneling(ABC):
     # function for predicting DNS Tunneling attack given flow dictionary
     @staticmethod
     def PredictDNS(flowDict):
-        result = (False, {}) #represents result of analysis
+        # represents result of analysis dictionary {state: T/F, type: 1-DnsTunneling, attackDict: {}}
+        result = {'state': False, 'type': 1, 'attackDict': {}}
         try: 
             # extract keys and values from flowDict and save it as a DataFrame
             keyColumns = ['Src IP', 'Dst IP', 'Protocol']
@@ -893,11 +942,12 @@ class DNSTunneling(ABC):
 
             # check for attacks in model predictions
             if 1 in predictions: #1 means DNS Tunneling attack
-                result = (False, keysDataframe[keysDataframe['Result'] == 1].to_dict(orient='records')) #indication of DNS attack
+                attackDict = keysDataframe[keysDataframe['Result'] == 1].to_dict(orient='records') #indication of DNS attack
                 shutil.copy('detectedFlowsDNS.txt', f'{np.random.randint(1,1000000)}_detectedFlowsDNS.txt') # temporary code for saving false positive if the occure during scans
                 raise DNSTunnelingException( #throw an exeption to inform user of its presence
                     'Detected DNS Tunneling attack',
-                    flows=result
+                    type=1,
+                    attackDict=attackDict
                 )
             
             # show results of the prediction
@@ -907,9 +957,10 @@ class DNSTunneling(ABC):
             print(f'Number of detected attacks:\n {keysDataframe[keysDataframe['Result'] != 0]}\n')
             print('Predictions:\n', keysDataframe)  
 
-            result = (True, {}) #indication for no attacks
+            result['state'] = True #indication for no attacks
 
-        except DNSTunnelingException as e: #if we recived ArpSpoofingException we alert the user
+        except DNSTunnelingException as e: #if we received DNSTunnelingException we alert the user
+            result.update({'state': False, 'type': e.type, 'attackDict': e.attackDict}) #indication of attack
             print(e)
         except Exception as e: #we catch an exception if something happend
             print(f'Error occurred: {e}')

@@ -576,7 +576,7 @@ class Sniffing_Thread(QThread):
             stateDict.update({'state': False, 'message': 'Permission denied. Please run again with administrative privileges.'})
             print(f'Sniffer_Thread: {stateDict['message']}') #print permission error message in terminal
         except Exception as e: #we catch an exception if something happend while sniffing
-            stateDict.update({'state': False, 'message': 'Permission denied. Please run again with administrative privileges.'})
+            stateDict.update({'state': False, 'message': f'An error occurred: {e}.'})
             print(f'Sniffer_Thread: {stateDict['message']}') #print error message in terminal
         finally:
             self.updateTimerSignal.emit(False)
@@ -660,6 +660,7 @@ class Arp_Thread(QThread):
             #initialize all of our static arp tables and check for arp spoofing presence
             result = ArpSpoofing.InitAllArpTables() #call our function to initialize arp tables
             self.detectionResultSignal.emit(result) #send result of arp initialization to main thread
+            print('Arp_Thread: Initialized ARP tables successfully.')
 
             while not self.stopFlag:
                 # wait until the batch is received
@@ -814,7 +815,7 @@ class Dns_Thread(QThread):
 
         except Exception as e: #we catch an exception if error occured
             stateDict.update({'state': False, 'message': f'An error occurred: {e}.'})
-            print(f'PortScanDos_Thread: {stateDict['message']}') #print error message in terminal
+            print(f'Dns_Thread: {stateDict['message']}') #print error message in terminal
         finally:
             self.finishSignal.emit(stateDict) #send finish signal to main thread
             print('Dns_Thread: Finsihed analysis of traffic.\n')

@@ -1,10 +1,12 @@
 import sys, pyodbc
+import InterfaceAnimations
 from PyQt5.QtCore import QTimer, QRegExp, QThread, QMutex, QMutexLocker, QWaitCondition, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QRegExpValidator
 from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMainWindow
 from PyQt5.uic import loadUi
 from cryptography.hazmat.primitives.hashes import Hash, SHA256
 from datetime import timedelta
+from pathlib import Path
 from MainFunctions import *
 
 #--------------------------------------------------------NetSpect-CLASS---------------------------------------------------------#
@@ -27,7 +29,9 @@ class NetSpect(QMainWindow):
     # constructor of main gui application
     def __init__(self):
         super(NetSpect, self).__init__()
-        ui_file = r'C:\Users\shayh\Documents\Visual Studio Code\NetSpect\src\interface\NetSpect.ui' #!remember to fix this
+        current_dir = Path(__file__).resolve().parent
+        ui_file = current_dir.parent / 'interface' / 'NetSpect.ui'
+        # ui_file = r'C:\Users\shayh\Documents\Visual Studio Code\NetSpect\src\interface\NetSpect.ui' #!remember to fix this
         loadUi(ui_file, self) #load the ui file
         self.initUI() #call init method
         
@@ -44,10 +48,17 @@ class NetSpect(QMainWindow):
 
         # connect interface buttons to their methods
         self.startStopButton.clicked.connect(self.StartStopButtonClicked)
-        # self.CancelButton.clicked.connect(self.ShowMainWindow)
-        # self.SubmitButton.clicked.connect(self.AddVoterToApp)
-        # self.addVoterButton.clicked.connect(self.ShowVoterSubmit)
-        # self.verifyButton.clicked.connect(self.VerifyVoter)
+
+        # connect interface labels to their methods
+        self.accountIcon.mousePressEvent = lambda event: InterfaceAnimations.AccountIconClicked(self)
+        self.moveToRegisterLabel.mousePressEvent = lambda event: InterfaceAnimations.SwitchBetweenLoginAndRegister(self)
+        self.moveToLoginLabel.mousePressEvent = lambda event: InterfaceAnimations.SwitchBetweenLoginAndRegister(self, False)
+        self.menuIcon.mousePressEvent = lambda event: InterfaceAnimations.OpenSideFrame(self)
+        self.closeMenuIcon.mousePressEvent = lambda event: InterfaceAnimations.CloseSideFrame(self)
+        self.workstationIconHorizontalFrame.mousePressEvent = lambda event: InterfaceAnimations.ChangePageIndex(self, 0)  # Switch to Page 'Home'
+        self.reportIconHorizontalFrame.mousePressEvent = lambda event: InterfaceAnimations.ChangePageIndex(self, 1)  # Switch to Page 'Report'
+        self.infoIconHorizontalFrame.mousePressEvent = lambda event: InterfaceAnimations.ChangePageIndex(self, 2)  # Switch to Page 'Information'
+        self.settingsIcon.mousePressEvent = lambda event: InterfaceAnimations.ChangePageIndex(self, 3)  # Switch to Page 'Settings'
 
         # connect comboboxes to their methods
         self.networkInterfaceComboBox.clear() #clear interfaces combobox
@@ -56,6 +67,7 @@ class NetSpect(QMainWindow):
         self.ChangeNetworkInterface() #set default network interface from combobox 
 
         # initialize other interface components and show interface
+        InterfaceAnimations.InitAnimationsUI(self) # setup left sidebar elements and login/register popup frame
         # self.initValidators()
         # self.initDBConnection() #call init db method
         self.center() #make the app open in center of screen

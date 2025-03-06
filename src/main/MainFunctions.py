@@ -462,7 +462,7 @@ class ArpSpoofing(ABC):
                     # if attackDict is not empty, merge its data into totalAttackDict
                     if attackDict:
                         # merge the ipToMac dictionary from this attackDict into totalAttackDict
-                        if attackDict.get('ipToMac'):
+                        if attackDict['ipToMac']:
                             for ip, entry in attackDict['ipToMac'].items():
                                 totalAttackDict['ipToMac'].setdefault(ip, {'srcIp': ip, 'srcMac': set(), 'dstIp': entry['dstIp'], 'dstMac': entry['dstMac']})['srcMac'].update(entry['srcMac'])
 

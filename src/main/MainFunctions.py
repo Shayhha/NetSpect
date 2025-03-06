@@ -343,7 +343,19 @@ class ArpSpoofingException(Exception):
     # str representation of ARP spoofing exception for showing results
     def __str__(self):
         details = '\n##### ARP SPOOFING ATTACK ######\n'
-        details += '\n'.join([f'[*] {key} ==> {', '.join(value)}' for key, value in self.attackDict.items()])
+        if self.type == 1:
+            details += '\n'.join([
+                f'[*] IP: {ip} ==> Source IP: {entry['srcIp']}, '
+                f'Source MAC: {', '.join(sorted(entry['srcMac']))}, '
+                f'Destination IP: {entry['dstIp']}, Destination MAC: {entry['dstMac']}'
+                for ip, entry in self.attackDict.items()
+            ])
+        elif self.type == 2:
+            details += '\n'.join([
+                f'[*] MAC: {mac} ==> Source IP: {entry['srcIp']}, '
+                f'Source MAC: {', '.join(sorted(entry['srcMac']))}, '
+                f'Destination IP: {entry['dstIp']}, Destination MAC: {entry['dstMac']}'
+                for mac, entry in self.attackDict.items()])
         return f'{self.args[0]}\nDetails:\n{details}\n'
 
 
@@ -580,8 +592,7 @@ class PortScanDoSException(Exception):
     def __str__(self):
         attackName = 'PortScan' if self.type == 1 else 'DoS'
         if self.type == 3:
-            attackName = 'PortScan and DoS' 
-
+            attackName = 'PortScan and DoS'
         details = f'\n##### {attackName.upper()} ATTACK ######\n'
         details += '\n'.join([f'[*] Source IP: {flow['Src IP']} , Destination IP: {flow['Dst IP']} , Protocol: {flow['Protocol']} , Attack: {attackName}' for flow in self.attackDict])
         return f'{self.args[0]}\nDetails:\n{details}\n'
@@ -720,7 +731,7 @@ class PortScanDoS(ABC):
             # check for attacks in model predictions
             if (1 in predictions) and (2 in predictions): #1 and 2 means PortScan and DoS attacks together
                 attackDict = keysDataframe[keysDataframe['Result'] != 0].to_dict(orient='records') #indication of PortScan and DoS attacks together
-                shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_PortAndDoS.txt') # temporary code for saving false positive if the occure during scans
+                # shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_PortAndDoS.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
                     'Detected PortScan and DoS attack',
                     type=3,
@@ -729,7 +740,7 @@ class PortScanDoS(ABC):
 
             elif 1 in predictions: #1 means PortScan attack
                 attackDict = keysDataframe[keysDataframe['Result'] == 1].to_dict(orient='records') #indication of PortScan attack
-                shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_Port.txt') # temporary code for saving false positive if the occure during scans
+                # shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_Port.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
                     'Detected PortScan attack',
                     type=1,
@@ -738,7 +749,7 @@ class PortScanDoS(ABC):
             
             elif 2 in predictions: #2 means DoS attack
                 attackDict = keysDataframe[keysDataframe['Result'] == 2].to_dict(orient='records') #indication of DoS attack
-                shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_DoS.txt') # temporary code for saving false positive if the occure during scans
+                # shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_DoS.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
                     'Detected DoS attack',
                     type=2,
@@ -941,7 +952,7 @@ class DNSTunneling(ABC):
             # check for attacks in model predictions
             if 1 in predictions: #1 means DNS Tunneling attack
                 attackDict = keysDataframe[keysDataframe['Result'] == 1].to_dict(orient='records') #indication of DNS attack
-                shutil.copy('detectedFlowsDNS.txt', f'{np.random.randint(1,1000000)}_detectedFlowsDNS.txt') # temporary code for saving false positive if the occure during scans
+                # shutil.copy('detectedFlowsDNS.txt', f'{np.random.randint(1,1000000)}_detectedFlowsDNS.txt') # temporary code for saving false positive if the occure during scans
                 raise DNSTunnelingException( #throw an exeption to inform user of its presence
                     'Detected DNS Tunneling attack',
                     type=1,

@@ -4,9 +4,10 @@ import pandas as pd
 from abc import ABC, abstractmethod
 from ipaddress import ip_address, ip_network, IPv4Interface
 from psutil import net_if_addrs, net_if_stats
-from scapy.all import sniff, get_if_list, srp, IP, IPv6, TCP, UDP, ICMP, ARP, Ether, Raw, conf 
+from scapy.all import AsyncSniffer, srp, get_if_list, IP, IPv6, TCP, UDP, ICMP, ARP, Ether, Raw, conf
 from scapy.layers.dns import DNS
 from collections import defaultdict
+from pathlib import Path
 import shutil #temporary import for saving a copy of a file with false positive data
 
 # dynamically add the src directory to sys.path, this allows us to access all moduls in the project at run time

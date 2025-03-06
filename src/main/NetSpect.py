@@ -6,7 +6,6 @@ from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMainWindow
 from PyQt5.uic import loadUi
 from cryptography.hazmat.primitives.hashes import Hash, SHA256
 from datetime import timedelta
-from pathlib import Path
 from MainFunctions import *
 
 #--------------------------------------------------------NetSpect-CLASS---------------------------------------------------------#
@@ -30,9 +29,8 @@ class NetSpect(QMainWindow):
     def __init__(self):
         super(NetSpect, self).__init__()
         current_dir = Path(__file__).resolve().parent
-        ui_file = current_dir.parent / 'interface' / 'NetSpect.ui'
-        # ui_file = r'C:\Users\shayh\Documents\Visual Studio Code\NetSpect\src\interface\NetSpect.ui' #!remember to fix this
-        loadUi(ui_file, self) #load the ui file
+        uiFile = current_dir.parent / 'interface' / 'NetSpect.ui'
+        loadUi(uiFile, self) #load the ui file
         self.initUI() #call init method
         
     
@@ -55,10 +53,10 @@ class NetSpect(QMainWindow):
         self.moveToLoginLabel.mousePressEvent = lambda event: InterfaceAnimations.SwitchBetweenLoginAndRegister(self, False)
         self.menuIcon.mousePressEvent = lambda event: InterfaceAnimations.OpenSideFrame(self)
         self.closeMenuIcon.mousePressEvent = lambda event: InterfaceAnimations.CloseSideFrame(self)
-        self.workstationIconHorizontalFrame.mousePressEvent = lambda event: InterfaceAnimations.ChangePageIndex(self, 0)  # Switch to Page 'Home'
-        self.reportIconHorizontalFrame.mousePressEvent = lambda event: InterfaceAnimations.ChangePageIndex(self, 1)  # Switch to Page 'Report'
-        self.infoIconHorizontalFrame.mousePressEvent = lambda event: InterfaceAnimations.ChangePageIndex(self, 2)  # Switch to Page 'Information'
-        self.settingsIcon.mousePressEvent = lambda event: InterfaceAnimations.ChangePageIndex(self, 3)  # Switch to Page 'Settings'
+        self.workstationIconHorizontalFrame.mousePressEvent = lambda event: InterfaceAnimations.ChangePageIndex(self, 0) #switch to Home Page
+        self.reportIconHorizontalFrame.mousePressEvent = lambda event: InterfaceAnimations.ChangePageIndex(self, 1) #switch to Report Page
+        self.infoIconHorizontalFrame.mousePressEvent = lambda event: InterfaceAnimations.ChangePageIndex(self, 2) #switch to Information Page
+        self.settingsIcon.mousePressEvent = lambda event: InterfaceAnimations.ChangePageIndex(self, 3) #switch to Settings Page
 
         # connect comboboxes to their methods
         self.networkInterfaceComboBox.clear() #clear interfaces combobox
@@ -341,7 +339,7 @@ class NetSpect(QMainWindow):
                 print('Sent dns dict for analysis..')
 
 
-    # method for closing sniffer thread and setting it back to none 
+    # method for closing sniffer thread and setting it back to none
     @pyqtSlot(dict)
     def CloseSnifferThread(self, stateDict):
         self.snifferThread = None #set thread to none for next detection
@@ -355,7 +353,7 @@ class NetSpect(QMainWindow):
             print('Error')
     
 
-    # method for closing arp thread and setting it back to none 
+    # method for closing arp thread and setting it back to none
     @pyqtSlot(dict)
     def CloseArpThread(self, stateDict):
         self.arpThread = None #set thread to none for next detection
@@ -370,7 +368,7 @@ class NetSpect(QMainWindow):
             print('Error')
 
 
-    # method for closing portScanDos thread and setting it back to none 
+    # method for closing portScanDos thread and setting it back to none
     @pyqtSlot(dict)
     def ClosePortScanDosThread(self, stateDict):
         self.portScanDosThread = None #set thread to none for next detection
@@ -384,7 +382,7 @@ class NetSpect(QMainWindow):
             print('Error')
 
 
-    # method for closing dns thread and setting it back to none 
+    # method for closing dns thread and setting it back to none
     @pyqtSlot(dict)
     def CloseDnsThread(self, stateDict):
         self.dnsThread = None #set thread to none for next detection
@@ -548,15 +546,21 @@ class Sniffing_Thread(QThread):
     # constructor of sniffing thread
     def __init__(self, parent=None, selectedInterface=None):
         super().__init__(parent)
-        self.parent = parent  #represents the main thread
-        self.interface = selectedInterface  #initialize the interface with selectedInterface
-        self.stopFlag = False  #represents stop flag for indicating when to end the sniffer
+        self.parent = parent #represents the main thread
+        self.interface = selectedInterface #initialize the interface with selectedInterface
+        self.sniffer = None #represents our sniffer scapy object for sniffing packets
+        self.stopFlag = False #represents stop flag for indicating when to stop the sniffer
     
 
     # method for updating state of stop flag
     @pyqtSlot(bool)
     def SetStopFlag(self, state):
-        self.stopFlag = state
+        self.stopFlag = state #set stop flag
+        # we check if sniffer is still running, if so we stop it
+        if self.sniffer and self.sniffer.running:
+            self.sniffer.stop() #stop async sniffer
+            self.quit() #exit main loop and end task
+            self.wait() #we wait to ensure thread cleanup
 
 
     # method for checking when to stop sniffing packets, stop condition
@@ -581,8 +585,10 @@ class Sniffing_Thread(QThread):
             #starting timer to determin when to initiate each attack defence
             self.updateTimerSignal.emit(True)
 
-            # call scapy sniff function with desired interface and sniff network packets
-            sniff(iface=self.interface, prn=self.PacketCapture, stop_filter=self.StopScan, store=0)
+            # create scapy AsyncSniffer object with desired interface and sniff network packets asynchronously
+            self.sniffer = AsyncSniffer(iface=self.interface, prn=self.PacketCapture, stop_filter=self.StopScan, store=0)
+            self.sniffer.start() #start our async sniffing
+            self.exec_() #execute sniffer process
         except PermissionError: #if user didn't run with administrative privileges
             stateDict.update({'state': False, 'message': 'Permission denied. Please run again with administrative privileges.'})
             print(f'Sniffer_Thread: {stateDict['message']}') #print permission error message in terminal
@@ -659,7 +665,7 @@ class Arp_Thread(QThread):
     # method for updating state of stop flag
     @pyqtSlot(bool)
     def SetStopFlag(self, state):
-        self.stopFlag = state
+        self.stopFlag = state #set stop flag
         with QMutexLocker(self.mutex):
             self.waitCondition.wakeAll() #wake thread and finish work
 
@@ -729,7 +735,7 @@ class PortScanDos_Thread(QThread):
     # method for updating state of stop flag
     @pyqtSlot(bool)
     def SetStopFlag(self, state):
-        self.stopFlag = state
+        self.stopFlag = state #set stop flag
         with QMutexLocker(self.mutex):
             self.waitCondition.wakeAll() #wake thread and finish work
 
@@ -795,7 +801,7 @@ class Dns_Thread(QThread):
     # method for updating state of stop flag
     @pyqtSlot(bool)
     def SetStopFlag(self, state):
-        self.stopFlag = state
+        self.stopFlag = state #set stop flag
         with QMutexLocker(self.mutex):
             self.waitCondition.wakeAll() #wake thread and finish work
 

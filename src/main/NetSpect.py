@@ -5,8 +5,7 @@ from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMainWindow
 from PyQt5.uic import loadUi
 from cryptography.hazmat.primitives.hashes import Hash, SHA256
 from datetime import timedelta
-from baseFunctions import *
-
+from MainFunctions import *
 
 #--------------------------------------------------------NetSpect-CLASS---------------------------------------------------------#
 # class that represents main app of NetSpect

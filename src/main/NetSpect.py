@@ -279,7 +279,7 @@ class NetSpect(QMainWindow):
                         continue
 
                     # calculate the batch size for each flow and add it to our batch
-                    batchSize = min(10000 - totalPackets, len(packetList), 500) #max packets in each iteration is 500
+                    batchSize = min(self.portScanDosThreshold - totalPackets, len(packetList), 500) #max packets in each iteration is 500
                     portScanDosBatch.setdefault(flow, []).extend(self.portScanDosDict[flow][:batchSize]) #add batch packets to portScanDos dict
 
                     # remove extracted packets from flow's list
@@ -320,7 +320,7 @@ class NetSpect(QMainWindow):
                         continue
 
                     # calculate the batch size for each flow and add it to our batch
-                    batchSize = min(10000 - totalPackets, len(packetList), 50) #max packets in each iteration is 50
+                    batchSize = min(self.dnsThreshold - totalPackets, len(packetList), 50) #max packets in each iteration is 50
                     dnsBatch.setdefault(flow, []).extend(self.dnsDict[flow][:batchSize]) #add batch packets to dnsBatch dict
 
                     # remove extracted packets from flow's list

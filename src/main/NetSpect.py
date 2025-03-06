@@ -265,13 +265,13 @@ class NetSpect(QMainWindow):
             portScanDosBatch = {} #represents dict of extracted packets
             totalPackets = 0 #represents number of extracted packets
 
-            # loop through the dict and try to get 10,000 packets if possible
-            while self.portScanDosDict and totalPackets < 10000:
+            # loop through the dict and try to get our threshold (10,000) packets if possible
+            while self.portScanDosDict and totalPackets < self.portScanDosThreshold:
                 emptyFlows = [] #we track empty flows for cleanup
 
                 # iterate over each flow in dict
                 for flow, packetList in self.portScanDosDict.items():
-                    if totalPackets >= 10000: #means we have enough packets
+                    if totalPackets >= self.portScanDosThreshold: #means we have enough packets
                         break
 
                     if len(packetList) == 0: #means flow empty
@@ -306,13 +306,13 @@ class NetSpect(QMainWindow):
             dnsBatch = {} #represents dict of extracted packets
             totalPackets = 0 #represents number of extracted packets
 
-            # loop through the dict and try to get 10,000 packets if possible
-            while self.dnsDict and totalPackets < 10000:
+            # loop through the dict and try to get our threshold (350) packets if possible
+            while self.dnsDict and totalPackets < self.dnsThreshold:
                 emptyFlows = [] #we track empty flows for cleanup
 
                 # iterate over each flow in dict
                 for flow, packetList in self.dnsDict.items():
-                    if totalPackets >= 10000: #means we have enough packets
+                    if totalPackets >= self.dnsThreshold: #means we have enough packets
                         break
 
                     if len(packetList) == 0: #means flow empty
@@ -320,7 +320,7 @@ class NetSpect(QMainWindow):
                         continue
 
                     # calculate the batch size for each flow and add it to our batch
-                    batchSize = min(10000 - totalPackets, len(packetList), 500) #max packets in each iteration is 500
+                    batchSize = min(10000 - totalPackets, len(packetList), 50) #max packets in each iteration is 50
                     dnsBatch.setdefault(flow, []).extend(self.dnsDict[flow][:batchSize]) #add batch packets to dnsBatch dict
 
                     # remove extracted packets from flow's list

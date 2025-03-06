@@ -348,12 +348,11 @@ class ArpSpoofingException(Exception):
                 f'[*] IP: {ip} ==> Source IP: {entry['srcIp']}, '
                 f'Source MAC: {', '.join(sorted(entry['srcMac']))}, '
                 f'Destination IP: {entry['dstIp']}, Destination MAC: {entry['dstMac']}'
-                for ip, entry in self.attackDict.items()
-            ])
+                for ip, entry in self.attackDict.items()])
         elif self.type == 2:
             details += '\n'.join([
-                f'[*] MAC: {mac} ==> Source IP: {entry['srcIp']}, '
-                f'Source MAC: {', '.join(sorted(entry['srcMac']))}, '
+                f'[*] MAC: {mac} ==> Source IP: {', '.join(sorted(entry['srcIp']))}, '
+                f'Source MAC: {entry['srcMac']}, '
                 f'Destination IP: {entry['dstIp']}, Destination MAC: {entry['dstMac']}'
                 for mac, entry in self.attackDict.items()])
         return f'{self.args[0]}\nDetails:\n{details}\n'

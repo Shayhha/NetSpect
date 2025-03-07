@@ -84,6 +84,15 @@ class NetSpect(QMainWindow):
 
     # method for closing the program and managing threads
     def closeEvent(self, event):
+        # we check if detection is active, of so we close threads
+        if self.isDetection:
+            self.StopDetection() #set stop flag for all our threads
+
+            # wait for each of our threads to finish its work
+            for thread in [self.snifferThread, self.arpThread, self.portScanDosThread, self.dnsThread]:
+                if thread and thread.isRunning(): #check if the thread exists and is still running
+                    thread.wait() #wait until the thread finishes execution
+                    
         event.accept() #accept the close event
 
 

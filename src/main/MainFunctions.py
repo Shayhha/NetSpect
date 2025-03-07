@@ -215,10 +215,10 @@ class ARP_Packet(Default_Packet):
 class NetworkInformation(ABC):
     # this list represents the usual network interfaces that are available in various platfroms
     supportedInterfaces = ['eth', 'wlan', 'en', 'enp', 'wlp', 'Ethernet', 'Wi-Fi', 'lo', '\\Device\\NPF_Loopback']
+    systemInfo = None #represents a dictionary with all system information about the users machine
     networkInfo = None #represents a dict of dicts where each inner dict represents an available network interface
     selectedInterface = None #represents user-selected interface name: 'Ethernet' / 'en6'
     previousInterface = None #represents previous interfcae used for network analysis
-    systemInfo = None #represents a dictionary with all system information about the users machine
 
     # function for initializing the dict of data about all available interfaces
     @staticmethod

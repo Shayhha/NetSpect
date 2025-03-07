@@ -3066,7 +3066,7 @@ QTableWidget QScrollBar::handle:vertical {
              </property>
              <layout class="QHBoxLayout" name="horizontalLayout_9">
               <property name="spacing">
-               <number>20</number>
+               <number>10</number>
               </property>
               <property name="leftMargin">
                <number>20</number>
@@ -4516,7 +4516,7 @@ QTableWidget QScrollBar::handle:vertical {
                             </property>
                             <property name="maximumSize">
                              <size>
-                              <width>400</width>
+                              <width>500</width>
                               <height>40</height>
                              </size>
                             </property>
@@ -4930,10 +4930,10 @@ QTableWidget QScrollBar::handle:vertical {
                            <number>0</number>
                           </property>
                           <property name="leftMargin">
-                           <number>35</number>
+                           <number>10</number>
                           </property>
                           <property name="topMargin">
-                           <number>0</number>
+                           <number>3</number>
                           </property>
                           <property name="rightMargin">
                            <number>0</number>
@@ -4945,14 +4945,14 @@ QTableWidget QScrollBar::handle:vertical {
                            <widget class="QListWidget" name="ipAddressesListWidget">
                             <property name="minimumSize">
                              <size>
-                              <width>320</width>
+                              <width>400</width>
                               <height>140</height>
                              </size>
                             </property>
                             <property name="maximumSize">
                              <size>
-                              <width>320</width>
-                              <height>140</height>
+                              <width>400</width>
+                              <height>160</height>
                              </size>
                             </property>
                             <property name="font">
@@ -6493,13 +6493,13 @@ color: #f3f3f3
                   <property name="minimumSize">
                    <size>
                     <width>250</width>
-                    <height>44</height>
+                    <height>34</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
                     <width>16777215</width>
-                    <height>44</height>
+                    <height>34</height>
                    </size>
                   </property>
                   <property name="toolTip">
@@ -6510,11 +6510,13 @@ color: #f3f3f3
     background-color: #f0f0f0; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
-    padding: 5px;              
+    padding: 5px;  
     font-size: 14px;            
     color: black;             
-	margin: 0px 5px 10px 5px;
-}</string>
+	margin: 0px 5px 0px 5px;
+}
+
+</string>
                   </property>
                   <property name="text">
                    <string/>
@@ -6711,7 +6713,7 @@ color: #f3f3f3
             <property name="maximumSize">
              <size>
               <width>300</width>
-              <height>450</height>
+              <height>575</height>
              </size>
             </property>
             <property name="styleSheet">
@@ -6915,13 +6917,13 @@ QToolTip {
                   <property name="maximumSize">
                    <size>
                     <width>16777215</width>
-                    <height>44</height>
+                    <height>34</height>
                    </size>
                   </property>
                   <property name="sizeIncrement">
                    <size>
                     <width>0</width>
-                    <height>44</height>
+                    <height>34</height>
                    </size>
                   </property>
                   <property name="toolTip">
@@ -6938,13 +6940,16 @@ QToolTip {
     padding: 5px;              
     font-size: 14px;            
     color: black;             
-	margin: 0px 5px 10px 5px;
+	margin: 0px 5px 0px 5px;
 }
 
 </string>
                   </property>
                   <property name="text">
                    <string/>
+                  </property>
+                  <property name="echoMode">
+                   <enum>QLineEdit::Password</enum>
                   </property>
                   <property name="placeholderText">
                    <string>Password</string>
@@ -7004,7 +7009,7 @@ QToolTip {
                   <property name="maximumSize">
                    <size>
                     <width>500</width>
-                    <height>60</height>
+                    <height>70</height>
                    </size>
                   </property>
                   <layout class="QHBoxLayout" name="usernameButtonHorizontalLayout_3">
@@ -7015,13 +7020,13 @@ QToolTip {
                     <number>0</number>
                    </property>
                    <property name="topMargin">
-                    <number>0</number>
+                    <number>15</number>
                    </property>
                    <property name="rightMargin">
                     <number>0</number>
                    </property>
                    <property name="bottomMargin">
-                    <number>0</number>
+                    <number>15</number>
                    </property>
                    <item>
                     <widget class="QPushButton" name="registerPushButton">

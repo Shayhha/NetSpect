@@ -1,7 +1,10 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve, QEasingCurve, QTimer
-from PyQt5.QtWidgets import QGraphicsDropShadowEffect, QApplication, QAction, QMenu, QTableWidget
-from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QGraphicsDropShadowEffect, QApplication, QAction, QMenu, QTableWidget, QLineEdit
+from PyQt5.QtGui import QColor, QIcon
+from pathlib import Path
+
+currentDir = Path(__file__).resolve().parent #represents the path to the current working direcotry where this file is located
 
 #-------------------------------------------ANIMATION-FUNCTIONS----------------------------------------------#
 
@@ -79,8 +82,8 @@ def SwitchBetweenLoginAndRegister(self, showRegister=True):
     anim1.setEasingCurve(QEasingCurve.InOutQuad)
     
     # Use the current width as the start value
-    current_width = self.loginRegisterVerticalFrame.width()
-    anim1.setStartValue(current_width)
+    currentWidth = self.loginRegisterVerticalFrame.width()
+    anim1.setStartValue(currentWidth)
     anim1.setEndValue(0)
     
     # Start the first animation and chain the second animation to start after the first finishes
@@ -144,6 +147,18 @@ def HideLogoutIcon(self):
 def ChangePageIndex(self, index):
     self.stackedWidget.setCurrentIndex(index)
 
+
+# function for toggling the password visibility using an icon
+def TogglePasswordVisibility(lineEditWidget, eyeIcon):
+    openEyePath = currentDir.parent / 'interface' / 'Icons' / 'EyeOpen.png'
+    closedEyePath = currentDir.parent / 'interface' / 'Icons' / 'EyeClosed.png'
+    if lineEditWidget.echoMode() == QLineEdit.Password:
+        lineEditWidget.setEchoMode(QLineEdit.Normal) #show the password
+        eyeIcon.setIcon(QIcon(str(closedEyePath))) #change to open eye icon
+    else:
+        lineEditWidget.setEchoMode(QLineEdit.Password) #hide the password
+        eyeIcon.setIcon(QIcon(str(openEyePath))) #change to closed eye icon
+
 #-------------------------------------------CLICK-FUNCTIONS-END----------------------------------------------#
 
 #---------------------------------------------OTHER-FUNCTIONS------------------------------------------------#
@@ -176,12 +191,12 @@ def ShowContextMenu(self, position):
     item = self.macAddressListWidget.itemAt(position)
     if item:
         menu = QMenu()
-        copy_action = QAction('Copy')
-        copy_action.triggered.connect(lambda: CopyToClipboard(self, item.text()))
-        delete_action = QAction('Delete')
-        delete_action.triggered.connect(lambda: RemoveItem(self, item))
-        menu.addAction(copy_action)
-        menu.addAction(delete_action)
+        copyAction = QAction('Copy')
+        copyAction.triggered.connect(lambda: CopyToClipboard(self, item.text()))
+        deleteAction = QAction('Delete')
+        deleteAction.triggered.connect(lambda: RemoveItem(self, item))
+        menu.addAction(copyAction)
+        menu.addAction(deleteAction)
         menu.exec_(self.macAddressListWidget.viewport().mapToGlobal(position))
 
 
@@ -248,5 +263,13 @@ def InitAnimationsUI(self):
     self.historyTableWidget.setEditTriggers(QTableWidget.NoEditTriggers)
     self.reportPreviewTableWidget.setSelectionMode(QTableWidget.NoSelection) #disable selection
     self.reportPreviewTableWidget.setEditTriggers(QTableWidget.NoEditTriggers)
+
+    # Set the toggle password visability icon in the login and register
+    openEyePath = currentDir.parent / 'interface' / 'Icons' / 'EyeOpen.png'
+    icon = QIcon(str(openEyePath))
+    self.loginEyeButton = self.loginPasswordLineEdit.addAction(icon, QLineEdit.TrailingPosition)
+    self.loginEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self.loginPasswordLineEdit, self.loginEyeButton))
+    self.registerEyeButton = self.registerPasswordLineEdit.addAction(icon, QLineEdit.TrailingPosition)
+    self.registerEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self.registerPasswordLineEdit, self.registerEyeButton))
 
 #-------------------------------------------OTHER-FUNCTIONS-END----------------------------------------------#

@@ -1,4 +1,4 @@
-import sys, os, logging, joblib
+import sys, os, joblib, logging, socket, platform
 import numpy as np
 import pandas as pd
 from abc import ABC, abstractmethod
@@ -9,6 +9,8 @@ from scapy.layers.dns import DNS
 from collections import defaultdict
 from pathlib import Path
 import shutil #temporary import for saving a copy of a file with false positive data
+
+currentDir = Path(__file__).resolve().parent #represents the path to the current working direcotry where this file is located
 
 #----------------------------------------------Default_Packet------------------------------------------------#
 # abstarct class for default packet
@@ -216,6 +218,7 @@ class NetworkInformation(ABC):
     networkInfo = None #represents a dict of dicts where each inner dict represents an available network interface
     selectedInterface = None #represents user-selected interface name: 'Ethernet' / 'en6'
     previousInterface = None #represents previous interfcae used for network analysis
+    systemInfo = None #represents a dictionary with all system information about the users machine
 
     # function for initializing the dict of data about all available interfaces
     @staticmethod
@@ -328,6 +331,18 @@ class NetworkInformation(ABC):
                     
         return None #return None if the IP is not found
 
+
+    # function for getting system information
+    @staticmethod
+    def GetSystemInformation():
+        NetworkInformation.systemInfo = {
+            'osType': str(platform.system()) + ' ' + str(platform.release()),
+            'osVersion': str(platform.version()),
+            'architecture': str(platform.architecture()[0]),
+            'hostName': str(socket.gethostname()),
+        }
+        return NetworkInformation.systemInfo
+     
 #--------------------------------------------NETWORK-INFORMATION-END-----------------------------------------#
 
 #-----------------------------------------------ARP-SPOOFING-------------------------------------------------#
@@ -714,9 +729,8 @@ class PortScanDoS(ABC):
             valuesDataframe = flowDataframe.drop(keyColumns, axis=1)
 
             # load the PortScanning and DoS model
-            current_dir = Path(__file__).resolve().parent
-            modelPath = current_dir.parent / 'models' / 'port_scan_dos_svm_model.pkl'
-            scalerPath = current_dir.parent / 'models' / 'port_scan_dos_scaler.pkl'
+            modelPath = currentDir.parent / 'models' / 'port_scan_dos_svm_model.pkl'
+            scalerPath = currentDir.parent / 'models' / 'port_scan_dos_scaler.pkl'
             loadedModel = joblib.load(modelPath) 
             loadedScaler = joblib.load(scalerPath) 
 
@@ -937,9 +951,8 @@ class DNSTunneling(ABC):
             valuesDataframe = flowDataframe.drop(keyColumns, axis=1)
 
             # load the PortScanning and DoS model
-            current_dir = Path(__file__).resolve().parent
-            modelPath = current_dir.parent / 'models' / 'dns_svm_model.pkl'
-            scalerPath = current_dir.parent / 'models' / 'dns_scaler.pkl'
+            modelPath = currentDir.parent / 'models' / 'dns_svm_model.pkl'
+            scalerPath = currentDir.parent / 'models' / 'dns_scaler.pkl'
             loadedModel = joblib.load(modelPath) 
             loadedScaler = joblib.load(scalerPath) 
 

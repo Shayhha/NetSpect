@@ -28,8 +28,7 @@ class NetSpect(QMainWindow):
     # constructor of main gui application
     def __init__(self):
         super(NetSpect, self).__init__()
-        current_dir = Path(__file__).resolve().parent
-        uiFile = current_dir.parent / 'interface' / 'NetSpect.ui'
+        uiFile = currentDir.parent / 'interface' / 'NetSpect.ui'
         loadUi(uiFile, self) #load the ui file
         self.initUI() #call init method
         
@@ -66,7 +65,10 @@ class NetSpect(QMainWindow):
 
         # initialize other interface components and show interface
         InterfaceAnimations.InitAnimationsUI(self) # setup left sidebar elements and login/register popup frame
-        # self.initValidators()
+        self.InitSystemInfo(NetworkInformation.GetSystemInformation()) #initialize the system information in the info page (machine name, version, etc.)
+        self.InitValidators() #initialize the network information in the info page (interface name, mac address, ips, etc.)
+        self.ChangeLoginRegisterErrorMessage() #reset the login popup error message
+        self.ChangeLoginRegisterErrorMessage(isLogin=False) #reset the register popup error message
         # self.initDBConnection() #call init db method
         self.center() #make the app open in center of screen
         self.show() #show the application
@@ -95,24 +97,26 @@ class NetSpect(QMainWindow):
 
     
     # method for setting input validators on line edits in gui
-    def initValidators(self):
-        # regex expressions for validation
-        idRegex = QRegExp(r'^\d{9}$') #id must be 9 digits
-        passRegex = QRegExp(r'^.{6,16}$') #password at least 6 characters
-        infoRegex = QRegExp(r'^[A-Za-z\s]{2,20}$') #info at least 2 characters
-        addressRegex = QRegExp(r'^[A-Za-z0-9\s,.-]{2,20}$') # address also includes special chars
+    def InitValidators(self):
+        # create regex expressions and validators
+        usernameValidator = QRegExpValidator(QRegExp('^[A-Za-z0-9]{4,16}$'))
+        passwordValidator = QRegExpValidator(QRegExp('[A-Za-z\\d$&?@#|.^*()%!]{6,20}')) 
+        finalPasswordPattern = '^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d$&?@#|.^*()%!]{6,20}$'
+        emailValidator = QRegExpValidator(QRegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'))
 
-        # set validaotrs for id and password in main screen
-        self.idLineEdit.setValidator(QRegExpValidator(idRegex))
-        self.passLineEdit.setValidator(QRegExpValidator(passRegex))
-        # set validators for form in voter submit
-        self.FirstNameLineEdit.setValidator(QRegExpValidator(infoRegex))
-        self.LastNameLineEdit.setValidator(QRegExpValidator(infoRegex))
-        self.AddressLineEdit.setValidator(QRegExpValidator(addressRegex))
-        self.CityLineEdit.setValidator(QRegExpValidator(infoRegex))
-        self.StateLineEdit.setValidator(QRegExpValidator(infoRegex))
-        self.IdLineEdit.setValidator(QRegExpValidator(idRegex))
-        self.PassLineEdit.setValidator(QRegExpValidator(passRegex))
+        # set validaotrs for username, password and email line edits in the login and register popups
+        self.loginUsernameLineEdit.setValidator(usernameValidator)
+        self.loginPasswordLineEdit.setValidator(passwordValidator)
+        self.registerEmailLineEdit.setValidator(emailValidator)
+        self.registerUsernameLineEdit.setValidator(usernameValidator)
+        self.registerPasswordLineEdit.setValidator(passwordValidator)
+
+        # connect the textChanged signal to the function that checks validation, this adds borders to the line edits if the text does not match the regex
+        self.loginUsernameLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.loginUsernameLineEdit, 'loginUsernameLineEdit'))
+        self.loginPasswordLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.loginPasswordLineEdit, 'loginPasswordLineEdit'))
+        self.registerEmailLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.registerEmailLineEdit, 'registerEmailLineEdit'))
+        self.registerUsernameLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.registerUsernameLineEdit, 'registerUsernameLineEdit'))
+        self.registerPasswordLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.registerPasswordLineEdit, 'registerPasswordLineEdit'))
 
 
     # function to convert to bytes
@@ -138,12 +142,64 @@ class NetSpect(QMainWindow):
         return digest.finalize() if not toHex else digest.finalize().hex() #return sha-256 hash of message
     
 
+    # method for setting the text in the error message in login and register popups
+    def ChangeLoginRegisterErrorMessage(self, message='', isLogin=True):
+        if isLogin:
+            self.loginErrorMessageLabel.setText(message)
+            if message == '':
+                self.loginErrorMessageLabel.hide()
+        else:
+            self.registerErrorMessageLabel.setText(message)
+            if message == '':
+                self.registerErrorMessageLabel.hide()
+
+
+    # method for changing the styles of a line edit when it does not match the regex
+    def NotifyInvalidLineEdit(self, lineEditWidget, lineEditName):
+        currentStylesheet = f''' 
+            #{lineEditName} {{
+                background-color: #f0f0f0; 
+                border: 2px solid lightgray;  
+                border-radius: 10px;         
+                padding: 5px;              
+                font-size: 14px;            
+                color: black;             
+                {'margin: 0px 5px 0px 5px;' if ('Password' in lineEditName) else 'margin: 0px 5px 10px 5px;'}
+            }}
+        '''
+        # set initial styles
+        lineEditWidget.setStyleSheet(currentStylesheet)
+
+        # check if the input matches the regex, if not update the border style to red (invalid input)
+        if not lineEditWidget.hasAcceptableInput():
+            lineEditWidget.setStyleSheet(currentStylesheet.replace('border: 2px solid lightgray;', 'border: 2px solid #D84F4F;'))
+
+
+    # method that sets the text in the info page with the system information of the users machine
+    def InitSystemInfo(self, systemDict):
+        # initialize system information section (left side)
+        self.OSTypeInfoLabel.setText(systemDict.get('osType'))
+        self.OSVersionInfoLabel.setText(systemDict.get('osVersion'))
+        self.architectureInfoLabel.setText(systemDict.get('architecture'))
+        self.hostNameInfoLabel.setText(systemDict.get('hostName'))
+
+
     # method for updating network interface from combobox in gui
     def ChangeNetworkInterface(self):
         # set selected interface to chosen interfaces selected in combobox in gui
         NetworkInformation.selectedInterface = self.networkInterfaceComboBox.currentText()
         print(f'Selected interface: {NetworkInformation.selectedInterface}')
 
+        # initialize network information section (right side)
+        selectedInterface = NetworkInformation.networkInfo.get(NetworkInformation.selectedInterface)
+        self.connectedInterfaceInfoLabel.setText(selectedInterface.get('name'))
+        self.maxAddressInfoLabel.setText(selectedInterface.get('mac'))
+        self.descriptionInfoLabel.setText(selectedInterface.get('description'))
+        self.maxSpeedInfoLabel.setText(str(selectedInterface.get('maxSpeed')))
+        self.maxTransmitionUnitInfoLabel.setText(str(selectedInterface.get('maxTransmitionUnit')))
+        self.ipAddressesListWidget.clear()
+        self.ipAddressesListWidget.addItems(selectedInterface.get('ipv4Addrs') + selectedInterface.get('ipv6Addrs'))
+        
 
     # method for updating running time label in gui
     @pyqtSlot()
@@ -488,47 +544,33 @@ class NetSpect(QMainWindow):
     
     # method for startStop button for starting or stopping detection
     def StartStopButtonClicked(self):
+        # get the correct styles based on the button text (start / stop)
+        currentStyleSheet = f'''
+            #startStopButton {{
+                border-radius: 60px;
+                {'background-color: #3A8E32;' if self.startStopButton.text() == 'STOP' else 'background-color: #D84F4F;'}
+                border: 1px solid black;
+                color: black;
+                font-weight: bold;
+            }}
+
+            #startStopButton:hover {{
+                {'background-color: #4D9946;' if self.startStopButton.text() == 'STOP' else 'background-color: #DB6060;'}
+            }}
+
+            #startStopButton:pressed {{
+                {'background-color: #2E7128;' if self.startStopButton.text() == 'STOP' else 'background-color: #AC3f3F;'}
+            }}
+        '''
+        # apply the correct style sheet to the button
+        self.startStopButton.setStyleSheet(currentStyleSheet)
+
+        # start and stop the sniffer and change the button text correctly
         if self.startStopButton.text() == 'START':
             self.startStopButton.setText('STOP')
-            stopStyleSheet = '''
-                #startStopButton {
-                    border-radius: 60px;
-                    background-color: #D84F4F;
-                    border: 1px solid black;
-                    color: black;
-                    font-weight: bold;
-                }
-
-                #startStopButton:hover {
-                    background-color: #DB6060;
-                }
-
-                #startStopButton:pressed {
-                    background-color: #AC3f3F;
-                }
-                '''
-            self.startStopButton.setStyleSheet(stopStyleSheet)
             self.StartDetection()
         else:
             self.startStopButton.setText('START')
-            startStyleSheet = '''
-                #startStopButton {
-                    border-radius: 60px;
-                    background-color: #3A8E32;
-                    border: 1px solid black;
-                    color: black;
-                    font-weight: bold;
-                }
-
-                #startStopButton:hover {
-                    background-color: #4D9946;
-                }
-
-                #startStopButton:pressed {
-                    background-color: #2E7128;
-                }
-                '''
-            self.startStopButton.setStyleSheet(startStyleSheet)
             self.StopDetection()
 
 #------------------------------------------------------NetSpect-CLASS-END-------------------------------------------------------#

@@ -10,10 +10,6 @@ from collections import defaultdict
 from pathlib import Path
 import shutil #temporary import for saving a copy of a file with false positive data
 
-# dynamically add the src directory to sys.path, this allows us to access all moduls in the project at run time
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-from src.models import getModelPath
-
 #----------------------------------------------Default_Packet------------------------------------------------#
 # abstarct class for default packet
 class Default_Packet(ABC):
@@ -75,16 +71,16 @@ class Default_Packet(ABC):
         currentInterface = NetworkInformation.networkInfo.get(NetworkInformation.selectedInterface) #the values of the selected network interface
 
         # extract flow tuple from packet
-        srcIp, dstIp, protocol = self.srcIp, self.dstIp, self.protocol
+        srcIp, srcMac, dstIp, dstMac, protocol = self.srcIp, self.srcMac, self.dstIp, self.dstMac, self.protocol
 
         #we create the flow tuple based on lexicographic order if it does not contain host ip address to ensure consistency
         if (dstIp in currentInterface.get('ipv4Addrs')) or (dstIp in currentInterface.get('ipv6Addrs')): #check if dst ip is our ip address
-            return (srcIp, dstIp, protocol) #return the flow tuple of packet with host ip as dst ip in tuple
+            return (srcIp, srcMac, dstIp, dstMac, protocol) #return the flow tuple of packet with host ip as dst ip in tuple
 
         elif (srcIp in currentInterface.get('ipv4Addrs')) or (srcIp in currentInterface.get('ipv6Addrs')) or (srcIp > dstIp): #check if tuple src ip is our ip address or if its not normalized 
-            return (dstIp, srcIp, protocol) #return tuple in normalized order and also ensure that our ip is dst ip in flow
+            return (dstIp, dstMac, srcIp, srcMac, protocol) #return tuple in normalized order and also ensure that our ip is dst ip in flow
 
-        return (srcIp, dstIp, protocol) #return the flow tuple of packet
+        return (srcIp, srcMac, dstIp, dstMac, protocol) #return the flow tuple of packet
 
 #--------------------------------------------Default_Packet-END----------------------------------------------#
 
@@ -594,7 +590,8 @@ class PortScanDoSException(Exception):
         if self.type == 3:
             attackName = 'PortScan and DoS'
         details = f'\n##### {attackName.upper()} ATTACK ######\n'
-        details += '\n'.join([f'[*] Source IP: {flow['Src IP']} , Destination IP: {flow['Dst IP']} , Protocol: {flow['Protocol']} , Attack: {attackName}' for flow in self.attackDict])
+        details += '\n'.join([f'''[*] Source IP: {flow['srcIp']} , Source Mac: {flow['srcMac']} , Destination IP: {flow['dstIp']}, 
+                              Destination Mac: {flow['dstMac']} , Protocol: {flow['protocol']} , Attack: {attackName}''' for flow in self.attackDict])
         return f'{self.args[0]}\nDetails:\n{details}\n'
     
 
@@ -710,15 +707,16 @@ class PortScanDoS(ABC):
         attackDict = {} #represents attack dict with anomalies
         try: 
             # extract keys and values from flowDict and save it as a DataFrame
-            keyColumns = ['Src IP', 'Dst IP', 'Protocol']
+            keyColumns = ['srcIp', 'srcMac', 'dstIp', 'dstMac', 'protocol']
             flowDataframe = pd.DataFrame.from_dict(flowDict, orient='index').reset_index()
-            flowDataframe.columns = keyColumns + flowDataframe.columns[3:].to_list() #rename the column names of the keys
+            flowDataframe.columns = keyColumns + flowDataframe.columns[5:].to_list() #rename the column names of the keys
             keysDataframe = flowDataframe[keyColumns].copy()
             valuesDataframe = flowDataframe.drop(keyColumns, axis=1)
 
             # load the PortScanning and DoS model
-            modelPath = getModelPath('port_scan_dos_svm_model.pkl')
-            scalerPath = getModelPath('port_scan_dos_scaler.pkl')
+            current_dir = Path(__file__).resolve().parent
+            modelPath = current_dir.parent / 'models' / 'port_scan_dos_svm_model.pkl'
+            scalerPath = current_dir.parent / 'models' / 'port_scan_dos_scaler.pkl'
             loadedModel = joblib.load(modelPath) 
             loadedScaler = joblib.load(scalerPath) 
 
@@ -759,8 +757,8 @@ class PortScanDoS(ABC):
             # show results of the prediction
             labelCounts = keysDataframe['Result'].value_counts()
             print(f'Results: {labelCounts}\n')
-            print(f'Num of Port Scan ips: {keysDataframe[keysDataframe['Result'] == 1]['Src IP'].unique()}\n')
-            print(f'Num of DoS ips: {keysDataframe[keysDataframe['Result'] == 2]['Src IP'].unique()}\n')
+            print(f'Num of Port Scan ips: {keysDataframe[keysDataframe['Result'] == 1]['srcIp'].unique()}\n')
+            print(f'Num of DoS ips: {keysDataframe[keysDataframe['Result'] == 2]['srcIp'].unique()}\n')
             print(f'Number of detected attacks:\n {keysDataframe[keysDataframe['Result'] != 0]}\n')
             print('Predictions:\n', keysDataframe)
 
@@ -786,7 +784,8 @@ class DNSTunnelingException(Exception):
     # str representation of dns tunneling exception for showing results
     def __str__(self):
         details = '\n##### DNS Tunneling ATTACK ######\n'
-        details += '\n'.join([f'[*] Source IP: {flow['Src IP']} , Destination IP: {flow['Dst IP']} , Protocol: {flow['Protocol']}' for flow in self.attackDict])
+        details += '\n'.join([f'''[*] Source IP: {flow['srcIp']} , Source Mac: {flow['srcMac']} , Destination IP: {flow['dstIp']}, 
+                        Destination Mac: {flow['dstMac']} , Protocol: {flow['protocol']}''' for flow in self.attackDict])
         return f'{self.args[0]}\nDetails:\n{details}\n'
 
 
@@ -931,15 +930,16 @@ class DNSTunneling(ABC):
         attackDict = {} #represents attack dict with anomalies
         try: 
             # extract keys and values from flowDict and save it as a DataFrame
-            keyColumns = ['Src IP', 'Dst IP', 'Protocol']
+            keyColumns = ['srcIp', 'srcMac', 'dstIp', 'dstMac', 'protocol']
             flowDataframe = pd.DataFrame.from_dict(flowDict, orient='index').reset_index() 
-            flowDataframe.columns = keyColumns + flowDataframe.columns[3:].to_list() #rename the column names of the keys
+            flowDataframe.columns = keyColumns + flowDataframe.columns[5:].to_list() #rename the column names of the keys
             keysDataframe = flowDataframe[keyColumns].copy()
             valuesDataframe = flowDataframe.drop(keyColumns, axis=1)
 
             # load the PortScanning and DoS model
-            modelPath = getModelPath('dns_svm_model.pkl')
-            scalerPath = getModelPath('dns_scaler.pkl')
+            current_dir = Path(__file__).resolve().parent
+            modelPath = current_dir.parent / 'models' / 'dns_svm_model.pkl'
+            scalerPath = current_dir.parent / 'models' / 'dns_scaler.pkl'
             loadedModel = joblib.load(modelPath) 
             loadedScaler = joblib.load(scalerPath) 
 
@@ -962,7 +962,7 @@ class DNSTunneling(ABC):
             # show results of the prediction
             labelCounts = keysDataframe['Result'].value_counts()
             print(f'Results: {labelCounts}\n')
-            print(f'Num of DNS Tunneling ips: {keysDataframe[keysDataframe['Result'] == 1]['Src IP'].unique()}\n')
+            print(f'Num of DNS Tunneling ips: {keysDataframe[keysDataframe['Result'] == 1]['srcIp'].unique()}\n')
             print(f'Number of detected attacks:\n {keysDataframe[keysDataframe['Result'] != 0]}\n')
             print('Predictions:\n', keysDataframe)  
 

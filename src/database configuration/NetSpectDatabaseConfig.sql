@@ -9,6 +9,7 @@ USE NetSpect;
 
 -- Drop existing tables if they exist
 IF OBJECT_ID('Users', 'U') IS NOT NULL DROP TABLE Users;
+IF OBJECT_ID('Blacklist', 'U') IS NOT NULL DROP TABLE Blacklist;
 IF OBJECT_ID('Alerts', 'U') IS NOT NULL DROP TABLE Alerts;
 
 -- Create Users table
@@ -21,7 +22,7 @@ CREATE TABLE Users (
 	lightMode INT NOT NULL DEFAULT 0, --represents the color mode of app, 1 means lightmode, else darkmode
 	isDeleted INT NOT NULL DEFAULT 0, --represents state of account, if 1 its deleted, else not
 	CHECK (email LIKE '_%@_%._%'),
-	CHECK (LEN(userName) <= 10),
+	CHECK (LEN(userName) BETWEEN 4 AND 16),
 	PRIMARY KEY(userId)
 );
 
@@ -59,4 +60,4 @@ CREATE TABLE Alerts (
 INSERT INTO Users (email, userName, password)  
 VALUES  
 ('shayhha@gmail.com', 'Shay', 'a0ae799a2910f035b250e5175a02576f0ed0970c18ece1e65ce706767fa85c72'),
-('maximsu@ac.sce.ac.il', 'Max', '6beea10f9cf47563eb475c4c6f0126b7d4230173c9429eb9a291fa1cfb136721');
+('maximsu@ac.sce.ac.il', 'Maxim', '43011903cd7b0638011ffe1eb34d82dd45b74cb2a56a5502aa117cbb35a67d67');

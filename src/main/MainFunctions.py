@@ -414,7 +414,7 @@ class ArpTable():
             if srcMac not in invArpTable: #means mac not in inv ARP table, we add it with its ip address
                 invArpTable[srcMac] = srcIp #set the srcIp address in srcMac index
             #! remeber that locally shay's arp table is spoofed... (20:1e:88:d8:3a:ce)
-            elif invArpTable[srcMac] != srcIp: #else srcIp do not match with known srcIp in srcMac index
+            elif invArpTable[srcMac] != srcIp and srcMac != '20:1e:88:d8:3a:ce': #else srcIp do not match with known srcIp in srcMac index
                 srcIps = {invArpTable[srcMac], srcIp} #represents srcIps we detected for arp spoofing
                 #add an anomaly: same MAC, different IP
                 totalAttackDict['macToIp'].setdefault(srcMac, {'srcIp': set(), 'srcMac': srcMac, 'dstIp': dstIp, 'dstMac': dstMac, 'protocol': 'ARP'})['srcIp'].update(srcIps)

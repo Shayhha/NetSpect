@@ -42,7 +42,7 @@ class NetSpect(QMainWindow):
         self.totalTimer.timeout.connect(self.UpdateRunningTimeCounterLabel) #connect timeout event for total timer
         self.arpTimer.timeout.connect(self.SendArpList) #connect timeout event for arp timer
         self.portScanDosTimer.timeout.connect(self.SendPortScanDosDict) #connect timeout event for portScanDos timer
-        # self.dnsTimer.timeout.connect(self.SendDnsDict) #connect timeout event for dns timer
+        self.dnsTimer.timeout.connect(self.SendDnsDict) #connect timeout event for dns timer
 
         # connect interface buttons to their methods
         self.startStopButton.clicked.connect(self.StartStopButtonClicked)
@@ -297,7 +297,7 @@ class NetSpect(QMainWindow):
         if self.dnsCounter >= self.dnsThreshold:
             self.dnsTimer.stop() #stopping timer
             self.dnsTimer.start(self.dnsTimout) #resetting timer
-            #self.SendDnsDict() #call our method to send packets for analysis
+            self.SendDnsDict() #call our method to send packets for analysis
         # print(dnsPacket)
 
     
@@ -586,8 +586,8 @@ class NetSpect(QMainWindow):
                 self.arpThread.SetStopFlag(True)
             if self.portScanDosThread:
                 self.portScanDosThread.SetStopFlag(True)
-            # if self.dnsThread:
-            #     self.dnsThread.SetStopFlag(True)
+            if self.dnsThread:
+                self.dnsThread.SetStopFlag(True)
             print(f'updtcp: {self.tcpUdpCounter}, arp: {self.arpCounter}, dns: {self.dnsCounter}')
             self.arpCounter, self.tcpUdpCounter, self.dnsCounter = 0, 0, 0 #reset our counters
             self.arpList, self.portScanDosDict, self.dnsDict = [], {}, {} #reset our packet data structures
@@ -621,17 +621,17 @@ class NetSpect(QMainWindow):
             self.portScanDosThread.detectionResultSignal.connect(self.PortScanDosDetectionResult)
             self.portScanDosThread.finishSignal.connect(self.ClosePortScanDosThread)
 
-            # # initialize dns thread for dns tunneling detection
-            # self.dnsThread = Dns_Thread(self)
-            # # connect relevant signals for portScanDos thread
-            # self.dnsThread.detectionResultSignal.connect(self.DnsDetectionResult)
-            # self.dnsThread.finishSignal.connect(self.CloseDnsThread)
+            # initialize dns thread for dns tunneling detection
+            self.dnsThread = Dns_Thread(self)
+            # connect relevant signals for portScanDos thread
+            self.dnsThread.detectionResultSignal.connect(self.DnsDetectionResult)
+            self.dnsThread.finishSignal.connect(self.CloseDnsThread)
 
             # start our threads for detection
             self.snifferThread.start()
             self.arpThread.start()
             self.portScanDosThread.start()
-            # self.dnsThread.start()
+            self.dnsThread.start()
 
         else:
             #! show message box

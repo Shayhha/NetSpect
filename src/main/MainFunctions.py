@@ -408,16 +408,16 @@ class ArpTable():
             elif arpTable[srcIp] != srcMac: #else srcMac do not match with known srcMac in srcIp index
                 srcMacs = {arpTable[srcIp], srcMac} #represents srcMacs we detected for arp spoofing
                 #add an anomaly: same IP, different MAC
-                totalAttackDict['ipToMac'].setdefault(srcIp, {'srcIp': srcIp, 'srcMac': set(), 'dstIp': dstIp, 'dstMac': dstMac})['srcMac'].update(srcMacs)
+                totalAttackDict['ipToMac'].setdefault(srcIp, {'srcIp': srcIp, 'srcMac': set(), 'dstIp': dstIp, 'dstMac': dstMac, 'protocol': 'ARP'})['srcMac'].update(srcMacs)
 
             # add srcMac srcIp pair to inverse ARP table
             if srcMac not in invArpTable: #means mac not in inv ARP table, we add it with its ip address
                 invArpTable[srcMac] = srcIp #set the srcIp address in srcMac index
             #! remeber that locally shay's arp table is spoofed... (20:1e:88:d8:3a:ce)
-            elif invArpTable[srcMac] != srcIp and srcMac != '20:1e:88:d8:3a:ce': #else srcIp do not match with known srcIp in srcMac index
+            elif invArpTable[srcMac] != srcIp: #else srcIp do not match with known srcIp in srcMac index
                 srcIps = {invArpTable[srcMac], srcIp} #represents srcIps we detected for arp spoofing
                 #add an anomaly: same MAC, different IP
-                totalAttackDict['macToIp'].setdefault(srcMac, {'srcIp': set(), 'srcMac': srcMac, 'dstIp': dstIp, 'dstMac': dstMac})['srcIp'].update(srcIps)
+                totalAttackDict['macToIp'].setdefault(srcMac, {'srcIp': set(), 'srcMac': srcMac, 'dstIp': dstIp, 'dstMac': dstMac, 'protocol': 'ARP'})['srcIp'].update(srcIps)
         
         # we check if isInit is not set, if so we check if we had an attack and throw exeption
         if not isInit:
@@ -475,12 +475,14 @@ class ArpSpoofing(ABC):
                         # merge the ipToMac dictionary from this attackDict into totalAttackDict
                         if attackDict['ipToMac']:
                             for ip, entry in attackDict['ipToMac'].items():
-                                totalAttackDict['ipToMac'].setdefault(ip, {'srcIp': ip, 'srcMac': set(), 'dstIp': entry['dstIp'], 'dstMac': entry['dstMac']})['srcMac'].update(entry['srcMac'])
+                                totalAttackDict['ipToMac'].setdefault(ip, {'srcIp': ip, 'srcMac': set(), 'dstIp': entry['dstIp'], 'dstMac': entry['dstMac'],
+                                                                            'protocol': entry['protocol']})['srcMac'].update(entry['srcMac'])
 
                         # merge the macToIp dictionary from this attackDict into totalAttackDict:
                         if attackDict['macToIp']:
                             for mac, entry in attackDict['macToIp'].items():
-                                totalAttackDict['macToIp'].setdefault(mac, {'srcIp': set(), 'srcMac': mac, 'dstIp': entry['dstIp'], 'dstMac': entry['dstMac']})['srcIp'].update(entry['srcIp'])
+                                totalAttackDict['macToIp'].setdefault(mac, {'srcIp': set(), 'srcMac': mac, 'dstIp': entry['dstIp'], 'dstMac': entry['dstMac'],
+                                                                             'protocol': entry['protocol']})['srcIp'].update(entry['srcIp'])
 
             # check if we have attacks detected if so we update result dict
             if totalAttackDict['ipToMac'] or totalAttackDict['macToIp']:
@@ -564,13 +566,13 @@ class ArpSpoofing(ABC):
                             else: #means macs dont match, we alret because differnet device asnwered us
                                 srcIp, srcMacs = packet.srcIp, {ipArpTable[0][packet.srcIp], packet.srcMac} #create the details for exception
                                  #add an anomaly: same IP, different MAC
-                                attackDict.setdefault(srcIp, {'srcIp': srcIp, 'srcMac': set(), 'dstIp': packet.dstIp, 'dstMac': packet.dstMac})['srcMac'].update(srcMacs)
+                                attackDict.setdefault(srcIp, {'srcIp': srcIp, 'srcMac': set(), 'dstIp': packet.dstIp, 'dstMac': packet.dstMac, 'protocol': 'ARP'})['srcMac'].update(srcMacs)
 
                     else: #means ip is present in our ARP table, we check its parameters
                         if arpTableObject.arpTable[packet.srcIp] != packet.srcMac: #means we have a spoofed mac address
                             srcIp, srcMacs = packet.srcIp, {arpTableObject.arpTable[packet.srcIp], packet.srcMac} #create the details for exception
                             #add an anomaly: same IP, different MAC
-                            attackDict.setdefault(srcIp, {'srcIp': srcIp, 'srcMac': set(), 'dstIp': packet.dstIp, 'dstMac': packet.dstMac})['srcMac'].update(srcMacs)
+                            attackDict.setdefault(srcIp, {'srcIp': srcIp, 'srcMac': set(), 'dstIp': packet.dstIp, 'dstMac': packet.dstMac, 'protocol': 'ARP'})['srcMac'].update(srcMacs)
             
             if attackDict: #means we detected an attack
                 # throw an exeption to inform user of its presence
@@ -605,13 +607,15 @@ class PortScanDoSException(Exception):
         if self.type == 3:
             attackName = 'PortScan and DoS'
         details = f'\n##### {attackName.upper()} ATTACK ######\n'
-        details += '\n'.join([f'''[*] Source IP: {flow['srcIp']} , Source Mac: {flow['srcMac']} , Destination IP: {flow['dstIp']}, 
-                              Destination Mac: {flow['dstMac']} , Protocol: {flow['protocol']} , Attack: {attackName}''' for flow in self.attackDict])
+        details += '\n'.join([f'''[*] Source IP: {flow[0]} , Source Mac: {flow[1]} , Destination IP: {flow[2]}, Destination Mac: {flow[3]} , Protocol: {flow[4]} , Attack: {attackName}'''
+                        for flow in self.attackDict.keys()])
         return f'{self.args[0]}\nDetails:\n{details}\n'
     
 
 # static class that represents the collection and detection of PortScan and DoS attacks 
 class PortScanDoS(ABC):
+    loadedModel = joblib.load(currentDir.parent / 'models' / 'port_scan_dos_svm_model.pkl') #load SVM model for portScanDos
+    loadedScaler = joblib.load(currentDir.parent / 'models' / 'port_scan_dos_scaler.pkl') #load scaler for SVM model
     selectedColumns = [
         'Number of Ports', 'Average Packet Size', 'Packet Length Min', 'Packet Length Max', 
         'Packet Length Mean', 'Packet Length Std', 'Packet Length Variance', 'Total Length of Fwd Packet', 
@@ -728,21 +732,16 @@ class PortScanDoS(ABC):
             keysDataframe = flowDataframe[keyColumns].copy()
             valuesDataframe = flowDataframe.drop(keyColumns, axis=1)
 
-            # load the PortScanning and DoS model
-            modelPath = currentDir.parent / 'models' / 'port_scan_dos_svm_model.pkl'
-            scalerPath = currentDir.parent / 'models' / 'port_scan_dos_scaler.pkl'
-            loadedModel = joblib.load(modelPath) 
-            loadedScaler = joblib.load(scalerPath) 
-
             # scale the input data and predict the scaled input
-            scaledDataframe = loadedScaler.transform(valuesDataframe)
+            scaledDataframe = PortScanDoS.loadedScaler.transform(valuesDataframe)
             valuesDataframe = pd.DataFrame(scaledDataframe, columns=PortScanDoS.selectedColumns)
-            predictions = loadedModel.predict(valuesDataframe)
-            keysDataframe.loc[:, 'Result'] = predictions
+            predictions = PortScanDoS.loadedModel.predict(valuesDataframe)
+            flowDataframe.loc[:, 'Result'] = predictions
+            attackDictKeys = keyColumns + ['Result'] #first 5 columns + 'Result'
 
             # check for attacks in model predictions
             if (1 in predictions) and (2 in predictions): #1 and 2 means PortScan and DoS attacks together
-                attackDict = keysDataframe[keysDataframe['Result'] != 0].to_dict(orient='records') #indication of PortScan and DoS attacks together
+                attackDict = flowDataframe[flowDataframe['Result'] != 0].set_index(attackDictKeys).to_dict(orient='index') #indication of PortScan and DoS attacks together
                 # shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_PortAndDoS.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
                     'Detected PortScan and DoS attack',
@@ -751,7 +750,7 @@ class PortScanDoS(ABC):
                 )
 
             elif 1 in predictions: #1 means PortScan attack
-                attackDict = keysDataframe[keysDataframe['Result'] == 1].to_dict(orient='records') #indication of PortScan attack
+                attackDict = flowDataframe[flowDataframe['Result'] == 1].set_index(attackDictKeys).to_dict(orient='index') #indication of PortScan attack
                 # shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_Port.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
                     'Detected PortScan attack',
@@ -760,7 +759,7 @@ class PortScanDoS(ABC):
                 )
             
             elif 2 in predictions: #2 means DoS attack
-                attackDict = keysDataframe[keysDataframe['Result'] == 2].to_dict(orient='records') #indication of DoS attack
+                attackDict = flowDataframe[flowDataframe['Result'] == 2].set_index(attackDictKeys).to_dict(orient='index') #indication of DoS attack
                 # shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_DoS.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
                     'Detected DoS attack',
@@ -769,6 +768,7 @@ class PortScanDoS(ABC):
                 )
 
             # show results of the prediction
+            keysDataframe.loc[:, 'Result'] = predictions
             labelCounts = keysDataframe['Result'].value_counts()
             print(f'Results: {labelCounts}\n')
             print(f'Num of Port Scan ips: {keysDataframe[keysDataframe['Result'] == 1]['srcIp'].unique()}\n')
@@ -798,13 +798,15 @@ class DNSTunnelingException(Exception):
     # str representation of dns tunneling exception for showing results
     def __str__(self):
         details = '\n##### DNS Tunneling ATTACK ######\n'
-        details += '\n'.join([f'''[*] Source IP: {flow['srcIp']} , Source Mac: {flow['srcMac']} , Destination IP: {flow['dstIp']}, 
-                        Destination Mac: {flow['dstMac']} , Protocol: {flow['protocol']}''' for flow in self.attackDict])
+        details += '\n'.join([f'''[*] Source IP: {flow[0]} , Source Mac: {flow[1]} , Destination IP: {flow[2]}, Destination Mac: {flow[3]} , Protocol: {flow[4]}'''
+                        for flow in self.attackDict])
         return f'{self.args[0]}\nDetails:\n{details}\n'
 
 
 # static class that represents the collection and detection of DNS Tunneling attack
 class DNSTunneling(ABC):
+    loadedModel = joblib.load(currentDir.parent / 'models' / 'dns_svm_model.pkl') #load SVM model for DNS tunneling
+    loadedScaler = joblib.load(currentDir.parent / 'models' / 'dns_scaler.pkl') #load scaler for SVM model
     selectedColumns = [
         'A Record Count', 'AAAA Record Count', 'CName Record Count', 'TXT Record Count', 'MX Record Count', 'DF Flag Count',
         'Average Response Data Length', 'Min Response Data Length', 'Max Response Data Length', 'Average Domain Name Length',
@@ -950,21 +952,16 @@ class DNSTunneling(ABC):
             keysDataframe = flowDataframe[keyColumns].copy()
             valuesDataframe = flowDataframe.drop(keyColumns, axis=1)
 
-            # load the PortScanning and DoS model
-            modelPath = currentDir.parent / 'models' / 'dns_svm_model.pkl'
-            scalerPath = currentDir.parent / 'models' / 'dns_scaler.pkl'
-            loadedModel = joblib.load(modelPath) 
-            loadedScaler = joblib.load(scalerPath) 
-
             # scale the input data and predict the scaled input
-            scaledDataframe = loadedScaler.transform(valuesDataframe)
+            scaledDataframe = DNSTunneling.loadedScaler.transform(valuesDataframe)
             valuesDataframe = pd.DataFrame(scaledDataframe, columns=DNSTunneling.selectedColumns)
-            predictions = loadedModel.predict(valuesDataframe)
-            keysDataframe.loc[:, 'Result'] = predictions
+            predictions = DNSTunneling.loadedModel.predict(valuesDataframe)
+            flowDataframe.loc[:, 'Result'] = predictions
+            attackDictKeys = keyColumns + ['Result'] #first 5 columns + 'Result'
 
             # check for attacks in model predictions
             if 1 in predictions: #1 means DNS Tunneling attack
-                attackDict = keysDataframe[keysDataframe['Result'] == 1].to_dict(orient='records') #indication of DNS attack
+                attackDict = flowDataframe[flowDataframe['Result'] == 1].set_index(attackDictKeys).to_dict(orient='index') #indication of DNS attack
                 # shutil.copy('detectedFlowsDNS.txt', f'{np.random.randint(1,1000000)}_detectedFlowsDNS.txt') # temporary code for saving false positive if the occure during scans
                 raise DNSTunnelingException( #throw an exeption to inform user of its presence
                     'Detected DNS Tunneling attack',
@@ -973,6 +970,7 @@ class DNSTunneling(ABC):
                 )
             
             # show results of the prediction
+            keysDataframe.loc[:, 'Result'] = predictions
             labelCounts = keysDataframe['Result'].value_counts()
             print(f'Results: {labelCounts}\n')
             print(f'Num of DNS Tunneling ips: {keysDataframe[keysDataframe['Result'] == 1]['srcIp'].unique()}\n')

@@ -414,8 +414,7 @@ class NetSpect(QMainWindow):
         # in case of an error we stop detection and show error message
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
-            #! show message box
-            print('Error')
+            InterfaceAnimations.ShowPopup(self, 'Error Occurred', stateDict.get('message') , 'Critical')
     
 
     # method for closing arp thread and setting it back to none
@@ -429,8 +428,7 @@ class NetSpect(QMainWindow):
         # in case of an error we stop detection and show error message
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
-            #! show message box
-            print('Error')
+            InterfaceAnimations.ShowPopup(self, 'Error Occurred', stateDict.get('message') , 'Critical')
 
 
     # method for closing portScanDos thread and setting it back to none
@@ -443,8 +441,7 @@ class NetSpect(QMainWindow):
         # in case of an error we stop detection and show error message
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
-            #! show message box
-            print('Error')
+            InterfaceAnimations.ShowPopup(self, 'Error Occurred', stateDict.get('message') , 'Critical')
 
 
     # method for closing dns thread and setting it back to none
@@ -457,8 +454,7 @@ class NetSpect(QMainWindow):
         # in case of an error we stop detection and show error message
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
-            #! show message box
-            print('Error')
+            InterfaceAnimations.ShowPopup(self, 'Error Occurred', stateDict.get('message') , 'Critical')
     
 
     # method for analyzing detection result of arp spoofing attack
@@ -679,7 +675,7 @@ class NetSpect(QMainWindow):
             self.dnsThread.start()
 
         else:
-            #! show message box
+            InterfaceAnimations.ShowPopup(self, 'Error Starting Detection', 'One of the threads is still in process, cannot start new detection.', 'Warning')
             print('One of the threads is still in process, cannot start new detection.')
 
     

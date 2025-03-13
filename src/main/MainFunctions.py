@@ -1,4 +1,4 @@
-import sys, os, joblib, logging, socket, platform
+import sys, os, joblib, socket, platform, logging
 import numpy as np
 import pandas as pd
 from abc import ABC, abstractmethod
@@ -8,6 +8,7 @@ from scapy.all import AsyncSniffer, srp, get_if_list, IP, IPv6, TCP, UDP, ICMP, 
 from scapy.layers.dns import DNS
 from collections import defaultdict
 from pathlib import Path
+from datetime import datetime, timedelta
 import shutil #temporary import for saving a copy of a file with false positive data
 
 currentDir = Path(__file__).resolve().parent #represents the path to the current working direcotry where this file is located
@@ -342,6 +343,23 @@ class NetworkInformation(ABC):
             'hostName': str(socket.gethostname()),
         }
         return NetworkInformation.systemInfo
+    
+
+    # function for getting current timespamp in format hh:mm:ss dd:mm:yy
+    @staticmethod
+    def GetCurrentTimestamp():
+        return datetime.now().strftime('%H:%M:%S %d/%m/%y') #get timestamp for attack in our format
+    
+
+    # function that compares difference between two timespamps in minutes 
+    @staticmethod
+    def CompareTimepstemps(timestampOld, timestampNew, minutes=1):
+        # convert strings to datetime objects
+        timeOld = datetime.strptime(timestampOld, '%H:%M:%S %d/%m/%y')
+        timeNew = datetime.strptime(timestampNew, '%H:%M:%S %d/%m/%y')
+        timeDifference = abs(timeNew - timeOld) # calculate the absolute time difference
+
+        return timeDifference >= timedelta(minutes=minutes)
      
 #--------------------------------------------NETWORK-INFORMATION-END-----------------------------------------#
 
@@ -408,7 +426,8 @@ class ArpTable():
             elif arpTable[srcIp] != srcMac: #else srcMac do not match with known srcMac in srcIp index
                 srcMacs = {arpTable[srcIp], srcMac} #represents srcMacs we detected for arp spoofing
                 #add an anomaly: same IP, different MAC
-                totalAttackDict['ipToMac'].setdefault(srcIp, {'srcIp': srcIp, 'srcMac': set(), 'dstIp': dstIp, 'dstMac': dstMac, 'protocol': 'ARP'})['srcMac'].update(srcMacs)
+                totalAttackDict['ipToMac'].setdefault(srcIp, {'srcIp': srcIp, 'srcMac': set(), 'dstIp': dstIp, 'dstMac': dstMac,
+                                                               'protocol': 'ARP', 'timestamp': NetworkInformation.GetCurrentTimestamp()})['srcMac'].update(srcMacs)
 
             # add srcMac srcIp pair to inverse ARP table
             if srcMac not in invArpTable: #means mac not in inv ARP table, we add it with its ip address
@@ -417,7 +436,8 @@ class ArpTable():
             elif invArpTable[srcMac] != srcIp and srcMac != '20:1e:88:d8:3a:ce': #else srcIp do not match with known srcIp in srcMac index
                 srcIps = {invArpTable[srcMac], srcIp} #represents srcIps we detected for arp spoofing
                 #add an anomaly: same MAC, different IP
-                totalAttackDict['macToIp'].setdefault(srcMac, {'srcIp': set(), 'srcMac': srcMac, 'dstIp': dstIp, 'dstMac': dstMac, 'protocol': 'ARP'})['srcIp'].update(srcIps)
+                totalAttackDict['macToIp'].setdefault(srcMac, {'srcIp': set(), 'srcMac': srcMac, 'dstIp': dstIp, 'dstMac': dstMac,
+                                                                'protocol': 'ARP', 'timestamp': NetworkInformation.GetCurrentTimestamp()})['srcIp'].update(srcIps)
         
         # we check if isInit is not set, if so we check if we had an attack and throw exeption
         if not isInit:
@@ -476,13 +496,13 @@ class ArpSpoofing(ABC):
                         if attackDict['ipToMac']:
                             for ip, entry in attackDict['ipToMac'].items():
                                 totalAttackDict['ipToMac'].setdefault(ip, {'srcIp': ip, 'srcMac': set(), 'dstIp': entry['dstIp'], 'dstMac': entry['dstMac'],
-                                                                            'protocol': entry['protocol']})['srcMac'].update(entry['srcMac'])
+                                                                            'protocol': entry['protocol'], 'timestamp': entry['timestamp']})['srcMac'].update(entry['srcMac'])
 
                         # merge the macToIp dictionary from this attackDict into totalAttackDict:
                         if attackDict['macToIp']:
                             for mac, entry in attackDict['macToIp'].items():
                                 totalAttackDict['macToIp'].setdefault(mac, {'srcIp': set(), 'srcMac': mac, 'dstIp': entry['dstIp'], 'dstMac': entry['dstMac'],
-                                                                             'protocol': entry['protocol']})['srcIp'].update(entry['srcIp'])
+                                                                             'protocol': entry['protocol'], 'timestamp': entry['timestamp']})['srcIp'].update(entry['srcIp'])
 
             # check if we have attacks detected if so we update result dict
             if totalAttackDict['ipToMac'] or totalAttackDict['macToIp']:
@@ -566,13 +586,15 @@ class ArpSpoofing(ABC):
                             else: #means macs dont match, we alret because differnet device asnwered us
                                 srcIp, srcMacs = packet.srcIp, {ipArpTable[0][packet.srcIp], packet.srcMac} #create the details for exception
                                  #add an anomaly: same IP, different MAC
-                                attackDict.setdefault(srcIp, {'srcIp': srcIp, 'srcMac': set(), 'dstIp': packet.dstIp, 'dstMac': packet.dstMac, 'protocol': 'ARP'})['srcMac'].update(srcMacs)
+                                attackDict.setdefault(srcIp, {'srcIp': srcIp, 'srcMac': set(), 'dstIp': packet.dstIp, 'dstMac': packet.dstMac,
+                                                               'protocol': 'ARP', 'timestamp': NetworkInformation.GetCurrentTimestamp()})['srcMac'].update(srcMacs)
 
                     else: #means ip is present in our ARP table, we check its parameters
                         if arpTableObject.arpTable[packet.srcIp] != packet.srcMac: #means we have a spoofed mac address
                             srcIp, srcMacs = packet.srcIp, {arpTableObject.arpTable[packet.srcIp], packet.srcMac} #create the details for exception
                             #add an anomaly: same IP, different MAC
-                            attackDict.setdefault(srcIp, {'srcIp': srcIp, 'srcMac': set(), 'dstIp': packet.dstIp, 'dstMac': packet.dstMac, 'protocol': 'ARP'})['srcMac'].update(srcMacs)
+                            attackDict.setdefault(srcIp, {'srcIp': srcIp, 'srcMac': set(), 'dstIp': packet.dstIp, 'dstMac': packet.dstMac,
+                                                           'protocol': 'ARP', 'timestamp': NetworkInformation.GetCurrentTimestamp()})['srcMac'].update(srcMacs)
             
             if attackDict: #means we detected an attack
                 # throw an exeption to inform user of its presence
@@ -737,6 +759,7 @@ class PortScanDoS(ABC):
             valuesDataframe = pd.DataFrame(scaledDataframe, columns=PortScanDoS.selectedColumns)
             predictions = PortScanDoS.loadedModel.predict(valuesDataframe)
             flowDataframe.loc[:, 'Result'] = predictions
+            flowDataframe.loc[:, 'timestamp'] = np.full(shape=len(flowDataframe), fill_value=NetworkInformation.GetCurrentTimestamp(), dtype=object)
             attackDictKeys = keyColumns + ['Result'] #first 5 columns + 'Result'
 
             # check for attacks in model predictions
@@ -767,14 +790,11 @@ class PortScanDoS(ABC):
                     attackDict=attackDict
                 )
 
-            # show results of the prediction
-            keysDataframe.loc[:, 'Result'] = predictions
-            labelCounts = keysDataframe['Result'].value_counts()
-            print(f'Results: {labelCounts}\n')
-            print(f'Num of Port Scan ips: {keysDataframe[keysDataframe['Result'] == 1]['srcIp'].unique()}\n')
-            print(f'Num of DoS ips: {keysDataframe[keysDataframe['Result'] == 2]['srcIp'].unique()}\n')
-            print(f'Number of detected attacks:\n {keysDataframe[keysDataframe['Result'] != 0]}\n')
-            print('Predictions:\n', keysDataframe)
+            # print the dataframe and other data to the terminal
+            print('#=================================================================================================================================================#')
+            print(f'\n |>> No Port Scanning / DoS attacks where detected <<|\n |>> Number of flows in current cycle: {len(flowDataframe)} <<|')
+            print(f'\n |>> Currect Cycle Dataframe: <<|\n\n{flowDataframe[keyColumns + ['Result', 'timestamp']]}')
+            print('#=================================================================================================================================================#')
 
             result['state'] = True #indication for no attacks
 
@@ -957,6 +977,7 @@ class DNSTunneling(ABC):
             valuesDataframe = pd.DataFrame(scaledDataframe, columns=DNSTunneling.selectedColumns)
             predictions = DNSTunneling.loadedModel.predict(valuesDataframe)
             flowDataframe.loc[:, 'Result'] = predictions
+            flowDataframe.loc[:, 'timestamp'] = np.full(shape=len(flowDataframe), fill_value=NetworkInformation.GetCurrentTimestamp(), dtype=object)
             attackDictKeys = keyColumns + ['Result'] #first 5 columns + 'Result'
 
             # check for attacks in model predictions
@@ -969,13 +990,11 @@ class DNSTunneling(ABC):
                     attackDict=attackDict
                 )
             
-            # show results of the prediction
-            keysDataframe.loc[:, 'Result'] = predictions
-            labelCounts = keysDataframe['Result'].value_counts()
-            print(f'Results: {labelCounts}\n')
-            print(f'Num of DNS Tunneling ips: {keysDataframe[keysDataframe['Result'] == 1]['srcIp'].unique()}\n')
-            print(f'Number of detected attacks:\n {keysDataframe[keysDataframe['Result'] != 0]}\n')
-            print('Predictions:\n', keysDataframe)  
+            # print the dataframe and other data to the terminal
+            print('#=================================================================================================================================================#')
+            print(f'\n |>> No DNS Tunneling attacks where detected <<|\n |>> Number of flows in current cycle: {len(flowDataframe)} <<|')
+            print(f'\n |>> Currect Cycle Dataframe: <<|\n\n{flowDataframe[keyColumns + ['Result', 'timestamp']]}')
+            print('#=================================================================================================================================================#')
 
             result['state'] = True #indication for no attacks
 

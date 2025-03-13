@@ -5,7 +5,6 @@ from PyQt5.QtGui import QRegExpValidator
 from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMainWindow, QTableWidgetItem
 from PyQt5.uic import loadUi
 from hashlib import sha256
-from datetime import datetime, timedelta
 from MainFunctions import *
 
 #--------------------------------------------------------NetSpect-CLASS---------------------------------------------------------#
@@ -17,6 +16,7 @@ class NetSpect(QMainWindow):
     totalTimer, arpTimer, portScanDosTimer, dnsTimer = None, None, None, None #represents timer for each thread for evaluating when to send data
     totalTimeout, arpTimeout, portScanDosTimout, dnsTimout = 1000, 40000, 40000, 40000 #represents timeout for each timer
     arpThreshold, portScanDosThreshold, dnsThreshold = 20, 10000, 350 #represents thresholds for each thread
+    repeatedAttackTimeout = 2 #represents timeout for repeated attacks, we alert again for attacks from same source after few minutes
     timeElapsed = timedelta() #initialize a timedelta object to track elapsed time
     arpList = [] #represents list of packets related to arp spoofing
     portScanDosDict = {} #represents dict of {(flow tuple) - [packet list]} related to port scanning and dos
@@ -197,10 +197,9 @@ class NetSpect(QMainWindow):
 
 
     # method for adding row to history table widget in gui
-    def AddRowToHistoryTable(self, srcIp, srcMac, dstIp, dstMac, attackType):
-        if srcIp and srcMac and dstIp and dstMac and attackType:
+    def AddRowToHistoryTable(self, srcIp, srcMac, dstIp, dstMac, attackType, timestamp):
+        if srcIp and srcMac and dstIp and dstMac and attackType and timestamp:
             currentRow = self.historyTableWidget.rowCount() #get current row in history table widget
-            timestamp = datetime.now().strftime('%H:%M:%S %d/%m/%y') #get timestamp for attack in our format
             # add our items into row for showing detected attack
             self.historyTableWidget.insertRow(currentRow)
             self.historyTableWidget.setItem(currentRow, 0, QTableWidgetItem(srcIp))
@@ -479,48 +478,72 @@ class NetSpect(QMainWindow):
                 # represents the ipDict of arp spoofing, for type 3 its nested under 'ipToMac'
                 ipDict = attackDict if type == 1 else attackDict.get('ipToMac', {})
                 for ip, details in ipDict.items():
+                    isNewAttack = False #represents a flag for indicating if attack is new or not
+
                     # we check if detected ip is in our known attacks in arpAttackDict
                     if ip not in self.arpAttackDict['ipToMac']:
                         self.arpAttackDict['ipToMac'][ip] = details #add new ip entry in our arpAttackDict
+                        isNewAttack = True #set new attack to true
+                    
+                    # we check if detected ip is already in our known attacks in arpAttackDict
+                    elif ip in self.arpAttackDict['ipToMac']:
+                        # we check if its a repeated attack from same source, we alert again after some time
+                        if NetworkInformation.CompareTimepstemps(self.arpAttackDict['ipToMac'][ip].get('timestamp'), details.get('timestamp'), minutes=self.repeatedAttackTimeout):
+                            self.arpAttackDict['ipToMac'][ip]['timestamp'] = details.get('timestamp') #update timestamp with new attack time
+                            isNewAttack = True #set new attack to true
+                        
+                        # else we check if there is a new mac addresses associated with ip
+                        else:
+                            # represents new mac addresses we found in arp spoofing attack
+                            details['srcMac'] = details.get('srcMac', set()) - self.arpAttackDict['ipToMac'][ip].get('srcMac', set()) #we substract given set from known attacks set to get new macs
+                            # if true we update our arpAttackDict according to new macs we found
+                            if details.get('srcMac', set()):
+                                self.arpAttackDict['ipToMac'][ip]['srcMac'].update(details.get('srcMac', set())) #update our known macs in arpAttackDict in ip index
+                                isNewAttack = True #set new attack to true
+
+                    # if attack is new we update tables in gui and add to database
+                    if isNewAttack:
                         # iterate over each mac in given set and add it to our history table
                         for mac in details.get('srcMac', set()):
-                            self.AddRowToHistoryTable(details.get('srcIp'), mac, details.get('dstIp'), details.get('dstMac'), 'ARP Spoofing (ipToMac)') #add attack details as row in history table
+                            self.AddRowToHistoryTable(details.get('srcIp'), mac, details.get('dstIp'), details.get('dstMac'), 'ARP Spoofing (ipToMac)', details.get('timestamp')) #add attack details as row in history table
                             #! add attack to database
                             print(f'New ipToMac ARP Spoofing attack detected from IP {ip}: srcIp: {details.get('srcIp')}, srcMac: {mac}, dstIp: {details.get('dstIp')}, dstMac: {details.get('dstMac')}, protocol: {details.get('protocol')}')
-                    else:
-                        # represents new mac addresses we found in arp spoofing attack
-                        newMacs = details.get('srcMac', set()) - self.arpAttackDict['ipToMac'][ip].get('srcMac', set()) #we substract given set from known attacks set to get new macs
-                        # if true we update our arpAttackDict according to new macs we found
-                        if newMacs:
-                            self.arpAttackDict['ipToMac'][ip]['srcMac'].update(newMacs) #update our known macs in arpAttackDict in ip index
-                            # iterate over each new mac we found and add it to our history table
-                            for mac in newMacs:
-                                self.AddRowToHistoryTable(details.get('srcIp'), mac, details.get('dstIp'), details.get('dstMac'), 'ARP Spoofing (ipToMac)') #add attack details as row in history table
-                                #! add attack to database
-                                print(f'Updated ipToMac ARP Spoofing attack from IP {ip} with new MAC: {mac}')
 
             # handle Mac to Ip anomalies we found in arp spoofing attack (including initialization)
             if type in (2, 3):
                 # represents the macDict of arp spoofing, for type 3 its nested under 'macToIp'
                 macDict = attackDict if type == 2 else attackDict.get('macToIp', {})
                 for mac, details in macDict.items():
+                    isNewAttack = False #represents a flag for indicating if attack is new or not
+
                     # we check if detected mac is in our known attacks in arpAttackDict
                     if mac not in self.arpAttackDict['macToIp']:
                         self.arpAttackDict['macToIp'][mac] = details #add new mac entry in our arpAttackDict
+                        isNewAttack = True #set new attack to true
+                    
+                    # we check if detected mac is already in our known attacks in arpAttackDict
+                    elif mac in self.arpAttackDict['macToIp']:
+                        # we check if its a repeated attack from same source, we alert again after some time
+                        if NetworkInformation.CompareTimepstemps(self.arpAttackDict['macToIp'][mac].get('timestamp'), details.get('timestamp'), minutes=self.repeatedAttackTimeout):
+                            self.arpAttackDict['macToIp'][mac]['timestamp'] = details.get('timestamp') #update timestamp with new attack time
+                            isNewAttack = True #set new attack to true
+
+                        # else we check if there is a new ip addresses associated with mac
+                        else:
+                            # represents new mac addresses we found in arp spoofing attack
+                            details['srcIp'] = details.get('srcIp', set()) - self.arpAttackDict['macToIp'][mac].get('srcIp', set()) #we substract given set from known attacks set to get new ips
+                            # if true we update our arpAttackDict according to new ips we found
+                            if details.get('srcIp', set()):
+                                self.arpAttackDict['macToIp'][mac]['srcIp'].update(details.get('srcIp', set())) #update our known ips in arpAttackDict in mac index
+                                isNewAttack = True #set new attack to true
+
+                    # if attack is new we update tables in gui and add to database
+                    if isNewAttack:
                         # iterate over each ip in given set and add it to our history table
                         for ip in details.get('srcIp', set()):
-                            self.AddRowToHistoryTable(ip, details.get('srcMac'), details.get('dstIp'), details.get('dstMac'), 'ARP Spoofing (macToIp)') #add attack details as row in history table
+                            self.AddRowToHistoryTable(ip, details.get('srcMac'), details.get('dstIp'), details.get('dstMac'), 'ARP Spoofing (macToIp)', details.get('timestamp')) #add attack details as row in history table
                             #! add attack to database
                             print(f'New macToIp ARP Spoofing attack detected from MAC {mac}: srcIp: {ip}, srcMac: {details.get('srcMac')}, dstIp: {details.get('dstIp')}, dstMac: {details.get('dstMac')}, protocol: {details.get('protocol')}')
-                    else:
-                        # represents new mac addresses we found in arp spoofing attack
-                        newIps = details.get('srcIp', set()) - self.arpAttackDict['macToIp'][mac].get('srcIp', set()) #we substract given set from known attacks set to get new ips
-                        if newIps:
-                            self.arpAttackDict['macToIp'][mac]['srcIp'].update(newIps) #update our known ips in arpAttackDict in mac index
-                            for ip in newIps:
-                                self.AddRowToHistoryTable(ip, details.get('srcMac'), details.get('dstIp'), details.get('dstMac'), 'ARP Spoofing (macToIp)') #add attack details as row in history table
-                                #! add attack to database
-                                print(f'Updated macToIp ARP Spoofing attack from MAC {mac} with new IP: {ip}')
 
             print('Detected Arp Spoofing!')
         else:
@@ -536,17 +559,28 @@ class NetSpect(QMainWindow):
 
             # iterate over each flow we found in attacksDict
             for flow, details in attackDict.items():
+                isNewAttack = False #represents a flag for indicating if attack is new or not
+
                 # we check if detected flow is in our known attacks in portScanDosAttackDict
                 if flow not in self.portScanDosAttackDict:
                     self.portScanDosAttackDict[flow] = details #add new flow entry in our portScanDosAttackDict
+                    isNewAttack = True #set new attack to true
+                
+                # we check if its a repeated attack from same source, we alert again after some time
+                elif flow in self.portScanDosAttackDict and NetworkInformation.CompareTimepstemps(self.portScanDosAttackDict[flow].get('timestamp'), details.get('timestamp'), minutes=self.repeatedAttackTimeout):
+                    self.portScanDosAttackDict[flow]['timestamp'] = details.get('timestamp') #update timestamp with new attack time
+                    isNewAttack = True #set new attack to true
+                
+                # if attack is new we update tables in gui and add to database
+                if isNewAttack:
                     # handle anomalies we found in port scan attack
                     if type in (1, 3) and flow[5] == 1:
-                        self.AddRowToHistoryTable(flow[0], flow[1], flow[2], flow[3], 'Port Scan') #add attack details as row in history table
+                        self.AddRowToHistoryTable(flow[0], flow[1], flow[2], flow[3], 'Port Scan', details.get('timestamp')) #add attack details as row in history table
                         #! add attack to database
                         print(f'New Port Scan attack detected from IP {flow[0]}: srcIp: {flow[0]}, srcMac: {flow[1]}, dstIp: {flow[2]}, dstMac: {flow[3]}, protocol: {flow[4]}')
                     # handle anomalies we found in DoS attack
                     if type in (2, 3) and flow[5] == 2:
-                        self.AddRowToHistoryTable(flow[0], flow[1], flow[2], flow[3], 'DoS') #add attack details as row in history table
+                        self.AddRowToHistoryTable(flow[0], flow[1], flow[2], flow[3], 'DoS', details.get('timestamp')) #add attack details as row in history table
                         #! add attack to database
                         print(f'New DoS attack detected from IP {flow[0]}: srcIp: {flow[0]}, srcMac: {flow[1]}, dstIp: {flow[2]}, dstMac: {flow[3]}, protocol: {flow[4]}')
 
@@ -563,11 +597,22 @@ class NetSpect(QMainWindow):
 
             # iterate over each flow we found in attacksDict
             for flow, details in attackDict.items():
+                isNewAttack = False #represents a flag for indicating if attack is new or not
+
                 # we check if detected flow is in our known attacks in dnsAttackDict
                 if flow not in self.dnsAttackDict:
                     self.dnsAttackDict[flow] = details #add new flow entry in our dnsAttackDict
+                    isNewAttack = True #set new attack to true
+                
+                # we check if its a repeated attack from same source, we alert again after some time
+                elif flow in self.dnsAttackDict and NetworkInformation.CompareTimepstemps(self.dnsAttackDict[flow].get('timestamp'), details.get('timestamp'), minutes=self.repeatedAttackTimeout):
+                    self.dnsAttackDict[flow]['timestamp'] = details.get('timestamp') #update timestamp with new attack time
+                    isNewAttack = True #set new attack to true
+                
+                # if attack is new we update tables in gui and add to database
+                if isNewAttack:
                     # handle anomalies we found in dns tunneling attack
-                    self.AddRowToHistoryTable(flow[0], flow[1], flow[2], flow[3], 'DNS Tunneling') #add attack details as row in history table
+                    self.AddRowToHistoryTable(flow[0], flow[1], flow[2], flow[3], 'DNS Tunneling', details.get('timestamp')) #add attack details as row in history table
                     #! add attack to database
                     print(f'New DNS Tunneling attack detected from IP {flow[0]}: srcIp: {flow[0]}, srcMac: {flow[1]}, dstIp: {flow[2]}, dstMac: {flow[3]}, protocol: {flow[4]}')
 
@@ -623,7 +668,7 @@ class NetSpect(QMainWindow):
 
             # initialize dns thread for dns tunneling detection
             self.dnsThread = Dns_Thread(self)
-            # connect relevant signals for portScanDos thread
+            # connect relevant signals for dns thread
             self.dnsThread.detectionResultSignal.connect(self.DnsDetectionResult)
             self.dnsThread.finishSignal.connect(self.CloseDnsThread)
 

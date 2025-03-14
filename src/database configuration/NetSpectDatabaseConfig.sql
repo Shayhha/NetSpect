@@ -47,6 +47,7 @@ CREATE TABLE Alerts (
 	sourceMac VARCHAR(255) NOT NULL,
 	destinationIp VARCHAR(255) NOT NULL,
 	destinationMac VARCHAR(255) NOT NULL,
+	protocol VARCHAR(255) NOT NULL,
 	osType VARCHAR(255) NOT NULL,
 	timestamp VARCHAR(255) NOT NULL, -- timestamp template is hh:mm:ss dd/mm/yy
 	isDeleted INT NOT NULL DEFAULT 0, --represents state of alert, if 1 its deleted, else not

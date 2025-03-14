@@ -53,7 +53,7 @@ class NetSpect(QMainWindow):
         self.moveToLoginLabel.mousePressEvent = lambda event: InterfaceAnimations.SwitchBetweenLoginAndRegister(self, False)
         self.menuIcon.mousePressEvent = lambda event: InterfaceAnimations.OpenSideFrame(self)
         self.closeMenuIcon.mousePressEvent = lambda event: InterfaceAnimations.CloseSideFrame(self)
-        self.workstationIconHorizontalFrame.mousePressEvent = lambda event: InterfaceAnimations.ChangePageIndex(self, 0) #switch to Home Page
+        self.homePageIconHorizontalFrame.mousePressEvent = lambda event: InterfaceAnimations.ChangePageIndex(self, 0) #switch to Home Page
         self.reportIconHorizontalFrame.mousePressEvent = lambda event: InterfaceAnimations.ChangePageIndex(self, 1) #switch to Report Page
         self.infoIconHorizontalFrame.mousePressEvent = lambda event: InterfaceAnimations.ChangePageIndex(self, 2) #switch to Information Page
         self.settingsIcon.mousePressEvent = lambda event: InterfaceAnimations.ChangePageIndex(self, 3) #switch to Settings Page
@@ -194,6 +194,7 @@ class NetSpect(QMainWindow):
         self.maxTransmitionUnitInfoLabel.setText(str(selectedInterface.get('maxTransmitionUnit')))
         self.ipAddressesListWidget.clear()
         self.ipAddressesListWidget.addItems(selectedInterface.get('ipv4Addrs') + selectedInterface.get('ipv6Addrs'))
+        InterfaceAnimations.DisableSelectionIpListWidget(self)
 
 
     # method for adding row to history table widget in gui
@@ -208,6 +209,7 @@ class NetSpect(QMainWindow):
             self.historyTableWidget.setItem(currentRow, 3, QTableWidgetItem(dstMac))
             self.historyTableWidget.setItem(currentRow, 4, QTableWidgetItem(attackType))
             self.historyTableWidget.setItem(currentRow, 5, QTableWidgetItem(timestamp))
+            InterfaceAnimations.CenterSpecificTableRowText(self.historyTableWidget) #center the text of the last row after adding it
         
 
     # method for updating running time label in gui
@@ -414,7 +416,7 @@ class NetSpect(QMainWindow):
         # in case of an error we stop detection and show error message
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
-            InterfaceAnimations.ShowPopup(self, 'Error Occurred', stateDict.get('message') , 'Critical')
+            InterfaceAnimations.ShowPopup('Error Occurred', stateDict.get('message') , 'Critical')
     
 
     # method for closing arp thread and setting it back to none
@@ -428,7 +430,7 @@ class NetSpect(QMainWindow):
         # in case of an error we stop detection and show error message
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
-            InterfaceAnimations.ShowPopup(self, 'Error Occurred', stateDict.get('message') , 'Critical')
+            InterfaceAnimations.ShowPopup('Error Occurred', stateDict.get('message') , 'Critical')
 
 
     # method for closing portScanDos thread and setting it back to none
@@ -441,7 +443,7 @@ class NetSpect(QMainWindow):
         # in case of an error we stop detection and show error message
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
-            InterfaceAnimations.ShowPopup(self, 'Error Occurred', stateDict.get('message') , 'Critical')
+            InterfaceAnimations.ShowPopup('Error Occurred', stateDict.get('message') , 'Critical')
 
 
     # method for closing dns thread and setting it back to none
@@ -454,7 +456,7 @@ class NetSpect(QMainWindow):
         # in case of an error we stop detection and show error message
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
-            InterfaceAnimations.ShowPopup(self, 'Error Occurred', stateDict.get('message') , 'Critical')
+            InterfaceAnimations.ShowPopup('Error Occurred', stateDict.get('message') , 'Critical')
     
 
     # method for analyzing detection result of arp spoofing attack
@@ -675,7 +677,7 @@ class NetSpect(QMainWindow):
             self.dnsThread.start()
 
         else:
-            InterfaceAnimations.ShowPopup(self, 'Error Starting Detection', 'One of the threads is still in process, cannot start new detection.', 'Warning')
+            InterfaceAnimations.ShowPopup('Error Starting Detection', 'One of the threads is still in process, cannot start new detection.', 'Warning')
             print('One of the threads is still in process, cannot start new detection.')
 
     

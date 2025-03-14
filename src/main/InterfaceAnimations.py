@@ -234,7 +234,9 @@ def CenterSpecificTableRowText(tableObject): #tableObject = self.historyTableWid
     for col in range(tableObject.columnCount()):
         if item := tableObject.item(lastRow, col): #check if item exists
             item.setTextAlignment(Qt.AlignCenter)
-
+            cellText = item.text()
+            tooltipText = cellText if cellText else 'Empty cell'
+            item.setToolTip(tooltipText)
 
 # function for centering all the texts in every cell of all the tables in the ui
 def CenterAllTableRowText(self): 
@@ -243,9 +245,9 @@ def CenterAllTableRowText(self):
         for col in range(self.historyTableWidget.columnCount()):
             if item := self.historyTableWidget.item(row, col): #check if item exists
                 item.setTextAlignment(Qt.AlignCenter)
-                cell_text = item.text()
-                tooltip_text = cell_text if cell_text else "Empty cell"
-                item.setToolTip(tooltip_text)
+                cellText = item.text()
+                tooltipText = cellText if cellText else 'Empty cell'
+                item.setToolTip(tooltipText)
 
     self.historyTableWidget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch) #distribute column widths equally
     self.historyTableWidget.setTextElideMode(Qt.ElideMiddle)
@@ -255,9 +257,9 @@ def CenterAllTableRowText(self):
         for col in range(self.reportPreviewTableWidget.columnCount()):
             if item := self.reportPreviewTableWidget.item(row, col): #check if item exists
                 item.setTextAlignment(Qt.AlignCenter)
-                cell_text = item.text()
-                tooltip_text = cell_text if cell_text else "Empty cell"
-                item.setToolTip(tooltip_text)
+                cellText = item.text()
+                tooltipText = cellText if cellText else 'Empty cell'
+                item.setToolTip(tooltipText)
 
     self.reportPreviewTableWidget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch) #distribute column widths equally
     self.reportPreviewTableWidget.setTextElideMode(Qt.ElideMiddle)

@@ -238,6 +238,7 @@ def CenterSpecificTableRowText(tableObject): #tableObject = self.historyTableWid
             tooltipText = cellText if cellText else 'Empty cell'
             item.setToolTip(tooltipText)
 
+
 # function for centering all the texts in every cell of all the tables in the ui
 def CenterAllTableRowText(self): 
     # center all the text in the history table widget on Home Page
@@ -390,6 +391,7 @@ class CustomMessageBox(QDialog):
                 background-color: #AC3f3F;
             }
         ''')
+    
     
     # helper fucntion to map the iconType to the appropriate built-in QIcon
     def GetBuiltInIcon(self, iconType):

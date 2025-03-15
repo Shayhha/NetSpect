@@ -751,7 +751,6 @@ class PortScanDoS(ABC):
             keyColumns = ['srcIp', 'srcMac', 'dstIp', 'dstMac', 'protocol']
             flowDataframe = pd.DataFrame.from_dict(flowDict, orient='index').reset_index()
             flowDataframe.columns = keyColumns + flowDataframe.columns[5:].to_list() #rename the column names of the keys
-            keysDataframe = flowDataframe[keyColumns].copy()
             valuesDataframe = flowDataframe.drop(keyColumns, axis=1)
 
             # scale the input data and predict the scaled input
@@ -764,6 +763,7 @@ class PortScanDoS(ABC):
 
             # check for attacks in model predictions
             if (1 in predictions) and (2 in predictions): #1 and 2 means PortScan and DoS attacks together
+                # we convert the dataframe into dict where each key is flow: (srcIp, srcMac, dstIp, dstMac, protocol, result), value: {details}
                 attackDict = flowDataframe[flowDataframe['Result'] != 0].set_index(attackDictKeys).to_dict(orient='index') #indication of PortScan and DoS attacks together
                 # shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_PortAndDoS.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
@@ -773,6 +773,7 @@ class PortScanDoS(ABC):
                 )
 
             elif 1 in predictions: #1 means PortScan attack
+                # we convert the dataframe into dict where each key is flow: (srcIp, srcMac, dstIp, dstMac, protocol, result), value: {details}
                 attackDict = flowDataframe[flowDataframe['Result'] == 1].set_index(attackDictKeys).to_dict(orient='index') #indication of PortScan attack
                 # shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_Port.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
@@ -782,6 +783,7 @@ class PortScanDoS(ABC):
                 )
             
             elif 2 in predictions: #2 means DoS attack
+                # we convert the dataframe into dict where each key is flow: (srcIp, srcMac, dstIp, dstMac, protocol, result), value: {details}
                 attackDict = flowDataframe[flowDataframe['Result'] == 2].set_index(attackDictKeys).to_dict(orient='index') #indication of DoS attack
                 # shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_DoS.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
@@ -969,7 +971,6 @@ class DNSTunneling(ABC):
             keyColumns = ['srcIp', 'srcMac', 'dstIp', 'dstMac', 'protocol']
             flowDataframe = pd.DataFrame.from_dict(flowDict, orient='index').reset_index() 
             flowDataframe.columns = keyColumns + flowDataframe.columns[5:].to_list() #rename the column names of the keys
-            keysDataframe = flowDataframe[keyColumns].copy()
             valuesDataframe = flowDataframe.drop(keyColumns, axis=1)
 
             # scale the input data and predict the scaled input
@@ -982,6 +983,7 @@ class DNSTunneling(ABC):
 
             # check for attacks in model predictions
             if 1 in predictions: #1 means DNS Tunneling attack
+                # we convert the dataframe into dict where each key is flow: (srcIp, srcMac, dstIp, dstMac, protocol, result), value: {details}
                 attackDict = flowDataframe[flowDataframe['Result'] == 1].set_index(attackDictKeys).to_dict(orient='index') #indication of DNS attack
                 # shutil.copy('detectedFlowsDNS.txt', f'{np.random.randint(1,1000000)}_detectedFlowsDNS.txt') # temporary code for saving false positive if the occure during scans
                 raise DNSTunnelingException( #throw an exeption to inform user of its presence

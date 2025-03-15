@@ -45,7 +45,8 @@ class NetSpect(QMainWindow):
 
         # connect interface buttons to their methods
         self.startStopButton.clicked.connect(self.StartStopButtonClicked)
-
+        self.loginPushButton.clicked.connect(self.LoginButtonClicked)
+    
         # connect interface labels to their methods
         self.accountIcon.mousePressEvent = lambda event: UserInterfaceFunctions.AccountIconClicked(self)
         self.moveToRegisterLabel.mousePressEvent = lambda event: UserInterfaceFunctions.SwitchBetweenLoginAndRegister(self)
@@ -56,6 +57,7 @@ class NetSpect(QMainWindow):
         self.reportIconHorizontalFrame.mousePressEvent = lambda event: UserInterfaceFunctions.ChangePageIndex(self, 1) #switch to Report Page
         self.infoIconHorizontalFrame.mousePressEvent = lambda event: UserInterfaceFunctions.ChangePageIndex(self, 2) #switch to Information Page
         self.settingsIcon.mousePressEvent = lambda event: UserInterfaceFunctions.ChangePageIndex(self, 3) #switch to Settings Page
+        self.logoutIcon.mousePressEvent = lambda event: self.LogoutButtonClicked() #log out of user's account and clear interface
 
         # connect comboboxes to their methods
         self.networkInterfaceComboBox.clear() #clear interfaces combobox
@@ -113,7 +115,7 @@ class NetSpect(QMainWindow):
         # intialize sql thread for database operations
         self.sqlThread = SQL_Thread(self)
         # connect relevant signals for sql thread
-        # self.sqlThread.loginResultSignal.connect() # shay
+        self.sqlThread.loginResultSignal.connect(self.LoginResult) # shay
         # self.sqlThread.registrationResultSignal.connect() # max
         # self.sqlThread.changeEmailResultSignal.connect() # shay
         # self.sqlThread.changeUsernameResultSignal.connect() # max
@@ -136,20 +138,20 @@ class NetSpect(QMainWindow):
         finalPasswordPattern = '^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d$&?@#|.^*()%!]{6,20}$'
         emailValidator = QRegExpValidator(QRegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'))
 
-        # set validaotrs for username, password and email line edits in the login and register popups
-        self.loginUsernameLineEdit.setValidator(usernameValidator)
-        self.loginPasswordLineEdit.setValidator(passwordValidator)
+        # set validaotrs for username, password and email line edits in the register popup and settings page
         self.registerEmailLineEdit.setValidator(emailValidator)
         self.registerUsernameLineEdit.setValidator(usernameValidator)
         self.registerPasswordLineEdit.setValidator(passwordValidator)
+        #! need validators for settings page
 
         # connect the textChanged signal to the function that checks validation, this adds borders to the line edits if the text does not match the regex
-        self.loginUsernameLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.loginUsernameLineEdit, 'loginUsernameLineEdit'))
-        self.loginPasswordLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.loginPasswordLineEdit, 'loginPasswordLineEdit'))
-        self.registerEmailLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.registerEmailLineEdit, 'registerEmailLineEdit'))
-        self.registerUsernameLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.registerUsernameLineEdit, 'registerUsernameLineEdit'))
-        self.registerPasswordLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.registerPasswordLineEdit, 'registerPasswordLineEdit'))
-        
+        self.loginUsernameLineEdit.textChanged.connect(lambda : UserInterfaceFunctions.ClearErrorMessageText(self.loginErrorMessageLabel))
+        self.loginPasswordLineEdit.textChanged.connect(lambda : UserInterfaceFunctions.ClearErrorMessageText(self.loginErrorMessageLabel))
+        self.registerEmailLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.registerEmailLineEdit, 'registerEmailLineEdit', self.registerErrorMessageLabel))
+        self.registerUsernameLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.registerUsernameLineEdit, 'registerUsernameLineEdit', self.registerErrorMessageLabel))
+        self.registerPasswordLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.registerPasswordLineEdit, 'registerPasswordLineEdit', self.registerErrorMessageLabel))
+        #! need to connect validators for settings page
+
 
     # method for setting the text in the error message in login and register popups
     def ChangeLoginRegisterErrorMessage(self, message='', isLogin=True):
@@ -164,7 +166,7 @@ class NetSpect(QMainWindow):
 
 
     # method for changing the styles of a line edit when it does not match the regex
-    def NotifyInvalidLineEdit(self, lineEditWidget, lineEditName):
+    def NotifyInvalidLineEdit(self, lineEditWidget, lineEditName, errorMessageLabel=None):
         currentStylesheet = f''' 
             #{lineEditName} {{
                 background-color: #f0f0f0; 
@@ -178,6 +180,10 @@ class NetSpect(QMainWindow):
         '''
         # set initial styles
         lineEditWidget.setStyleSheet(currentStylesheet)
+
+        # clear error message and hide error message label if given
+        if errorMessageLabel:
+            UserInterfaceFunctions.ClearErrorMessageText(errorMessageLabel)
 
         # check if the input matches the regex, if not update the border style to red (invalid input)
         if not lineEditWidget.hasAcceptableInput():
@@ -211,6 +217,32 @@ class NetSpect(QMainWindow):
         UserInterfaceFunctions.DisableSelectionIpListWidget(self)
 
 
+    # method for initializing mac addresses blacklist in gui
+    def InitMacAddresses(self, macBlacklist):
+        self.macAddressListWidget.clear() #clear mac addresses list
+        self.ipAddressesListWidget.addItems(macBlacklist) #add all mac addresses to our blacklist
+
+
+    # method for initializing history table widget in gui
+    def InitHistoryTable(self, alertList):
+        self.historyTableWidget.setRowCount(0) #clear history table
+
+        #iterate over each alert in list and add it to our table
+        for alert in alertList:
+            self.AddRowToHistoryTable(alert.get('srcIp'), alert.get('srcMac'), alert.get('dstIp'),
+                                       alert.get('dstMac'), alert.get('attackType'), alert.get('timestamp'))
+            
+
+    # method for initializing report table widget in gui
+    def InitReportTable(self, alertList):
+        self.reportPreviewTableWidget.setRowCount(0) #clear report table
+
+        #iterate over each alert in list and add it to our table
+        for alert in alertList:
+            self.AddRowToReportTable(alert.get('interface'), alert.get('attackType'), alert.get('srcIp'), alert.get('srcMac'),
+                                       alert.get('dstIp'), alert.get('dstMac'), alert.get('protocol'), alert.get('timestamp'))
+    
+
     # method for adding row to history table widget in gui
     def AddRowToHistoryTable(self, srcIp, srcMac, dstIp, dstMac, attackType, timestamp):
         if srcIp and srcMac and dstIp and dstMac and attackType and timestamp:
@@ -228,12 +260,12 @@ class NetSpect(QMainWindow):
     
 
     # method for adding row to report preview table widget in gui
-    def AddRowToReportTable(self, srcIp, srcMac, dstIp, dstMac, attackType, protocol, timestamp):
-        if srcIp and srcMac and dstIp and dstMac and attackType and protocol and timestamp:
+    def AddRowToReportTable(self, interface, attackType, srcIp, srcMac, dstIp, dstMac, protocol, timestamp):
+        if interface and attackType and srcIp and srcMac and dstIp and dstMac and protocol and timestamp:
             currentRow = 0 #add new row in the beginning of table
             # add our items into row for showing detected attack
             self.reportPreviewTableWidget.insertRow(currentRow)
-            self.reportPreviewTableWidget.setItem(currentRow, 0, QTableWidgetItem(NetworkInformation.selectedInterface))
+            self.reportPreviewTableWidget.setItem(currentRow, 0, QTableWidgetItem(interface))
             self.reportPreviewTableWidget.setItem(currentRow, 1, QTableWidgetItem(attackType))
             self.reportPreviewTableWidget.setItem(currentRow, 2, QTableWidgetItem(srcIp))
             self.reportPreviewTableWidget.setItem(currentRow, 3, QTableWidgetItem(srcMac))
@@ -243,7 +275,28 @@ class NetSpect(QMainWindow):
             self.reportPreviewTableWidget.setItem(currentRow, 7, QTableWidgetItem(timestamp))
             # center the text of the last row after adding it
             UserInterfaceFunctions.CenterSpecificTableRowText(self.reportPreviewTableWidget)
-        
+
+
+    # method for setting user interface to logged in or logged out state 
+    def ChangeUserState(self, state, userData=None):
+        # check if detection is off
+        if not self.isDetection:
+            # means we need to set user interface for logged in user
+            if state and userData:
+                self.userData = userData #save user data dictionary for logged in user
+                UserInterfaceFunctions.AccountIconClicked(self) #close login popup
+                UserInterfaceFunctions.ToggleUserInterface(self, True, self.userData.get('userName')) #toggle user interface
+                self.detectedAttacksCounter.setText(str(self.userData.get('numberOfDetectedAttacks'))) #set num of detected attacks counter
+                self.InitHistoryTable(self.userData.get('alertList')) #initialize our history table
+                self.InitReportTable(self.userData.get('alertList')) #initialize our report table
+                self.InitMacAddresses(self.userData.get('blackList')) #intialize our mac address black list
+                UserInterfaceFunctions.UpdateChartAfterLogin(self, self.userData.get('pieChartData')) #initialize pie chart
+
+            # means we set user interface for logged out user
+            else:
+                self.userData = {} #reset our user data dictionary
+                UserInterfaceFunctions.ToggleUserInterface(self, False) #reset our user interface
+
 
     # method for updating running time label in gui
     @pyqtSlot()
@@ -543,9 +596,10 @@ class NetSpect(QMainWindow):
 
                     # if attack is new we update tables in gui and add to database
                     if isNewAttack:
-                        # iterate over each mac in given set and add it to our history table
+                        # iterate over each mac in given set and add it to our tables
                         for mac in details.get('srcMac', set()):
-                            self.AddRowToHistoryTable(details.get('srcIp'), mac, details.get('dstIp'), details.get('dstMac'), 'ARP Spoofing (ipToMac)', details.get('timestamp')) #add attack details as row in history table
+                            self.AddRowToHistoryTable(details.get('srcIp'), mac, details.get('dstIp'), details.get('dstMac'), 'ARP Spoofing', details.get('timestamp'))
+                            self.AddRowToReportTable(NetworkInformation.selectedInterface, 'ARP Spoofing', details.get('srcIp'), mac, details.get('dstIp'), details.get('dstMac'), details.get('protocol'), details.get('timestamp'))
                             #! add attack to database
                             print(f'New ipToMac ARP Spoofing attack detected from IP {ip}: srcIp: {details.get('srcIp')}, srcMac: {mac}, dstIp: {details.get('dstIp')}, dstMac: {details.get('dstMac')}, protocol: {details.get('protocol')}')
 
@@ -579,9 +633,10 @@ class NetSpect(QMainWindow):
 
                     # if attack is new we update tables in gui and add to database
                     if isNewAttack:
-                        # iterate over each ip in given set and add it to our history table
+                        # iterate over each ip in given set and add it to our tables
                         for ip in details.get('srcIp', set()):
-                            self.AddRowToHistoryTable(ip, details.get('srcMac'), details.get('dstIp'), details.get('dstMac'), 'ARP Spoofing (macToIp)', details.get('timestamp')) #add attack details as row in history table
+                            self.AddRowToHistoryTable(ip, details.get('srcMac'), details.get('dstIp'), details.get('dstMac'), 'ARP Spoofing', details.get('timestamp'))
+                            self.AddRowToReportTable(NetworkInformation.selectedInterface, 'ARP Spoofing', ip, details.get('srcMac'), details.get('dstIp'), details.get('dstMac'), details.get('protocol'), details.get('timestamp'))
                             #! add attack to database
                             print(f'New macToIp ARP Spoofing attack detected from MAC {mac}: srcIp: {ip}, srcMac: {details.get('srcMac')}, dstIp: {details.get('dstIp')}, dstMac: {details.get('dstMac')}, protocol: {details.get('protocol')}')
 
@@ -613,14 +668,16 @@ class NetSpect(QMainWindow):
                 
                 # if attack is new we update tables in gui and add to database
                 if isNewAttack:
-                    # handle anomalies we found in port scan attack
+                    # handle anomalies we found in port scan attack and add them to our tables
                     if type in (1, 3) and flow[5] == 1:
-                        self.AddRowToHistoryTable(flow[0], flow[1], flow[2], flow[3], 'Port Scan', details.get('timestamp')) #add attack details as row in history table
+                        self.AddRowToHistoryTable(flow[0], flow[1], flow[2], flow[3], 'Port Scan', details.get('timestamp'))
+                        self.AddRowToReportTable(NetworkInformation.selectedInterface, 'Port Scan', flow[0], flow[1], flow[2], flow[3], flow[4], details.get('timestamp'))
                         #! add attack to database
                         print(f'New Port Scan attack detected from IP {flow[0]}: srcIp: {flow[0]}, srcMac: {flow[1]}, dstIp: {flow[2]}, dstMac: {flow[3]}, protocol: {flow[4]}')
-                    # handle anomalies we found in DoS attack
+                    # handle anomalies we found in DoS attack and add them to our tables
                     if type in (2, 3) and flow[5] == 2:
-                        self.AddRowToHistoryTable(flow[0], flow[1], flow[2], flow[3], 'DoS', details.get('timestamp')) #add attack details as row in history table
+                        self.AddRowToHistoryTable(flow[0], flow[1], flow[2], flow[3], 'DoS', details.get('timestamp'))
+                        self.AddRowToReportTable(NetworkInformation.selectedInterface, 'DoS', flow[0], flow[1], flow[2], flow[3], flow[4], details.get('timestamp'))
                         #! add attack to database
                         print(f'New DoS attack detected from IP {flow[0]}: srcIp: {flow[0]}, srcMac: {flow[1]}, dstIp: {flow[2]}, dstMac: {flow[3]}, protocol: {flow[4]}')
 
@@ -651,8 +708,9 @@ class NetSpect(QMainWindow):
                 
                 # if attack is new we update tables in gui and add to database
                 if isNewAttack:
-                    # handle anomalies we found in dns tunneling attack
-                    self.AddRowToHistoryTable(flow[0], flow[1], flow[2], flow[3], 'DNS Tunneling', details.get('timestamp')) #add attack details as row in history table
+                    # handle anomalies we found in dns tunneling attack and add them to our tables
+                    self.AddRowToHistoryTable(flow[0], flow[1], flow[2], flow[3], 'DNS Tunneling', details.get('timestamp'))
+                    self.AddRowToReportTable(NetworkInformation.selectedInterface, 'DNS Tunneling', flow[0], flow[1], flow[2], flow[3], flow[4], details.get('timestamp'))
                     #! add attack to database
                     print(f'New DNS Tunneling attack detected from IP {flow[0]}: srcIp: {flow[0]}, srcMac: {flow[1]}, dstIp: {flow[2]}, dstMac: {flow[3]}, protocol: {flow[4]}')
 
@@ -756,14 +814,54 @@ class NetSpect(QMainWindow):
 
 
     #-----------------------------------------------CLICKED-METHODS----------------------------------------------#
+    # method for loggin into user's account and intialize our userData dictionary
+    def LoginButtonClicked(self):
+        if self.sqlThread:
+            # means we had detection active
+            if self.isDetection:
+                UserInterfaceFunctions.ShowPopup('Detetcion In Progress' 'Please stop detection before attempting to log in.', 'Information')
+            # means both fields are empty
+            elif not self.loginUsernameLineEdit.text() and not self.loginPasswordLineEdit.text():
+                UserInterfaceFunctions.ChangeErrorMessageText(self.loginErrorMessageLabel, 'Please enter username and password.')
+            # means username field empty
+            elif not self.loginUsernameLineEdit.text():
+                UserInterfaceFunctions.ChangeErrorMessageText(self.loginErrorMessageLabel, 'Please enter your username.')
+            # means password field empty
+            elif not self.loginPasswordLineEdit.text():
+                UserInterfaceFunctions.ChangeErrorMessageText(self.loginErrorMessageLabel, 'Please enter your password.')
+            # else we process the login request to our sql thread
+            else:
+                self.sqlThread.Login(self.loginUsernameLineEdit.text(), NetSpect.ToSHA256(self.loginPasswordLineEdit.text()))
+
+    
+    # method for loggin out of user's account and clear user interface
+    def LogoutButtonClicked(self):
+        if self.sqlThread:
+            # means we had detection active
+            if self.isDetection:
+                UserInterfaceFunctions.ShowPopup('Detetcion In Progress' 'Please stop detection before attempting to log out.', 'Information')
+            # else we log out and clear interface
+            else:
+                self.ChangeUserState(False) #call our method to log out and clear interface
 
 
 
     #---------------------------------------------CLICKED-METHODS-END--------------------------------------------#
 
-
     #----------------------------------------------SQL-RESULT-SLOTS----------------------------------------------#
-
+    # method for getting login result from sql thread and process user's data
+    @pyqtSlot(dict)
+    def LoginResult(self, resultDict):
+        # means error occured, we show error pop up
+        if resultDict.get('error'):
+            UserInterfaceFunctions.ShowPopup('Error In Login', 'Error loggin into user account due to server error, please try again later.', 'Critical')
+        # means failed loggin in, we show error message
+        elif not resultDict.get('state'):
+            UserInterfaceFunctions.ChangeErrorMessageText(self.loginErrorMessageLabel, resultDict.get('message'))
+        # means we succesfuly logged in
+        elif resultDict.get('state') and resultDict.get('result'):
+            self.ChangeUserState(True, resultDict.get('result')) #call our method to log into account
+            
 
 
     #--------------------------------------------SQL-RESULT-SLOTS-END--------------------------------------------#

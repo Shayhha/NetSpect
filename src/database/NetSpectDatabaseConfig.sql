@@ -31,7 +31,6 @@ CREATE TABLE Users (
 CREATE TABLE Blacklist (
 	userid INT NOT NULL,
     macAddress VARCHAR(255) NOT NULL,
-	isDeleted INT NOT NULL DEFAULT 0, --represents state of mac address, if 1 its deleted, else not
 	PRIMARY KEY(userId, macAddress),
     FOREIGN KEY (userId) REFERENCES Users(userId)
 );

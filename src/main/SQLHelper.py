@@ -100,8 +100,9 @@ class SQL_Thread(QThread):
                     'lightMode': result[4]
                 }
                 
-                # retrieve alert list and black list with helper functions
+                # retrieve alert list, pie chart data and black list with helper functions
                 userData['alertList'] = self.GetAlerts(userData['userId'])
+                userData['pieChartData'] = self.GetPieChartData(userData['userId'])
                 userData['blackList'] = self.GetBlacklistMacs(userData['userId'])
 
                 # set state and result with successful login attempt with user data
@@ -352,10 +353,10 @@ class SQL_Thread(QThread):
                 alert = {
                     'interface': row[0],
                     'attackType': row[1],
-                    'sourceIp': row[2],
-                    'sourceMac': row[3],
-                    'destinationIp': row[4],
-                    'destinationMac': row[5],
+                    'srcIp': row[2],
+                    'srcMac': row[3],
+                    'dstIp': row[4],
+                    'dstMac': row[5],
                     'protocol': row[6],
                     'osType': row[7],
                     'timestamp': row[8]
@@ -364,6 +365,27 @@ class SQL_Thread(QThread):
 
         # return list of alerts for user
         return alertsList
+    
+
+    # method for getting number of attacks from each type in Alerts table for pie chart
+    @pyqtSlot(int)
+    def GetPieChartData(self, userId):
+        query = '''
+            SELECT attackType, COUNT(*) as count
+            FROM Alerts
+            WHERE userId = ? AND isDeleted = 0
+            GROUP BY attackType
+        '''
+        self.cursor.execute(query, (userId,))
+        result = self.cursor.fetchall()
+        pieChartData = {} #represents dict of attacks count
+
+        # check if we received result from query
+        if result:
+            # convert result into a dictionary
+            pieChartData = {row[0]: row[1] for row in result}
+        
+        return pieChartData
 
 
     # method for adding alert for user in Alerts table

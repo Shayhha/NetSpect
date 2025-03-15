@@ -36,13 +36,16 @@ class SQL_Thread(QThread):
 
     # method for connecting to SQL server database
     def Connect(self):
-        # load environment variables from env file
-        load_dotenv(dotenv_path=currentDir.parent / 'database' / '.env' )
-        # getting necessary database credentials from env file for database connection
-        connectionString = os.getenv('DB_CONNECTION_STRING')
-        self.connection = pyodbc.connect(connectionString)
-        self.cursor = self.connection.cursor() #initialize cursor 
-        print('SQL_Thread: Connected to database successfully.')
+        try:
+            # load environment variables from env file
+            load_dotenv(dotenv_path=currentDir.parent / 'database' / '.env' )
+            # getting necessary database credentials from env file for database connection
+            connectionString = os.getenv('DB_CONNECTION_STRING')
+            self.connection = pyodbc.connect(connectionString)
+            self.cursor = self.connection.cursor() #initialize cursor 
+            print('SQL_Thread: Connected to database successfully.')
+        except pyodbc.Error as e:
+            raise Exception('Database connection failed. The application will function, but login will be unavailable')
 
 
     # method for closing database connection
@@ -299,65 +302,55 @@ class SQL_Thread(QThread):
     # method for getting all alerts that registered for given user in decreasing order
     @pyqtSlot(int)
     def GetAlerts(self, userId):
-        try:
-            query = '''
-                SELECT interface, attackType, sourceIp, sourceMac, 
-                    destinationIp, destinationMac, protocol, osType, timestamp
-                FROM Alerts
-                WHERE userId = ? AND isDeleted = 0
-                ORDER BY CONVERT(datetime, SUBSTRING(timestamp, 10, 9) + ' ' + SUBSTRING(timestamp, 1, 8), 3) DESC
-            '''
-            self.cursor.execute(query, (userId,))
-            alerts = self.cursor.fetchall()
-            alertsList = [] #represents our alerts list
+        query = '''
+            SELECT interface, attackType, sourceIp, sourceMac, 
+                destinationIp, destinationMac, protocol, osType, timestamp
+            FROM Alerts
+            WHERE userId = ? AND isDeleted = 0
+            ORDER BY CONVERT(datetime, SUBSTRING(timestamp, 10, 9) + ' ' + SUBSTRING(timestamp, 1, 8), 3) DESC
+        '''
+        self.cursor.execute(query, (userId,))
+        alerts = self.cursor.fetchall()
+        alertsList = [] #represents our alerts list
 
-            # check if we received alerts from query
-            if alerts:
-                # iterate over each row and add it as a dictionary to list
-                for row in alerts:
-                    alert = {
-                        'interface': row[0],
-                        'attackType': row[1],
-                        'sourceIp': row[2],
-                        'sourceMac': row[3],
-                        'destinationIp': row[4],
-                        'destinationMac': row[5],
-                        'protocol': row[6],
-                        'osType': row[7],
-                        'timestamp': row[8]
-                    }
-                    alertsList.append(alert)
+        # check if we received alerts from query
+        if alerts:
+            # iterate over each row and add it as a dictionary to list
+            for row in alerts:
+                alert = {
+                    'interface': row[0],
+                    'attackType': row[1],
+                    'sourceIp': row[2],
+                    'sourceMac': row[3],
+                    'destinationIp': row[4],
+                    'destinationMac': row[5],
+                    'protocol': row[6],
+                    'osType': row[7],
+                    'timestamp': row[8]
+                }
+                alertsList.append(alert)
 
-            # return list of alerts for user
-            return alertsList
-        
-        except Exception as e:
-            # return empty list if exeption occurs
-            return []
+        # return list of alerts for user
+        return alertsList
 
 
     # method for getting all blacklisted mac addresses for given user
     @pyqtSlot(int)
     def GetBlacklistMacs(self, userId):
-        try:
-            query = '''
-                SELECT macAddress 
-                FROM Blacklist 
-                WHERE userId = ? AND isDeleted = 0
-            '''
-            self.cursor.execute(query, (userId,))
-            blacklistResults = self.cursor.fetchall()
+        query = '''
+            SELECT macAddress 
+            FROM Blacklist 
+            WHERE userId = ? AND isDeleted = 0
+        '''
+        self.cursor.execute(query, (userId,))
+        blacklistResults = self.cursor.fetchall()
 
-            # convert fetched tuples into a list of mac addresses
-            blacklist = [row[0] for row in blacklistResults]
+        # convert fetched tuples into a list of mac addresses
+        blacklist = [row[0] for row in blacklistResults]
 
-            # return blacklist macs for user
-            return blacklist
-        
-        except Exception as e:
-            # return empty list if exeption occurs
-            return []
-        
+        # return blacklist macs for user
+        return blacklist
+             
 
     # method for deleting all alerts for user in Alerts table
     @pyqtSlot(int)

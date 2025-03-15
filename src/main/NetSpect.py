@@ -1,4 +1,4 @@
-import InterfaceAnimations
+import UserInterfaceFunctions
 from PyQt5.QtCore import QTimer, QRegExp, QThread, QMutex, QMutexLocker, QWaitCondition, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QRegExpValidator
 from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMainWindow, QTableWidgetItem
@@ -49,15 +49,15 @@ class NetSpect(QMainWindow):
         self.startStopButton.clicked.connect(self.StartStopButtonClicked)
 
         # connect interface labels to their methods
-        self.accountIcon.mousePressEvent = lambda event: InterfaceAnimations.AccountIconClicked(self)
-        self.moveToRegisterLabel.mousePressEvent = lambda event: InterfaceAnimations.SwitchBetweenLoginAndRegister(self)
-        self.moveToLoginLabel.mousePressEvent = lambda event: InterfaceAnimations.SwitchBetweenLoginAndRegister(self, False)
-        self.menuIcon.mousePressEvent = lambda event: InterfaceAnimations.OpenSideFrame(self)
-        self.closeMenuIcon.mousePressEvent = lambda event: InterfaceAnimations.CloseSideFrame(self)
-        self.homePageIconHorizontalFrame.mousePressEvent = lambda event: InterfaceAnimations.ChangePageIndex(self, 0) #switch to Home Page
-        self.reportIconHorizontalFrame.mousePressEvent = lambda event: InterfaceAnimations.ChangePageIndex(self, 1) #switch to Report Page
-        self.infoIconHorizontalFrame.mousePressEvent = lambda event: InterfaceAnimations.ChangePageIndex(self, 2) #switch to Information Page
-        self.settingsIcon.mousePressEvent = lambda event: InterfaceAnimations.ChangePageIndex(self, 3) #switch to Settings Page
+        self.accountIcon.mousePressEvent = lambda event: UserInterfaceFunctions.AccountIconClicked(self)
+        self.moveToRegisterLabel.mousePressEvent = lambda event: UserInterfaceFunctions.SwitchBetweenLoginAndRegister(self)
+        self.moveToLoginLabel.mousePressEvent = lambda event: UserInterfaceFunctions.SwitchBetweenLoginAndRegister(self, False)
+        self.menuIcon.mousePressEvent = lambda event: UserInterfaceFunctions.OpenSideFrame(self)
+        self.closeMenuIcon.mousePressEvent = lambda event: UserInterfaceFunctions.CloseSideFrame(self)
+        self.homePageIconHorizontalFrame.mousePressEvent = lambda event: UserInterfaceFunctions.ChangePageIndex(self, 0) #switch to Home Page
+        self.reportIconHorizontalFrame.mousePressEvent = lambda event: UserInterfaceFunctions.ChangePageIndex(self, 1) #switch to Report Page
+        self.infoIconHorizontalFrame.mousePressEvent = lambda event: UserInterfaceFunctions.ChangePageIndex(self, 2) #switch to Information Page
+        self.settingsIcon.mousePressEvent = lambda event: UserInterfaceFunctions.ChangePageIndex(self, 3) #switch to Settings Page
 
         # connect comboboxes to their methods
         self.networkInterfaceComboBox.clear() #clear interfaces combobox
@@ -66,7 +66,7 @@ class NetSpect(QMainWindow):
         self.ChangeNetworkInterface() #set default network interface from combobox 
 
         # initialize other interface components and show interface
-        InterfaceAnimations.InitAnimationsUI(self) # setup left sidebar elements and login/register popup frame
+        UserInterfaceFunctions.InitAnimationsUI(self) # setup left sidebar elements and login/register popup frame
         self.InitSystemInfo(NetworkInformation.GetSystemInformation()) #initialize the system information in the info page (machine name, version, etc.)
         self.InitValidators() #initialize the network information in the info page (interface name, mac address, ips, etc.)
         self.ChangeLoginRegisterErrorMessage() #reset the login popup error message
@@ -210,7 +210,7 @@ class NetSpect(QMainWindow):
         self.maxTransmitionUnitInfoLabel.setText(str(selectedInterface.get('maxTransmitionUnit')))
         self.ipAddressesListWidget.clear()
         self.ipAddressesListWidget.addItems(selectedInterface.get('ipv4Addrs') + selectedInterface.get('ipv6Addrs'))
-        InterfaceAnimations.DisableSelectionIpListWidget(self)
+        UserInterfaceFunctions.DisableSelectionIpListWidget(self)
 
 
     # method for adding row to history table widget in gui
@@ -226,7 +226,7 @@ class NetSpect(QMainWindow):
             self.historyTableWidget.setItem(currentRow, 4, QTableWidgetItem(attackType))
             self.historyTableWidget.setItem(currentRow, 5, QTableWidgetItem(timestamp))
             # center the text of the last row after adding it
-            InterfaceAnimations.CenterSpecificTableRowText(self.historyTableWidget)
+            UserInterfaceFunctions.CenterSpecificTableRowText(self.historyTableWidget)
     
 
     # method for adding row to report preview table widget in gui
@@ -244,7 +244,7 @@ class NetSpect(QMainWindow):
             self.reportPreviewTableWidget.setItem(currentRow, 6, QTableWidgetItem(protocol))
             self.reportPreviewTableWidget.setItem(currentRow, 7, QTableWidgetItem(timestamp))
             # center the text of the last row after adding it
-            InterfaceAnimations.CenterSpecificTableRowText(self.reportPreviewTableWidget)
+            UserInterfaceFunctions.CenterSpecificTableRowText(self.reportPreviewTableWidget)
         
 
     # method for updating running time label in gui
@@ -447,7 +447,7 @@ class NetSpect(QMainWindow):
         self.sqlThread = None #set thread to none
         # in case of an error we show error message
         if stateDict.get('state') == False and stateDict.get('message'):
-            InterfaceAnimations.ShowPopup('Error Occurred', stateDict.get('message') , 'Critical')
+            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message') , 'Critical')
 
 
     # method for closing sniffer thread and setting it back to none
@@ -460,7 +460,7 @@ class NetSpect(QMainWindow):
         # in case of an error we stop detection and show error message
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
-            InterfaceAnimations.ShowPopup('Error Occurred', stateDict.get('message') , 'Critical')
+            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message') , 'Critical')
     
 
     # method for closing arp thread and setting it back to none
@@ -474,7 +474,7 @@ class NetSpect(QMainWindow):
         # in case of an error we stop detection and show error message
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
-            InterfaceAnimations.ShowPopup('Error Occurred', stateDict.get('message') , 'Critical')
+            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message') , 'Critical')
 
 
     # method for closing portScanDos thread and setting it back to none
@@ -487,7 +487,7 @@ class NetSpect(QMainWindow):
         # in case of an error we stop detection and show error message
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
-            InterfaceAnimations.ShowPopup('Error Occurred', stateDict.get('message') , 'Critical')
+            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message') , 'Critical')
 
 
     # method for closing dns thread and setting it back to none
@@ -500,7 +500,7 @@ class NetSpect(QMainWindow):
         # in case of an error we stop detection and show error message
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
-            InterfaceAnimations.ShowPopup('Error Occurred', stateDict.get('message') , 'Critical')
+            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message') , 'Critical')
     
 
     # method for analyzing detection result of arp spoofing attack
@@ -721,7 +721,7 @@ class NetSpect(QMainWindow):
             self.dnsThread.start()
 
         else:
-            InterfaceAnimations.ShowPopup('Error Starting Detection', 'One of the threads is still in process, cannot start new detection.', 'Warning')
+            UserInterfaceFunctions.ShowPopup('Error Starting Detection', 'One of the threads is still in process, cannot start new detection.', 'Warning')
             print('One of the threads is still in process, cannot start new detection.')
 
     

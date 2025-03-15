@@ -447,18 +447,25 @@ class SQL_Thread(QThread):
     def AddBlacklistMac(self, userId, macAddress):
         resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
         try:
-            query = '''
-                INSERT INTO Blacklist (userId, macAddress) 
-                VALUES (?, ?)
-            '''
-            self.cursor.execute(query, (userId, macAddress))
-
-            if self.cursor.rowcount > 0:
-                self.connection.commit()
-                resultDict['message'] = 'Blacklist MAC added successfully.'
-                resultDict['state'] = True
+            # first, get the existing blacklist for the given user
+            existingBlacklist = self.GetBlacklistMacs(userId)
+            
+            # check if the MAC address already exists in the blacklist
+            if macAddress in existingBlacklist:
+                resultDict['message'] = 'MAC address is already blacklisted for this user.'
             else:
-                resultDict['message'] = 'Error adding blacklist MAC.'
+                query = '''
+                    INSERT INTO Blacklist (userId, macAddress) 
+                    VALUES (?, ?)
+                '''
+                self.cursor.execute(query, (userId, macAddress))
+
+                if self.cursor.rowcount > 0:
+                    self.connection.commit()
+                    resultDict['message'] = 'Blacklist MAC added successfully.'
+                    resultDict['state'] = True
+                else:
+                    resultDict['message'] = 'Error adding blacklist MAC.'
         except Exception as e:
             self.connection.rollback() #rollback on error
             resultDict['message'] = f'Error adding blacklist MAC: {e}.'

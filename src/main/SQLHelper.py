@@ -340,7 +340,7 @@ class SQL_Thread(QThread):
                 destinationIp, destinationMac, protocol, osType, timestamp
             FROM Alerts
             WHERE userId = ? AND isDeleted = 0
-            ORDER BY CONVERT(datetime, SUBSTRING(timestamp, 10, 9) + ' ' + SUBSTRING(timestamp, 1, 8), 3) DESC
+            ORDER BY CONVERT(datetime, SUBSTRING(timestamp, 10, 8) + ' ' + SUBSTRING(timestamp, 1, 8), 3) ASC
         '''
         self.cursor.execute(query, (userId,))
         alerts = self.cursor.fetchall()

@@ -120,7 +120,10 @@ class NetSpect(QMainWindow):
         # self.sqlThread.changeEmailResultSignal.connect()
         # self.sqlThread.changeUsernameResultSignal.connect()
         # self.sqlThread.changePasswordResultSignal.connect()
+        # self.sqlThread.deleteUserResultSignal.connect()
+        # self.sqlThread.addAlertResultSignal.connect()
         # self.sqlThread.deleteAlertsResultSignal.connect()
+        # self.sqlThread.addBlacklistMacResultSignal.connect()
         # self.sqlThread.deleteBlacklistMacResultSignal.connect()
         self.sqlThread.finishSignal.connect(self.CloseSQLThread)
         # start sql thread

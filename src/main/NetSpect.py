@@ -10,8 +10,7 @@ from SQLHelper import *
 #--------------------------------------------------------NetSpect-CLASS---------------------------------------------------------#
 # class that represents main app of NetSpect
 class NetSpect(QMainWindow):
-    dbConn = None #represents our database connection
-    userId = None #represents user id
+    userData = {} #represents dict with user's data including userId - {userId : int, email: str, userName: str, numberOfDetectedAttacks: str, lightMode: int, alertList: [], blackList: []}
     isDetection = False #represents flag for indicating if detection is active
     totalTimer, arpTimer, portScanDosTimer, dnsTimer = None, None, None, None #represents timer for each thread for evaluating when to send data
     totalTimeout, arpTimeout, portScanDosTimout, dnsTimout = 1000, 40000, 40000, 40000 #represents timeout for each timer
@@ -22,10 +21,9 @@ class NetSpect(QMainWindow):
     portScanDosDict = {} #represents dict of {(flow tuple) - [packet list]} related to port scanning and dos
     dnsDict = {} #represents dict of {(flow tuple) - [packet list]} related to dns tunneling
     arpCounter, tcpUdpCounter, dnsCounter = 0, 0, 0 #represents counters for our packet data structures for arp, portDos and dns
-    snifferThread, arpThread, portScanDosThread, dnsThread = None, None, None, None #represents our worker threads for sniffing and detecting network cyber attacks
+    sqlThread, snifferThread, arpThread, portScanDosThread, dnsThread = None, None, None, None, None #represents our worker threads for SQL queries, sniffing and detecting network cyber attacks
     arpMutex, portScanDosMutex, dnsMutex = QMutex(), QMutex(), QMutex() #represents mutex objects for thread safe operations on our dictionaries
     arpAttackDict, portScanDosAttackDict, dnsAttackDict = {'ipToMac': {}, 'macToIp': {}}, {}, {} #represents attack dictionaries for each attack we previously detected
-    sqlThread, sqlMutex = None, QMutex() #represents sql thread and sql mutex for database oeprations
 
     # constructor of main gui application
     def __init__(self):

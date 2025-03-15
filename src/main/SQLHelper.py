@@ -100,9 +100,9 @@ class SQL_Thread(QThread):
                     'lightMode': result[4]
                 }
                 
-                # retrieve alerts and blacklist with helper functions
-                userData['alerts'] = self.GetAlerts(userData['userId'])
-                userData['blacklist'] = self.GetBlacklistMacs(userData['userId'])
+                # retrieve alert list and black list with helper functions
+                userData['alertList'] = self.GetAlerts(userData['userId'])
+                userData['blackList'] = self.GetBlacklistMacs(userData['userId'])
 
                 # set state and result with successful login attempt with user data
                 resultDict['result'] = userData

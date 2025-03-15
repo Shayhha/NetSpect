@@ -14,7 +14,10 @@ class SQL_Thread(QThread):
     changeEmailResultSignal = pyqtSignal(dict)
     changeUsernameResultSignal = pyqtSignal(dict)
     changePasswordResultSignal = pyqtSignal(dict)
+    deleteUserResultSignal = pyqtSignal(dict)
+    addAlertResultSignal = pyqtSignal(dict)
     deleteAlertsResultSignal = pyqtSignal(dict)
+    addBlacklistMacResultSignal = pyqtSignal(dict)
     deleteBlacklistMacResultSignal = pyqtSignal(dict)
     finishSignal = pyqtSignal(dict)
 
@@ -36,13 +39,16 @@ class SQL_Thread(QThread):
 
     # method for connecting to SQL server database
     def Connect(self):
-        # load environment variables from env file
-        load_dotenv(dotenv_path=currentDir.parent / 'database' / '.env' )
-        # getting necessary database credentials from env file for database connection
-        connectionString = os.getenv('DB_CONNECTION_STRING')
-        self.connection = pyodbc.connect(connectionString)
-        self.cursor = self.connection.cursor() #initialize cursor 
-        print('SQL_Thread: Connected to database successfully.')
+        try:
+            # load environment variables from env file
+            load_dotenv(dotenv_path=currentDir.parent / 'database' / '.env' )
+            # getting necessary database credentials from env file for database connection
+            connectionString = os.getenv('DB_CONNECTION_STRING')
+            self.connection = pyodbc.connect(connectionString)
+            self.cursor = self.connection.cursor() #initialize cursor 
+            print('SQL_Thread: Connected to database successfully.')
+        except pyodbc.Error as e:
+            raise Exception('Database connection failed. The application will function, but login will be unavailable')
 
 
     # method for closing database connection
@@ -294,70 +300,100 @@ class SQL_Thread(QThread):
         self.cursor.execute(query, (userId, password))
         result = self.cursor.fetchone()
         return result[0] > 0 if result else False
+    
+
+    # method for deleting a user from Users table
+    @pyqtSlot(int)
+    def ChangePassword(self, userId):
+        resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
+        try:
+            # delete given user from Users table by userId
+            query = '''
+                UPDATE Users SET 
+                isDeleted = 1 
+                WHERE userId = ?
+            '''
+            self.cursor.execute(query, (userId))
+            
+            if self.cursor.rowcount > 0:
+                self.connection.commit() #commit the transaction for the update
+                resultDict['message'] = 'User deleted successfully.'
+                resultDict['state'] = True
+            else:
+                resultDict['message'] = 'Failed deleting user.'
+
+        except Exception as e:
+            self.connection.rollback() #rollback on error
+            resultDict['message'] = f'Error deleting user: {e}.'
+            resultDict['error'] = True
+        finally:
+            # emit delete user signal to main thread
+            self.deleteUserResultSignal.emit(resultDict)
 
 
     # method for getting all alerts that registered for given user in decreasing order
     @pyqtSlot(int)
     def GetAlerts(self, userId):
+        query = '''
+            SELECT interface, attackType, sourceIp, sourceMac, 
+                destinationIp, destinationMac, protocol, osType, timestamp
+            FROM Alerts
+            WHERE userId = ? AND isDeleted = 0
+            ORDER BY CONVERT(datetime, SUBSTRING(timestamp, 10, 9) + ' ' + SUBSTRING(timestamp, 1, 8), 3) DESC
+        '''
+        self.cursor.execute(query, (userId,))
+        alerts = self.cursor.fetchall()
+        alertsList = [] #represents our alerts list
+
+        # check if we received alerts from query
+        if alerts:
+            # iterate over each row and add it as a dictionary to list
+            for row in alerts:
+                alert = {
+                    'interface': row[0],
+                    'attackType': row[1],
+                    'sourceIp': row[2],
+                    'sourceMac': row[3],
+                    'destinationIp': row[4],
+                    'destinationMac': row[5],
+                    'protocol': row[6],
+                    'osType': row[7],
+                    'timestamp': row[8]
+                }
+                alertsList.append(alert)
+
+        # return list of alerts for user
+        return alertsList
+
+
+    # method for adding alert for user in Alerts table
+    @pyqtSlot(int, str, str, str, str, str, str, str, str)
+    def AddAlert(self, userId, interface, attackType, sourceIp, sourceMac, destinationIp, destinationMac, protocol, osType, timestamp):
+        resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
         try:
             query = '''
-                SELECT interface, attackType, sourceIp, sourceMac, 
-                    destinationIp, destinationMac, protocol, osType, timestamp
-                FROM Alerts
-                WHERE userId = ? AND isDeleted = 0
-                ORDER BY CONVERT(datetime, SUBSTRING(timestamp, 10, 9) + ' ' + SUBSTRING(timestamp, 1, 8), 3) DESC
+                INSERT INTO Alerts (userId, interface, attackType, sourceIp, sourceMac, 
+                                    destinationIp, destinationMac, protocol, osType, timestamp)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             '''
-            self.cursor.execute(query, (userId,))
-            alerts = self.cursor.fetchall()
-            alertsList = [] #represents our alerts list
+            self.cursor.execute(query, (userId, interface, attackType, sourceIp, sourceMac, 
+                                        destinationIp, destinationMac, protocol, osType, timestamp))
+            
+            if self.cursor.rowcount > 0:
+                self.connection.commit()
+                resultDict['message'] = 'Added alert successfully.'
+                resultDict['state'] = True
+            else:
+                resultDict['message'] = 'Failed adding alert.'
 
-            # check if we received alerts from query
-            if alerts:
-                # iterate over each row and add it as a dictionary to list
-                for row in alerts:
-                    alert = {
-                        'interface': row[0],
-                        'attackType': row[1],
-                        'sourceIp': row[2],
-                        'sourceMac': row[3],
-                        'destinationIp': row[4],
-                        'destinationMac': row[5],
-                        'protocol': row[6],
-                        'osType': row[7],
-                        'timestamp': row[8]
-                    }
-                    alertsList.append(alert)
-
-            # return list of alerts for user
-            return alertsList
-        
         except Exception as e:
-            # return empty list if exeption occurs
-            return []
+            self.connection.rollback() #rollback on error
+            resultDict['message'] = f'Error adding alert: {e}.'
+            resultDict['error'] = True
+        finally:
+            # emit add alert signal to main thread
+            self.addAlertResultSignal.emit(resultDict)
 
-
-    # method for getting all blacklisted mac addresses for given user
-    @pyqtSlot(int)
-    def GetBlacklistMacs(self, userId):
-        try:
-            query = '''
-                SELECT macAddress 
-                FROM Blacklist 
-                WHERE userId = ? AND isDeleted = 0
-            '''
-            self.cursor.execute(query, (userId,))
-            blacklistResults = self.cursor.fetchall()
-
-            # convert fetched tuples into a list of mac addresses
-            blacklist = [row[0] for row in blacklistResults]
-
-            # return blacklist macs for user
-            return blacklist
-        
-        except Exception as e:
-            # return empty list if exeption occurs
-            return []
-        
 
     # method for deleting all alerts for user in Alerts table
     @pyqtSlot(int)
@@ -388,6 +424,50 @@ class SQL_Thread(QThread):
             self.deleteAlertsResultSignal.emit(resultDict)
     
 
+    # method for getting all blacklisted mac addresses for given user
+    @pyqtSlot(int)
+    def GetBlacklistMacs(self, userId):
+        query = '''
+            SELECT macAddress 
+            FROM Blacklist 
+            WHERE userId = ?
+        '''
+        self.cursor.execute(query, (userId,))
+        blacklistResults = self.cursor.fetchall()
+
+        # convert fetched tuples into a list of mac addresses
+        blacklist = [row[0] for row in blacklistResults]
+
+        # return blacklist macs for user
+        return blacklist
+    
+
+    # Method for adding a MAC address to the blacklist for a given user
+    @pyqtSlot(int, str)
+    def AddBlacklistMac(self, userId, macAddress):
+        resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
+        try:
+            query = '''
+                INSERT INTO Blacklist (userId, macAddress) 
+                VALUES (?, ?)
+            '''
+            self.cursor.execute(query, (userId, macAddress))
+
+            if self.cursor.rowcount > 0:
+                self.connection.commit()
+                resultDict['message'] = 'Blacklist MAC added successfully.'
+                resultDict['state'] = True
+            else:
+                resultDict['message'] = 'Error adding blacklist MAC.'
+        except Exception as e:
+            self.connection.rollback() #rollback on error
+            resultDict['message'] = f'Error adding blacklist MAC: {e}.'
+            resultDict['error'] = True
+        finally:
+            # emit add blacklist mac address signal to main thread
+            self.addBlacklistMacResultSignal.emit(resultDict)
+        
+
     # method for deleting specific mac address for user in Blacklist table
     @pyqtSlot(int, str)
     def DeleteBlacklistMac(self, userId, macAddress):
@@ -395,8 +475,7 @@ class SQL_Thread(QThread):
         try:
             # method for deleting blacklisted mac address for user from Blacklist table
             query = '''
-                UPDATE Blacklist 
-                SET isDeleted = 1 
+                DELETE FROM Blacklist 
                 WHERE userId = ? AND macAddress = ?
             '''
             self.cursor.execute(query, (userId, macAddress))

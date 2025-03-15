@@ -230,9 +230,8 @@ def RemoveItem(self, item):
 
 # function for centering a specific row in the tabels:
 def CenterSpecificTableRowText(tableObject): #tableObject = self.historyTableWidget  or  self.reportPreviewTableWidget
-    lastRow = tableObject.rowCount() - 1
     for col in range(tableObject.columnCount()):
-        if item := tableObject.item(lastRow, col): #check if item exists
+        if item := tableObject.item(0, col): #check if item exists
             item.setTextAlignment(Qt.AlignCenter)
             cellText = item.text()
             tooltipText = cellText if cellText else 'Empty cell'

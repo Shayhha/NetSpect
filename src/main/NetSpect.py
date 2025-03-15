@@ -149,7 +149,6 @@ class NetSpect(QMainWindow):
         self.registerUsernameLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.registerUsernameLineEdit, 'registerUsernameLineEdit'))
         self.registerPasswordLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.registerPasswordLineEdit, 'registerPasswordLineEdit'))
         
-    
 
     # method for setting the text in the error message in login and register popups
     def ChangeLoginRegisterErrorMessage(self, message='', isLogin=True):
@@ -214,7 +213,7 @@ class NetSpect(QMainWindow):
     # method for adding row to history table widget in gui
     def AddRowToHistoryTable(self, srcIp, srcMac, dstIp, dstMac, attackType, timestamp):
         if srcIp and srcMac and dstIp and dstMac and attackType and timestamp:
-            currentRow = self.historyTableWidget.rowCount() #get current row in history table widget
+            currentRow = 0 #add new row in the beginning of table
             # add our items into row for showing detected attack
             self.historyTableWidget.insertRow(currentRow)
             self.historyTableWidget.setItem(currentRow, 0, QTableWidgetItem(srcIp))
@@ -225,6 +224,24 @@ class NetSpect(QMainWindow):
             self.historyTableWidget.setItem(currentRow, 5, QTableWidgetItem(timestamp))
             # center the text of the last row after adding it
             InterfaceAnimations.CenterSpecificTableRowText(self.historyTableWidget)
+    
+
+    # method for adding row to report preview table widget in gui
+    def AddRowToReportTable(self, srcIp, srcMac, dstIp, dstMac, attackType, protocol, timestamp):
+        if srcIp and srcMac and dstIp and dstMac and attackType and protocol and timestamp:
+            currentRow = 0 #add new row in the beginning of table
+            # add our items into row for showing detected attack
+            self.reportPreviewTableWidget.insertRow(currentRow)
+            self.reportPreviewTableWidget.setItem(currentRow, 0, QTableWidgetItem(NetworkInformation.selectedInterface))
+            self.reportPreviewTableWidget.setItem(currentRow, 1, QTableWidgetItem(attackType))
+            self.reportPreviewTableWidget.setItem(currentRow, 2, QTableWidgetItem(srcIp))
+            self.reportPreviewTableWidget.setItem(currentRow, 3, QTableWidgetItem(srcMac))
+            self.reportPreviewTableWidget.setItem(currentRow, 4, QTableWidgetItem(dstIp))
+            self.reportPreviewTableWidget.setItem(currentRow, 5, QTableWidgetItem(dstMac))
+            self.reportPreviewTableWidget.setItem(currentRow, 6, QTableWidgetItem(protocol))
+            self.reportPreviewTableWidget.setItem(currentRow, 7, QTableWidgetItem(timestamp))
+            # center the text of the last row after adding it
+            InterfaceAnimations.CenterSpecificTableRowText(self.reportPreviewTableWidget)
         
 
     # method for updating running time label in gui

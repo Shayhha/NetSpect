@@ -273,6 +273,13 @@ def DisableSelectionIpListWidget(self):
         item = self.ipAddressesListWidget.item(row)
         item.setFlags(item.flags() & ~Qt.ItemIsSelectable & ~Qt.ItemIsEnabled)
 
+
+# helper function for setting the text of an error message like login/register/change email/ etc.
+def ChangeErrorMessageText(errorMessageObject, message):
+    errorMessagePrefix = '<p style="line-height: 0.7;">'
+    errorMessageSuffix = '</p>'
+    errorMessageObject.setText(errorMessagePrefix + message + errorMessageSuffix)
+
 #-------------------------------------------OTHER-FUNCTIONS-END----------------------------------------------#
 
 #----------------------------------------------POPUP-WINDOW--------------------------------------------------#
@@ -439,7 +446,7 @@ def InitPieChart(self):
     chart.addSeries(series)
 
     # create font for title
-    titleFont = QFont('Cairo', 20, QFont.Bold, False) 
+    titleFont = QFont('Cairo', 16, QFont.Bold, False) 
 
     # create a legend widget
     legendWidget = QWidget()
@@ -631,5 +638,11 @@ def InitAnimationsUI(self):
 
     # set the main window icon
     self.setWindowIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'NetSpectIconTransparent.png')))
+
+    # hide the error messages in the settings page
+    self.saveEmailErrorMessageLabel.hide()
+    self.saveUsernameErrorMessageLabel.hide()
+    self.savePasswordErrorMessageLabel.hide()
+    self.macAddressBlacklistErrorMessageLabel.hide()
 
 #--------------------------------------------MAIN-FUNCTION-END-----------------------------------------------#

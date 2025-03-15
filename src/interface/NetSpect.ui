@@ -1243,13 +1243,13 @@ QToolTip {
                               <widget class="QLabel" name="networkInterfaceLabel">
                                <property name="minimumSize">
                                 <size>
-                                 <width>170</width>
+                                 <width>160</width>
                                  <height>30</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>170</width>
+                                 <width>160</width>
                                  <height>30</height>
                                 </size>
                                </property>
@@ -1307,7 +1307,7 @@ QToolTip {
     color: black;
     border: 2px transparent; 
     border-radius: 10px;
-    padding-left: 10px;
+    padding-left: 5px;
     height: 29px;
 }</string>
                                </property>
@@ -5174,7 +5174,7 @@ color: #f3f3f3;
                         <number>40</number>
                        </property>
                        <property name="bottomMargin">
-                        <number>40</number>
+                        <number>20</number>
                        </property>
                        <item>
                         <widget class="QFrame" name="settingsChangeInsideVerticalFrame">
@@ -5239,7 +5239,7 @@ color: #f3f3f3
     padding: 5px;              
     font-size: 14px;            
     color: black;             
-	margin-bottom: 10px;
+	/*margin-bottom: 10px;*/
 }</string>
                             </property>
                             <property name="text">
@@ -5247,6 +5247,75 @@ color: #f3f3f3
                             </property>
                             <property name="placeholderText">
                              <string>New Email</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QLabel" name="saveEmailErrorMessageLabel">
+                            <property name="sizePolicy">
+                             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                              <horstretch>0</horstretch>
+                              <verstretch>0</verstretch>
+                             </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                             <size>
+                              <width>252</width>
+                              <height>20</height>
+                             </size>
+                            </property>
+                            <property name="maximumSize">
+                             <size>
+                              <width>500</width>
+                              <height>60</height>
+                             </size>
+                            </property>
+                            <property name="font">
+                             <font>
+                              <family>Cairo</family>
+                              <pointsize>10</pointsize>
+                              <weight>75</weight>
+                              <bold>true</bold>
+                              <strikeout>false</strikeout>
+                              <kerning>true</kerning>
+                             </font>
+                            </property>
+                            <property name="styleSheet">
+                             <string notr="true">#saveEmailErrorMessageLabel {
+	color: #D84F4F;
+	background-color: #3C3D4A;
+	border: none;
+}</string>
+                            </property>
+                            <property name="lineWidth">
+                             <number>1</number>
+                            </property>
+                            <property name="midLineWidth">
+                             <number>0</number>
+                            </property>
+                            <property name="text">
+                             <string>&lt;p style='line-height: 0.7;'&gt;Show error message here&lt;/p&gt;</string>
+                            </property>
+                            <property name="textFormat">
+                             <enum>Qt::RichText</enum>
+                            </property>
+                            <property name="scaledContents">
+                             <bool>true</bool>
+                            </property>
+                            <property name="alignment">
+                             <set>Qt::AlignCenter</set>
+                            </property>
+                            <property name="wordWrap">
+                             <bool>true</bool>
+                            </property>
+                            <property name="margin">
+                             <number>0</number>
+                            </property>
+                            <property name="indent">
+                             <number>-1</number>
+                            </property>
+                            <property name="textInteractionFlags">
+                             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
                             </property>
                            </widget>
                           </item>
@@ -5259,8 +5328,17 @@ color: #f3f3f3
                              </size>
                             </property>
                             <layout class="QHBoxLayout" name="emailButonHorizontalLayout">
+                             <property name="topMargin">
+                              <number>9</number>
+                             </property>
                              <item>
                               <widget class="QPushButton" name="emailPushButton">
+                               <property name="minimumSize">
+                                <size>
+                                 <width>0</width>
+                                 <height>31</height>
+                                </size>
+                               </property>
                                <property name="maximumSize">
                                 <size>
                                  <width>145</width>
@@ -5361,7 +5439,7 @@ color: #f3f3f3
     padding: 5px;              
     font-size: 14px;            
     color: black;             
-	margin-bottom: 10px;
+	/*margin-bottom: 10px;*/
 }</string>
                             </property>
                             <property name="text">
@@ -5369,6 +5447,54 @@ color: #f3f3f3
                             </property>
                             <property name="placeholderText">
                              <string>New Username</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QLabel" name="saveUsernameErrorMessageLabel">
+                            <property name="sizePolicy">
+                             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                              <horstretch>0</horstretch>
+                              <verstretch>0</verstretch>
+                             </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                             <size>
+                              <width>252</width>
+                              <height>20</height>
+                             </size>
+                            </property>
+                            <property name="maximumSize">
+                             <size>
+                              <width>500</width>
+                              <height>50</height>
+                             </size>
+                            </property>
+                            <property name="font">
+                             <font>
+                              <family>Cairo</family>
+                              <pointsize>10</pointsize>
+                              <weight>75</weight>
+                              <bold>true</bold>
+                             </font>
+                            </property>
+                            <property name="styleSheet">
+                             <string notr="true">#saveUsernameErrorMessageLabel {
+	color: #D84F4F;
+	background-color: #3C3D4A;
+}</string>
+                            </property>
+                            <property name="text">
+                             <string>&lt;p style='line-height: 0.7;'&gt;Show error message here&lt;/p&gt;</string>
+                            </property>
+                            <property name="alignment">
+                             <set>Qt::AlignCenter</set>
+                            </property>
+                            <property name="wordWrap">
+                             <bool>true</bool>
+                            </property>
+                            <property name="textInteractionFlags">
+                             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
                             </property>
                            </widget>
                           </item>
@@ -5383,6 +5509,12 @@ color: #f3f3f3
                             <layout class="QHBoxLayout" name="usernameButtonHorizontalLayout">
                              <item>
                               <widget class="QPushButton" name="usernamePushButton">
+                               <property name="minimumSize">
+                                <size>
+                                 <width>0</width>
+                                 <height>31</height>
+                                </size>
+                               </property>
                                <property name="maximumSize">
                                 <size>
                                  <width>145</width>
@@ -5542,7 +5674,7 @@ color: #f3f3f3
     padding: 5px;              
     font-size: 14px;            
     color: black;             
-	margin-bottom: 10px;
+	/*margin-bottom: 10px;*/
 }</string>
                             </property>
                             <property name="text">
@@ -5550,6 +5682,55 @@ color: #f3f3f3
                             </property>
                             <property name="placeholderText">
                              <string>Confirm Password</string>
+                            </property>
+                           </widget>
+                          </item>
+                          <item>
+                           <widget class="QLabel" name="savePasswordErrorMessageLabel">
+                            <property name="sizePolicy">
+                             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                              <horstretch>0</horstretch>
+                              <verstretch>0</verstretch>
+                             </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                             <size>
+                              <width>252</width>
+                              <height>20</height>
+                             </size>
+                            </property>
+                            <property name="maximumSize">
+                             <size>
+                              <width>500</width>
+                              <height>50</height>
+                             </size>
+                            </property>
+                            <property name="font">
+                             <font>
+                              <family>Cairo</family>
+                              <pointsize>10</pointsize>
+                              <weight>75</weight>
+                              <bold>true</bold>
+                             </font>
+                            </property>
+                            <property name="styleSheet">
+                             <string notr="true">#savePasswordErrorMessageLabel {
+	color: #D84F4F;
+	background-color: #3C3D4A;
+	line-height: 50%;
+}</string>
+                            </property>
+                            <property name="text">
+                             <string>&lt;p style='line-height: 0.7;'&gt;Show error message here&lt;/p&gt;</string>
+                            </property>
+                            <property name="alignment">
+                             <set>Qt::AlignCenter</set>
+                            </property>
+                            <property name="wordWrap">
+                             <bool>true</bool>
+                            </property>
+                            <property name="textInteractionFlags">
+                             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
                             </property>
                            </widget>
                           </item>
@@ -5564,6 +5745,12 @@ color: #f3f3f3
                             <layout class="QHBoxLayout" name="passwordButtonHorizontalLayout">
                              <item>
                               <widget class="QPushButton" name="passwordPushButton">
+                               <property name="minimumSize">
+                                <size>
+                                 <width>0</width>
+                                 <height>31</height>
+                                </size>
+                               </property>
                                <property name="maximumSize">
                                 <size>
                                  <width>145</width>
@@ -6121,6 +6308,54 @@ color: #f3f3f3
                                </layout>
                               </widget>
                              </item>
+                             <item>
+                              <widget class="QLabel" name="macAddressBlacklistErrorMessageLabel">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="minimumSize">
+                                <size>
+                                 <width>252</width>
+                                 <height>20</height>
+                                </size>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>375</width>
+                                 <height>100</height>
+                                </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <family>Cairo</family>
+                                 <pointsize>10</pointsize>
+                                 <weight>75</weight>
+                                 <bold>true</bold>
+                                </font>
+                               </property>
+                               <property name="styleSheet">
+                                <string notr="true">#macAddressBlacklistErrorMessageLabel {
+	color: #D84F4F;
+	background-color: #3C3D4A;
+}</string>
+                               </property>
+                               <property name="text">
+                                <string>&lt;p style='line-height: 0.7;'&gt;Show error message here&lt;/p&gt;</string>
+                               </property>
+                               <property name="alignment">
+                                <set>Qt::AlignCenter</set>
+                               </property>
+                               <property name="wordWrap">
+                                <bool>true</bool>
+                               </property>
+                               <property name="textInteractionFlags">
+                                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                               </property>
+                              </widget>
+                             </item>
                             </layout>
                            </widget>
                           </item>
@@ -6560,7 +6795,7 @@ color: #f3f3f3
                   <property name="maximumSize">
                    <size>
                     <width>16777215</width>
-                    <height>20</height>
+                    <height>50</height>
                    </size>
                   </property>
                   <property name="font">
@@ -6578,7 +6813,7 @@ color: #f3f3f3
 }</string>
                   </property>
                   <property name="text">
-                   <string>Username or password is incorrect!</string>
+                   <string>&lt;p style='line-height: 0.7;'&gt;Username or password is incorrect!&lt;/p&gt;</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -6593,7 +6828,7 @@ color: #f3f3f3
                   <property name="maximumSize">
                    <size>
                     <width>500</width>
-                    <height>60</height>
+                    <height>70</height>
                    </size>
                   </property>
                   <property name="styleSheet">
@@ -6609,13 +6844,13 @@ color: #f3f3f3
                     <number>0</number>
                    </property>
                    <property name="topMargin">
-                    <number>0</number>
+                    <number>15</number>
                    </property>
                    <property name="rightMargin">
                     <number>0</number>
                    </property>
                    <property name="bottomMargin">
-                    <number>0</number>
+                    <number>15</number>
                    </property>
                    <item>
                     <widget class="QPushButton" name="loginPushButton">
@@ -6727,7 +6962,7 @@ color: #f3f3f3
             <property name="maximumSize">
              <size>
               <width>300</width>
-              <height>575</height>
+              <height>730</height>
              </size>
             </property>
             <property name="styleSheet">
@@ -6832,10 +7067,16 @@ color: #f3f3f3
                 </item>
                 <item>
                  <widget class="QLineEdit" name="registerEmailLineEdit">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="minimumSize">
                    <size>
                     <width>250</width>
-                    <height>0</height>
+                    <height>44</height>
                    </size>
                   </property>
                   <property name="maximumSize">
@@ -6847,7 +7088,7 @@ color: #f3f3f3
                   <property name="sizeIncrement">
                    <size>
                     <width>0</width>
-                    <height>44</height>
+                    <height>0</height>
                    </size>
                   </property>
                   <property name="toolTip">
@@ -6880,10 +7121,16 @@ QToolTip {
                 </item>
                 <item>
                  <widget class="QLineEdit" name="registerUsernameLineEdit">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="minimumSize">
                    <size>
                     <width>250</width>
-                    <height>0</height>
+                    <height>44</height>
                    </size>
                   </property>
                   <property name="maximumSize">
@@ -6895,7 +7142,7 @@ QToolTip {
                   <property name="sizeIncrement">
                    <size>
                     <width>0</width>
-                    <height>44</height>
+                    <height>0</height>
                    </size>
                   </property>
                   <property name="toolTip">
@@ -6922,10 +7169,16 @@ QToolTip {
                 </item>
                 <item>
                  <widget class="QLineEdit" name="registerPasswordLineEdit">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="minimumSize">
                    <size>
                     <width>250</width>
-                    <height>0</height>
+                    <height>34</height>
                    </size>
                   </property>
                   <property name="maximumSize">
@@ -6937,7 +7190,7 @@ QToolTip {
                   <property name="sizeIncrement">
                    <size>
                     <width>0</width>
-                    <height>34</height>
+                    <height>0</height>
                    </size>
                   </property>
                   <property name="toolTip">
@@ -7005,7 +7258,7 @@ QToolTip {
 }</string>
                   </property>
                   <property name="text">
-                   <string>Username must to have atleast one capital letter and atleast on digit</string>
+                   <string>&lt;p style='line-height: 0.7;'&gt;Username must to have atleast one capital letter and atleast on digit&lt;/p&gt;</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -7084,6 +7337,12 @@ QToolTip {
                 </item>
                 <item>
                  <widget class="QLabel" name="moveToLoginLabel">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="minimumSize">
                    <size>
                     <width>250</width>

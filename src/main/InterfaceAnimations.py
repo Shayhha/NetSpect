@@ -625,9 +625,9 @@ def InitAnimationsUI(self):
     openEyePath = currentDir.parent / 'interface' / 'Icons' / 'EyeOpen.png'
     icon = QIcon(str(openEyePath))
     self.loginEyeButton = self.loginPasswordLineEdit.addAction(icon, QLineEdit.TrailingPosition)
-    self.loginEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self))
+    self.loginEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self.loginPasswordLineEdit, self.loginEyeButton))
     self.registerEyeButton = self.registerPasswordLineEdit.addAction(icon, QLineEdit.TrailingPosition)
-    self.registerEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self))
+    self.registerEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self.registerPasswordLineEdit, self.registerEyeButton))
 
     # set the main window icon
     self.setWindowIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'NetSpectIconTransparent.png')))

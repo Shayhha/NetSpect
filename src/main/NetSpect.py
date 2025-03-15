@@ -1,4 +1,3 @@
-import sys, pyodbc
 import InterfaceAnimations
 from PyQt5.QtCore import QTimer, QRegExp, QThread, QMutex, QMutexLocker, QWaitCondition, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QRegExpValidator
@@ -6,6 +5,7 @@ from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMainWindow, QTableWid
 from PyQt5.uic import loadUi
 from hashlib import sha256
 from MainFunctions import *
+from SQLHelper import *
 
 #--------------------------------------------------------NetSpect-CLASS---------------------------------------------------------#
 # class that represents main app of NetSpect
@@ -25,6 +25,7 @@ class NetSpect(QMainWindow):
     snifferThread, arpThread, portScanDosThread, dnsThread = None, None, None, None #represents our worker threads for sniffing and detecting network cyber attacks
     arpMutex, portScanDosMutex, dnsMutex = QMutex(), QMutex(), QMutex() #represents mutex objects for thread safe operations on our dictionaries
     arpAttackDict, portScanDosAttackDict, dnsAttackDict = {'ipToMac': {}, 'macToIp': {}}, {}, {} #represents attack dictionaries for each attack we previously detected
+    sqlThread, sqlMutex = None, QMutex() #represents sql thread and sql mutex for database oeprations
 
     # constructor of main gui application
     def __init__(self):
@@ -70,7 +71,7 @@ class NetSpect(QMainWindow):
         self.InitValidators() #initialize the network information in the info page (interface name, mac address, ips, etc.)
         self.ChangeLoginRegisterErrorMessage() #reset the login popup error message
         self.ChangeLoginRegisterErrorMessage(isLogin=False) #reset the register popup error message
-        # self.initDBConnection() #call init db method
+        self.InitSQLThread() #call init method for sql thread
         self.center() #make the app open in center of screen
         self.show() #show the application
 
@@ -85,27 +86,47 @@ class NetSpect(QMainWindow):
 
     # method for closing the program and managing threads
     def closeEvent(self, event):
-        # we check if detection is active, of so we close threads
+        # we check if detection is active, if so we close threads
         if self.isDetection:
-            self.StopDetection() #set stop flag for all our threads
+            self.StopDetection() #stop detection and stop running threads
 
-            # wait for each of our threads to finish its work
-            for thread in [self.snifferThread, self.arpThread, self.portScanDosThread, self.dnsThread]:
-                if thread and thread.isRunning(): #check if the thread exists and is still running
-                    thread.wait() #wait until the thread finishes execution
-                    
+        # we check if sql thread is active, if so we close it
+        if self.sqlThread:
+            self.sqlThread.StopThread() #stop sql thread and close connection
+
+        # wait for each of our threads to finish its work
+        for thread in [self.snifferThread, self.arpThread, self.portScanDosThread, self.dnsThread, self.sqlThread]:
+            if thread and thread.isRunning(): #check if the thread exists and is still running
+                thread.wait() #wait until the thread finishes execution
+        
         event.accept() #accept the close event
 
 
-    # method for initializing database connection
-    # def initDBConnection(self):
-    #     self.dbConn = SQLHelper.GetDBConnection()
-    #     if not self.dbConn:
-    #         self.UpdateInfoLabel('Couldn\'t connect to database, try again later.')
-    #         return False
-    #     return True
-
+    # function for hashing given password with sha-256, retuns hex representation
+    @staticmethod
+    def ToSHA256(message):
+        sha256Obj = sha256() #create a sha-256 object
+        sha256Obj.update(message.encode()) #update message with its sha-256 hash
+        return sha256Obj.hexdigest() #return hash as hexadecimal
     
+
+    # method for initializing sql thread for database operations
+    def InitSQLThread(self):
+        # intialize sql thread for database operations
+        self.sqlThread = SQL_Thread(self)
+        # connect relevant signals for sql thread
+        # self.sqlThread.loginResultSignal.connect()
+        # self.sqlThread.registrationResultSignal.connect()
+        # self.sqlThread.changeEmailResultSignal.connect()
+        # self.sqlThread.changeUsernameResultSignal.connect()
+        # self.sqlThread.changePasswordResultSignal.connect()
+        # self.sqlThread.deleteAlertsResultSignal.connect()
+        # self.sqlThread.deleteBlacklistMacResultSignal.connect()
+        self.sqlThread.finishSignal.connect(self.CloseSQLThread)
+        # start sql thread
+        self.sqlThread.start()
+    
+
     # method for setting input validators on line edits in gui
     def InitValidators(self):
         # create regex expressions and validators
@@ -128,13 +149,6 @@ class NetSpect(QMainWindow):
         self.registerUsernameLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.registerUsernameLineEdit, 'registerUsernameLineEdit'))
         self.registerPasswordLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.registerPasswordLineEdit, 'registerPasswordLineEdit'))
         
-
-    # function for hashing given password with sha-256, retuns hex representation
-    @staticmethod
-    def ToSHA256(message):
-        sha256Obj = sha256() #create a sha-256 object
-        sha256Obj.update(message.encode()) #update message with its sha-256 hash
-        return sha256Obj.hexdigest() #return hash as hexadecimal
     
 
     # method for setting the text in the error message in login and register popups
@@ -209,7 +223,8 @@ class NetSpect(QMainWindow):
             self.historyTableWidget.setItem(currentRow, 3, QTableWidgetItem(dstMac))
             self.historyTableWidget.setItem(currentRow, 4, QTableWidgetItem(attackType))
             self.historyTableWidget.setItem(currentRow, 5, QTableWidgetItem(timestamp))
-            InterfaceAnimations.CenterSpecificTableRowText(self.historyTableWidget) #center the text of the last row after adding it
+            # center the text of the last row after adding it
+            InterfaceAnimations.CenterSpecificTableRowText(self.historyTableWidget)
         
 
     # method for updating running time label in gui
@@ -404,6 +419,15 @@ class NetSpect(QMainWindow):
                 self.dnsCounter -= totalPackets #update dns counter
                 self.dnsThread.ReceiveDnsBatch(dnsBatch) #send batch to dns thread
                 print('Sent dns dict for analysis..')
+
+
+    # method for closing SQL thread and setting it back to none
+    @pyqtSlot(dict)
+    def CloseSQLThread(self, stateDict):
+        self.sqlThread = None #set thread to none
+        # in case of an error we show error message
+        if stateDict.get('state') == False and stateDict.get('message'):
+            InterfaceAnimations.ShowPopup('Error Occurred', stateDict.get('message') , 'Critical')
 
 
     # method for closing sniffer thread and setting it back to none
@@ -624,13 +648,13 @@ class NetSpect(QMainWindow):
         if self.isDetection:
             # we check each thread and close it if running
             if self.snifferThread:
-                self.snifferThread.SetStopFlag(True)
+                self.snifferThread.StopThread()
             if self.arpThread:
-                self.arpThread.SetStopFlag(True)
+                self.arpThread.StopThread()
             if self.portScanDosThread:
-                self.portScanDosThread.SetStopFlag(True)
+                self.portScanDosThread.StopThread()
             if self.dnsThread:
-                self.dnsThread.SetStopFlag(True)
+                self.dnsThread.StopThread()
             print(f'updtcp: {self.tcpUdpCounter}, arp: {self.arpCounter}, dns: {self.dnsCounter}')
             self.arpCounter, self.tcpUdpCounter, self.dnsCounter = 0, 0, 0 #reset our counters
             self.arpList, self.portScanDosDict, self.dnsDict = [], {}, {} #reset our packet data structures
@@ -733,10 +757,10 @@ class Sniffing_Thread(QThread):
         self.stopFlag = False #represents stop flag for indicating when to stop the sniffer
     
 
-    # method for updating state of stop flag
-    @pyqtSlot(bool)
-    def SetStopFlag(self, state):
-        self.stopFlag = state #set stop flag
+    # method for stopping sniffer thread
+    @pyqtSlot()
+    def StopThread(self):
+        self.stopFlag = True #set stop flag
         # we check if sniffer is still running, if so we stop it
         if self.sniffer and self.sniffer.running:
             self.sniffer.stop() #stop async sniffer
@@ -843,10 +867,10 @@ class Arp_Thread(QThread):
             self.waitCondition.wakeAll() #wake thread and process arp batch
 
 
-    # method for updating state of stop flag
-    @pyqtSlot(bool)
-    def SetStopFlag(self, state):
-        self.stopFlag = state #set stop flag
+    # method for stopping arp thread
+    @pyqtSlot()
+    def StopThread(self):
+        self.stopFlag = True #set stop flag
         with QMutexLocker(self.mutex):
             self.waitCondition.wakeAll() #wake thread and finish work
 
@@ -863,7 +887,7 @@ class Arp_Thread(QThread):
             while not self.stopFlag:
                 # wait until the batch is received
                 self.mutex.lock()
-                while self.arpBatch is None and not self.stopFlag:
+                while not self.arpBatch and not self.stopFlag:
                     self.waitCondition.wait(self.mutex) #wait until we receive the arp batch using wait condition
                 if self.stopFlag: #if true we exit and finish threads work
                     self.mutex.unlock()
@@ -913,10 +937,10 @@ class PortScanDos_Thread(QThread):
             self.waitCondition.wakeAll() #wake thread and process portScanDos batch
 
 
-    # method for updating state of stop flag
-    @pyqtSlot(bool)
-    def SetStopFlag(self, state):
-        self.stopFlag = state #set stop flag
+    # method for stopping portScanDos thread
+    @pyqtSlot()
+    def StopThread(self):
+        self.stopFlag = True #set stop flag
         with QMutexLocker(self.mutex):
             self.waitCondition.wakeAll() #wake thread and finish work
 
@@ -928,7 +952,7 @@ class PortScanDos_Thread(QThread):
             while not self.stopFlag:
                 # wait until the batch is received
                 self.mutex.lock()
-                while self.portScanDosBatch is None and not self.stopFlag:
+                while not self.portScanDosBatch and not self.stopFlag:
                     self.waitCondition.wait(self.mutex) #wait until we receive the portScanDos batch using wait condition
                 if self.stopFlag: #if true we exit and finish threads work
                     self.mutex.unlock()
@@ -979,10 +1003,10 @@ class Dns_Thread(QThread):
             self.waitCondition.wakeAll() #wake thread and process dns batch
 
 
-    # method for updating state of stop flag
-    @pyqtSlot(bool)
-    def SetStopFlag(self, state):
-        self.stopFlag = state #set stop flag
+    # method for stopping dns thread
+    @pyqtSlot()
+    def StopThread(self):
+        self.stopFlag = True #set stop flag
         with QMutexLocker(self.mutex):
             self.waitCondition.wakeAll() #wake thread and finish work
 
@@ -994,7 +1018,7 @@ class Dns_Thread(QThread):
             while not self.stopFlag:
                 # wait until the batch is received
                 self.mutex.lock()
-                while self.dnsBatch is None and not self.stopFlag:
+                while not self.dnsBatch and not self.stopFlag:
                     self.waitCondition.wait(self.mutex) #wait until we receive the dns batch using wait condition
                 if self.stopFlag: #if true we exit and finish threads work
                     self.mutex.unlock()

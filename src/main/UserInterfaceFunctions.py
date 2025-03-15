@@ -139,8 +139,11 @@ def ToggleUserInterface(self, state, username=''):
         self.reportDurationComboBox.setCurrentIndex(0)
         self.welcomeLabel.show()
         self.logoutIcon.show()
+        ShowSettingsInputFields(self)
+
     # else we hide user labels
     else:
+        HideSettingsInputFields(self)
         self.logoutIcon.hide()
         self.welcomeLabel.hide()
         self.reportDurationComboBox.setCurrentIndex(3)
@@ -191,22 +194,6 @@ def TogglePasswordVisibility(lineEditWidget, eyeIcon):
     else:
         lineEditWidget.setEchoMode(QLineEdit.Password) #hide the password
         eyeIcon.setIcon(QIcon(str(openEyePath))) #change to closed eye icon
-
-
-# hide the change email, username, password and color mode from settings page 
-def HideSettingsInputFields(self):
-    self.settingsChangeVerticalFrame.hide()
-    self.interfaceSettingsHorizontalFrame.hide()
-    self.deleteAccoutPushButton.hide()
-    self.settingsInterfaceMacButtonsVerticalFrame.setContentsMargins(40, 0, 0, 0) 
-
-
-# show the change email, username, password and color mode from settings page 
-def ShowSettingsInputFields(self):
-    self.settingsChangeVerticalFrame.show()
-    self.interfaceSettingsHorizontalFrame.show()
-    self.deleteAccoutPushButton.show()
-    self.settingsInterfaceMacButtonsVerticalFrame.setContentsMargins(0, 10, 0, 0) #returning the default values
 
 
 #-------------------------------------------CLICK-FUNCTIONS-END----------------------------------------------#
@@ -318,6 +305,22 @@ def ChangeErrorMessageText(errorMessageObject, message):
 def ClearErrorMessageText(errorMessageObject):
     errorMessageObject.setText('')
     errorMessageObject.hide()
+
+
+# hide the change email, username, password and color mode from settings page 
+def HideSettingsInputFields(self):
+    self.settingsChangeVerticalFrame.hide()
+    self.interfaceSettingsHorizontalFrame.hide()
+    self.deleteAccoutPushButton.hide()
+    self.settingsInterfaceMacButtonsVerticalFrame.setContentsMargins(40, 0, 0, 0) 
+
+
+# show the change email, username, password and color mode from settings page 
+def ShowSettingsInputFields(self):
+    self.settingsChangeVerticalFrame.show()
+    self.interfaceSettingsHorizontalFrame.show()
+    self.deleteAccoutPushButton.show()
+    self.settingsInterfaceMacButtonsVerticalFrame.setContentsMargins(0, 10, 0, 0) #returning the default values
 
 #-------------------------------------------OTHER-FUNCTIONS-END----------------------------------------------#
 

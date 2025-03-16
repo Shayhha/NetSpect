@@ -284,14 +284,14 @@ class NetworkInformation(ABC):
             # we add only interfaces we support with scapy and that are up
             if iface.ips and any(iface.name.startswith(name) for name in NetworkInformation.supportedInterfaces):
                 # initialize our ipv4 and ipv6 addresses (always dict of two elements: 4: ipv4Addrs, 6: ipv6Addrs)
-                ipv4Addrs, ipv6Addrs, ipv4Subnets, ipv6Subnets = iface.ips[4], iface.ips[6], [], set()
+                ipv4Addrs, ipv6Addrs, ipv4Subnets, ipv6Subnets = iface.ips[4], iface.ips[6], set(), set()
 
                 # initialize ipv4 subnets based on ipv4 ips we found
                 for ipAddress in ipv4Addrs:
                     netmask = NetworkInformation.GetNetmaskFromIp(ipAddress) #get netmask with our function
                     if ipAddress and netmask:
-                        subnet = IPv4Interface(f'{ipAddress}/{netmask}').network
-                        ipv4Subnets.append((str(subnet), f'{'.'.join(ipAddress.split('.')[:3])}.0/24', netmask)) #list of tuples such that (subnet (real), range(/24), netmask)
+                        subnet = IPv4Interface(f'{ipAddress}/{netmask}').network #create ipv4 subnet object
+                        ipv4Subnets.add((str(subnet), f'{'.'.join(ipAddress.split('.')[:3])}.0/24', netmask)) #set of tuples such that (subnet (real), range(/24), netmask)
 
                 # initialize ipv6 subnets based on ipv6 ips we found, excluding loopback
                 for ipAddress in ipv6Addrs:
@@ -303,16 +303,16 @@ class NetworkInformation(ABC):
 
                 # initialize interface dict with all given information
                 interfaceDict = {
-                    'name': iface.name if iface.name else '',
-                    'description': iface.description if iface.description else '',
+                    'name': iface.name if iface.name else 'None',
+                    'description': iface.description if iface.description else 'None',
                     'status': ifaceStats.get(iface.name).isup if ifaceStats.get(iface.name) else 'None',
                     'maxSpeed': ifaceStats.get(iface.name).speed if ifaceStats.get(iface.name) else 'None',
                     'maxTransmitionUnit': ifaceStats.get(iface.name).mtu if ifaceStats.get(iface.name) else 'None',
-                    'mac': iface.mac if iface.mac else '',
+                    'mac': iface.mac if iface.mac else 'None',
                     'ipv4Addrs': ipv4Addrs,
                     'ipv4Subnets': ipv4Subnets,
                     'ipv6Addrs': ipv6Addrs,
-                    'ipv6Subnets': list(ipv6Subnets)
+                    'ipv6Subnets': ipv6Subnets
                 }
                 networkInterfaces[interfaceDict['name']] = interfaceDict #add interface to our network interfaces
         

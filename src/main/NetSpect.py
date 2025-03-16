@@ -10,7 +10,7 @@ from SQLHelper import *
 #--------------------------------------------------------NetSpect-CLASS---------------------------------------------------------#
 # class that represents main app of NetSpect
 class NetSpect(QMainWindow):
-    userData = {} #represents dict with user's data including userId - {userId : int, email: str, userName: str, numberOfDetectedAttacks: str, lightMode: int, alertList: [], blackList: []}
+    userData = {'userId': None, 'email': None, 'userName': None, 'numberOfDetectedAttacks': 0, 'lightMode': 0, 'alertList': [], 'blackList': []} #represents user data in interface
     isDetection = False #represents flag for indicating if detection is active
     totalTimer, arpTimer, portScanDosTimer, dnsTimer = None, None, None, None #represents timer for each thread for evaluating when to send data
     totalTimeout, arpTimeout, portScanDosTimout, dnsTimout = 1000, 40000, 40000, 40000 #represents timeout for each timer
@@ -296,7 +296,8 @@ class NetSpect(QMainWindow):
 
             # means we set user interface for logged out user
             else:
-                self.userData = {} #reset our user data dictionary
+                self.userData = {'userId': None, 'email': None, 'userName': None, 'numberOfDetectedAttacks': 0,
+                                  'lightMode': 0, 'alertList': [], 'blackList': []} #reset our user data dictionary
                 UserInterfaceFunctions.ToggleUserInterface(self, False) #reset our user interface
 
 

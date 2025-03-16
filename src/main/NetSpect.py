@@ -287,6 +287,8 @@ class NetSpect(QMainWindow):
                 UserInterfaceFunctions.AccountIconClicked(self) #close login popup
                 UserInterfaceFunctions.ToggleUserInterface(self, True, self.userData.get('userName')) #toggle user interface
                 self.detectedAttacksCounter.setText(str(self.userData.get('numberOfDetectedAttacks'))) #set num of detected attacks counter
+                self.emailLineEdit.setText(self.userData.get('email')) #set email of user in settings page
+                self.usernameLineEdit.setText(self.userData.get('userName')) #set username of user in settings page
                 self.InitHistoryTable(self.userData.get('alertList')) #initialize our history table
                 self.InitReportTable(self.userData.get('alertList')) #initialize our report table
                 self.InitMacAddresses(self.userData.get('blackList')) #intialize our mac address black list

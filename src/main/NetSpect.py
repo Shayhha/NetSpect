@@ -47,6 +47,7 @@ class NetSpect(QMainWindow):
         # connect interface buttons to their methods
         self.startStopButton.clicked.connect(self.StartStopButtonClicked)
         self.loginPushButton.clicked.connect(self.LoginButtonClicked)
+        self.registerPushButton.clicked.connect(self.RegisterButtonClicked)
         self.addMacAddressPushButton.clicked.connect(self.AddMacAddressButtonClicked)
         self.emailPushButton.clicked.connect(self.SaveEmailButtonClicked)
         self.usernamePushButton.clicked.connect(self.SaveUsernameButtonClicked)
@@ -121,10 +122,11 @@ class NetSpect(QMainWindow):
         self.sqlThread = SQL_Thread(self)
         # connect relevant signals for sql thread
         self.sqlThread.loginResultSignal.connect(self.LoginResult) # shay
-        # self.sqlThread.registrationResultSignal.connect() # shay
+        self.sqlThread.registrationResultSignal.connect(self.RegisterResult) # shay
         self.sqlThread.changeEmailResultSignal.connect(self.SaveEmailResult) # max
         self.sqlThread.changeUsernameResultSignal.connect(self.SaveUsernameResult) # max
         self.sqlThread.changePasswordResultSignal.connect(self.SavePasswordResult) # max
+        # self.sqlThread.deleteUserResultSignal.connect()
         # self.sqlThread.deleteUserResultSignal.connect() # shay
         # self.sqlThread.addAlertResultSignal.connect() # shay
         # self.sqlThread.deleteAlertsResultSignal.connect() # shay
@@ -220,15 +222,16 @@ class NetSpect(QMainWindow):
             lineEditWidget.setStyleSheet(defaultStylesheet.replace('border: 2px solid lightgray;', 'border: 2px solid #D84F4F;'))
 
 
-    # helper function that validates that a given password matches the password validator regex
-    def ValidatePassword(self, password, errorLabelObject, errorMessage):
+    # method that validates that a given password matches the password validator regex
+    def ValidatePassword(self, password, errorLabelObject=None, errorMessage=None):
         simpleValidatorState, _, _ = self.passwordValidator.validate(password, 0)
         complexValidatorState, _, _ = self.finalPasswordValidator.validate(password, 0)
         if (simpleValidatorState != self.passwordValidator.Acceptable) or (complexValidatorState != self.finalPasswordValidator.Acceptable):
-            UserInterfaceFunctions.ChangeErrorMessageText(errorLabelObject, errorMessage)
+            if errorLabelObject and errorMessage:
+                UserInterfaceFunctions.ChangeErrorMessageText(errorLabelObject, errorMessage)
             return False
         return True
-            
+
 
     # method that sets the text in the info page with the system information of the users machine
     def InitSystemInfo(self, systemDict):
@@ -325,7 +328,8 @@ class NetSpect(QMainWindow):
             if state and userData:
                 self.userData = userData #save user data dictionary for logged in user
                 UserInterfaceFunctions.AccountIconClicked(self) #close login popup
-                UserInterfaceFunctions.ToggleUserInterface(self, True, self.userData.get('userName')) #toggle user interface
+                UserInterfaceFunctions.ToggleUserInterface(self, True) #toggle user interface
+                self.welcomeLabel.setText(f'Welcome {self.userData.get('userName')}')
                 self.detectedAttacksCounter.setText(str(self.userData.get('numberOfDetectedAttacks'))) #set num of detected attacks counter
                 self.emailLineEdit.setText(self.userData.get('email')) #set email of user in settings page
                 self.usernameLineEdit.setText(self.userData.get('userName')) #set username of user in settings page
@@ -889,6 +893,47 @@ class NetSpect(QMainWindow):
                 self.ChangeUserState(False) #call our method to log out and clear interface
 
 
+    # method for registering new user and adding him to our application
+    def RegisterButtonClicked(self):
+        if self.sqlThread:
+            # means we had detection active
+            if self.isDetection:
+                UserInterfaceFunctions.ShowPopup('Detetcion In Progress' 'Please stop detection before attempting to register.', 'Information')
+            # else we register new user
+            else:
+                email = self.registerEmailLineEdit.text()
+                emailState, _, _ = self.emailValidator.validate(email, 0)
+                username = self.registerUsernameLineEdit.text()
+                usernameState, _, _ = self.usernameValidator.validate(username, 0)
+                password = self.registerPasswordLineEdit.text()
+                passwordState = self.ValidatePassword(password)
+
+                # means email, username and password fields are invalid
+                if emailState != self.emailValidator.Acceptable and usernameState != self.usernameValidator.Acceptable and not passwordState:
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.registerErrorMessageLabel, 'Please enter a valid email address, username and passowrd into the fields.')
+                # means email and username fields are invalid
+                elif emailState != self.emailValidator.Acceptable and usernameState != self.usernameValidator.Acceptable:
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.registerErrorMessageLabel, 'Please enter a valid email address and username into the fields.')
+                # means email and password fields are invalid
+                elif emailState != self.emailValidator.Acceptable and not passwordState:
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.registerErrorMessageLabel, 'Please enter a valid email address and password into the fields.')
+                # means username and password fields are invalid
+                elif usernameState != self.usernameValidator.Acceptable and not passwordState:
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.registerErrorMessageLabel, 'Please enter a valid username and password into the fields.')
+                # means email address field is invalid
+                elif emailState != self.emailValidator.Acceptable:
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.registerErrorMessageLabel, 'Please enter a valid email address into the field.')
+                # means username field is invalid
+                elif usernameState != self.usernameValidator.Acceptable:
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.registerErrorMessageLabel, 'Please enter a valid username into the field.')
+                # means password field is invalid
+                elif not passwordState:
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.registerErrorMessageLabel, 'Please enter a valid password into the field.')
+                # else we process the register request to our sql thread
+                else:
+                    self.sqlThread.Register(email, username, NetSpect.ToSHA256(password))
+
+
     # method for adding an item to the mac address blacklist when user clicks the add button on settings page
     def AddMacAddressButtonClicked(self):
         if self.sqlThread:
@@ -983,9 +1028,24 @@ class NetSpect(QMainWindow):
         # means failed loggin in, we show error message
         elif not resultDict.get('state'):
             UserInterfaceFunctions.ChangeErrorMessageText(self.loginErrorMessageLabel, resultDict.get('message'))
-        # means we succesfuly logged in
+        # means we successfully logged in
         elif resultDict.get('state') and resultDict.get('result'):
             self.ChangeUserState(True, resultDict.get('result')) #call our method to log into account
+
+    
+    # method for getting register result from sql thread and process user's data
+    @pyqtSlot(dict)
+    def RegisterResult(self, resultDict):
+        # means error occured, we show error pop up
+        if resultDict.get('error'):
+            UserInterfaceFunctions.ShowPopup('Error In Register', 'Error registering new user due to server error, please try again later.', 'Critical')
+        # means failed registering user, we show error message
+        elif not resultDict.get('state'):
+            UserInterfaceFunctions.ChangeErrorMessageText(self.registerErrorMessageLabel, resultDict.get('message'))
+        # means we successfully registered user, we process a login request to our sql thread to log into his new account
+        elif resultDict.get('state'):
+            self.sqlThread.Login(self.registerUsernameLineEdit.text(), NetSpect.ToSHA256(self.registerPasswordLineEdit.text()))
+            UserInterfaceFunctions.ShowPopup('Registration Successful', 'You have successfully registered. Logged into your account automatically.', 'Information')
 
 
     # method for showing results to the user after adding a mac address to blacklist
@@ -1055,17 +1115,10 @@ class NetSpect(QMainWindow):
             self.newPasswordLineEdit.clear()
             self.confirmPasswordLineEdit.clear()
 
-            # for each password input field we want to and reset the borde to light gray, this is needed because after clearing the password input fields the border becomes red due to textChange event on line edits
-            oldPassStyle = UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits('oldPasswordLineEdit')
-            oldPassStyle.replace('border: 2px solid lightgray;', 'border: 2px solid #D84F4F;')
-            newPassStyle = UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits('newPasswordLineEdit')
-            newPassStyle.replace('border: 2px solid lightgray;', 'border: 2px solid #D84F4F;')
-            confirmPassStyle = UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits('confirmPasswordLineEdit')
-            confirmPassStyle.replace('border: 2px solid lightgray;', 'border: 2px solid #D84F4F;')
-
-            self.oldPasswordLineEdit.setStyleSheet(oldPassStyle)
-            self.newPasswordLineEdit.setStyleSheet(newPassStyle)
-            self.confirmPasswordLineEdit.setStyleSheet(confirmPassStyle)
+            # for each password input field we want to and reset the border to light gray
+            self.oldPasswordLineEdit.setStyleSheet(UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits('oldPasswordLineEdit'))
+            self.newPasswordLineEdit.setStyleSheet(UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits('newPasswordLineEdit'))
+            self.confirmPasswordLineEdit.setStyleSheet(UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits('confirmPasswordLineEdit'))
             UserInterfaceFunctions.ShowPopup('Success', 'You\'r password was changed successfully.', 'Information')
 
     #--------------------------------------------SQL-RESULT-SLOTS-END--------------------------------------------#

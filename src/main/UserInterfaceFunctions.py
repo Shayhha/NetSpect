@@ -138,11 +138,10 @@ def ShowSideBarMenuIcon(self):
 
 
 # helper function for showing and hiding user interface
-def ToggleUserInterface(self, state, username=''):
+def ToggleUserInterface(self, state):
     # if true we need to show user logged in labels
     if state:
         self.accountIcon.hide()
-        self.welcomeLabel.setText(f'Welcome {username}')
         self.reportDurationComboBox.setEnabled(True)
         self.reportDurationComboBox.setCurrentIndex(0)
         self.welcomeLabel.show()
@@ -190,6 +189,12 @@ def ToggleUserInterface(self, state, username=''):
     self.saveUsernameErrorMessageLabel.clear()
     self.savePasswordErrorMessageLabel.clear()
     self.macAddressBlacklistErrorMessageLabel.clear()
+    self.registerEmailLineEdit.setStyleSheet(GetDefaultStyleSheetRegisterLineEdits('registerEmailLineEdit'))
+    self.registerUsernameLineEdit.setStyleSheet(GetDefaultStyleSheetRegisterLineEdits('registerUsernameLineEdit'))
+    self.registerPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetRegisterLineEdits('registerPasswordLineEdit'))
+    self.oldPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetSettingsLineEdits('oldPasswordLineEdit'))
+    self.newPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetSettingsLineEdits('newPasswordLineEdit'))
+    self.confirmPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetSettingsLineEdits('confirmPasswordLineEdit'))
 
 
 # helper function for chaning the current page index on the stack widget
@@ -352,6 +357,22 @@ def GetDefaultStyleSheetSettingsLineEdits(lineEditName):
             font-size: 14px;            
             color: black;             
             {'margin: 0px 0px 10px 0px;' if (('old' in lineEditName) or ('new' in lineEditName)) else 'margin: 0px 0px 0px 0px;'}
+        }}
+    '''
+    return defaultStylesheet
+
+
+# helper function for returning the default style sheet of the line edits in register
+def GetDefaultStyleSheetRegisterLineEdits(lineEditName):
+    defaultStylesheet = f''' 
+        #{lineEditName} {{
+            background-color: #f0f0f0; 
+            border: 2px solid lightgray;  
+            border-radius: 10px;         
+            padding: 5px;              
+            font-size: 14px;            
+            color: black;             
+            {'margin: 0px 5px 0px 5px;' if ('Password' in lineEditName) else 'margin: 0px 5px 10px 5px;'}
         }}
     '''
     return defaultStylesheet

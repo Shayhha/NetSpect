@@ -1,17 +1,17 @@
-import sys, os, logging, joblib, time
+import sys, os, joblib, socket, platform, logging
 import numpy as np
 import pandas as pd
 from abc import ABC, abstractmethod
 from ipaddress import ip_address, ip_network, IPv4Interface
 from psutil import net_if_addrs, net_if_stats
-from scapy.all import sniff, get_if_list, srp, IP, IPv6, TCP, UDP, ICMP, ARP, Ether, Raw, conf 
+from scapy.all import AsyncSniffer, srp, get_if_list, IP, IPv6, TCP, UDP, ICMP, ARP, Ether, Raw, conf
 from scapy.layers.dns import DNS
 from collections import defaultdict
+from pathlib import Path
+from datetime import datetime, timedelta
 import shutil #temporary import for saving a copy of a file with false positive data
 
-# dynamically add the src directory to sys.path, this allows us to access all moduls in the project at run time
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-from src.models import getModelPath
+currentDir = Path(__file__).resolve().parent #represents the path to the current working direcotry where this file is located
 
 #----------------------------------------------Default_Packet------------------------------------------------#
 # abstarct class for default packet
@@ -20,7 +20,9 @@ class Default_Packet(ABC):
     packet = None #represents the packet object itself for our use later
     packetType = None #represents the packet type based on scapy known types
     srcIp = None #represents source ip of packet 
+    srcMac = None #represents the source mac address
     dstIp = None #represents destination ip of packet
+    dstMac = None #represents the destination mac address
     srcPort = None #represents source port of packet 
     dstPort = None #represents destination port of packet
     ipParam = None #represents IPv4 / IPv6 fields as tuple (ttl, dscp) / (hopLimit, trafficClass)
@@ -33,6 +35,8 @@ class Default_Packet(ABC):
     def __init__(self, protocol=None, packet=None):
         self.protocol = protocol
         self.packet = packet
+        self.srcMac = self.packet.src
+        self.dstMac = self.packet.dst
         self.packetLen = len(self.packet)
         self.payloadLen = len(self.packet[Raw].load) if Raw in self.packet else 0
         self.time = packet.time
@@ -67,19 +71,19 @@ class Default_Packet(ABC):
 
     # method to return a normalized flow representation of a packet
     def GetFlowTuple(self):
-        currentInterface = SniffNetwork.networkInfo.get(SniffNetwork.selectedInterface) #the values of the selected network interface
+        currentInterface = NetworkInformation.networkInfo.get(NetworkInformation.selectedInterface) #the values of the selected network interface
 
         # extract flow tuple from packet
-        srcIp, dstIp, protocol = self.srcIp, self.dstIp, self.protocol
+        srcIp, srcMac, dstIp, dstMac, protocol = self.srcIp, self.srcMac, self.dstIp, self.dstMac, self.protocol
 
         #we create the flow tuple based on lexicographic order if it does not contain host ip address to ensure consistency
         if (dstIp in currentInterface.get('ipv4Addrs')) or (dstIp in currentInterface.get('ipv6Addrs')): #check if dst ip is our ip address
-            return (srcIp, dstIp, protocol) #return the flow tuple of packet with host ip as dst ip in tuple
+            return (srcIp, srcMac, dstIp, dstMac, protocol) #return the flow tuple of packet with host ip as dst ip in tuple
 
         elif (srcIp in currentInterface.get('ipv4Addrs')) or (srcIp in currentInterface.get('ipv6Addrs')) or (srcIp > dstIp): #check if tuple src ip is our ip address or if its not normalized 
-            return (dstIp, srcIp, protocol) #return tuple in normalized order and also ensure that our ip is dst ip in flow
+            return (dstIp, dstMac, srcIp, srcMac, protocol) #return tuple in normalized order and also ensure that our ip is dst ip in flow
 
-        return (srcIp, dstIp, protocol) #return the flow tuple of packet
+        return (srcIp, srcMac, dstIp, dstMac, protocol) #return the flow tuple of packet
 
 #--------------------------------------------Default_Packet-END----------------------------------------------#
 
@@ -140,7 +144,6 @@ class UDP_Packet(Default_Packet):
 
 #----------------------------------------------------DNS-----------------------------------------------------#
 class DNS_Packet(Default_Packet):
-    dnsId = None
     dnsType = None
     dnsSubType = None
     dnsClass = None
@@ -149,11 +152,10 @@ class DNS_Packet(Default_Packet):
     dnsData = None
     dnsPacketLen = None
 
-    def __init__(self, packet=None, dnsId=None):
+    def __init__(self, packet=None):
         super().__init__('DNS', packet) #call parent ctor
         if packet.haslayer(DNS): #checks if packet is DNS
             self.packetType = DNS #add packet type
-        self.dnsId = dnsId
         self.dnsPacketLen = len(self.packet[DNS])
         self.InitDNS() #call method to initialize dns specific params
 
@@ -182,30 +184,26 @@ class DNS_Packet(Default_Packet):
 
 # ---------------------------------------------------ARP-----------------------------------------------------#
 class ARP_Packet(Default_Packet):
-    arpId = None
-    srcMac = None
-    dstMac = None
     arpType = None
     hwType = None
     pType = None
     hwLen = None
     pLen = None
 
-    def __init__(self, packet=None, arpId=None):
+    def __init__(self, packet=None):
         super().__init__('ARP', packet) #call parent ctor
-        if packet.haslayer(ARP): #checks if packet is arp
+        if packet.haslayer(ARP): #checks if packet is ARP
             self.packetType = ARP #add packet type
-        self.arpId = arpId
-        self.InitARP() #call method to initialize arp specific params
+        self.InitARP() #call method to initialize ARP specific params
 
     # method for ARP packet information
     def InitARP(self):
-        if self.packet.haslayer(ARP): #if packet has layer of arp
-            self.srcMac = self.packet[ARP].hwsrc #add arp source mac address
-            self.dstMac = self.packet[ARP].hwdst #add arp destination mac address
-            self.srcIp = self.packet[ARP].psrc #add arp source ip address
-            self.dstIp = self.packet[ARP].pdst #add arp destination ip address
-            self.arpType = 'Request' if self.packet[ARP].op == 1 else 'Reply' #add the arp type
+        if self.packet.haslayer(ARP): #if packet has layer of ARP
+            self.srcIp = self.packet[ARP].psrc #add ARP source ip address
+            self.srcMac = self.packet[ARP].hwsrc #add ARP source mac address
+            self.dstIp = self.packet[ARP].pdst #add ARP destination ip address
+            self.dstMac = self.packet[ARP].hwdst #add ARP destination mac address
+            self.arpType = 'Request' if self.packet[ARP].op == 1 else 'Reply' #add the ARP type
             self.hwType = self.packet[ARP].hwtype #add the hardware type
             self.pType = self.packet[ARP].ptype #add protocol type to output
             self.hwLen = self.packet[ARP].hwlen #add hardware length to output
@@ -213,126 +211,26 @@ class ARP_Packet(Default_Packet):
 
 #--------------------------------------------------ARP-END---------------------------------------------------#
 
-#----------------------------------------------SNIFF-NETWORK-------------------------------------------------#
-
-# static class that represents the main functionality of the program, to sniff network packets and collect data about them in-order to detect attacks
-class SniffNetwork(ABC):
+#--------------------------------------------NETWORK-INFORMATION---------------------------------------------#
+# static class that represents network information of network interfaces
+class NetworkInformation(ABC):
+    # this list represents the usual network interfaces that are available in various platfroms
+    supportedInterfaces = ['eth', 'wlan', 'en', 'enp', 'wlp', 'Ethernet', 'Wi-Fi', 'lo', '\\Device\\NPF_Loopback']
+    systemInfo = None #represents a dictionary with all system information about the users machine
     networkInfo = None #represents a dict of dicts where each inner dict represents an available network interface
-    selectedInterface = None #the user-selected interface name: 'Ethernet' / 'en6'
-    startTime, timeoutTime, threshold = None, 40, 10000 #represents our stop conditions for the sniffing, stopping after x time or a max amount of packets reached
-    portScanDosDict = {} #represents dict of {(flow tuple) - [packet list]} related to port scanning and dos
-    dnsDict = {} #represents dict of packets related to dns tunneling 
-    arpDict = {} #represents dict of packets related to arp poisoning
-    tcpUdpCounter = 0 #global counter for tcp and udp packets
-    dnsCounter = 0 #global counter for dns packets
-    arpCounter = 0 #global counter for arp packets
+    selectedInterface = None #represents user-selected interface name: 'Ethernet' / 'en6'
+    previousInterface = None #represents previous interfcae used for network analysis
 
     # function for initializing the dict of data about all available interfaces
     @staticmethod
     def InitNetworkInfo():
-        SniffNetwork.networkInfo = SniffNetwork.GetNetworkInterfaces() #find all available network interface and collect all data about these interfaces
-        return SniffNetwork.networkInfo.keys() #return all available interface names for the user to select
-    
-
-    # function for initialing a packet scan on desired network interface
-    @staticmethod
-    def ScanNetwork():
-        try:
-            print('Starting Network Scan...')
-            availableInterfaces = SniffNetwork.InitNetworkInfo() #find all available network interfaces
-            ArpSpoofing.InitAllArpTables(SniffNetwork.networkInfo.get(SniffNetwork.selectedInterface)) #initialize all of our static arp tables with subnets
-
-            print(f'\n{SniffNetwork.networkInfo.get(SniffNetwork.selectedInterface)}\n') #print host selected interface info (name, ip addresses, mac, etc.)
-            ArpSpoofing.printArpTables() #print all initialized arp tables
-
-            # call scapy sniff function with desired interface and sniff network packets
-            SniffNetwork.startTime = time.time() #starting a timer to determin when to stop the sniffer
-            sniff(iface=SniffNetwork.selectedInterface, prn=SniffNetwork.PacketCapture, stop_filter=SniffNetwork.StopScan, store=0)
-        except PermissionError: #if user didn't run with administrative privileges 
-            print('Permission denied. Please run again with administrative privileges.') #print permission error message in terminal
-        except ArpSpoofingException as e: #if we recived ArpSpoofingException we alert the user
-            print(e)
-        except Exception as e: #we catch an exception if something happend while sniffing
-            print(f'An error occurred while sniffing: {e}') #print error message in terminal
-        finally:
-            print('Finsihed Network Scan.\n')
+        NetworkInformation.networkInfo = NetworkInformation.GetNetworkInterfaces() #find all available network interface and collect all data about these interfaces
+        #return all available interface names for the user to select in sorted order
+        return sorted(NetworkInformation.networkInfo.keys(), key=lambda x: (next((i for i, prefix 
+                in enumerate(NetworkInformation.supportedInterfaces) if x.startswith(prefix)), len(NetworkInformation.supportedInterfaces)), x))
 
 
-    # function for checking when to stop sniffing packets, stop condition
-    @staticmethod
-    def StopScan(packet):
-        # return True if ( ((time.time() - SniffNetwork.startTime) > SniffNetwork.timeoutTime) or (SniffNetwork.arpCounter >= 20) ) else False
-        # return True if ( ((time.time() - SniffNetwork.startTime) > SniffNetwork.timeoutTime) or (SniffNetwork.tcpUdpCounter >= SniffNetwork.threshold) ) else False
-        return True if ( ((time.time() - SniffNetwork.startTime) > SniffNetwork.timeoutTime) or (SniffNetwork.dnsCounter >= 350) ) else False
-
-
-    # function for capturing specific packets for later analysis
-    @staticmethod
-    def PacketCapture(packet):
-        captureDict = {TCP: SniffNetwork.handleTCP, UDP: SniffNetwork.handleUDP, DNS: SniffNetwork.handleDNS, ARP: SniffNetwork.handleARP} #represents dict with packet type and handler func
-
-        # iterate over capture dict and find coresponding handler function for each packet
-        for packetType, handler in captureDict.items():
-            if packet.haslayer(packetType): #if we found matching packet we call its handle method
-                handler(packet) #call handler method of each packet
-
-
-    #--------------------------------------------HANDLE-FUNCTIONS------------------------------------------------#
-
-    # method that handles TCP packets
-    @staticmethod
-    def handleTCP(packet):
-        if packet.haslayer(DNS): #if we found a dns packet we also call dns handler
-            SniffNetwork.handleDNS(packet) #call our handleDNS func
-        TCP_Object = TCP_Packet(packet) #create a new object for packet
-        flowTuple = TCP_Object.GetFlowTuple() #get flow representation of packet
-        if flowTuple in SniffNetwork.portScanDosDict: #if flow tuple exists in dict
-            SniffNetwork.portScanDosDict[flowTuple].append(TCP_Object) #append to list our packet
-        else: #else we create new entry with flow tuple
-            SniffNetwork.portScanDosDict[flowTuple] = [TCP_Object] #create new list with packet
-        SniffNetwork.tcpUdpCounter += 1
-
-
-    # method that handles UDP packets
-    @staticmethod
-    def handleUDP(packet):
-        if packet.haslayer(DNS): #if we found a dns packet we also call dns handler
-            SniffNetwork.handleDNS(packet) #call our handleDNS func
-        UDP_Object = UDP_Packet(packet) #create a new object for packet
-        flowTuple = UDP_Object.GetFlowTuple() #get flow representation of packet
-        if flowTuple in SniffNetwork.portScanDosDict: #if flow tuple exists in dict
-            SniffNetwork.portScanDosDict[flowTuple].append(UDP_Object) #append to list our packet
-        else: #else we create new entry with flow tuple
-            SniffNetwork.portScanDosDict[flowTuple] = [UDP_Object] #create new list with packet
-        SniffNetwork.tcpUdpCounter += 1
-
-
-    # method that handles DNS packets
-    @staticmethod
-    def handleDNS(packet):
-        # DNS_Object = DNS_Packet(packet, dnsCounter) #create a new object for packet
-        # dnsDict[DNS_Object.dnsId] = DNS_Object #insert it to packet dictionary
-        DNS_Object = DNS_Packet(packet) #create a new object for packet
-        flowTuple = DNS_Object.GetFlowTuple() #get flow representation of packet
-        if flowTuple in SniffNetwork.dnsDict: #if flow tuple exists in dict
-            SniffNetwork.dnsDict[flowTuple].append(DNS_Object) #append to list our packet
-        else: #else we create new entry with flow tuple
-            SniffNetwork.dnsDict[flowTuple] = [DNS_Object] #create new list with packet
-        SniffNetwork.dnsCounter += 1
-
-
-    # method that handles ARP packets
-    @staticmethod
-    def handleARP(packet):
-        ARP_Object = ARP_Packet(packet, SniffNetwork.arpCounter) #create a new object for packet
-        SniffNetwork.arpDict[ARP_Object.arpId] = ARP_Object #insert it to packet dictionary
-        SniffNetwork.arpCounter += 1 #increase the counter
-
-    #------------------------------------------HANDLE-FUNCTIONS-END----------------------------------------------#
-
-    #--------------------------------------------HELPER-FUNCTIONS------------------------------------------------#
-
-    # method to print all available interfaces
+    # function to print all available interfaces
     @staticmethod
     def GetAvailableInterfaces():
         # get a list of all available network interfaces
@@ -342,7 +240,7 @@ class SniffNetwork(ABC):
             i = 1 #counter for the interfaces 
             for interface in interfaces: #print all availabe interfaces
                 if sys.platform.startswith('win32'): #if ran on windows we convert the guid number
-                    print(f'{i}. {SniffNetwork.GuidToStr(interface)}')
+                    print(f'{i}. {NetworkInformation.GuidToStr(interface)}')
                 else: #else we are on other os so we print the interface 
                     print(f'{i}. {interface}')
                 i += 1
@@ -350,7 +248,7 @@ class SniffNetwork(ABC):
             print('No network interfaces found.')
 
 
-    # method for retrieving interface name from GUID number (Windows only)
+    # function for retrieving interface name from GUID number (Windows only)
     @staticmethod
     def GuidToStr(guid):
         try: #we try to import the specific windows method from scapy library
@@ -365,37 +263,35 @@ class SniffNetwork(ABC):
         return guid #else we didnt find the guid number so we return given guid
 
 
-    # method for retrieving the network interfaces
+    # function for retrieving the network interfaces
     @staticmethod
     def GetNetworkInterfaces_OLD():
-        networkNames = ['eth', 'wlan', 'en', 'enp', 'wlp', 'lo', 'Ethernet', 'Wi-Fi', '\\Device\\NPF_Loopback'] #this list represents the usual network interfaces that are available in various platfroms
         interfaces = get_if_list() #get a list of the network interfaces
         if sys.platform.startswith('win32'): #if current os is Windows we convert the guid number to interface name
-            interfaces = [SniffNetwork.GuidToStr(interface) for interface in interfaces] #get a new list of network interfaces with correct names instead of guid numbers
-        matchedInterfaces = [interface for interface in interfaces if any(interface.startswith(name) for name in networkNames)] #we filter the list to retrieving ethernet and wifi interfaces
+            interfaces = [NetworkInformation.GuidToStr(interface) for interface in interfaces] #get a new list of network interfaces with correct names instead of guid numbers
+        matchedInterfaces = [interface for interface in interfaces if any(interface.startswith(name) for name in NetworkInformation.supportedInterfaces)] #we filter the list to retrieving ethernet and wifi interfaces
         return matchedInterfaces #return the matched interfaces as list
 
 
     # function for collecting all available interfaces on the current machine and as much data about them as possible including name, speed, ip addresses, subnets and more
     @staticmethod
     def GetNetworkInterfaces():
-        supportedInterfaces = ['eth', 'wlan', 'en', 'enp', 'wlp', 'lo', 'Ethernet', 'Wi-Fi', '\\Device\\NPF_Loopback'] #this list represents the usual network interfaces that are available in various platfroms
         networkInterfaces = {} #represents network interfaces dict where keys are name of interface and value is interface dict
         ifaceStats = net_if_stats() #for getting extra info about each interface using stats function
 
         # iterate through all network interfaces and initialize our network interfaces dict
         for iface in conf.ifaces.values():
             # we add only interfaces we support with scapy and that are up
-            if iface.ips and any(iface.name.startswith(name) for name in supportedInterfaces):
+            if iface.ips and any(iface.name.startswith(name) for name in NetworkInformation.supportedInterfaces):
                 # initialize our ipv4 and ipv6 addresses (always dict of two elements: 4: ipv4Addrs, 6: ipv6Addrs)
-                ipv4Addrs, ipv6Addrs, ipv4Subnets, ipv6Subnets = iface.ips[4], iface.ips[6], [], set()
+                ipv4Addrs, ipv6Addrs, ipv4Subnets, ipv6Subnets = iface.ips[4], iface.ips[6], set(), set()
 
                 # initialize ipv4 subnets based on ipv4 ips we found
                 for ipAddress in ipv4Addrs:
-                    netmask = SniffNetwork.GetNetmaskFromIp(ipAddress) #get netmask with our function
+                    netmask = NetworkInformation.GetNetmaskFromIp(ipAddress) #get netmask with our function
                     if ipAddress and netmask:
-                        subnet = IPv4Interface(f'{ipAddress}/{netmask}').network
-                        ipv4Subnets.append((str(subnet), f'{'.'.join(ipAddress.split('.')[:3])}.0/24', netmask)) #list of tuples such that (subnet (real), range(/24), netmask)
+                        subnet = IPv4Interface(f'{ipAddress}/{netmask}').network #create ipv4 subnet object
+                        ipv4Subnets.add((str(subnet), f'{'.'.join(ipAddress.split('.')[:3])}.0/24', netmask)) #set of tuples such that (subnet (real), range(/24), netmask)
 
                 # initialize ipv6 subnets based on ipv6 ips we found, excluding loopback
                 for ipAddress in ipv6Addrs:
@@ -407,16 +303,16 @@ class SniffNetwork(ABC):
 
                 # initialize interface dict with all given information
                 interfaceDict = {
-                    'name': iface.name if iface.name else '',
-                    'description': iface.description if iface.description else '',
+                    'name': iface.name if iface.name else 'None',
+                    'description': iface.description if iface.description else 'None',
                     'status': ifaceStats.get(iface.name).isup if ifaceStats.get(iface.name) else 'None',
                     'maxSpeed': ifaceStats.get(iface.name).speed if ifaceStats.get(iface.name) else 'None',
                     'maxTransmitionUnit': ifaceStats.get(iface.name).mtu if ifaceStats.get(iface.name) else 'None',
-                    'mac': iface.mac if iface.mac else '',
+                    'mac': iface.mac if iface.mac else 'None',
                     'ipv4Addrs': ipv4Addrs,
-                    'ipv4Info': ipv4Subnets,
+                    'ipv4Subnets': ipv4Subnets,
                     'ipv6Addrs': ipv6Addrs,
-                    'ipv6Info': list(ipv6Subnets)
+                    'ipv6Subnets': ipv6Subnets
                 }
                 networkInterfaces[interfaceDict['name']] = interfaceDict #add interface to our network interfaces
         
@@ -436,22 +332,60 @@ class SniffNetwork(ABC):
                     
         return None #return None if the IP is not found
 
-    #-------------------------------------------HELPER-FUNCTIONS-END---------------------------------------------#
 
-#---------------------------------------------SNIFF-NETWORK-END----------------------------------------------#
+    # function for getting system information
+    @staticmethod
+    def GetSystemInformation():
+        NetworkInformation.systemInfo = {
+            'osType': str(platform.system()) + ' ' + str(platform.release()),
+            'osVersion': str(platform.version()),
+            'architecture': str(platform.architecture()[0]),
+            'hostName': str(socket.gethostname()),
+        }
+        return NetworkInformation.systemInfo
+    
+
+    # function for getting current timespamp in format hh:mm:ss dd:mm:yy
+    @staticmethod
+    def GetCurrentTimestamp():
+        return datetime.now().strftime('%H:%M:%S %d/%m/%y') #get timestamp for attack in our format
+    
+
+    # function that compares difference between two timespamps in minutes 
+    @staticmethod
+    def CompareTimepstemps(timestampOld, timestampNew, minutes=1):
+        # convert strings to datetime objects
+        timeOld = datetime.strptime(timestampOld, '%H:%M:%S %d/%m/%y')
+        timeNew = datetime.strptime(timestampNew, '%H:%M:%S %d/%m/%y')
+        timeDifference = abs(timeNew - timeOld) # calculate the absolute time difference
+
+        return timeDifference >= timedelta(minutes=minutes)
+     
+#--------------------------------------------NETWORK-INFORMATION-END-----------------------------------------#
 
 #-----------------------------------------------ARP-SPOOFING-------------------------------------------------#
 class ArpSpoofingException(Exception):
-    def __init__(self, message, state, details):
+    def __init__(self, message, type, attackDict):
         super().__init__(message)
-        self.state = state #represents the state of attack, 1 means we found ip assigned to many macs, 2 means mac assigned to many ips
-        self.details = details #represents additional details about the spoofing
+        self.type = type #represents the type of attack, 1 means we found ip assigned to many macs, 2 means mac assigned to many ips
+        self.attackDict = attackDict #represents attack dict of ARP spoofing incident
 
-    # str representation of arp spoofing exception for showing results
+    # str representation of ARP spoofing exception for showing results
     def __str__(self):
-        detailsList = '\n##### ARP SPOOFING ATTACK ######\n'
-        detailsList += '\n'.join([f'[*] {key} ==> {', '.join(value)}' for key, value in self.details.items()])
-        return f'{self.args[0]}\nDetails:\n{detailsList}\n'
+        details = '\n##### ARP SPOOFING ATTACK ######\n'
+        if self.type == 1:
+            details += '\n'.join([
+                f'[*] IP: {ip} ==> Source IP: {entry['srcIp']}, '
+                f'Source MAC: {', '.join(sorted(entry['srcMac']))}, '
+                f'Destination IP: {entry['dstIp']}, Destination MAC: {entry['dstMac']}'
+                for ip, entry in self.attackDict.items()])
+        elif self.type == 2:
+            details += '\n'.join([
+                f'[*] MAC: {mac} ==> Source IP: {', '.join(sorted(entry['srcIp']))}, '
+                f'Source MAC: {entry['srcMac']}, '
+                f'Destination IP: {entry['dstIp']}, Destination MAC: {entry['dstMac']}'
+                for mac, entry in self.attackDict.items()])
+        return f'{self.args[0]}\nDetails:\n{details}\n'
 
 
 # class that represents a single ARP table, contains an IP to MAC table and an inverse table, has a static method for initing both ARP tables
@@ -460,81 +394,129 @@ class ArpTable():
     arpTable = None #regular IP to MAC ARP table
     invArpTable = None #inverse ARP table, MAC to IP
 
-    def __init__(self, subnet):
+    # constructor of ArpTable class
+    def __init__(self, subnet, arpTable, invArpTable):
         self.subnet = subnet 
-        self.arpTable, self.invArpTable = ArpTable.InitArpTable(subnet[1])
+        self.arpTable = arpTable
+        self.invArpTable = invArpTable
 
 
-    # fucntion that initializes the static arp table for testing IP-MAC pairs 
+    # fucntion that initializes the static ARP table for testing IP-MAC pairs 
     @staticmethod
-    def InitArpTable(ipRange='192.168.1.0/24'):
-        arpTable = {} #represents our arp table dict (ip to mac)
+    def InitArpTable(ipRange='192.168.1.0/24', isInit=False):
+        arpTable = {} #represents our ARP table dict (ip to mac)
         invArpTable = {} #represents our inverse (mac to ip), used for verification
-        attacksDict = {'ipToMac': {}, 'macToIp': {}} #represents attack dict with anomalies
-        arpRequest = ARP(pdst=ipRange) #create arp request packet with destination ip range
+        totalAttackDict = {'ipToMac': {}, 'macToIp': {}} #represents total attack dict with anomalies
+        arpRequest = ARP(pdst=ipRange) #create ARP request packet with destination ip range
         broadcast = Ether(dst='ff:ff:ff:ff:ff:ff')  #create broadcast ethernet frame broadcast
-        arpRequestBroadcast = broadcast / arpRequest #combine both arp request and ethernet frame 
+        arpRequestBroadcast = broadcast / arpRequest #combine both ARP request and ethernet frame 
         
         # send the ARP request and capture the responses
         # srp function retunes tuple (response packet, received device)
         answeredList = srp(arpRequestBroadcast, timeout=0.75, verbose=False)[0]
         
-        # iterate over all devices that answered to our arp request packet and add them to our table
+        # iterate over all devices that answered to our ARP request packet and add them to our table
         for device in answeredList:
-            ip, mac = device[1].psrc, device[1].hwsrc #represents ip and mac for given device
+            # represents the device that answered us with his source ip and mac
+            srcIp, srcMac, dstIp, dstMac = device[1].psrc, device[1].hwsrc, device[1].pdst, device[1].hwdst
 
-            # add ip mac pair to arp table
-            if ip not in arpTable: #means ip not in arp table, we add it with its mac address
-                arpTable[ip] = mac #set the mac address in ip index
-            elif arpTable[ip] != mac: #else mac do not match with known mac in ip index
-                attacksDict['ipToMac'].setdefault(ip, set()).update([arpTable[ip], mac]) #add an anomaly: same IP, different MAC
+            # add srcIp srcMac pair to ARP table
+            if srcIp not in arpTable: #means ip not in ARP table, we add it with its mac address
+                arpTable[srcIp] = srcMac #set the srcMac address in srcIp index
+            elif arpTable[srcIp] != srcMac: #else srcMac do not match with known srcMac in srcIp index
+                srcMacs = {arpTable[srcIp], srcMac} #represents srcMacs we detected for arp spoofing
+                #add an anomaly: same IP, different MAC
+                totalAttackDict['ipToMac'].setdefault(srcIp, {'srcIp': srcIp, 'srcMac': set(), 'dstIp': dstIp, 'dstMac': dstMac,
+                                                               'protocol': 'ARP', 'timestamp': NetworkInformation.GetCurrentTimestamp()})['srcMac'].update(srcMacs)
 
-            # add mac ip pair to inverse arp table
-            if mac not in invArpTable: #means mac not in inv arp table, we add it with its ip address
-                invArpTable[mac] = ip #set the ip address in mac index
+            # add srcMac srcIp pair to inverse ARP table
+            if srcMac not in invArpTable: #means mac not in inv ARP table, we add it with its ip address
+                invArpTable[srcMac] = srcIp #set the srcIp address in srcMac index
             #! remeber that locally shay's arp table is spoofed... (20:1e:88:d8:3a:ce)
-            elif invArpTable[mac] != ip and mac != '20:1e:88:d8:3a:ce': #else ip do not match with known ip in mac index
-                attacksDict['macToIp'].setdefault(mac, set()).update([invArpTable[mac], ip]) #add an anomaly: same MAC, different IP
-
-        # we check if one of the attack dicts is not empty, means we have an attack
-        if attacksDict['ipToMac']: #means we have an ip that has many macs
-            #throw an exeption to inform user of its presence
-            raise ArpSpoofingException(
-                'Detected ARP spoofing incidents: IP-to-MAC anomalies',
-                state=1,
-                details={ip: list(macs) for ip, macs in attacksDict['ipToMac'].items()}
-            )
-        elif attacksDict['macToIp']: #means we have a mac that has many ips
-            # throw an exeption to inform user of its presence
-            raise ArpSpoofingException(
-                'Detected ARP spoofing incidents: MAC-to-IP anomalies',
-                state=2,
-                details={mac: list(ips) for mac, ips in attacksDict['macToIp'].items()}
-            )
+            elif invArpTable[srcMac] != srcIp and srcMac != '20:1e:88:d8:3a:ce': #else srcIp do not match with known srcIp in srcMac index
+                srcIps = {invArpTable[srcMac], srcIp} #represents srcIps we detected for arp spoofing
+                #add an anomaly: same MAC, different IP
+                totalAttackDict['macToIp'].setdefault(srcMac, {'srcIp': set(), 'srcMac': srcMac, 'dstIp': dstIp, 'dstMac': dstMac,
+                                                                'protocol': 'ARP', 'timestamp': NetworkInformation.GetCurrentTimestamp()})['srcIp'].update(srcIps)
         
-        return arpTable, invArpTable
+        # we check if isInit is not set, if so we check if we had an attack and throw exeption
+        if not isInit:
+            # we check if one of the attack dicts is not empty, means we have an attack
+            if totalAttackDict['ipToMac']:
+                #throw an exeption to inform user of its presence
+                raise ArpSpoofingException(
+                    'Detected ARP spoofing incidents: IP-to-MAC anomalies',
+                    type=1,
+                    attackDict=totalAttackDict['ipToMac']
+                )
+                
+            elif totalAttackDict['macToIp']:
+                # throw an exeption to inform user of its presence
+                raise ArpSpoofingException(
+                    'Detected ARP spoofing incidents: MAC-to-IP anomalies',
+                    type=2,
+                    attackDict=totalAttackDict['macToIp']
+                )
+        
+        return (arpTable, invArpTable) if not isInit else (arpTable, invArpTable, totalAttackDict)
 
 
 # static class that represents the detection of ARP Spoofing attack using an algorithem to detect duplications in ARP tables based on collected ARP packets
 class ArpSpoofing(ABC):
     arpTables = {} #represents all ARP tables where the key of the table is the subnet, each inner ARP table is a tuple (arpTable, invArpTable) with mapping of IP->MAC and MAC->IP in each table in tuple
     cache = {} #represents a dict with cache of all ip addresses that matched a subnet
-    interfaceInfo = {} #represents the dict with all data about the user-selected network interface
+    isArpTables = False #represents initialization state of arpTables dict
 
-    # function that iterates over available ipv4 subnets and inits an ARP table for each one
+    # function that iterates over available ipv4 subnets and initializes an ARP table for each one
     @staticmethod
-    def InitAllArpTables(interfaceInfo):
-        # iterate over all given subnets, for each check if an ARP table exists for it
-        for subnet in interfaceInfo.get('ipv4Info'):
-            if not ArpSpoofing.arpTables.get(subnet[0]):
-                # init a new ARP tabel if an ARP table for that subnet is not initialized
-                subnetObject = ip_network(subnet[0])
-                ArpSpoofing.arpTables[subnetObject] = ArpTable(subnet) 
+    def InitAllArpTables():
+        # represents result of ARP initialization dictionary {state: T/F, type: 3-InitArp, attackDict: {}}
+        result = {'state': True, 'type': 3, 'attackDict': {}}
+        totalAttackDict = {'ipToMac': {}, 'macToIp': {}} #represents total attack dict with anomalies
+
+        # we initialize our ARP tables only if selected network interface has changed
+        if NetworkInformation.selectedInterface != NetworkInformation.previousInterface:
+            # clear previous interface information that was saved in our dictionaries
+            NetworkInformation.previousInterface = NetworkInformation.selectedInterface
+            ArpSpoofing.arpTables, ArpSpoofing.cache = {}, {}
+
+            # iterate over all given subnets, for each check if an ARP table exists for it
+            for subnet in NetworkInformation.networkInfo.get(NetworkInformation.selectedInterface).get('ipv4Subnets'):
+                if not ArpSpoofing.arpTables.get(subnet[0]):
+                    # initialize ARP table for subnet with init flage set
+                    arpTable, invArpTable, attackDict =  ArpTable.InitArpTable(subnet[1], True)
+
+                    # add our ARP table object into ARP tables dict as ArpTable object
+                    subnetObject = ip_network(subnet[0])
+                    ArpSpoofing.arpTables[subnetObject] = ArpTable(subnet, arpTable, invArpTable)
+
+                    # if attackDict is not empty, merge its data into totalAttackDict
+                    if attackDict:
+                        # merge the ipToMac dictionary from this attackDict into totalAttackDict
+                        if attackDict['ipToMac']:
+                            for ip, entry in attackDict['ipToMac'].items():
+                                totalAttackDict['ipToMac'].setdefault(ip, {'srcIp': ip, 'srcMac': set(), 'dstIp': entry['dstIp'], 'dstMac': entry['dstMac'],
+                                                                            'protocol': entry['protocol'], 'timestamp': entry['timestamp']})['srcMac'].update(entry['srcMac'])
+
+                        # merge the macToIp dictionary from this attackDict into totalAttackDict:
+                        if attackDict['macToIp']:
+                            for mac, entry in attackDict['macToIp'].items():
+                                totalAttackDict['macToIp'].setdefault(mac, {'srcIp': set(), 'srcMac': mac, 'dstIp': entry['dstIp'], 'dstMac': entry['dstMac'],
+                                                                             'protocol': entry['protocol'], 'timestamp': entry['timestamp']})['srcIp'].update(entry['srcIp'])
+
+            # check if we have attacks detected if so we update result dict
+            if totalAttackDict['ipToMac'] or totalAttackDict['macToIp']:
+                result.update({'state': False, 'type': 3, 'attackDict': totalAttackDict})
+
+            # print our static ARP tables
+            ArpSpoofing.PrintArpTables()
+
+        return result
 
 
-    # function for getting the correct arp table given an IP address
+    # function for getting the correct ARP table given an IP address
     @staticmethod
-    def getSubnetForIP(ipAddress): 
+    def GetSubnetForIP(ipAddress): 
         try:
             if ipAddress in ArpSpoofing.cache: #check if the given IP address was cached
                 return ArpSpoofing.cache[ipAddress]
@@ -553,9 +535,9 @@ class ArpSpoofing(ABC):
             return None
   
 
-    # function for printing all arp tables
+    # function for printing all ARP tables
     @staticmethod
-    def printArpTables():
+    def PrintArpTables():
         if ArpSpoofing.arpTables:
             print('All ARP Tables:')
             for subnet, arpTableObject in ArpSpoofing.arpTables.items():
@@ -567,82 +549,95 @@ class ArpSpoofing(ABC):
         print('\n')
 
 
-    # function for processing arp packets and check for arp spoofing attacks
+    # function for processing ARP packets and check for ARP spoofing attacks
     @staticmethod
-    def ProcessARP():
-        attacksDict = {} #represents attack dict with anomalies
+    def ProcessARP(arpList):
+        # represents result of analysis dictionary {state: T/F, type: 1-ipToMac / 2-macToIp, attackDict: {}}
+        result = {'state': False, 'type': 1, 'attackDict': {}}
+        attackDict = {} #represents attack dict with anomalies
         try:
-            if not ArpSpoofing.arpTables: #check that arpTable is initialzied
+            if not ArpSpoofing.isArpTables: #check that ARP tables are initialzied
                 raise RuntimeError('Error, cannot process ARP packets, ARP tables are not initalized.')
 
-            # iterate over our arp dictionary and check each packet for inconsistencies
-            for packet in SniffNetwork.arpDict.values():
+            # iterate over our ARP dictionary and check each packet for inconsistencies
+            for packet in arpList:
                 # we check that packet has a source ip and also that its not assinged to a temporary ip (0.0.0.0)
                 if isinstance(packet, ARP_Packet) and packet.srcIp != None and packet.srcIp != '0.0.0.0':
-                    subnet = ArpSpoofing.getSubnetForIP(packet.srcIp)
+                    subnet = ArpSpoofing.GetSubnetForIP(packet.srcIp)
                     if subnet == None: 
-                        print(f'Error, received an ARP packet from an outside subnet, no arp table mached the ARP packet source IP address "{packet.srcIp}"')
+                        print(f'Error, received an ARP packet from an outside subnet, no ARP table mached the ARP packet source IP address "{packet.srcIp}"')
                         continue
-                    arpTableObject = ArpSpoofing.arpTables.get(subnet) #get the specific arpTable using the correct subnet
+                    arpTableObject = ArpSpoofing.arpTables.get(subnet) #get the specific arp table using the correct subnet
 
-                    if packet.srcIp not in arpTableObject.arpTable: #means ip is not present in our arp table
+                    if packet.srcIp not in arpTableObject.arpTable: #means ip is not present in our ARP table
                         # means mac was assinged to different ip, we assume there's a possiblility 
                         # that this device got assigned a new ip from dhcp server
                         if packet.srcMac in arpTableObject.invArpTable:
                             oldIp = arpTableObject.invArpTable[packet.srcMac] #save old ip that was assigned to this mac
-                            del arpTableObject.arpTable[oldIp] #remove old ip entry from arp table
-                            del arpTableObject.invArpTable[packet.srcMac] #remove mac from inverse arp table
+                            del arpTableObject.arpTable[oldIp] #remove old ip entry from ARP table
+                            del arpTableObject.invArpTable[packet.srcMac] #remove mac from inverse ARP table
 
-                        # we create new temp arp table to check if we got valid response from only one device and that mac's match
-                        ipArpTable = ArpTable.InitArpTable(packet.srcIp) #initialize temp ip arp table for specific ip and check if valid
+                        # we create new temp ARP table to check if we got valid response from only one device and that mac's match
+                        ipArpTable = ArpTable.InitArpTable(packet.srcIp) #initialize temp ip ARP table for specific ip and check if valid
                         if ipArpTable[0]: #we check if there's a reply, if not we dismiss the packet
                             if ipArpTable[0][packet.srcIp] == packet.srcMac: #means macs match, valid 
-                                arpTableObject.arpTable[packet.srcIp] = packet.srcMac #assign the mac address to its ip in our arp table
-                                arpTableObject.invArpTable[packet.srcMac] = packet.srcIp #assign to the inverse arp table
+                                arpTableObject.arpTable[packet.srcIp] = packet.srcMac #assign the mac address to its ip in our ARP table
+                                arpTableObject.invArpTable[packet.srcMac] = packet.srcIp #assign to the inverse ARP table
                             else: #means macs dont match, we alret because differnet device asnwered us
-                                ip, macs = packet.srcIp, {ipArpTable[0][packet.srcIp], packet.srcMac} #create the details for exception
-                                attacksDict.setdefault(ip, set()).update(macs) #add an anomaly: same IP, different MAC
+                                srcIp, srcMacs = packet.srcIp, {ipArpTable[0][packet.srcIp], packet.srcMac} #create the details for exception
+                                 #add an anomaly: same IP, different MAC
+                                attackDict.setdefault(srcIp, {'srcIp': srcIp, 'srcMac': set(), 'dstIp': packet.dstIp, 'dstMac': packet.dstMac,
+                                                               'protocol': 'ARP', 'timestamp': NetworkInformation.GetCurrentTimestamp()})['srcMac'].update(srcMacs)
 
-                    else: #means ip is present in our arp table, we check its parameters
+                    else: #means ip is present in our ARP table, we check its parameters
                         if arpTableObject.arpTable[packet.srcIp] != packet.srcMac: #means we have a spoofed mac address
-                            ip, macs = packet.srcIp, {arpTableObject.arpTable[packet.srcIp], packet.srcMac} #create the details for exception
-                            attacksDict.setdefault(ip, set()).update(macs) #add an anomaly: same IP, different MAC
-
-            if attacksDict: #means we detected an attack
+                            srcIp, srcMacs = packet.srcIp, {arpTableObject.arpTable[packet.srcIp], packet.srcMac} #create the details for exception
+                            #add an anomaly: same IP, different MAC
+                            attackDict.setdefault(srcIp, {'srcIp': srcIp, 'srcMac': set(), 'dstIp': packet.dstIp, 'dstMac': packet.dstMac,
+                                                           'protocol': 'ARP', 'timestamp': NetworkInformation.GetCurrentTimestamp()})['srcMac'].update(srcMacs)
+            
+            if attackDict: #means we detected an attack
                 # throw an exeption to inform user of its presence
                 raise ArpSpoofingException(
                     'Detected ARP spoofing incidents: IP-to-MAC anomalies',
-                    state=1,
-                    details={ip: list(macs) for ip, macs in attacksDict.items()}
+                    type=1,
+                    attackDict=attackDict
                 )
+            
+            result['state'] = True #indication for no attacks
 
-        except ArpSpoofingException as e: #if we recived ArpSpoofingException we alert the user
+        except ArpSpoofingException as e: #if we received ArpSpoofingException we alert the user
+            result.update({'state': False, 'type': e.type, 'attackDict': e.attackDict}) #indication of attack
             print(e)
         except Exception as e: #we catch an exception if something happend
             print(f'Error occurred: {e}')
+        finally:
+            return result
 
 #----------------------------------------------ARP-SPOOFING-END----------------------------------------------#
 
 #----------------------------------------------PORT-SCANNING-DoS---------------------------------------------#
 class PortScanDoSException(Exception):
-    def __init__(self, message, state, flows):
+    def __init__(self, message, type, attackDict):
         super().__init__(message)
-        self.state = state #represents the state of attack, 1 means we detected PortScan attack, 2 means we detected DoS attack
-        self.flows = flows #represents the flow in which the attack was detected
+        self.type = type #represents the type of attack, 1 means we detected PortScan attack, 2 means we detected DoS attack
+        self.attackDict = attackDict #represents the attack dict with detected attack flows
 
     # str representation of port scan and dos exception for showing results
     def __str__(self):
-        attackName = 'PortScan' if self.state == 1 else 'DoS'
-        if self.state == 3:
-            attackName = 'PortScan and DoS' 
-
-        detailsList = f'\n##### {attackName.upper()} ATTACK ######\n'
-        detailsList += '\n'.join([f'[*] Source IP: {flow['Src IP']} , Destination IP: {flow['Dst IP']} , Protocol: {flow['Protocol']} , Attack: {attackName}' for flow in self.flows])
-        return f'{self.args[0]}\nDetails:\n{detailsList}\n'
+        attackName = 'PortScan' if self.type == 1 else 'DoS'
+        if self.type == 3:
+            attackName = 'PortScan and DoS'
+        details = f'\n##### {attackName.upper()} ATTACK ######\n'
+        details += '\n'.join([f'''[*] Source IP: {flow[0]} , Source Mac: {flow[1]} , Destination IP: {flow[2]}, Destination Mac: {flow[3]} , Protocol: {flow[4]} , Attack: {attackName}'''
+                        for flow in self.attackDict.keys()])
+        return f'{self.args[0]}\nDetails:\n{details}\n'
     
 
 # static class that represents the collection and detection of PortScan and DoS attacks 
 class PortScanDoS(ABC):
+    loadedModel = joblib.load(currentDir.parent / 'models' / 'port_scan_dos_svm_model.pkl') #load SVM model for portScanDos
+    loadedScaler = joblib.load(currentDir.parent / 'models' / 'port_scan_dos_scaler.pkl') #load scaler for SVM model
     selectedColumns = [
         'Number of Ports', 'Average Packet Size', 'Packet Length Min', 'Packet Length Max', 
         'Packet Length Mean', 'Packet Length Std', 'Packet Length Variance', 'Total Length of Fwd Packet', 
@@ -654,11 +649,11 @@ class PortScanDoS(ABC):
 
     # function for processing the flowDict and creating the dataframe that will be passed to classifier
     @staticmethod
-    def ProcessFlows():
+    def ProcessFlows(portScanDosDict):
         featuresDict = defaultdict(dict) #represents our features dict where each flow tuple has its corresponding features
 
         # iterate over our flow dict and calculate features
-        for flow, packetList in SniffNetwork.portScanDosDict.items():
+        for flow, packetList in portScanDosDict.items():
             uniquePorts = set() #represents the unique destination ports in flow
             fwdLengths = [] #represents length of forward packets in flow
             bwdLengths = [] #represents length of backward packets in flow
@@ -748,81 +743,92 @@ class PortScanDoS(ABC):
     # function for predicting PortScanning and DoS attacks given flow dictionary
     @staticmethod
     def PredictPortDoS(flowDict):
+        # represents result of analysis dictionary {state: T/F, type: 1-PortScan / 2-DoS / 3-Together, attackDict: {}}
+        result = {'state': False, 'type': 1, 'attackDict': {}}
+        attackDict = {} #represents attack dict with anomalies
         try: 
             # extract keys and values from flowDict and save it as a DataFrame
-            keyColumns = ['Src IP', 'Dst IP', 'Protocol']
+            keyColumns = ['srcIp', 'srcMac', 'dstIp', 'dstMac', 'protocol']
             flowDataframe = pd.DataFrame.from_dict(flowDict, orient='index').reset_index()
-            flowDataframe.columns = keyColumns + flowDataframe.columns[3:].to_list() #rename the column names of the keys
-            keysDataframe = flowDataframe[keyColumns].copy()
+            flowDataframe.columns = keyColumns + flowDataframe.columns[5:].to_list() #rename the column names of the keys
             valuesDataframe = flowDataframe.drop(keyColumns, axis=1)
 
-            # load the PortScanning and DoS model
-            modelPath = getModelPath('port_scan_dos_svm_model.pkl')
-            scalerPath = getModelPath('port_scan_dos_scaler.pkl')
-            loadedModel = joblib.load(modelPath) 
-            loadedScaler = joblib.load(scalerPath) 
-
             # scale the input data and predict the scaled input
-            scaledDataframe = loadedScaler.transform(valuesDataframe)
+            scaledDataframe = PortScanDoS.loadedScaler.transform(valuesDataframe)
             valuesDataframe = pd.DataFrame(scaledDataframe, columns=PortScanDoS.selectedColumns)
-            predictions = loadedModel.predict(valuesDataframe)
-            keysDataframe.loc[:, 'Result'] = predictions
+            predictions = PortScanDoS.loadedModel.predict(valuesDataframe)
+            flowDataframe.loc[:, 'Result'] = predictions
+            flowDataframe.loc[:, 'timestamp'] = np.full(shape=len(flowDataframe), fill_value=NetworkInformation.GetCurrentTimestamp(), dtype=object)
+            attackDictKeys = keyColumns + ['Result'] #first 5 columns + 'Result'
 
             # check for attacks in model predictions
-            if (1 in predictions) and (2 in predictions):#1 and 2 means PortScan and DoS attacks together
-                shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_PortAndDoS.txt') # temporary code for saving false positive if the occure during scans
+            if (1 in predictions) and (2 in predictions): #1 and 2 means PortScan and DoS attacks together
+                # we convert the dataframe into dict where each key is flow: (srcIp, srcMac, dstIp, dstMac, protocol, result), value: {details}
+                attackDict = flowDataframe[flowDataframe['Result'] != 0].set_index(attackDictKeys).to_dict(orient='index') #indication of PortScan and DoS attacks together
+                # shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_PortAndDoS.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
                     'Detected PortScan and DoS attack',
-                    state=3,
-                    flows=keysDataframe[keysDataframe['Result'] != 0].to_dict(orient='records')
+                    type=3,
+                    attackDict=attackDict
                 )
 
             elif 1 in predictions: #1 means PortScan attack
-                shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_Port.txt') # temporary code for saving false positive if the occure during scans
+                # we convert the dataframe into dict where each key is flow: (srcIp, srcMac, dstIp, dstMac, protocol, result), value: {details}
+                attackDict = flowDataframe[flowDataframe['Result'] == 1].set_index(attackDictKeys).to_dict(orient='index') #indication of PortScan attack
+                # shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_Port.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
                     'Detected PortScan attack',
-                    state=1,
-                    flows=keysDataframe[keysDataframe['Result'] == 1].to_dict(orient='records')
+                    type=1,
+                    attackDict=attackDict
                 )
             
             elif 2 in predictions: #2 means DoS attack
-                shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_DoS.txt') # temporary code for saving false positive if the occure during scans
+                # we convert the dataframe into dict where each key is flow: (srcIp, srcMac, dstIp, dstMac, protocol, result), value: {details}
+                attackDict = flowDataframe[flowDataframe['Result'] == 2].set_index(attackDictKeys).to_dict(orient='index') #indication of DoS attack
+                # shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_DoS.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
                     'Detected DoS attack',
-                    state=2,
-                    flows=keysDataframe[keysDataframe['Result'] == 2].to_dict(orient='records')
+                    type=2,
+                    attackDict=attackDict
                 )
 
-            # show results of the prediction
-            labelCounts = keysDataframe['Result'].value_counts()
-            print(f'Results: {labelCounts}\n')
-            print(f'Num of Port Scan ips: {keysDataframe[keysDataframe['Result'] == 1]['Src IP'].unique()}\n')
-            print(f'Num of DoS ips: {keysDataframe[keysDataframe['Result'] == 2]['Src IP'].unique()}\n')
-            print(f'Number of detected attacks:\n {keysDataframe[keysDataframe['Result'] != 0]}\n')
-            print('Predictions:\n', keysDataframe)
+            # print the dataframe and other data to the terminal
+            print('#=================================================================================================================================================#')
+            print(f'\n |>> No Port Scanning / DoS attacks where detected <<|\n |>> Number of flows in current cycle: {len(flowDataframe)} <<|')
+            print(f'\n |>> Currect Cycle Dataframe: <<|\n\n{flowDataframe[keyColumns + ['Result', 'timestamp']]}')
+            print('#=================================================================================================================================================#')
 
-        except PortScanDoSException as e: #if we recived ArpSpoofingException we alert the user
+            result['state'] = True #indication for no attacks
+
+        except PortScanDoSException as e: #if we received PortScanDoSException we alert the user
+            result.update({'state': False, 'type': e.type, 'attackDict': e.attackDict}) #indication of attack
             print(e)
         except Exception as e: #we catch an exception if something happend
             print(f'Error occurred: {e}')
+        finally:
+            return result
 
 #--------------------------------------------PORT-SCANNING-DoS-END-------------------------------------------#
 
 #-----------------------------------------------DNS-TUNNELING------------------------------------------------#
 class DNSTunnelingException(Exception):
-    def __init__(self, message, flows):
+    def __init__(self, message, type, attackDict):
         super().__init__(message)
-        self.flows = flows #represents the flow in which the attack was detected
+        self.type = type #represents the type of dns tunneling attack (default 1)
+        self.attackDict = attackDict #represents the attack dict with detected attack flows
 
     # str representation of dns tunneling exception for showing results
     def __str__(self):
-        detailsList = '\n##### DNS Tunneling ATTACK ######\n'
-        detailsList += '\n'.join([f'[*] Source IP: {flow['Src IP']} , Destination IP: {flow['Dst IP']} , Protocol: {flow['Protocol']}' for flow in self.flows])
-        return f'{self.args[0]}\nDetails:\n{detailsList}\n'
+        details = '\n##### DNS Tunneling ATTACK ######\n'
+        details += '\n'.join([f'''[*] Source IP: {flow[0]} , Source Mac: {flow[1]} , Destination IP: {flow[2]}, Destination Mac: {flow[3]} , Protocol: {flow[4]}'''
+                        for flow in self.attackDict])
+        return f'{self.args[0]}\nDetails:\n{details}\n'
 
 
 # static class that represents the collection and detection of DNS Tunneling attack
 class DNSTunneling(ABC):
+    loadedModel = joblib.load(currentDir.parent / 'models' / 'dns_svm_model.pkl') #load SVM model for DNS tunneling
+    loadedScaler = joblib.load(currentDir.parent / 'models' / 'dns_scaler.pkl') #load scaler for SVM model
     selectedColumns = [
         'A Record Count', 'AAAA Record Count', 'CName Record Count', 'TXT Record Count', 'MX Record Count', 'DF Flag Count',
         'Average Response Data Length', 'Min Response Data Length', 'Max Response Data Length', 'Average Domain Name Length',
@@ -832,12 +838,13 @@ class DNSTunneling(ABC):
         'Flow Duration', 'IAT Total', 'IAT Max', 'IAT Mean', 'IAT Std'
     ]
 
+    # function for processing the flowDict and creating the dataframe that will be passed to classifier
     @staticmethod
-    def ProcessFlows(): 
+    def ProcessFlows(dnsDict): 
         featuresDict = defaultdict(dict) #represents our features dict where each flow tuple has its corresponding features
 
         # iterate over our flow dict and calculate features
-        for flow, packetList in SniffNetwork.dnsDict.items():
+        for flow, packetList in dnsDict.items():
             ARecordCount = 0 #represennts number of A record (ipv4) packets in flow
             AAAARecordCount = 0 #represennts number of AAAA record (ipv6) packets in flow
             CNameRecordCount = 0 #represents number of C-Name record packets in flow
@@ -956,45 +963,50 @@ class DNSTunneling(ABC):
     # function for predicting DNS Tunneling attack given flow dictionary
     @staticmethod
     def PredictDNS(flowDict):
+        # represents result of analysis dictionary {state: T/F, type: 1-DnsTunneling, attackDict: {}}
+        result = {'state': False, 'type': 1, 'attackDict': {}}
+        attackDict = {} #represents attack dict with anomalies
         try: 
             # extract keys and values from flowDict and save it as a DataFrame
-            keyColumns = ['Src IP', 'Dst IP', 'Protocol']
+            keyColumns = ['srcIp', 'srcMac', 'dstIp', 'dstMac', 'protocol']
             flowDataframe = pd.DataFrame.from_dict(flowDict, orient='index').reset_index() 
-            flowDataframe.columns = keyColumns + flowDataframe.columns[3:].to_list() #rename the column names of the keys
-            keysDataframe = flowDataframe[keyColumns].copy()
+            flowDataframe.columns = keyColumns + flowDataframe.columns[5:].to_list() #rename the column names of the keys
             valuesDataframe = flowDataframe.drop(keyColumns, axis=1)
 
-            # load the PortScanning and DoS model
-            modelPath = getModelPath('dns_svm_model.pkl')
-            scalerPath = getModelPath('dns_scaler.pkl')
-            loadedModel = joblib.load(modelPath) 
-            loadedScaler = joblib.load(scalerPath) 
-
             # scale the input data and predict the scaled input
-            scaledDataframe = loadedScaler.transform(valuesDataframe)
+            scaledDataframe = DNSTunneling.loadedScaler.transform(valuesDataframe)
             valuesDataframe = pd.DataFrame(scaledDataframe, columns=DNSTunneling.selectedColumns)
-            predictions = loadedModel.predict(valuesDataframe)
-            keysDataframe.loc[:, 'Result'] = predictions
+            predictions = DNSTunneling.loadedModel.predict(valuesDataframe)
+            flowDataframe.loc[:, 'Result'] = predictions
+            flowDataframe.loc[:, 'timestamp'] = np.full(shape=len(flowDataframe), fill_value=NetworkInformation.GetCurrentTimestamp(), dtype=object)
+            attackDictKeys = keyColumns + ['Result'] #first 5 columns + 'Result'
 
             # check for attacks in model predictions
             if 1 in predictions: #1 means DNS Tunneling attack
-                shutil.copy('detectedFlowsDNS.txt', f'{np.random.randint(1,1000000)}_detectedFlowsDNS.txt') # temporary code for saving false positive if the occure during scans
+                # we convert the dataframe into dict where each key is flow: (srcIp, srcMac, dstIp, dstMac, protocol, result), value: {details}
+                attackDict = flowDataframe[flowDataframe['Result'] == 1].set_index(attackDictKeys).to_dict(orient='index') #indication of DNS attack
+                # shutil.copy('detectedFlowsDNS.txt', f'{np.random.randint(1,1000000)}_detectedFlowsDNS.txt') # temporary code for saving false positive if the occure during scans
                 raise DNSTunnelingException( #throw an exeption to inform user of its presence
                     'Detected DNS Tunneling attack',
-                    flows=keysDataframe[keysDataframe['Result'] == 1].to_dict(orient='records')
+                    type=1,
+                    attackDict=attackDict
                 )
             
-            # show results of the prediction
-            labelCounts = keysDataframe['Result'].value_counts()
-            print(f'Results: {labelCounts}\n')
-            print(f'Num of DNS Tunneling ips: {keysDataframe[keysDataframe['Result'] == 1]['Src IP'].unique()}\n')
-            print(f'Number of detected attacks:\n {keysDataframe[keysDataframe['Result'] != 0]}\n')
-            print('Predictions:\n', keysDataframe)  
+            # print the dataframe and other data to the terminal
+            print('#=================================================================================================================================================#')
+            print(f'\n |>> No DNS Tunneling attacks where detected <<|\n |>> Number of flows in current cycle: {len(flowDataframe)} <<|')
+            print(f'\n |>> Currect Cycle Dataframe: <<|\n\n{flowDataframe[keyColumns + ['Result', 'timestamp']]}')
+            print('#=================================================================================================================================================#')
 
-        except DNSTunnelingException as e: #if we recived ArpSpoofingException we alert the user
+            result['state'] = True #indication for no attacks
+
+        except DNSTunnelingException as e: #if we received DNSTunnelingException we alert the user
+            result.update({'state': False, 'type': e.type, 'attackDict': e.attackDict}) #indication of attack
             print(e)
         except Exception as e: #we catch an exception if something happend
             print(f'Error occurred: {e}')
+        finally:
+            return result
 
 #----------------------------------------------DNS-TUNNELING-END---------------------------------------------#
 
@@ -1036,25 +1048,25 @@ class SaveData(ABC):
 
 #-------------------------------------------------MAIN-START-------------------------------------------------#
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
-    # call scan network func to initiate network scan 'en6' / 'Ethernet' / 'Wi-Fi'
-    SniffNetwork.selectedInterface = 'Ethernet' #mimicking a user selected interface from spinbox
-    SniffNetwork.ScanNetwork()
+#     # call scan network func to initiate network scan 'en6' / 'Ethernet' / 'Wi-Fi'
+#     NetworkInformation.selectedInterface = 'Ethernet' #mimicking a user selected interface from spinbox
+#     NetworkInformation.ScanNetwork()
 
-    # call arp processing function and check for arp spoofing attacks
-    # ArpSpoofing.ProcessARP()
+#     # call arp processing function and check for arp spoofing attacks
+#     # ArpSpoofing.ProcessARP(SniffNetwork.arpList)
 
-    # call port scanning and dos processing function and predict attack
-    # portScanFlows = PortScanDoS.ProcessFlows()
-    # SaveData.SaveFlowsInFile(portScanFlows) #save the collected data in txt format
-    # SaveData.SaveCollectedData(portScanFlows) #save the collected data in CSV format
-    # PortScanDoS.PredictPortDoS(portScanFlows) #call our predict function for detecting port dos attack
+#     # call port scanning and dos processing function and predict attack
+#     # portScanFlows = PortScanDoS.ProcessFlows(SniffNetwork.portScanDosDict)
+#     # SaveData.SaveFlowsInFile(portScanFlows) #save the collected data in txt format
+#     # SaveData.SaveCollectedData(portScanFlows) #save the collected data in CSV format
+#     # PortScanDoS.PredictPortDoS(portScanFlows) #call our predict function for detecting port dos attack
 
-    # call dns processing function and predict attack
-    dnsFlows = DNSTunneling.ProcessFlows()
-    SaveData.SaveFlowsInFile(dnsFlows, 'detectedFlowsDNS.txt') #save the collected data in txt format
-    SaveData.SaveCollectedData(dnsFlows, 'dns_benign_dataset.csv', DNSTunneling.selectedColumns) #save the collected data in CSV format
-    DNSTunneling.PredictDNS(dnsFlows)
+#     # call dns processing function and predict attack
+#     dnsFlows = DNSTunneling.ProcessFlows(NetworkInformation.dnsDict)
+#     SaveData.SaveFlowsInFile(dnsFlows, 'detectedFlowsDNS.txt') #save the collected data in txt format
+#     SaveData.SaveCollectedData(dnsFlows, 'dns_benign_dataset.csv', DNSTunneling.selectedColumns) #save the collected data in CSV format
+#     DNSTunneling.PredictDNS(dnsFlows)
 
 #--------------------------------------------------MAIN-END--------------------------------------------------#

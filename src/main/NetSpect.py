@@ -126,7 +126,6 @@ class NetSpect(QMainWindow):
         self.sqlThread.changeEmailResultSignal.connect(self.SaveEmailResult) # max
         self.sqlThread.changeUsernameResultSignal.connect(self.SaveUsernameResult) # max
         self.sqlThread.changePasswordResultSignal.connect(self.SavePasswordResult) # max
-        # self.sqlThread.deleteUserResultSignal.connect()
         # self.sqlThread.deleteUserResultSignal.connect() # shay
         # self.sqlThread.addAlertResultSignal.connect() # shay
         # self.sqlThread.deleteAlertsResultSignal.connect() # shay

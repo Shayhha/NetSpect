@@ -158,7 +158,6 @@ class SQL_Thread(QThread):
             # emit registration signal to main thread
             self.registrationResultSignal.emit(resultDict)
 
-
     
     # method for changing user's email in Users table
     @pyqtSlot(int, str)
@@ -522,7 +521,6 @@ class SQL_Thread(QThread):
         finally:
             # emit delete blacklist mac address signal to main thread
             self.deleteBlacklistMacResultSignal.emit(resultDict)
-
 
     #---------------------------------------------SQL-FUNCTIONS-END----------------------------------------------#
 

@@ -12,6 +12,7 @@ from SQLHelper import *
 class NetSpect(QMainWindow):
     userData = {'userId': None, 'email': None, 'userName': None, 'numberOfDetectedAttacks': 0, 'lightMode': 0, 'alertList': [], 'blackList': []} #represents user data in interface
     isDetection = False #represents flag for indicating if detection is active
+    usernameValidator, passwordValidator, finalPasswordPattern, emailValidator = None, None, None, None #represents the validators that hold regexes for various input fields in the program
     totalTimer, arpTimer, portScanDosTimer, dnsTimer = None, None, None, None #represents timer for each thread for evaluating when to send data
     totalTimeout, arpTimeout, portScanDosTimout, dnsTimout = 1000, 40000, 40000, 40000 #represents timeout for each timer
     arpThreshold, portScanDosThreshold, dnsThreshold = 20, 10000, 350 #represents thresholds for each thread
@@ -47,6 +48,9 @@ class NetSpect(QMainWindow):
         self.startStopButton.clicked.connect(self.StartStopButtonClicked)
         self.loginPushButton.clicked.connect(self.LoginButtonClicked)
         self.addMacAddressPushButton.clicked.connect(self.AddMacAddressButtonClicked)
+        self.emailPushButton.clicked.connect(self.SaveEmailButtonClicked)
+        self.usernamePushButton.clicked.connect(self.SaveUsernameButtonClicked)
+        self.passwordPushButton.clicked.connect(self.SavePasswordButtonClicked)
 
         # connect interface labels to their methods
         self.accountIcon.mousePressEvent = lambda event: UserInterfaceFunctions.AccountIconClicked(self)
@@ -117,10 +121,10 @@ class NetSpect(QMainWindow):
         self.sqlThread = SQL_Thread(self)
         # connect relevant signals for sql thread
         self.sqlThread.loginResultSignal.connect(self.LoginResult) # shay
-        # self.sqlThread.registrationResultSignal.connect() # max
-        # self.sqlThread.changeEmailResultSignal.connect() # shay
-        # self.sqlThread.changeUsernameResultSignal.connect() # max
-        # self.sqlThread.changePasswordResultSignal.connect() # max
+        # self.sqlThread.registrationResultSignal.connect() # shay
+        self.sqlThread.changeEmailResultSignal.connect(self.SaveEmailResult) # max
+        self.sqlThread.changeUsernameResultSignal.connect(self.SaveUsernameResult) # max
+        self.sqlThread.changePasswordResultSignal.connect(self.SavePasswordResult) # max
         # self.sqlThread.deleteUserResultSignal.connect() # shay
         # self.sqlThread.addAlertResultSignal.connect() # shay
         # self.sqlThread.deleteAlertsResultSignal.connect() # shay
@@ -134,23 +138,32 @@ class NetSpect(QMainWindow):
     # method for setting input validators on line edits in gui
     def InitValidators(self):
         # create regex expressions and validators
-        usernameValidator = QRegExpValidator(QRegExp('^[A-Za-z0-9]{4,16}$'))
-        passwordValidator = QRegExpValidator(QRegExp('[A-Za-z\\d$&?@#|.^*()%!]{6,20}')) 
-        finalPasswordPattern = '^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d$&?@#|.^*()%!]{6,20}$'
-        emailValidator = QRegExpValidator(QRegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'))
+        self.usernameValidator = QRegExpValidator(QRegExp('^[A-Za-z0-9]{4,16}$'))
+        self.passwordValidator = QRegExpValidator(QRegExp('[A-Za-z\\d$&?@#|.^*()%!]{6,20}')) 
+        self.finalPasswordValidator = QRegExpValidator(QRegExp('^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d$&?@#|.^*()%!]{6,20}$'))
+        self.emailValidator = QRegExpValidator(QRegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'))
 
         # set validaotrs for username, password and email line edits in the register popup and settings page
-        self.registerEmailLineEdit.setValidator(emailValidator)
-        self.registerUsernameLineEdit.setValidator(usernameValidator)
-        self.registerPasswordLineEdit.setValidator(passwordValidator)
-
+        self.registerEmailLineEdit.setValidator(self.emailValidator)
+        self.registerUsernameLineEdit.setValidator(self.usernameValidator)
+        self.registerPasswordLineEdit.setValidator(self.passwordValidator)
+        self.emailLineEdit.setValidator(self.emailValidator)
+        self.usernameLineEdit.setValidator(self.usernameValidator)
+        self.oldPasswordLineEdit.setValidator(self.passwordValidator)
+        self.newPasswordLineEdit.setValidator(self.passwordValidator)
+        self.confirmPasswordLineEdit.setValidator(self.passwordValidator)
+    
         # connect the textChanged signal to the function that checks validation, this adds borders to the line edits if the text does not match the regex
         self.loginUsernameLineEdit.textChanged.connect(lambda : UserInterfaceFunctions.ClearErrorMessageText(self.loginErrorMessageLabel))
         self.loginPasswordLineEdit.textChanged.connect(lambda : UserInterfaceFunctions.ClearErrorMessageText(self.loginErrorMessageLabel))
         self.registerEmailLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.registerEmailLineEdit, 'registerEmailLineEdit', self.registerErrorMessageLabel))
         self.registerUsernameLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.registerUsernameLineEdit, 'registerUsernameLineEdit', self.registerErrorMessageLabel))
         self.registerPasswordLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.registerPasswordLineEdit, 'registerPasswordLineEdit', self.registerErrorMessageLabel))
-
+        self.emailLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEditSettings(self.emailLineEdit, 'emailLineEdit', self.saveEmailErrorMessageLabel))
+        self.usernameLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEditSettings(self.usernameLineEdit, 'usernameLineEdit', self.saveUsernameErrorMessageLabel))
+        self.oldPasswordLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEditSettings(self.oldPasswordLineEdit, 'oldPasswordLineEdit', self.savePasswordErrorMessageLabel))
+        self.newPasswordLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEditSettings(self.newPasswordLineEdit, 'newPasswordLineEdit', self.savePasswordErrorMessageLabel))
+        self.confirmPasswordLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEditSettings(self.confirmPasswordLineEdit, 'confirmPasswordLineEdit', self.savePasswordErrorMessageLabel))
 
 
     # method for setting the text in the error message in login and register popups
@@ -190,6 +203,33 @@ class NetSpect(QMainWindow):
             lineEditWidget.setStyleSheet(currentStylesheet.replace('border: 2px solid lightgray;', 'border: 2px solid #D84F4F;'))
 
 
+    # method for changing the styles of a line edit when it does not match the regex
+    def NotifyInvalidLineEditSettings(self, lineEditWidget, lineEditName, errorMessageLabel=None):
+        # Getting the current stylesheet by object name for the given line edit in settings page
+        defaultStylesheet = UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits(lineEditName)
+
+        # set initial styles
+        lineEditWidget.setStyleSheet(defaultStylesheet)
+
+        # clear error message and hide error message label if given
+        if errorMessageLabel:
+            UserInterfaceFunctions.ClearErrorMessageText(errorMessageLabel)
+
+        # check if the input matches the regex, if not update the border style to red (invalid input)
+        if not lineEditWidget.hasAcceptableInput():
+            lineEditWidget.setStyleSheet(defaultStylesheet.replace('border: 2px solid lightgray;', 'border: 2px solid #D84F4F;'))
+
+
+    # helper function that validates that a given password matches the password validator regex
+    def ValidatePassword(self, password, errorLabelObject, errorMessage):
+        simpleValidatorState, _, _ = self.passwordValidator.validate(password, 0)
+        complexValidatorState, _, _ = self.finalPasswordValidator.validate(password, 0)
+        if (simpleValidatorState != self.passwordValidator.Acceptable) or (complexValidatorState != self.finalPasswordValidator.Acceptable):
+            UserInterfaceFunctions.ChangeErrorMessageText(errorLabelObject, errorMessage)
+            return False
+        return True
+            
+
     # method that sets the text in the info page with the system information of the users machine
     def InitSystemInfo(self, systemDict):
         # initialize system information section (left side)
@@ -220,7 +260,7 @@ class NetSpect(QMainWindow):
     # method for initializing mac addresses blacklist in gui
     def InitMacAddresses(self, macBlacklist):
         self.macAddressListWidget.clear() #clear mac addresses list
-        self.ipAddressesListWidget.addItems(macBlacklist) #add all mac addresses to our blacklist
+        self.macAddressListWidget.addItems(macBlacklist) #add all mac addresses to our blacklist
 
 
     # method for initializing history table widget in gui
@@ -863,7 +903,12 @@ class NetSpect(QMainWindow):
                     UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, 'This MAC address already exists in blacklist')
                 else: #means that this mac address is NOT already in the list
                     UserInterfaceFunctions.ClearErrorMessageText(self.macAddressBlacklistErrorMessageLabel)
-                    self.sqlThread.AddBlacklistMac(self.userData.get('userId'), newMacAddress)
+                    if self.userData.get('userId') == None: #if not logged in
+                        self.macAddressListWidget.addItem(newMacAddress)
+                        self.macAddressLineEdit.clear()
+                        self.userData.get('blackList').append(newMacAddress)
+                    else:
+                        self.sqlThread.AddBlacklistMac(self.userData.get('userId'), newMacAddress)
 
 
     # method for removing an item from the mac address blacklist when the user clicks the 'delete' button in the contex menu of the list widget
@@ -873,7 +918,57 @@ class NetSpect(QMainWindow):
                 UserInterfaceFunctions.ShowPopup('Error Deleting From Blacklist', 'Please stop detection before attempting to delete an item from the blacklist.', 'Information')
             else:
                 self.seletecItemForDelete = item
-                self.sqlThread.DeleteBlacklistMac(self.userData.get('userId'), item.text())
+                if self.userData.get('userId') == None:
+                    self.macAddressListWidget.takeItem(self.macAddressListWidget.row(self.seletecItemForDelete))
+                    self.userData.get('blackList').remove(self.seletecItemForDelete.text())
+                else:
+                    self.sqlThread.DeleteBlacklistMac(self.userData.get('userId'), item.text())
+
+                    
+    # method for saving and updating the user's email after user clicks save button in settings page
+    def SaveEmailButtonClicked(self):
+        if self.sqlThread:
+            if self.userData.get('userId') != None:
+                newEmail = self.emailLineEdit.text()
+                state, _, _ = self.emailValidator.validate(newEmail, 0)
+                if newEmail == self.userData.get('email'):
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.saveEmailErrorMessageLabel ,'You\'r new email is the same as the current email, please enter a different email before clicking the save button.')
+                elif state != self.emailValidator.Acceptable:
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.saveEmailErrorMessageLabel ,'Please enter a valid email address into the field before clicking the save button.')
+                else:
+                    self.sqlThread.ChangeEmail(self.userData.get('userId'), newEmail)
+
+
+    # method for saving and updating the user's username after user clicks save button in settings page
+    def SaveUsernameButtonClicked(self):
+        if self.sqlThread:
+            if self.userData.get('userId') != None:
+                newUsername = self.usernameLineEdit.text()
+                state, _, _ = self.usernameValidator.validate(newUsername, 0)
+                if newUsername == self.userData.get('username'):
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.saveUsernameErrorMessageLabel ,'You\'r new username is the same as the current username, please enter a different username before clicking the save button.')
+                elif state != self.usernameValidator.Acceptable:
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.saveUsernameErrorMessageLabel ,'Please enter a valid username into the field before clicking the save button.')
+                else:
+                    self.sqlThread.ChangeUserName(self.userData.get('userId'), newUsername)
+
+
+    # method for saving and updating the user's password after user clicks save button in settings page
+    def SavePasswordButtonClicked(self):
+        if self.sqlThread:
+            if self.userData.get('userId') != None:
+                oldPassword = self.oldPasswordLineEdit.text()
+                newPassword = self.newPasswordLineEdit.text()
+                confirmPassword = self.confirmPasswordLineEdit.text()
+                if (len(oldPassword) == 0) or (len(newPassword) == 0) or (len(confirmPassword) == 0):
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.savePasswordErrorMessageLabel ,'Please fill in all password fields before clicking the save button.')
+                elif newPassword != confirmPassword:
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.savePasswordErrorMessageLabel ,'Please confirm your new password, the password in the second and third fields must be the same before clicking the save button.')
+                else:
+                    if self.ValidatePassword(oldPassword, self.savePasswordErrorMessageLabel, 'You have entered an invalid password in the first field, please enter the correct current password before clicking the save button.'):
+                        if self.ValidatePassword(newPassword, self.savePasswordErrorMessageLabel, 'You have entered an invalid password in the second field, please enter a valid new password before clicking the save button.'):
+                            if self.ValidatePassword(confirmPassword, self.savePasswordErrorMessageLabel, 'You have entered an invalid password in the third field, please enter a valid new password before clicking the save button.'):
+                                self.sqlThread.ChangePassword(self.userData.get('userId'), NetSpect.ToSHA256(newPassword), NetSpect.ToSHA256(oldPassword))
 
     #---------------------------------------------CLICKED-METHODS-END--------------------------------------------#
 
@@ -891,7 +986,7 @@ class NetSpect(QMainWindow):
         # means we succesfuly logged in
         elif resultDict.get('state') and resultDict.get('result'):
             self.ChangeUserState(True, resultDict.get('result')) #call our method to log into account
-            
+
 
     # method for showing results to the user after adding a mac address to blacklist
     @pyqtSlot(dict)
@@ -900,8 +995,9 @@ class NetSpect(QMainWindow):
             UserInterfaceFunctions.ShowPopup('Error Adding To Blacklist', 'Failed to add an item to the blacklist due to server error, please try again later.', 'Critical')
         elif not resultDict.get('state'):
             UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, resultDict.get('message'))
-        elif resultDict.get('state') and resultDict.get('result'):
+        elif resultDict.get('state'):
             self.macAddressListWidget.addItem(self.macAddressLineEdit.text())
+            self.userData.get('blackList').append(self.macAddressLineEdit.text())
         self.macAddressLineEdit.clear()
 
 
@@ -912,9 +1008,65 @@ class NetSpect(QMainWindow):
             UserInterfaceFunctions.ShowPopup('Error Removing From Blacklist', 'Failed to remove an item from the blacklist due to server error, please try again later.', 'Critical')
         elif not resultDict.get('state'):
             UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, resultDict.get('message'))
-        elif resultDict.get('state') and resultDict.get('result'):
+        elif resultDict.get('state'):
             self.macAddressListWidget.takeItem(self.macAddressListWidget.row(self.seletecItemForDelete))
+            self.userData.get('blackList').remove(self.seletecItemForDelete.text())
         self.seletecItemForDelete = None
+
+
+    # method for showing results to the user after removing a mac address from blacklist 
+    @pyqtSlot(dict)
+    def SaveEmailResult(self, resultDict):
+        if resultDict.get('error'):
+            UserInterfaceFunctions.ShowPopup('Error Saving Email', 'Failed to save the email due to server error, please try again later.', 'Critical')
+        elif not resultDict.get('state'):
+            UserInterfaceFunctions.ChangeErrorMessageText(self.saveEmailErrorMessageLabel, resultDict.get('message'))
+        elif resultDict.get('state'):
+            self.saveEmailErrorMessageLabel.clear()
+            self.userData['email'] = self.emailLineEdit.text()
+            UserInterfaceFunctions.ShowPopup('Success', 'You\'r email was changed successfully.', 'Information')
+
+
+    # method for showing results to the user after removing a mac address from blacklist 
+    @pyqtSlot(dict)
+    def SaveUsernameResult(self, resultDict):
+        if resultDict.get('error'):
+            UserInterfaceFunctions.ShowPopup('Error Saving Email', 'Failed to save the email due to server error, please try again later.', 'Critical')
+        elif not resultDict.get('state'):
+            UserInterfaceFunctions.ChangeErrorMessageText(self.saveUsernameErrorMessageLabel, resultDict.get('message'))
+        elif resultDict.get('state'):
+            self.saveUsernameErrorMessageLabel.clear()
+            self.userData['username'] = self.usernameLineEdit.text()
+            self.welcomeLabel.setText(f'Welcome {self.usernameLineEdit.text()}')
+            UserInterfaceFunctions.ShowPopup('Success', 'You\'r username was changed successfully.', 'Information')
+
+
+    # method for showing results to the user after removing a mac address from blacklist 
+    @pyqtSlot(dict)
+    def SavePasswordResult(self, resultDict):
+        if resultDict.get('error'):
+            UserInterfaceFunctions.ShowPopup('Error Saving Email', 'Failed to save the email due to server error, please try again later.', 'Critical')
+        elif not resultDict.get('state'):
+            UserInterfaceFunctions.ChangeErrorMessageText(self.savePasswordErrorMessageLabel, resultDict.get('message'))
+        elif resultDict.get('state'):
+            # clear the password input fields
+            self.savePasswordErrorMessageLabel.clear()
+            self.oldPasswordLineEdit.clear()
+            self.newPasswordLineEdit.clear()
+            self.confirmPasswordLineEdit.clear()
+
+            # for each password input field we want to and reset the borde to light gray, this is needed because after clearing the password input fields the border becomes red due to textChange event on line edits
+            oldPassStyle = UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits('oldPasswordLineEdit')
+            oldPassStyle.replace('border: 2px solid lightgray;', 'border: 2px solid #D84F4F;')
+            newPassStyle = UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits('newPasswordLineEdit')
+            newPassStyle.replace('border: 2px solid lightgray;', 'border: 2px solid #D84F4F;')
+            confirmPassStyle = UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits('confirmPasswordLineEdit')
+            confirmPassStyle.replace('border: 2px solid lightgray;', 'border: 2px solid #D84F4F;')
+
+            self.oldPasswordLineEdit.setStyleSheet(oldPassStyle)
+            self.newPasswordLineEdit.setStyleSheet(newPassStyle)
+            self.confirmPasswordLineEdit.setStyleSheet(confirmPassStyle)
+            UserInterfaceFunctions.ShowPopup('Success', 'You\'r password was changed successfully.', 'Information')
 
     #--------------------------------------------SQL-RESULT-SLOTS-END--------------------------------------------#
 

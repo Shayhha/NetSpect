@@ -305,7 +305,7 @@ class SQL_Thread(QThread):
 
     # method for deleting a user from Users table
     @pyqtSlot(int)
-    def ChangePassword(self, userId):
+    def DeleteUser(self, userId):
         resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
         try:
             # delete given user from Users table by userId

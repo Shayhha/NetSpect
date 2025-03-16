@@ -186,6 +186,10 @@ def ToggleUserInterface(self, state, username=''):
     self.registerEmailLineEdit.clear()
     self.registerUsernameLineEdit.clear()
     self.registerPasswordLineEdit.clear()
+    self.saveEmailErrorMessageLabel.clear()
+    self.saveUsernameErrorMessageLabel.clear()
+    self.savePasswordErrorMessageLabel.clear()
+    self.macAddressBlacklistErrorMessageLabel.clear()
 
 
 # helper function for chaning the current page index on the stack widget
@@ -335,6 +339,22 @@ def ShowSettingsInputFields(self):
     self.settingsChangeVerticalFrame.show()
     self.deleteAccoutPushButton.show()
     self.settingsInterfaceMacButtonsVerticalFrame.setContentsMargins(0, 10, 0, 0) #returning the default values
+
+
+# helper function for returning the default style sheet of the line edits in the settings page
+def GetDefaultStyleSheetSettingsLineEdits(lineEditName):
+    defaultStylesheet = f''' 
+        #{lineEditName} {{
+            background-color: #f0f0f0; 
+            border: 2px solid lightgray;  
+            border-radius: 10px;         
+            padding: 5px;              
+            font-size: 14px;            
+            color: black;             
+            {'margin: 0px 0px 10px 0px;' if (('old' in lineEditName) or ('new' in lineEditName)) else 'margin: 0px 0px 0px 0px;'}
+        }}
+    '''
+    return defaultStylesheet
 
 #-------------------------------------------OTHER-FUNCTIONS-END----------------------------------------------#
 
@@ -511,7 +531,13 @@ invertedPieChartLabelDict = {
     'DNS Tunneling': 'DNS'
 }
 
-defaultPieChartSliceColors = ['#90cfef', '#209fdf', '#15668f', '#092d40'] #default blue colors for the pie chart slices
+# dictionary with default blue colors for the pie chart slices for each attack by name
+defaultPieChartSliceColors = {
+    'ARP Spoofing': '#90cfef',
+    'Port Scan': '#209fdf',
+    'DoS': '#15668f',
+    'DNS Tunneling': '#092d40'
+}
 
 # function for creating and initializing an empty pie chart
 def InitPieChart(self):
@@ -566,7 +592,7 @@ def InitPieChart(self):
         ''')
 
         # setup the pie chart legends in advance
-        for i, attackName in enumerate(pieChartLabelDict.values()):
+        for i, (attackName, sliceColor) in enumerate(zip(pieChartLabelDict.values(), defaultPieChartSliceColors.values())):
             legendFont = QFont('Cairo', 12, QFont.Bold, False) # font settings for legend (defined once)
             legendLabel = QLabel(f'{attackName} 0%')
             legendLabel.setFont(legendFont)
@@ -575,9 +601,8 @@ def InitPieChart(self):
             
             colorLabel = QLabel()
             colorLabel.setFixedSize(20, 20)
-            colorHex = defaultPieChartSliceColors[i]
-            colorLabel.setStyleSheet(f'background-color: {colorHex}; border: 1px solid black;')
-            
+            colorLabel.setStyleSheet(f'background-color: {sliceColor}; border: 1px solid black;')
+
             row = i // 2
             col = (i % 2) * 2
             self.legendLayout.addWidget(colorLabel, row, col)
@@ -600,13 +625,13 @@ def InitPieChart(self):
 # function for updating the pie chart after an attack was detected, expects an attack name like: ARP, DNS, Port Scan, DoS
 def UpdateChartAfterAttack(self, attackName):
     try:
-        attackName = invertedPieChartLabelDict.get(attackName)
+        correctAttackName = invertedPieChartLabelDict.get(attackName)
         series = self.piChart.series()[0]
 
         # increment the value of the attack slice based on given attack name
         found = False
         for slice in series.slices():
-            if attackName in slice.label():  
+            if correctAttackName in slice.label():  
                 slice.setValue(slice.value() + 1)
                 found = True
                 break
@@ -614,14 +639,14 @@ def UpdateChartAfterAttack(self, attackName):
         # if slice does not exist, then create a new slice and add it to the pie chart
         if not found:
             sliceFont = QFont('Cairo', 11, QFont.Bold, False)
-            newSlice = series.append(attackName, 1)
+            newSlice = series.append(correctAttackName, 1)
             newSlice.setLabelFont(sliceFont)
             newSlice.setLabelVisible(True)
             newSlice.setLabelArmLengthFactor(0.075)
-            newSlice.setLabel(f'{attackName} {newSlice.percentage()*100:.1f}%')
+            newSlice.setLabel(f'{correctAttackName} {newSlice.percentage()*100:.1f}%')
             newSlice.setLabelColor(QColor(1, 1, 1, 255))
-            newSlice.setColor(QColor(defaultPieChartSliceColors[len(series.slices()) - 1]))
-        
+            newSlice.setColor(QColor(defaultPieChartSliceColors.get(attackName)))
+
         # set the title to be empty (hide the title) if there is atleast one attack detection in history
         if series.count() > 0:
             self.piChart.setTitle('')
@@ -674,12 +699,13 @@ def UpdateChartAfterLogin(self, pieChartData):
         UpdateChartLegendsAndSlices(self)
 
         # update the css of the slice labels because we created new ones right here
-        for slice in self.piChart.series()[0].slices():
+        for slice, attackName in zip(self.piChart.series()[0].slices(), pieChartData.keys()):
             sliceFont = QFont('Cairo', 11, QFont.Bold, False)
             slice.setLabelFont(sliceFont)
             slice.setLabelVisible(True)
             slice.setLabelArmLengthFactor(0.075)
             slice.setLabelColor(QColor(1, 1, 1, 255))
+            slice.setColor(QColor(defaultPieChartSliceColors.get(attackName)))
 
     except Exception as e:
         ShowPopup('Error Updating Pie Chart', 'Error occurred while updating pie chart, try again later.', 'Critical')

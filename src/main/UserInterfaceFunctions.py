@@ -63,9 +63,13 @@ def AccountIconClicked(self):
     if self.loginRegisterVerticalFrame.width() == 0: #fade in animation
         animation.setStartValue(0)
         animation.setEndValue(303)
+        self.loginUsernameLineEdit.setFocus() if self.loginFrame.isVisible() else self.registerEmailLineEdit.setFocus()
     else: #fade out animation
         animation.setStartValue(303)
         animation.setEndValue(0)
+        self.loginUsernameLineEdit.clearFocus()
+        self.registerEmailLineEdit.clearFocus()
+
     
     # start the animation
     animation.start()
@@ -99,9 +103,13 @@ def ReopenRegistryFrame(self, showRegister):
     if showRegister:
         self.loginFrame.hide()
         self.registerFrame.show()
+        self.loginUsernameLineEdit.clearFocus()
+        self.registerEmailLineEdit.setFocus()
     else:
         self.registerFrame.hide()
         self.loginFrame.show()
+        self.loginUsernameLineEdit.setFocus()
+        self.registerEmailLineEdit.clearFocus()
     
     # second animation: Open the frame
     anim2 = QPropertyAnimation(self.loginRegisterVerticalFrame, b'maximumWidth')
@@ -239,7 +247,7 @@ def ShowContextMenu(self, position):
         copyAction = QAction('Copy')
         copyAction.triggered.connect(lambda: CopyToClipboard(item.text()))
         deleteAction = QAction('Delete')
-        deleteAction.triggered.connect(lambda: RemoveItem(self, item))
+        deleteAction.triggered.connect(lambda: self.DeleteMacAddressButtonClicked(item))
         menu.addAction(copyAction)
         menu.addAction(deleteAction)
         menu.exec_(self.macAddressListWidget.viewport().mapToGlobal(position))
@@ -318,7 +326,6 @@ def ClearErrorMessageText(errorMessageObject):
 # hide the change email, username, password and color mode from settings page 
 def HideSettingsInputFields(self):
     self.settingsChangeVerticalFrame.hide()
-    self.interfaceSettingsHorizontalFrame.hide()
     self.deleteAccoutPushButton.hide()
     self.settingsInterfaceMacButtonsVerticalFrame.setContentsMargins(40, 0, 0, 0) 
 
@@ -326,7 +333,6 @@ def HideSettingsInputFields(self):
 # show the change email, username, password and color mode from settings page 
 def ShowSettingsInputFields(self):
     self.settingsChangeVerticalFrame.show()
-    self.interfaceSettingsHorizontalFrame.show()
     self.deleteAccoutPushButton.show()
     self.settingsInterfaceMacButtonsVerticalFrame.setContentsMargins(0, 10, 0, 0) #returning the default values
 
@@ -336,6 +342,8 @@ def ShowSettingsInputFields(self):
 
 # custom popup message box class that will be used to show error messages to the user at certain times
 class CustomMessageBox(QDialog):
+    isShown = False 
+
     # ctor that gets the title, message and icon type (will be shown inside) of the message box pop up window.
     def __init__(self, title, message, iconType):
         super().__init__()
@@ -449,7 +457,13 @@ class CustomMessageBox(QDialog):
             }
         ''')
     
+
+    # overriting the original reject function for when the user closes the popup window to add some new functionality
+    def reject(self):
+        CustomMessageBox.isShown = False
+        super().reject() 
     
+
     # helper fucntion to map the iconType to the appropriate built-in QIcon
     def GetBuiltInIcon(self, iconType):
         icon = QMessageBox.standardIcon(QMessageBox.Information)
@@ -465,15 +479,17 @@ class CustomMessageBox(QDialog):
 # helper function to show a popup window
 def ShowPopup(title, message, iconType='Warning'):
     #iconType options are: Information, Warning, Critical, Question
-    popup = CustomMessageBox(title, message, iconType)
+    if not CustomMessageBox.isShown:
+        popup = CustomMessageBox(title, message, iconType)
 
-    # center the popup window
-    cp = QDesktopWidget().availableGeometry()
-    qr = popup.frameGeometry()
-    centerPosition = cp.center() - qr.center()
-    popup.move(centerPosition) #move to the center
+        # center the popup window
+        cp = QDesktopWidget().availableGeometry()
+        qr = popup.frameGeometry()
+        centerPosition = cp.center() - qr.center()
+        popup.move(centerPosition) #move to the center
 
-    popup.exec_()
+        CustomMessageBox.isShown = True
+        popup.exec_()
 
 #---------------------------------------------POPUP-WINDOW-END-----------------------------------------------#
 
@@ -653,6 +669,8 @@ def UpdateChartAfterLogin(self, pieChartData):
         # add the new series to the chart and update the GUI
         self.piChart.addSeries(newSeries)
         self.piChart.setTitle('') #remove the default title if exists
+        if all(attackCount == 0 for attackCount in pieChartData.values()):
+            self.piChart.setTitle('No Data To Display...') #leave the default title if there is no data to display
         UpdateChartLegendsAndSlices(self)
 
         # update the css of the slice labels because we created new ones right here

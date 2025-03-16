@@ -46,7 +46,8 @@ class NetSpect(QMainWindow):
         # connect interface buttons to their methods
         self.startStopButton.clicked.connect(self.StartStopButtonClicked)
         self.loginPushButton.clicked.connect(self.LoginButtonClicked)
-    
+        self.addMacAddressPushButton.clicked.connect(self.AddMacAddressButtonClicked)
+
         # connect interface labels to their methods
         self.accountIcon.mousePressEvent = lambda event: UserInterfaceFunctions.AccountIconClicked(self)
         self.moveToRegisterLabel.mousePressEvent = lambda event: UserInterfaceFunctions.SwitchBetweenLoginAndRegister(self)
@@ -123,8 +124,8 @@ class NetSpect(QMainWindow):
         # self.sqlThread.deleteUserResultSignal.connect() # shay
         # self.sqlThread.addAlertResultSignal.connect() # shay
         # self.sqlThread.deleteAlertsResultSignal.connect() # shay
-        # self.sqlThread.addBlacklistMacResultSignal.connect() # max
-        # self.sqlThread.deleteBlacklistMacResultSignal.connect() # max
+        self.sqlThread.addBlacklistMacResultSignal.connect(self.AddMacToBlackListResult) # max
+        self.sqlThread.deleteBlacklistMacResultSignal.connect(self.DeleteMacFromBlackListResult) # max
         self.sqlThread.finishSignal.connect(self.CloseSQLThread)
         # start sql thread
         self.sqlThread.start()
@@ -142,7 +143,6 @@ class NetSpect(QMainWindow):
         self.registerEmailLineEdit.setValidator(emailValidator)
         self.registerUsernameLineEdit.setValidator(usernameValidator)
         self.registerPasswordLineEdit.setValidator(passwordValidator)
-        #! need validators for settings page
 
         # connect the textChanged signal to the function that checks validation, this adds borders to the line edits if the text does not match the regex
         self.loginUsernameLineEdit.textChanged.connect(lambda : UserInterfaceFunctions.ClearErrorMessageText(self.loginErrorMessageLabel))
@@ -150,7 +150,7 @@ class NetSpect(QMainWindow):
         self.registerEmailLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.registerEmailLineEdit, 'registerEmailLineEdit', self.registerErrorMessageLabel))
         self.registerUsernameLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.registerUsernameLineEdit, 'registerUsernameLineEdit', self.registerErrorMessageLabel))
         self.registerPasswordLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.registerPasswordLineEdit, 'registerPasswordLineEdit', self.registerErrorMessageLabel))
-        #! need to connect validators for settings page
+
 
 
     # method for setting the text in the error message in login and register popups
@@ -816,6 +816,7 @@ class NetSpect(QMainWindow):
 
 
     #-----------------------------------------------CLICKED-METHODS----------------------------------------------#
+
     # method for loggin into user's account and intialize our userData dictionary
     def LoginButtonClicked(self):
         if self.sqlThread:
@@ -847,10 +848,36 @@ class NetSpect(QMainWindow):
                 self.ChangeUserState(False) #call our method to log out and clear interface
 
 
+    # method for adding an item to the mac address blacklist when user clicks the add button on settings page
+    def AddMacAddressButtonClicked(self):
+        if self.sqlThread:
+            if self.isDetection:
+                UserInterfaceFunctions.ShowPopup('Error Adding To Blacklist', 'Please stop detection before attempting to add an item to the blacklist.', 'Information')
+            else:
+                newMacAddress = self.macAddressLineEdit.text()
+                listOfMacAddresses = [self.macAddressListWidget.item(i).text() for i in range(self.macAddressListWidget.count())]
+                if not QRegExp(r'^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$').exactMatch(newMacAddress):
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, 'Please enter a valid MAC address')
+                elif (len(listOfMacAddresses) > 0) and (newMacAddress in listOfMacAddresses):
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, 'This MAC address already exists in blacklist')
+                else: #means that this mac address is NOT already in the list
+                    UserInterfaceFunctions.ClearErrorMessageText(self.macAddressBlacklistErrorMessageLabel)
+                    self.sqlThread.AddBlacklistMac(self.userData.get('userId'), newMacAddress)
+
+
+    # method for removing an item from the mac address blacklist when the user clicks the 'delete' button in the contex menu of the list widget
+    def DeleteMacAddressButtonClicked(self, item): 
+        if self.sqlThread:
+            if self.isDetection:
+                UserInterfaceFunctions.ShowPopup('Error Deleting From Blacklist', 'Please stop detection before attempting to delete an item from the blacklist.', 'Information')
+            else:
+                self.seletecItemForDelete = item
+                self.sqlThread.DeleteBlacklistMac(self.userData.get('userId'), item.text())
 
     #---------------------------------------------CLICKED-METHODS-END--------------------------------------------#
 
     #----------------------------------------------SQL-RESULT-SLOTS----------------------------------------------#
+
     # method for getting login result from sql thread and process user's data
     @pyqtSlot(dict)
     def LoginResult(self, resultDict):
@@ -865,6 +892,28 @@ class NetSpect(QMainWindow):
             self.ChangeUserState(True, resultDict.get('result')) #call our method to log into account
             
 
+    # method for showing results to the user after adding a mac address to blacklist
+    @pyqtSlot(dict)
+    def AddMacToBlackListResult(self, resultDict):
+        if resultDict.get('error'):
+            UserInterfaceFunctions.ShowPopup('Error Adding To Blacklist', 'Failed to add an item to the blacklist due to server error, please try again later.', 'Critical')
+        elif not resultDict.get('state'):
+            UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, resultDict.get('message'))
+        elif resultDict.get('state') and resultDict.get('result'):
+            self.macAddressListWidget.addItem(self.macAddressLineEdit.text())
+        self.macAddressLineEdit.clear()
+
+
+    # method for showing results to the user after removing a mac address from blacklist 
+    @pyqtSlot(dict)
+    def DeleteMacFromBlackListResult(self, resultDict):
+        if resultDict.get('error'):
+            UserInterfaceFunctions.ShowPopup('Error Removing From Blacklist', 'Failed to remove an item from the blacklist due to server error, please try again later.', 'Critical')
+        elif not resultDict.get('state'):
+            UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, resultDict.get('message'))
+        elif resultDict.get('state') and resultDict.get('result'):
+            self.macAddressListWidget.takeItem(self.macAddressListWidget.row(self.seletecItemForDelete))
+        self.seletecItemForDelete = None
 
     #--------------------------------------------SQL-RESULT-SLOTS-END--------------------------------------------#
 

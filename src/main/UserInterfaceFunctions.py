@@ -172,6 +172,7 @@ def ToggleUserInterface(self, state, username=''):
     self.oldPasswordLineEdit.clear()
     self.newPasswordLineEdit.clear()
     self.confirmPasswordLineEdit.clear()
+    self.macAddressLineEdit.clear()
     self.loginUsernameLineEdit.clear()
     self.loginPasswordLineEdit.clear()
     self.registerEmailLineEdit.clear()
@@ -181,6 +182,13 @@ def ToggleUserInterface(self, state, username=''):
 
 # helper function for chaning the current page index on the stack widget
 def ChangePageIndex(self, index):
+    # clear focus from all line edits
+    self.emailLineEdit.clearFocus()
+    self.usernameLineEdit.clearFocus()
+    self.oldPasswordLineEdit.clearFocus()
+    self.newPasswordLineEdit.clearFocus()
+    self.confirmPasswordLineEdit.clearFocus()
+    self.macAddressLineEdit.clearFocus()
     self.stackedWidget.setCurrentIndex(index)
 
 

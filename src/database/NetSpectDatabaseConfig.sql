@@ -18,7 +18,6 @@ CREATE TABLE Users (
     email VARCHAR(255) UNIQUE NOT NULL,
     userName VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-	numberOfDetectedAttacks INT NOT NULL DEFAULT 0,
 	lightMode INT NOT NULL DEFAULT 0, --represents the color mode of app, 1 means lightmode, else darkmode
 	isDeleted INT NOT NULL DEFAULT 0, --represents state of account, if 1 its deleted, else not
 	CHECK (email LIKE '_%@_%._%'),
@@ -31,6 +30,7 @@ CREATE TABLE Users (
 CREATE TABLE Blacklist (
 	userid INT NOT NULL,
     macAddress VARCHAR(255) NOT NULL,
+	isDeleted INT NOT NULL DEFAULT 0, --represents state of mac address, if 1 its deleted, else not
 	PRIMARY KEY(userId, macAddress),
     FOREIGN KEY (userId) REFERENCES Users(userId)
 );

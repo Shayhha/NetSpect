@@ -967,7 +967,7 @@ class NetSpect(QMainWindow):
                 'osType': NetworkInformation.systemInfo.get('osType'),
                 'timestamp': timestamp
             }
-            self.userData['alertList'].append(alert)
+            self.userData.setdefault('alertList', []).append(alert)
 
             # add alert to our history and report tables in user interface and update counter
             self.UpdateNumberOfDetectionsCounterLabel(1, True) #increment the number of detections counter

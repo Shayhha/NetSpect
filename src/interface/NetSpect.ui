@@ -6255,6 +6255,9 @@ color: #f3f3f3
                                   <property name="text">
                                    <string/>
                                   </property>
+                                  <property name="maxLength">
+                                   <number>17</number>
+                                  </property>
                                   <property name="placeholderText">
                                    <string>Enter mac address</string>
                                   </property>

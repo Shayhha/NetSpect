@@ -10,7 +10,7 @@ from SQLHelper import *
 #--------------------------------------------------------NetSpect-CLASS---------------------------------------------------------#
 # class that represents main app of NetSpect
 class NetSpect(QMainWindow):
-    userData = {'userId': None, 'email': None, 'userName': None, 'numberOfDetections': 0, 'lightMode': 0, 'alertList': [], 'blackList': []} #represents user data in interface
+    userData = {'userId': None, 'email': None, 'userName': None, 'numberOfDetections': 0, 'lightMode': 0, 'alertList': [], 'pieChartData': {}, 'blackList': []} #represents user data in interface
     isDetection = False #represents flag for indicating if detection is active
     usernameValidator, passwordValidator, finalPasswordPattern, emailValidator = None, None, None, None #represents the validators that hold regexes for various input fields in the program
     totalTimer, arpTimer, portScanDosTimer, dnsTimer = None, None, None, None #represents timer for each thread for evaluating when to send data
@@ -343,7 +343,7 @@ class NetSpect(QMainWindow):
             # means we set user interface for logged out user
             else:
                 self.userData = {'userId': None, 'email': None, 'userName': None, 'numberOfDetections': 0,
-                                  'lightMode': 0, 'alertList': [], 'blackList': []} #reset our user data dictionary
+                                  'lightMode': 0, 'alertList': [], 'pieChartData': {}, 'blackList': []} #reset our user data dictionary
                 UserInterfaceFunctions.ToggleUserInterface(self, False) #reset our user interface
 
 
@@ -352,6 +352,7 @@ class NetSpect(QMainWindow):
         if self.userData:
             # increment by value if flag set
             if isIncrement:
+                self.userData.setdefault('numberOfDetections', 0)
                 self.userData['numberOfDetections'] += value
             # else we set value
             else:
@@ -952,7 +953,8 @@ class NetSpect(QMainWindow):
 
     # method for adding alert to tables and also to database if user is logged in
     def AddAlert(self, attackType, srcIp, srcMac, dstIp, dstMac, protocol, timestamp):
-        if self.userData:
+        # we add alert only if it does not associated with black listed mac address
+        if self.userData and srcMac not in self.userData.get('blackList'):
             # add alert as a dictionary into our alertList and tables
             alert = {
                 'interface': NetworkInformation.selectedInterface,
@@ -969,6 +971,7 @@ class NetSpect(QMainWindow):
 
             # add alert to our history and report tables in user interface and update counter
             self.UpdateNumberOfDetectionsCounterLabel(1, True) #increment the number of detections counter
+            UserInterfaceFunctions.UpdateChartAfterAttack(self, attackType) #increment attack type in pie chart
             self.AddRowToHistoryTable(alert.get('srcIp'), alert.get('srcMac'), alert.get('dstIp'), alert.get('dstMac'), alert.get('attackType'), alert.get('timestamp'))
             self.AddRowToReportTable(alert.get('interface'), alert.get('attackType'), alert.get('srcIp'), alert.get('srcMac'), alert.get('dstIp'), alert.get('dstMac'), 
                                             alert.get('protocol'), alert.get('timestamp'))
@@ -987,7 +990,10 @@ class NetSpect(QMainWindow):
             if self.userData:
                 # clear history and report tables and also reset alertsList and user interface counter
                 self.userData['alertList'] = [] #clear alertsList in userData
+                self.userData['pieChartData'] = {} #clear pieChartData in userData
+                self.userData['blackList'] = [] #clear blackList in userData
                 self.UpdateNumberOfDetectionsCounterLabel(0) #reset the number of detections counter in user interface
+                UserInterfaceFunctions.ResetChartToDefault(self) #reset our pie chart
                 self.historyTableWidget.setRowCount(0) #clear history table
                 self.reportPreviewTableWidget.setRowCount(0) #clear report table
                 
@@ -1016,7 +1022,7 @@ class NetSpect(QMainWindow):
                 else:
                     self.macAddressListWidget.addItem(newMacAddress)
                     self.macAddressLineEdit.clear()
-                    self.userData.get('blackList').append(newMacAddress)
+                    self.userData.setdefault('blackList', []).append(newMacAddress)
 
 
     # method for removing an item from the mac address blacklist when the user clicks the 'delete' button in the contex menu of the list widget
@@ -1029,7 +1035,7 @@ class NetSpect(QMainWindow):
                 self.sqlThread.DeleteBlacklistMac(self.userData.get('userId'), item.text())
             else:
                 self.macAddressListWidget.takeItem(self.macAddressListWidget.row(self.seletecItemForDelete))
-                self.userData.get('blackList').remove(self.seletecItemForDelete.text())
+                self.userData.setdefault('blackList', []).remove(self.seletecItemForDelete.text())
 
 
     # method for saving and updating the user's email after user clicks save button in settings page
@@ -1159,7 +1165,7 @@ class NetSpect(QMainWindow):
             UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, resultDict.get('message'))
         elif resultDict.get('state'):
             self.macAddressListWidget.addItem(self.macAddressLineEdit.text())
-            self.userData.get('blackList').append(self.macAddressLineEdit.text())
+            self.userData.setdefault('blackList', []).append(self.macAddressLineEdit.text())
         self.macAddressLineEdit.clear()
 
 
@@ -1172,7 +1178,7 @@ class NetSpect(QMainWindow):
             UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, resultDict.get('message'))
         elif resultDict.get('state'):
             self.macAddressListWidget.takeItem(self.macAddressListWidget.row(self.seletecItemForDelete))
-            self.userData.get('blackList').remove(self.seletecItemForDelete.text())
+            self.userData.setdefault('blackList', []).remove(self.seletecItemForDelete.text())
         self.seletecItemForDelete = None
 
 

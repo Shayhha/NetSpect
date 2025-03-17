@@ -307,6 +307,9 @@ class SQL_Thread(QThread):
     def DeleteAccount(self, userId):
         resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
         try:
+            # set autocommit to false for executing both queires together
+            self.connection.autocommit = False
+
             # delete all alerts for user in Alerts table
             alertsQuery = '''
                 UPDATE Alerts 
@@ -335,6 +338,8 @@ class SQL_Thread(QThread):
             resultDict['message'] = f'Error deleting user account: {e}.'
             resultDict['error'] = True
         finally:
+            # set autocommit back to true for next queries
+            self.connection.autocommit = True
             # emit delete account signal to main thread
             self.deleteAccountResultSignal.emit(resultDict)
 

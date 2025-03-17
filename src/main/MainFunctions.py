@@ -1045,28 +1045,3 @@ class SaveData(ABC):
                 file.write('================================================================\n')
 
 #------------------------------------------SAVING-COLLECTED-DATA-END-----------------------------------------#
-
-#-------------------------------------------------MAIN-START-------------------------------------------------#
-
-# if __name__ == '__main__':
-
-#     # call scan network func to initiate network scan 'en6' / 'Ethernet' / 'Wi-Fi'
-#     NetworkInformation.selectedInterface = 'Ethernet' #mimicking a user selected interface from spinbox
-#     NetworkInformation.ScanNetwork()
-
-#     # call arp processing function and check for arp spoofing attacks
-#     # ArpSpoofing.ProcessARP(SniffNetwork.arpList)
-
-#     # call port scanning and dos processing function and predict attack
-#     # portScanFlows = PortScanDoS.ProcessFlows(SniffNetwork.portScanDosDict)
-#     # SaveData.SaveFlowsInFile(portScanFlows) #save the collected data in txt format
-#     # SaveData.SaveCollectedData(portScanFlows) #save the collected data in CSV format
-#     # PortScanDoS.PredictPortDoS(portScanFlows) #call our predict function for detecting port dos attack
-
-#     # call dns processing function and predict attack
-#     dnsFlows = DNSTunneling.ProcessFlows(NetworkInformation.dnsDict)
-#     SaveData.SaveFlowsInFile(dnsFlows, 'detectedFlowsDNS.txt') #save the collected data in txt format
-#     SaveData.SaveCollectedData(dnsFlows, 'dns_benign_dataset.csv', DNSTunneling.selectedColumns) #save the collected data in CSV format
-#     DNSTunneling.PredictDNS(dnsFlows)
-
-#--------------------------------------------------MAIN-END--------------------------------------------------#

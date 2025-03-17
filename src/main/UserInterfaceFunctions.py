@@ -172,8 +172,8 @@ def ToggleUserInterface(self, state):
     self.dnsTunnelingCheckBox.setChecked(True)
     self.machineInfoCheckBox.setChecked(False)
 
-    #clear settings, login and register line edits and reset detected attacks
-    self.detectedAttacksCounter.setText('0')
+    #clear settings, login and register line edits and reset number of detections
+    self.numberOfDetectionsCounter.setText('0')
     self.emailLineEdit.clear()
     self.usernameLineEdit.clear()
     self.oldPasswordLineEdit.clear()

@@ -1601,7 +1601,7 @@ QToolTip {
                            </widget>
                           </item>
                           <item>
-                           <widget class="QFrame" name="detectedAttacksHorizontalFrame">
+                           <widget class="QFrame" name="numberOfDetectionsHorizontalFrame">
                             <property name="minimumSize">
                              <size>
                               <width>0</width>
@@ -1615,7 +1615,7 @@ QToolTip {
                              </size>
                             </property>
                             <property name="styleSheet">
-                             <string notr="true">#detectedAttacksHorizontalFrame {
+                             <string notr="true">#numberOfDetectionsHorizontalFrame {
 	background-color: transparent;
 	color: #f3f3f3;
 }</string>
@@ -1637,7 +1637,7 @@ QToolTip {
                               <number>0</number>
                              </property>
                              <item>
-                              <widget class="QLabel" name="detectedAttacksLabel">
+                              <widget class="QLabel" name="numberOfDetectionsLabel">
                                <property name="minimumSize">
                                 <size>
                                  <width>190</width>
@@ -1659,7 +1659,7 @@ QToolTip {
                                 </font>
                                </property>
                                <property name="styleSheet">
-                                <string notr="true">#detectedAttacksLabel {
+                                <string notr="true">#numberOfDetectionsLabel {
 	background-color: transparent;
 	color: black;
 }</string>
@@ -1679,7 +1679,7 @@ QToolTip {
                               </widget>
                              </item>
                              <item>
-                              <widget class="QLabel" name="detectedAttacksCounter">
+                              <widget class="QLabel" name="numberOfDetectionsCounter">
                                <property name="minimumSize">
                                 <size>
                                  <width>60</width>
@@ -1704,7 +1704,7 @@ QToolTip {
                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Number of detected attacks&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                </property>
                                <property name="styleSheet">
-                                <string notr="true">#detectedAttacksCounter {
+                                <string notr="true">#numberOfDetectionsCounter {
 	background-color: transparent;
 	color: black;
 }</string>

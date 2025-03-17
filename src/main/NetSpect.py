@@ -10,7 +10,7 @@ from SQLHelper import *
 #--------------------------------------------------------NetSpect-CLASS---------------------------------------------------------#
 # class that represents main app of NetSpect
 class NetSpect(QMainWindow):
-    userData = {'userId': None, 'email': None, 'userName': None, 'numberOfDetectedAttacks': 0, 'lightMode': 0, 'alertList': [], 'blackList': []} #represents user data in interface
+    userData = {'userId': None, 'email': None, 'userName': None, 'numberOfDetections': 0, 'lightMode': 0, 'alertList': [], 'blackList': []} #represents user data in interface
     isDetection = False #represents flag for indicating if detection is active
     usernameValidator, passwordValidator, finalPasswordPattern, emailValidator = None, None, None, None #represents the validators that hold regexes for various input fields in the program
     totalTimer, arpTimer, portScanDosTimer, dnsTimer = None, None, None, None #represents timer for each thread for evaluating when to send data
@@ -48,6 +48,8 @@ class NetSpect(QMainWindow):
         self.startStopButton.clicked.connect(self.StartStopButtonClicked)
         self.loginPushButton.clicked.connect(self.LoginButtonClicked)
         self.registerPushButton.clicked.connect(self.RegisterButtonClicked)
+        self.deleteAccoutPushButton.clicked.connect(self.DeleteAccoutButtonClicked)
+        self.clearHistoryPushButton.clicked.connect(self.DeleteAlertsButtonClicked)
         self.addMacAddressPushButton.clicked.connect(self.AddMacAddressButtonClicked)
         self.emailPushButton.clicked.connect(self.SaveEmailButtonClicked)
         self.usernamePushButton.clicked.connect(self.SaveUsernameButtonClicked)
@@ -75,6 +77,7 @@ class NetSpect(QMainWindow):
         UserInterfaceFunctions.InitAnimationsUI(self) # setup left sidebar elements and login/register popup frame
         self.InitSystemInfo(NetworkInformation.GetSystemInformation()) #initialize the system information in the info page (machine name, version, etc.)
         self.InitValidators() #initialize the network information in the info page (interface name, mac address, ips, etc.)
+        self.UpdateNumberOfDetectionsCounterLabel(0) #reset number of detections counter label
         self.ChangeLoginRegisterErrorMessage() #reset the login popup error message
         self.ChangeLoginRegisterErrorMessage(isLogin=False) #reset the register popup error message
         self.InitSQLThread() #call init method for sql thread
@@ -126,9 +129,9 @@ class NetSpect(QMainWindow):
         self.sqlThread.changeEmailResultSignal.connect(self.SaveEmailResult) # max
         self.sqlThread.changeUsernameResultSignal.connect(self.SaveUsernameResult) # max
         self.sqlThread.changePasswordResultSignal.connect(self.SavePasswordResult) # max
-        # self.sqlThread.deleteUserResultSignal.connect() # shay
-        # self.sqlThread.addAlertResultSignal.connect() # shay
-        # self.sqlThread.deleteAlertsResultSignal.connect() # shay
+        self.sqlThread.deleteAccountResultSignal.connect(self.DeleteAccountResult) # shay
+        self.sqlThread.addAlertResultSignal.connect(self.AddAlertResult) # shay
+        self.sqlThread.deleteAlertsResultSignal.connect(self.DeleteAlertsResult) # shay
         self.sqlThread.addBlacklistMacResultSignal.connect(self.AddMacToBlackListResult) # max
         self.sqlThread.deleteBlacklistMacResultSignal.connect(self.DeleteMacFromBlackListResult) # max
         self.sqlThread.finishSignal.connect(self.CloseSQLThread)
@@ -329,7 +332,7 @@ class NetSpect(QMainWindow):
                 UserInterfaceFunctions.AccountIconClicked(self) #close login popup
                 UserInterfaceFunctions.ToggleUserInterface(self, True) #toggle user interface
                 self.welcomeLabel.setText(f'Welcome {self.userData.get('userName')}')
-                self.detectedAttacksCounter.setText(str(self.userData.get('numberOfDetectedAttacks'))) #set num of detected attacks counter
+                self.UpdateNumberOfDetectionsCounterLabel(self.userData.get('numberOfDetections')) #set num of detections counter
                 self.emailLineEdit.setText(self.userData.get('email')) #set email of user in settings page
                 self.usernameLineEdit.setText(self.userData.get('userName')) #set username of user in settings page
                 self.InitHistoryTable(self.userData.get('alertList')) #initialize our history table
@@ -339,9 +342,22 @@ class NetSpect(QMainWindow):
 
             # means we set user interface for logged out user
             else:
-                self.userData = {'userId': None, 'email': None, 'userName': None, 'numberOfDetectedAttacks': 0,
+                self.userData = {'userId': None, 'email': None, 'userName': None, 'numberOfDetections': 0,
                                   'lightMode': 0, 'alertList': [], 'blackList': []} #reset our user data dictionary
                 UserInterfaceFunctions.ToggleUserInterface(self, False) #reset our user interface
+
+
+    # method for updating number of detections counter label in gui
+    def UpdateNumberOfDetectionsCounterLabel(self, value, isIncrement=False):
+        if self.userData:
+            # increment by value if flag set
+            if isIncrement:
+                self.userData['numberOfDetections'] += value
+            # else we set value
+            else:
+                self.userData['numberOfDetections'] = value
+            # set numberOfDetectionsCounter with new value
+            self.numberOfDetectionsCounter.setText(str(self.userData.get('numberOfDetections')))
 
 
     # method for updating running time label in gui
@@ -644,9 +660,7 @@ class NetSpect(QMainWindow):
                     if isNewAttack:
                         # iterate over each mac in given set and add it to our tables
                         for mac in details.get('srcMac', set()):
-                            self.AddRowToHistoryTable(details.get('srcIp'), mac, details.get('dstIp'), details.get('dstMac'), 'ARP Spoofing', details.get('timestamp'))
-                            self.AddRowToReportTable(NetworkInformation.selectedInterface, 'ARP Spoofing', details.get('srcIp'), mac, details.get('dstIp'), details.get('dstMac'), details.get('protocol'), details.get('timestamp'))
-                            #! add attack to database
+                            self.AddAlert('ARP Spoofing', details.get('srcIp'), mac, details.get('dstIp'), details.get('dstMac'), details.get('protocol'), details.get('timestamp'))
                             print(f'New ipToMac ARP Spoofing attack detected from IP {ip}: srcIp: {details.get('srcIp')}, srcMac: {mac}, dstIp: {details.get('dstIp')}, dstMac: {details.get('dstMac')}, protocol: {details.get('protocol')}')
 
             # handle Mac to Ip anomalies we found in arp spoofing attack (including initialization)
@@ -681,9 +695,7 @@ class NetSpect(QMainWindow):
                     if isNewAttack:
                         # iterate over each ip in given set and add it to our tables
                         for ip in details.get('srcIp', set()):
-                            self.AddRowToHistoryTable(ip, details.get('srcMac'), details.get('dstIp'), details.get('dstMac'), 'ARP Spoofing', details.get('timestamp'))
-                            self.AddRowToReportTable(NetworkInformation.selectedInterface, 'ARP Spoofing', ip, details.get('srcMac'), details.get('dstIp'), details.get('dstMac'), details.get('protocol'), details.get('timestamp'))
-                            #! add attack to database
+                            self.AddAlert('ARP Spoofing', ip, details.get('srcMac'), details.get('dstIp'), details.get('dstMac'), details.get('protocol'), details.get('timestamp'))
                             print(f'New macToIp ARP Spoofing attack detected from MAC {mac}: srcIp: {ip}, srcMac: {details.get('srcMac')}, dstIp: {details.get('dstIp')}, dstMac: {details.get('dstMac')}, protocol: {details.get('protocol')}')
 
             print('Detected Arp Spoofing!')
@@ -716,15 +728,11 @@ class NetSpect(QMainWindow):
                 if isNewAttack:
                     # handle anomalies we found in port scan attack and add them to our tables
                     if type in (1, 3) and flow[5] == 1:
-                        self.AddRowToHistoryTable(flow[0], flow[1], flow[2], flow[3], 'Port Scan', details.get('timestamp'))
-                        self.AddRowToReportTable(NetworkInformation.selectedInterface, 'Port Scan', flow[0], flow[1], flow[2], flow[3], flow[4], details.get('timestamp'))
-                        #! add attack to database
+                        self.AddAlert('Port Scan', flow[0], flow[1], flow[2], flow[3], flow[4], details.get('timestamp'))
                         print(f'New Port Scan attack detected from IP {flow[0]}: srcIp: {flow[0]}, srcMac: {flow[1]}, dstIp: {flow[2]}, dstMac: {flow[3]}, protocol: {flow[4]}')
                     # handle anomalies we found in DoS attack and add them to our tables
                     if type in (2, 3) and flow[5] == 2:
-                        self.AddRowToHistoryTable(flow[0], flow[1], flow[2], flow[3], 'DoS', details.get('timestamp'))
-                        self.AddRowToReportTable(NetworkInformation.selectedInterface, 'DoS', flow[0], flow[1], flow[2], flow[3], flow[4], details.get('timestamp'))
-                        #! add attack to database
+                        self.AddAlert('DoS', flow[0], flow[1], flow[2], flow[3], flow[4], details.get('timestamp'))
                         print(f'New DoS attack detected from IP {flow[0]}: srcIp: {flow[0]}, srcMac: {flow[1]}, dstIp: {flow[2]}, dstMac: {flow[3]}, protocol: {flow[4]}')
 
             print('Detected Port Scan / Dos attack!')
@@ -755,9 +763,7 @@ class NetSpect(QMainWindow):
                 # if attack is new we update tables in gui and add to database
                 if isNewAttack:
                     # handle anomalies we found in dns tunneling attack and add them to our tables
-                    self.AddRowToHistoryTable(flow[0], flow[1], flow[2], flow[3], 'DNS Tunneling', details.get('timestamp'))
-                    self.AddRowToReportTable(NetworkInformation.selectedInterface, 'DNS Tunneling', flow[0], flow[1], flow[2], flow[3], flow[4], details.get('timestamp'))
-                    #! add attack to database
+                    self.AddAlert('DNS Tunneling', flow[0], flow[1], flow[2], flow[3], flow[4], details.get('timestamp'))
                     print(f'New DNS Tunneling attack detected from IP {flow[0]}: srcIp: {flow[0]}, srcMac: {flow[1]}, dstIp: {flow[2]}, dstMac: {flow[3]}, protocol: {flow[4]}')
 
             print('Detected DNS Tunneling attack!')
@@ -781,7 +787,6 @@ class NetSpect(QMainWindow):
             self.arpCounter, self.tcpUdpCounter, self.dnsCounter = 0, 0, 0 #reset our counters
             self.arpList, self.portScanDosDict, self.dnsDict = [], {}, {} #reset our packet data structures
             self.arpAttackDict, self.portScanDosAttackDict, self.dnsAttackDict = {'ipToMac': {}, 'macToIp': {}}, {}, {} #reset known attacks
-            self.historyTableWidget.setRowCount(0) #clear history table
 
 
     # method for starting our threads and detect network cyber attacks in real time
@@ -866,7 +871,7 @@ class NetSpect(QMainWindow):
         if self.sqlThread:
             # means we had detection active
             if self.isDetection:
-                UserInterfaceFunctions.ShowPopup('Detetcion In Progress' 'Please stop detection before attempting to log in.', 'Information')
+                UserInterfaceFunctions.ShowPopup('Error In Login' 'Please stop detection before attempting to log in.', 'Information')
             # means both fields are empty
             elif not self.loginUsernameLineEdit.text() and not self.loginPasswordLineEdit.text():
                 UserInterfaceFunctions.ChangeErrorMessageText(self.loginErrorMessageLabel, 'Please enter username and password.')
@@ -886,7 +891,7 @@ class NetSpect(QMainWindow):
         if self.sqlThread:
             # means we had detection active
             if self.isDetection:
-                UserInterfaceFunctions.ShowPopup('Detetcion In Progress' 'Please stop detection before attempting to log out.', 'Information')
+                UserInterfaceFunctions.ShowPopup('Error In Logout' 'Please stop detection before attempting to log out.', 'Information')
             # else we log out and clear interface
             else:
                 self.ChangeUserState(False) #call our method to log out and clear interface
@@ -897,7 +902,7 @@ class NetSpect(QMainWindow):
         if self.sqlThread:
             # means we had detection active
             if self.isDetection:
-                UserInterfaceFunctions.ShowPopup('Detetcion In Progress' 'Please stop detection before attempting to register.', 'Information')
+                UserInterfaceFunctions.ShowPopup('Error In Registration' 'Please stop detection before attempting to register.', 'Information')
             # else we register new user
             else:
                 email = self.registerEmailLineEdit.text()
@@ -933,42 +938,100 @@ class NetSpect(QMainWindow):
                     self.sqlThread.Register(email, username, NetSpect.ToSHA256(password))
 
 
-    # method for adding an item to the mac address blacklist when user clicks the add button on settings page
-    def AddMacAddressButtonClicked(self):
+    # method for deleting user account from database when user clicks the delete account button in settings page
+    def DeleteAccoutButtonClicked(self):
         if self.sqlThread:
+            # means we had detection active
             if self.isDetection:
-                UserInterfaceFunctions.ShowPopup('Error Adding To Blacklist', 'Please stop detection before attempting to add an item to the blacklist.', 'Information')
+                UserInterfaceFunctions.ShowPopup('Error Deleting Account' 'Please stop detection before attempting to delete account.', 'Information')
+            # else we emit signal to sql thread to delete account from database
             else:
-                newMacAddress = self.macAddressLineEdit.text()
-                listOfMacAddresses = [self.macAddressListWidget.item(i).text() for i in range(self.macAddressListWidget.count())]
-                if not QRegExp(r'^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$').exactMatch(newMacAddress):
-                    UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, 'Please enter a valid MAC address')
-                elif (len(listOfMacAddresses) > 0) and (newMacAddress in listOfMacAddresses):
-                    UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, 'This MAC address already exists in blacklist')
-                else: #means that this mac address is NOT already in the list
-                    UserInterfaceFunctions.ClearErrorMessageText(self.macAddressBlacklistErrorMessageLabel)
-                    if self.userData.get('userId') == None: #if not logged in
-                        self.macAddressListWidget.addItem(newMacAddress)
-                        self.macAddressLineEdit.clear()
-                        self.userData.get('blackList').append(newMacAddress)
-                    else:
-                        self.sqlThread.AddBlacklistMac(self.userData.get('userId'), newMacAddress)
+                #! need to add here a question message box for asking user if he wants to delete account
+                self.sqlThread.DeleteAccount(self.userData.get('userId'))
+
+
+    # method for adding alert to tables and also to database if user is logged in
+    def AddAlert(self, attackType, srcIp, srcMac, dstIp, dstMac, protocol, timestamp):
+        if self.userData:
+            # add alert as a dictionary into our alertList and tables
+            alert = {
+                'interface': NetworkInformation.selectedInterface,
+                'attackType': attackType,
+                'srcIp': srcIp,
+                'srcMac': srcMac,
+                'dstIp': dstIp,
+                'dstMac': dstMac,
+                'protocol': protocol,
+                'osType': NetworkInformation.systemInfo.get('osType'),
+                'timestamp': timestamp
+            }
+            self.userData['alertList'].append(alert)
+
+            # add alert to our history and report tables in user interface and update counter
+            self.UpdateNumberOfDetectionsCounterLabel(1, True) #increment the number of detections counter
+            self.AddRowToHistoryTable(alert.get('srcIp'), alert.get('srcMac'), alert.get('dstIp'), alert.get('dstMac'), alert.get('attackType'), alert.get('timestamp'))
+            self.AddRowToReportTable(alert.get('interface'), alert.get('attackType'), alert.get('srcIp'), alert.get('srcMac'), alert.get('dstIp'), alert.get('dstMac'), 
+                                            alert.get('protocol'), alert.get('timestamp'))
+            
+            # add alert to database if user is logged in
+            if self.sqlThread and self.userData.get('userId'):
+                self.sqlThread.AddAlert(self.userData.get('userId'), alert.get('interface'), alert.get('attackType'), alert.get('srcIp'), alert.get('srcMac'), alert.get('dstIp'),
+                                            alert.get('dstMac'), alert.get('protocol'), alert.get('osType'), alert.get('timestamp'))
+                
+
+    # method for deleting all previous detected alerts of user and also updating database if user is logged in
+    def DeleteAlertsButtonClicked(self):
+        if self.isDetection:
+            UserInterfaceFunctions.ShowPopup('Error Deleting Alerts', 'Please stop detection before attempting to delete alerts history.', 'Information')
+        else:
+            if self.userData:
+                # clear history and report tables and also reset alertsList and user interface counter
+                self.userData['alertList'] = [] #clear alertsList in userData
+                self.UpdateNumberOfDetectionsCounterLabel(0) #reset the number of detections counter in user interface
+                self.historyTableWidget.setRowCount(0) #clear history table
+                self.reportPreviewTableWidget.setRowCount(0) #clear report table
+                
+                # delete alerts from database if user is logged in
+                if self.sqlThread and self.userData.get('userId'):
+                    self.sqlThread.DeleteAlerts(self.userData.get('userId'))
+                else:
+                    UserInterfaceFunctions.ShowPopup('Alerts Deletion Successful', 'Deleted all alerts history for previously detected attacks.', 'Information')
+
+
+    # method for adding an item to the mac address blacklist when user clicks the add button in settings page
+    def AddMacAddressButtonClicked(self):
+        if self.isDetection:
+            UserInterfaceFunctions.ShowPopup('Error Adding To Blacklist', 'Please stop detection before attempting to add an item to the blacklist.', 'Information')
+        else:
+            newMacAddress = self.macAddressLineEdit.text().lower() #convert characters to lower case for ease of use
+            listOfMacAddresses = [self.macAddressListWidget.item(i).text() for i in range(self.macAddressListWidget.count())]
+            if not QRegExp(r'^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$').exactMatch(newMacAddress):
+                UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, 'Please enter a valid MAC address')
+            elif (len(listOfMacAddresses) > 0) and (newMacAddress in listOfMacAddresses):
+                UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, 'This MAC address already exists in blacklist')
+            else: #means that this mac address is NOT already in the list
+                UserInterfaceFunctions.ClearErrorMessageText(self.macAddressBlacklistErrorMessageLabel)
+                if self.sqlThread and self.userData.get('userId'):
+                    self.sqlThread.AddBlacklistMac(self.userData.get('userId'), newMacAddress)
+                else:
+                    self.macAddressListWidget.addItem(newMacAddress)
+                    self.macAddressLineEdit.clear()
+                    self.userData.get('blackList').append(newMacAddress)
 
 
     # method for removing an item from the mac address blacklist when the user clicks the 'delete' button in the contex menu of the list widget
     def DeleteMacAddressButtonClicked(self, item): 
-        if self.sqlThread:
-            if self.isDetection:
-                UserInterfaceFunctions.ShowPopup('Error Deleting From Blacklist', 'Please stop detection before attempting to delete an item from the blacklist.', 'Information')
+        if self.isDetection:
+            UserInterfaceFunctions.ShowPopup('Error Deleting From Blacklist', 'Please stop detection before attempting to delete an item from the blacklist.', 'Information')
+        else:
+            self.seletecItemForDelete = item
+            if self.sqlThread and self.userData.get('userId'):
+                self.sqlThread.DeleteBlacklistMac(self.userData.get('userId'), item.text())
             else:
-                self.seletecItemForDelete = item
-                if self.userData.get('userId') == None:
-                    self.macAddressListWidget.takeItem(self.macAddressListWidget.row(self.seletecItemForDelete))
-                    self.userData.get('blackList').remove(self.seletecItemForDelete.text())
-                else:
-                    self.sqlThread.DeleteBlacklistMac(self.userData.get('userId'), item.text())
+                self.macAddressListWidget.takeItem(self.macAddressListWidget.row(self.seletecItemForDelete))
+                self.userData.get('blackList').remove(self.seletecItemForDelete.text())
 
-                    
+
     # method for saving and updating the user's email after user clicks save button in settings page
     def SaveEmailButtonClicked(self):
         if self.sqlThread:
@@ -1018,7 +1081,7 @@ class NetSpect(QMainWindow):
 
     #----------------------------------------------SQL-RESULT-SLOTS----------------------------------------------#
 
-    # method for getting login result from sql thread and process user's data
+    # method for showing login result from sql thread and process user's data
     @pyqtSlot(dict)
     def LoginResult(self, resultDict):
         # means error occured, we show error pop up
@@ -1032,7 +1095,7 @@ class NetSpect(QMainWindow):
             self.ChangeUserState(True, resultDict.get('result')) #call our method to log into account
 
     
-    # method for getting register result from sql thread and process user's data
+    # method for showing register result from sql thread and process user's data
     @pyqtSlot(dict)
     def RegisterResult(self, resultDict):
         # means error occured, we show error pop up
@@ -1047,11 +1110,51 @@ class NetSpect(QMainWindow):
             UserInterfaceFunctions.ShowPopup('Registration Successful', 'You have successfully registered. Logged into your account automatically.', 'Information')
 
 
+    # method for showing delete account result from sql thread
+    @pyqtSlot(dict)
+    def DeleteAccountResult(self, resultDict):
+        # means error occured, we show error pop up
+        if resultDict.get('error'):
+            UserInterfaceFunctions.ShowPopup('Error Deleting Account', 'Error deleting account due to server error, please try again later.', 'Critical')
+        # means failed deleting account, we show error message
+        elif not resultDict.get('state'):
+            UserInterfaceFunctions.ShowPopup('Failed Deleting Account', 'Failed deleting account due to server error, please try again later.', 'Critical')
+        # means we successfully deleted account, we logout of previous user account
+        elif resultDict.get('state'):
+            self.LogoutButtonClicked() #call our method to log out of previous account
+            UserInterfaceFunctions.ShowPopup('User Account Deletion Successful', 'Your account has been deleted successfully. Sorry to see you go.', 'Information')
+        
+
+    # method for showing add alert result from sql thread
+    @pyqtSlot(dict)
+    def AddAlertResult(self, resultDict):
+        # means error occured, we show error pop up
+        if resultDict.get('error'):
+            UserInterfaceFunctions.ShowPopup('Error Adding Alert', 'Error adding alert due to server error.', 'Critical')
+        # means failed adding alert, we show error message
+        elif not resultDict.get('state'):
+            UserInterfaceFunctions.ShowPopup('Failed Adding Alert', 'Failed adding alert due to server error.', 'Critical')
+
+
+    # method for showing delete alerts result from sql thread
+    @pyqtSlot(dict)
+    def DeleteAlertsResult(self, resultDict):
+        # means error occured, we show error pop up
+        if resultDict.get('error'):
+            UserInterfaceFunctions.ShowPopup('Error Deleting Alerts', 'Error deleting alerts history due to server error, please try again later.', 'Critical')
+        # means failed deleting alerts, we show error message
+        elif not resultDict.get('state'):
+            UserInterfaceFunctions.ShowPopup('Failed Deleting Alerts', 'Failed deleting alerts history due to server error, please try again later.', 'Critical')
+        # means we successfully deleted alerts
+        elif resultDict.get('state'):
+            UserInterfaceFunctions.ShowPopup('Alerts Deletion Successful', 'Deleted all alerts history for previously detected attacks.', 'Information')
+
+
     # method for showing results to the user after adding a mac address to blacklist
     @pyqtSlot(dict)
     def AddMacToBlackListResult(self, resultDict):
         if resultDict.get('error'):
-            UserInterfaceFunctions.ShowPopup('Error Adding To Blacklist', 'Failed to add an item to the blacklist due to server error, please try again later.', 'Critical')
+            UserInterfaceFunctions.ShowPopup('Error Adding To Blacklist', 'Error adding an item to the blacklist due to server error, please try again later.', 'Critical')
         elif not resultDict.get('state'):
             UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, resultDict.get('message'))
         elif resultDict.get('state'):
@@ -1064,7 +1167,7 @@ class NetSpect(QMainWindow):
     @pyqtSlot(dict)
     def DeleteMacFromBlackListResult(self, resultDict):
         if resultDict.get('error'):
-            UserInterfaceFunctions.ShowPopup('Error Removing From Blacklist', 'Failed to remove an item from the blacklist due to server error, please try again later.', 'Critical')
+            UserInterfaceFunctions.ShowPopup('Error Removing From Blacklist', 'Error removing an item from the blacklist due to server error, please try again later.', 'Critical')
         elif not resultDict.get('state'):
             UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, resultDict.get('message'))
         elif resultDict.get('state'):
@@ -1077,7 +1180,7 @@ class NetSpect(QMainWindow):
     @pyqtSlot(dict)
     def SaveEmailResult(self, resultDict):
         if resultDict.get('error'):
-            UserInterfaceFunctions.ShowPopup('Error Saving Email', 'Failed to save the email due to server error, please try again later.', 'Critical')
+            UserInterfaceFunctions.ShowPopup('Error Saving Email', 'Error saving the email due to server error, please try again later.', 'Critical')
         elif not resultDict.get('state'):
             UserInterfaceFunctions.ChangeErrorMessageText(self.saveEmailErrorMessageLabel, resultDict.get('message'))
         elif resultDict.get('state'):
@@ -1090,7 +1193,7 @@ class NetSpect(QMainWindow):
     @pyqtSlot(dict)
     def SaveUsernameResult(self, resultDict):
         if resultDict.get('error'):
-            UserInterfaceFunctions.ShowPopup('Error Saving Email', 'Failed to save the email due to server error, please try again later.', 'Critical')
+            UserInterfaceFunctions.ShowPopup('Error Saving Email', 'Error saving the email due to server error, please try again later.', 'Critical')
         elif not resultDict.get('state'):
             UserInterfaceFunctions.ChangeErrorMessageText(self.saveUsernameErrorMessageLabel, resultDict.get('message'))
         elif resultDict.get('state'):
@@ -1104,7 +1207,7 @@ class NetSpect(QMainWindow):
     @pyqtSlot(dict)
     def SavePasswordResult(self, resultDict):
         if resultDict.get('error'):
-            UserInterfaceFunctions.ShowPopup('Error Saving Email', 'Failed to save the email due to server error, please try again later.', 'Critical')
+            UserInterfaceFunctions.ShowPopup('Error Saving Email', 'Error saving the email due to server error, please try again later.', 'Critical')
         elif not resultDict.get('state'):
             UserInterfaceFunctions.ChangeErrorMessageText(self.savePasswordErrorMessageLabel, resultDict.get('message'))
         elif resultDict.get('state'):

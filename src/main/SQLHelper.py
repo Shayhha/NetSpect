@@ -14,7 +14,7 @@ class SQL_Thread(QThread):
     changeEmailResultSignal = pyqtSignal(dict)
     changeUsernameResultSignal = pyqtSignal(dict)
     changePasswordResultSignal = pyqtSignal(dict)
-    deleteUserResultSignal = pyqtSignal(dict)
+    deleteAccountResultSignal = pyqtSignal(dict)
     addAlertResultSignal = pyqtSignal(dict)
     deleteAlertsResultSignal = pyqtSignal(dict)
     addBlacklistMacResultSignal = pyqtSignal(dict)
@@ -83,7 +83,7 @@ class SQL_Thread(QThread):
         try:
             # query to fetch user details
             query = '''
-                SELECT userId, email, userName, numberOfDetectedAttacks, lightMode 
+                SELECT userId, email, userName, lightMode 
                 FROM Users 
                 WHERE userName = ? AND password = ? AND isDeleted = 0
             '''
@@ -96,14 +96,14 @@ class SQL_Thread(QThread):
                     'userId': result[0],
                     'email': result[1],
                     'userName': result[2],
-                    'numberOfDetectedAttacks': result[3],
-                    'lightMode': result[4]
+                    'lightMode': result[3]
                 }
                 
-                # retrieve alert list, pie chart data and black list with helper functions
+                # retrieve alert list, pie chart data, black list and num of detections with helper functions
                 userData['alertList'] = self.GetAlerts(userData['userId'])
                 userData['pieChartData'] = self.GetPieChartData(userData['userId'])
                 userData['blackList'] = self.GetBlacklistMacs(userData['userId'])
+                userData['numberOfDetections'] = len(userData.get('alertList'))
 
                 # set state and result with successful login attempt with user data
                 resultDict['result'] = userData
@@ -302,33 +302,41 @@ class SQL_Thread(QThread):
         return result[0] > 0 if result else False
     
 
-    # method for deleting a user from Users table
+    # method for deleting user account from Users table
     @pyqtSlot(int)
-    def DeleteUser(self, userId):
+    def DeleteAccount(self, userId):
         resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
         try:
+            # delete all alerts for user in Alerts table
+            alertsQuery = '''
+                UPDATE Alerts 
+                SET isDeleted = 1 
+                WHERE userId = ?
+            '''
+            self.cursor.execute(alertsQuery, (userId,))
+
             # delete given user from Users table by userId
-            query = '''
+            usersQuery = '''
                 UPDATE Users SET 
                 isDeleted = 1 
                 WHERE userId = ?
             '''
-            self.cursor.execute(query, (userId))
+            self.cursor.execute(usersQuery, (userId,))
             
             if self.cursor.rowcount > 0:
                 self.connection.commit() #commit the transaction for the update
-                resultDict['message'] = 'User deleted successfully.'
+                resultDict['message'] = 'User account deleted successfully.'
                 resultDict['state'] = True
             else:
-                resultDict['message'] = 'Failed deleting user.'
+                resultDict['message'] = 'Failed deleting user account.'
 
         except Exception as e:
             self.connection.rollback() #rollback on error
-            resultDict['message'] = f'Error deleting user: {e}.'
+            resultDict['message'] = f'Error deleting user account: {e}.'
             resultDict['error'] = True
         finally:
-            # emit delete user signal to main thread
-            self.deleteUserResultSignal.emit(resultDict)
+            # emit delete account signal to main thread
+            self.deleteAccountResultSignal.emit(resultDict)
 
 
     # method for getting all alerts that registered for given user in decreasing order

@@ -465,7 +465,7 @@ class NetSpect(QMainWindow):
                 arpBatch = self.arpList[:batchSize] #get first batchSize packets out of arp list
 
                 # remove the extracted packets from arp list
-                self.arpList = self.arpList[batchSize:] #remove the first batchSize packets from arp list
+                del self.arpList[:batchSize] #remove the first batchSize packets from arp list
 
                 # Send the extracted batch to the worker thread
                 self.arpCounter -= len(arpBatch) #update arp counter

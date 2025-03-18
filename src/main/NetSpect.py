@@ -876,7 +876,7 @@ class NetSpect(QMainWindow):
         if self.sqlThread:
             # means we had detection active
             if self.isDetection:
-                UserInterfaceFunctions.ShowPopup('Error In Login' 'Please stop detection before attempting to log in.', 'Information')
+                UserInterfaceFunctions.ShowPopup('Error In Login', 'Please stop detection before attempting to log in.', 'Information')
             # means both fields are empty
             elif not self.loginUsernameLineEdit.text() and not self.loginPasswordLineEdit.text():
                 UserInterfaceFunctions.ChangeErrorMessageText(self.loginErrorMessageLabel, 'Please enter username and password.')
@@ -896,7 +896,7 @@ class NetSpect(QMainWindow):
         if self.sqlThread:
             # means we had detection active
             if self.isDetection:
-                UserInterfaceFunctions.ShowPopup('Error In Logout' 'Please stop detection before attempting to log out.', 'Information')
+                UserInterfaceFunctions.ShowPopup('Error In Logout', 'Please stop detection before attempting to log out.', 'Information')
             # else we log out and clear interface
             else:
                 self.ChangeUserState(False) #call our method to log out and clear interface
@@ -907,7 +907,7 @@ class NetSpect(QMainWindow):
         if self.sqlThread:
             # means we had detection active
             if self.isDetection:
-                UserInterfaceFunctions.ShowPopup('Error In Registration' 'Please stop detection before attempting to register.', 'Information')
+                UserInterfaceFunctions.ShowPopup('Error In Registration', 'Please stop detection before attempting to register.', 'Information')
             # else we register new user
             else:
                 email = self.registerEmailLineEdit.text()
@@ -948,7 +948,7 @@ class NetSpect(QMainWindow):
         if self.sqlThread:
             # means we had detection active
             if self.isDetection:
-                UserInterfaceFunctions.ShowPopup('Error Deleting Account' 'Please stop detection before attempting to delete account.', 'Information')
+                UserInterfaceFunctions.ShowPopup('Error Deleting Account', 'Please stop detection before attempting to delete account.', 'Information')
             # else we emit signal to sql thread to delete account from database
             else:
                 #! need to add here a question message box for asking user if he wants to delete account

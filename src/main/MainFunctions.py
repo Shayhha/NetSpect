@@ -291,30 +291,29 @@ class NetworkInformation(ABC):
                     netmask = NetworkInformation.GetNetmaskFromIp(ipAddress) #get netmask with our function
                     if ipAddress and netmask:
                         subnet = IPv4Interface(f'{ipAddress}/{netmask}').network #create ipv4 subnet object
-                        ipv4Subnets.add((str(subnet), f'{'.'.join(ipAddress.split('.')[:3])}.0/24', netmask)) #set of tuples such that (subnet (real), range(/24), netmask)
+                        ipv4Subnets.add((subnet, f'{'.'.join(ipAddress.split('.')[:3])}.0/24', netmask)) #set of tuples such that (subnet (real), range(/24), netmask)
 
                 # initialize ipv6 subnets based on ipv6 ips we found, excluding loopback
                 for ipAddress in ipv6Addrs:
                     if ipAddress and (not ipAddress.startswith('::1')) and (not ipAddress.endswith('::1')): #exclude loopback
                         ipv6Subnets.add(f'{':'.join(ipAddress.split(':')[:4])}::/64') #represents /64 subnet estimation
 
-                # continue to next interface if this one does not have any ip address
-                if (len(ipv4Addrs) == 0) and (len(ipv6Addrs) == 0): continue
-
-                # initialize interface dict with all given information
-                interfaceDict = {
-                    'name': iface.name if iface.name else 'None',
-                    'description': iface.description if iface.description else 'None',
-                    'status': ifaceStats.get(iface.name).isup if ifaceStats.get(iface.name) else 'None',
-                    'maxSpeed': ifaceStats.get(iface.name).speed if ifaceStats.get(iface.name) else 'None',
-                    'maxTransmitionUnit': ifaceStats.get(iface.name).mtu if ifaceStats.get(iface.name) else 'None',
-                    'mac': iface.mac if iface.mac else 'None',
-                    'ipv4Addrs': ipv4Addrs,
-                    'ipv4Subnets': ipv4Subnets,
-                    'ipv6Addrs': ipv6Addrs,
-                    'ipv6Subnets': ipv6Subnets
-                }
-                networkInterfaces[interfaceDict['name']] = interfaceDict #add interface to our network interfaces
+                # if interface is active and has ip address we add it to network interfaces
+                if ipv4Addrs or ipv6Addrs:
+                    # initialize interface dict with all given information
+                    interfaceDict = {
+                        'name': iface.name if iface.name else 'None',
+                        'description': iface.description if iface.description else 'None',
+                        'status': ifaceStats.get(iface.name).isup if ifaceStats.get(iface.name) else 'None',
+                        'maxSpeed': ifaceStats.get(iface.name).speed if ifaceStats.get(iface.name) else 'None',
+                        'maxTransmitionUnit': ifaceStats.get(iface.name).mtu if ifaceStats.get(iface.name) else 'None',
+                        'mac': iface.mac if iface.mac else 'None',
+                        'ipv4Addrs': ipv4Addrs,
+                        'ipv4Subnets': ipv4Subnets,
+                        'ipv6Addrs': ipv6Addrs,
+                        'ipv6Subnets': ipv6Subnets
+                    }
+                    networkInterfaces[interfaceDict['name']] = interfaceDict #add interface to our network interfaces
         
         return networkInterfaces #return the filtered and matched interfaces
 
@@ -566,7 +565,7 @@ class ArpSpoofing(ABC):
                 # we check that packet has a source ip and also that its not assinged to a temporary ip (0.0.0.0)
                 if isinstance(packet, ARP_Packet) and packet.srcIp != None and packet.srcIp != '0.0.0.0':
                     subnet = ArpSpoofing.GetSubnetForIP(packet.srcIp)
-                    if subnet == None: 
+                    if not subnet: 
                         print(f'Error, received an ARP packet from an outside subnet, no ARP table mached the ARP packet source IP address "{packet.srcIp}"')
                         continue
                     arpTableObject = ArpSpoofing.arpTables.get(subnet) #get the specific arp table using the correct subnet

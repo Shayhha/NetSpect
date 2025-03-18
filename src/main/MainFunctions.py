@@ -2,13 +2,13 @@ import sys, os, joblib, socket, platform, logging
 import numpy as np
 import pandas as pd
 from abc import ABC, abstractmethod
-from ipaddress import ip_address, ip_network, IPv4Interface
+from ipaddress import IPv4Address, IPv4Interface
 from psutil import net_if_addrs, net_if_stats
 from scapy.all import AsyncSniffer, srp, get_if_list, IP, IPv6, TCP, UDP, ICMP, ARP, Ether, Raw, conf
 from scapy.layers.dns import DNS
 from collections import defaultdict
-from pathlib import Path
 from datetime import datetime, timedelta
+from pathlib import Path
 import shutil #temporary import for saving a copy of a file with false positive data
 
 currentDir = Path(__file__).resolve().parent #represents the path to the current working direcotry where this file is located
@@ -483,12 +483,11 @@ class ArpSpoofing(ABC):
             # iterate over all given subnets, for each check if an ARP table exists for it
             for subnet in NetworkInformation.networkInfo.get(NetworkInformation.selectedInterface).get('ipv4Subnets'):
                 if not ArpSpoofing.arpTables.get(subnet[0]):
-                    # initialize ARP table for subnet with init flage set
+                    # initialize ARP table for subnet with init flag set
                     arpTable, invArpTable, attackDict =  ArpTable.InitArpTable(subnet[1], True)
 
                     # add our ARP table object into ARP tables dict as ArpTable object
-                    subnetObject = ip_network(subnet[0])
-                    ArpSpoofing.arpTables[subnetObject] = ArpTable(subnet, arpTable, invArpTable)
+                    ArpSpoofing.arpTables[subnet[0]] = ArpTable(subnet, arpTable, invArpTable)
 
                     # if attackDict is not empty, merge its data into totalAttackDict
                     if attackDict:
@@ -518,17 +517,20 @@ class ArpSpoofing(ABC):
     @staticmethod
     def GetSubnetForIP(ipAddress): 
         try:
-            if ipAddress in ArpSpoofing.cache: #check if the given IP address was cached
-                return ArpSpoofing.cache[ipAddress]
+            #convert given IP address into IPv4 address object
+            ipObject = IPv4Address(ipAddress)
 
-            # check if the IP address object is in the subnet list
-            ipObject = ip_address(ipAddress) #convert to IP address to ipaddress object
+            #check if the given IP address was cached
+            if ipObject in ArpSpoofing.cache:
+                return ArpSpoofing.cache[ipObject]
+
+            # check if given IP address object is in the subnet list
             for subnet in ArpSpoofing.arpTables.keys():
                 if ipObject in subnet:
-                    ArpSpoofing.cache[ipAddress] = subnet
+                    ArpSpoofing.cache[ipObject] = subnet
                     return subnet
             
-            ArpSpoofing.cache[ipAddress] = None
+            ArpSpoofing.cache[ipObject] = None
             return None
         except ValueError as e:
             print(f'Invalid IP or Subnet: {e}')

@@ -865,7 +865,10 @@ class DNSTunneling(ABC):
 
             # iterate over each packet in flow
             for packet in packetList:
-                if isinstance(packet, DNS_Packet):  
+                if isinstance(packet, DNS_Packet):
+                    # add packet length to list
+                    packetLengths.append(packet.packetLen)
+
                     # append each packet timestemp to out list for IAT
                     if packet.time:
                         timestamps.append(packet.time)
@@ -874,9 +877,6 @@ class DNSTunneling(ABC):
                         if firstSeenPacket == 0:
                             firstSeenPacket = packet.time
                         lastSeenPacket = packet.time
-
-                    # add packet length and ip header length to lists
-                    packetLengths.append(packet.packetLen)
 
                     # check the dns sub type and increment the correct counter
                     if packet.dnsSubType == 1: #means A record
@@ -906,7 +906,7 @@ class DNSTunneling(ABC):
                                     totalLength = np.sum([len(value) for value in packet.dnsData.values()])
                                 responseDataLengths.append(totalLength) #add the total length to our list
 
-                    elif packet.srcIp == flow[1]: #else means backward packets
+                    else: #else means backward packets
                         bwdLengths.append(packet.dnsPacketLen)
                         if packet.dnsType == 'Request': #means request packet
                             domainNameLengths.append(len(packet.dnsDomainName)) #add domian name length

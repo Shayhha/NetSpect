@@ -1,8 +1,9 @@
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve, QEasingCurve, QTimer
-from PyQt5.QtWidgets import QGraphicsDropShadowEffect, QApplication, QAction, QMenu, QTableWidget, QWidget, QGridLayout, QLineEdit, QMessageBox, QDesktopWidget, QDialog, QLabel, QPushButton, QVBoxLayout, QHBoxLayout
+from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve, QEasingCurve, QTimer, QSortFilterProxyModel, QAbstractTableModel, QModelIndex
+from PyQt5.QtWidgets import QGraphicsDropShadowEffect, QApplication, QAction, QMenu, QTableWidget, QWidget, QGridLayout, QLineEdit, QHeaderView, QMessageBox, QDesktopWidget, QDialog, QLabel, QPushButton, QVBoxLayout, QHBoxLayout
 from PyQt5.QtGui import QColor, QIcon, QPixmap, QFont, QCursor, QPainter
 from PyQt5.QtChart import QChart, QChartView, QPieSeries
+from datetime import datetime, timedelta
 from pathlib import Path
 
 currentDir = Path(__file__).resolve().parent #represents the path to the current working direcotry where this file is located
@@ -160,7 +161,7 @@ def ToggleUserInterface(self, state):
 
     #clear history and report tables and blacklist and pie chart
     self.historyTableWidget.setRowCount(0)
-    self.reportPreviewTableWidget.setRowCount(0)
+    self.reportPreviewTableModel.ClearReportTable()
     self.macAddressListWidget.clear()
     ResetChartToDefault(self) #reset our pie chart
 
@@ -281,33 +282,6 @@ def CenterSpecificTableRowText(tableObject): #tableObject = self.historyTableWid
             cellText = item.text()
             tooltipText = cellText if cellText else 'Empty cell'
             item.setToolTip(tooltipText)
-
-
-# function for centering all the texts in every cell of all the tables in the ui
-def CenterAllTableRowText(self): 
-    # center all the text in the history table widget on Home Page
-    for row in range(self.historyTableWidget.rowCount()):
-        for col in range(self.historyTableWidget.columnCount()):
-            if item := self.historyTableWidget.item(row, col): #check if item exists
-                item.setTextAlignment(Qt.AlignCenter)
-                cellText = item.text()
-                tooltipText = cellText if cellText else 'Empty cell'
-                item.setToolTip(tooltipText)
-
-    self.historyTableWidget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch) #distribute column widths equally
-    self.historyTableWidget.setTextElideMode(Qt.ElideMiddle)
-
-    # center all the text in the report preview table widget on Report Page
-    for row in range(self.reportPreviewTableWidget.rowCount()):
-        for col in range(self.reportPreviewTableWidget.columnCount()):
-            if item := self.reportPreviewTableWidget.item(row, col): #check if item exists
-                item.setTextAlignment(Qt.AlignCenter)
-                cellText = item.text()
-                tooltipText = cellText if cellText else 'Empty cell'
-                item.setToolTip(tooltipText)
-
-    self.reportPreviewTableWidget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch) #distribute column widths equally
-    self.reportPreviewTableWidget.setTextElideMode(Qt.ElideMiddle)
 
 
 # helper function for setting the items in the list of ip addresses to not interactable, it removes the hover and click effects
@@ -751,6 +725,176 @@ def ResetChartToDefault(self):
 
 #----------------------------------------------PIE-CHART-END-------------------------------------------------#
 
+#--------------------------------------------TABLE-VIEW-FILTER-----------------------------------------------#
+
+# Custom Table Model that will sit inside the TableView object in the report page and will contain all the relevant data and functions
+class CustomTableModel(QAbstractTableModel):
+    reportPreviewColumnHeaders = ['Interface', 'Attack Type', 'Source IP', 'Source Mac', 'Destination IP', 'Destination Mac', 'Protocol', 'Timestamp']
+
+    def __init__(self, data=None, parent=None):
+        super().__init__(parent)
+        self.alertListData = data if data is not None else [] #list of dicts (row data)
+
+
+    # overwrite inherited function to get number of rows
+    def rowCount(self, parent=None):
+        return len(self.alertListData) #get number of rows in the data
+
+
+    # overwrite inherited function to get number of columns
+    def columnCount(self, parent=None):
+        return len(self.reportPreviewColumnHeaders) #get number of columns (constant)
+
+
+    # overwrite inherited function to get data from a specific cell
+    def data(self, index, role=Qt.DisplayRole):
+        if not index.isValid():
+            return None
+
+        # this will display the data in the table
+        if role == Qt.DisplayRole:
+            return str(self.alertListData[index.row()][index.column()]) #ensure data is a string
+
+        # this will center-align the text
+        if role == Qt.TextAlignmentRole:
+            return Qt.AlignCenter 
+        return None
+
+
+    # overwrite inherited function to set the column names
+    def headerData(self, section, orientation, role=Qt.DisplayRole):
+        if role == Qt.DisplayRole:
+            if orientation == Qt.Horizontal: #add column headers
+                return self.reportPreviewColumnHeaders[section]
+        return None
+    
+        
+    # overwrite inherited function to set the data into the column
+    def setData(self, index, value, role=Qt.EditRole):
+        if role == Qt.EditRole:
+            if index.isValid() and 0 <= index.row() < self.rowCount() and 0 <= index.column() < self.columnCount():
+                self.alertListData[index.row()][index.column()] = value
+                return True
+        return False
+
+
+    # helper function to add rows to the table at the top of the table every time
+    def AddRowToReportTable(self): 
+        self.beginInsertRows(QModelIndex(), 0, 0) #correctly notify start of insert
+        self.alertListData.insert(0, [None] * self.columnCount()) #add new row at the start
+        self.endInsertRows()
+        return 0
+
+
+    # helper function to add items to a given row by index
+    def SetRowItemReportTable(self, row, column, value):
+        # set data at specific row and column
+        index = self.index(row, column)
+        self.setData(index, value)
+
+
+    # helper function to clear out the data from the table
+    def ClearReportTable(self):
+        self.beginResetModel()
+        self.alertListData.clear() #clear the data list
+        self.endResetModel()
+
+
+# Custom Proxy Model for filtering the TableView that is in the report page, this class will hold the filtering logic and functions
+class CustomFilterProxyModel(QSortFilterProxyModel):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.selectedAttacks = set() #stores selected class values
+        self.timeFilter = 'All' #default value is 'All Available Data'
+
+
+    # update selected classes and refresh filter (for checkboxes)
+    def SetSelectedAttacks(self, selectedAttacks):
+        self.selectedAttacks = set(selectedAttacks)
+        self.invalidateFilter() #triggers re-filtering
+
+
+    # update time filter and refresh the table (for combobox)
+    def SetTimeFilter(self, timeFilter):
+        self.timeFilter = timeFilter
+        self.invalidateFilter()
+
+
+    # determines if a row should be shown based on filter conditions
+    def filterAcceptsRow(self, sourceRow, sourceParent):
+        model = self.sourceModel()
+
+        # get timestamp and attack type row data
+        timestampValue = model.data(model.index(sourceRow, 7), Qt.DisplayRole) # column 7 = Timestamp
+        attackTypeValue = model.data(model.index(sourceRow, 1), Qt.DisplayRole) # column 1 = Attack Type
+        
+        # validate that the data the this method gets is valid before continuing with the filter
+        if timestampValue == 'None' or attackTypeValue == 'None':
+            return False
+
+        # convert timestamp string to datetime object and get current time to check the filter
+        rowTimestamp = datetime.strptime(timestampValue, '%H:%M:%S %d/%m/%y')
+        currentTime = datetime.now()
+
+        # time filtering logic, if the checkbox is selected with 'All Available Data' then it will skip the time filter
+        if self.timeFilter == 'Last 24 Hours' and rowTimestamp < currentTime - timedelta(days=1):
+            return False
+        if self.timeFilter == 'Last 7 Days' and rowTimestamp < currentTime - timedelta(days=7):
+            return False
+        if self.timeFilter == 'Last 30 Days' and rowTimestamp < currentTime - timedelta(days=30):
+            return False
+
+        # attack filtering logic (only filter if there are selected classes)
+        if self.selectedAttacks and attackTypeValue not in self.selectedAttacks:
+            return False #dont show the row if it did not pass one of the filters
+
+        return True #show current row if it passed all filters
+
+
+# helper function that will be called when the user clicks on one of the attack checkboxes in the report page (ARP, Port, DoS, DNS)
+def ReportCheckboxToggled(self):
+    selectedAttacks = set() #represents a set of all selected attack checkboxes at this point in time
+
+    # checking each checkbox if its clicked or not
+    if self.arpSpoofingCheckBox.isChecked():
+        selectedAttacks.add('ARP Spoofing')
+    if self.portScanningCheckBox.isChecked():
+        selectedAttacks.add('Port Scan')
+    if self.denialOfServiceCheckBox.isChecked():
+        selectedAttacks.add('DoS')
+    if self.dnsTunnelingCheckBox.isChecked():
+        selectedAttacks.add('DNS Tunneling')
+
+    # passing the selected attacks set to a method that will filter the table view with the current selection of attacks
+    self.proxyReportPreviewTableModel.SetSelectedAttacks(selectedAttacks)
+
+
+# helper function that will be called when the user selects a different time fillter option in the report page (combobox)
+def ReportDurationComboboxChanged(self):
+    self.proxyReportPreviewTableModel.SetTimeFilter(self.reportDurationComboBox.currentText())
+
+
+# helper function for initializing the table view in the report page when the application loads up
+def InitReportTableView(self):
+    # initialize the Table View and custom table filter
+    self.reportPreviewTableModel = CustomTableModel(self.userData.get('alertList'))
+    self.proxyReportPreviewTableModel = CustomFilterProxyModel()
+    self.proxyReportPreviewTableModel.setSourceModel(self.reportPreviewTableModel)
+
+    # change some of the table attributes to make it look how we want it
+    self.reportPreviewTableView.setModel(self.proxyReportPreviewTableModel)
+    self.reportPreviewTableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) #distribute column widths equally
+    self.reportPreviewTableView.verticalHeader().setDefaultSectionSize(30) #set max row height to 30px
+    self.reportPreviewTableView.verticalHeader().setSectionResizeMode(QHeaderView.Fixed) #fix row heights
+    self.reportPreviewTableView.verticalHeader().setStretchLastSection(False) #don't stretch last row
+    self.reportPreviewTableView.setTextElideMode(Qt.ElideMiddle)
+    self.reportPreviewTableView.setSelectionMode(QTableWidget.NoSelection) #disable selection
+    self.reportPreviewTableView.setFocusPolicy(Qt.NoFocus)
+    self.reportPreviewTableView.setEditTriggers(QTableWidget.NoEditTriggers)
+    self.reportPreviewTableView.setSortingEnabled(False)
+
+#------------------------------------------TABLE-VIEW-FILTER-END---------------------------------------------#
+
 #----------------------------------------------MAIN-FUNCTION-------------------------------------------------#
 
 # main function that sets up all the ui elements on startup
@@ -763,6 +907,9 @@ def InitAnimationsUI(self):
     # initilize pie chart on screen
     InitPieChart(self)
 
+    # initilize report preview table view
+    InitReportTableView(self)
+
     # hide some labels and icons
     HideSideBarLabels(self)
     ShowSideBarMenuIcon(self)
@@ -770,9 +917,6 @@ def InitAnimationsUI(self):
 
     # apply shadow to the left side bar
     ApplyShadowSidebar(self)
-
-    # center table cell text on all tables
-    CenterAllTableRowText(self)
 
     # disable selection on ip address list widget
     DisableSelectionIpListWidget(self)
@@ -784,8 +928,8 @@ def InitAnimationsUI(self):
     # disable selection on both history table and report preview table
     self.historyTableWidget.setSelectionMode(QTableWidget.NoSelection) #disable selection
     self.historyTableWidget.setEditTriggers(QTableWidget.NoEditTriggers)
-    self.reportPreviewTableWidget.setSelectionMode(QTableWidget.NoSelection) #disable selection
-    self.reportPreviewTableWidget.setEditTriggers(QTableWidget.NoEditTriggers)
+    self.historyTableWidget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch) #distribute column widths equally
+    self.historyTableWidget.setTextElideMode(Qt.ElideMiddle)
 
     # set the toggle password visability icon in the login and register
     openEyePath = currentDir.parent / 'interface' / 'Icons' / 'EyeOpen.png'

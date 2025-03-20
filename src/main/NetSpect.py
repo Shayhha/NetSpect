@@ -54,6 +54,11 @@ class NetSpect(QMainWindow):
         self.emailPushButton.clicked.connect(self.SaveEmailButtonClicked)
         self.usernamePushButton.clicked.connect(self.SaveUsernameButtonClicked)
         self.passwordPushButton.clicked.connect(self.SavePasswordButtonClicked)
+        self.arpSpoofingCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
+        self.portScanningCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
+        self.denialOfServiceCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
+        self.dnsTunnelingCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
+        self.reportDurationComboBox.currentTextChanged.connect(lambda: UserInterfaceFunctions.ReportDurationComboboxChanged(self))
 
         # connect interface labels to their methods
         self.accountIcon.mousePressEvent = lambda event: UserInterfaceFunctions.AccountIconClicked(self)
@@ -280,7 +285,7 @@ class NetSpect(QMainWindow):
 
     # method for initializing report table widget in gui
     def InitReportTable(self, alertList):
-        self.reportPreviewTableWidget.setRowCount(0) #clear report table
+        self.reportPreviewTableModel.ClearReportTable() #clear report table
 
         #iterate over each alert in list and add it to our table
         for alert in alertList:
@@ -307,19 +312,15 @@ class NetSpect(QMainWindow):
     # method for adding row to report preview table widget in gui
     def AddRowToReportTable(self, interface, attackType, srcIp, srcMac, dstIp, dstMac, protocol, timestamp):
         if interface and attackType and srcIp and srcMac and dstIp and dstMac and protocol and timestamp:
-            currentRow = 0 #add new row in the beginning of table
-            # add our items into row for showing detected attack
-            self.reportPreviewTableWidget.insertRow(currentRow)
-            self.reportPreviewTableWidget.setItem(currentRow, 0, QTableWidgetItem(interface))
-            self.reportPreviewTableWidget.setItem(currentRow, 1, QTableWidgetItem(attackType))
-            self.reportPreviewTableWidget.setItem(currentRow, 2, QTableWidgetItem(srcIp))
-            self.reportPreviewTableWidget.setItem(currentRow, 3, QTableWidgetItem(srcMac))
-            self.reportPreviewTableWidget.setItem(currentRow, 4, QTableWidgetItem(dstIp))
-            self.reportPreviewTableWidget.setItem(currentRow, 5, QTableWidgetItem(dstMac))
-            self.reportPreviewTableWidget.setItem(currentRow, 6, QTableWidgetItem(protocol))
-            self.reportPreviewTableWidget.setItem(currentRow, 7, QTableWidgetItem(timestamp))
-            # center the text of the last row after adding it
-            UserInterfaceFunctions.CenterSpecificTableRowText(self.reportPreviewTableWidget)
+            newRow = self.reportPreviewTableModel.AddRowToReportTable() #create a new row add all the values into it by index
+            self.reportPreviewTableModel.SetRowItemReportTable(newRow, 0, interface)
+            self.reportPreviewTableModel.SetRowItemReportTable(newRow, 1, attackType)
+            self.reportPreviewTableModel.SetRowItemReportTable(newRow, 2, srcIp)
+            self.reportPreviewTableModel.SetRowItemReportTable(newRow, 3, srcMac)
+            self.reportPreviewTableModel.SetRowItemReportTable(newRow, 4, dstIp)
+            self.reportPreviewTableModel.SetRowItemReportTable(newRow, 5, dstMac)
+            self.reportPreviewTableModel.SetRowItemReportTable(newRow, 6, protocol)
+            self.reportPreviewTableModel.SetRowItemReportTable(newRow, 7, timestamp)
 
 
     # method for setting user interface to logged in or logged out state 
@@ -999,8 +1000,8 @@ class NetSpect(QMainWindow):
                 self.UpdateNumberOfDetectionsCounterLabel(0) #reset the number of detections counter in user interface
                 UserInterfaceFunctions.ResetChartToDefault(self) #reset our pie chart
                 self.historyTableWidget.setRowCount(0) #clear history table
-                self.reportPreviewTableWidget.setRowCount(0) #clear report table
-                
+                self.reportPreviewTableModel.ClearReportTable() #clear report table
+
                 # delete alerts from database if user is logged in
                 if self.sqlThread and self.userData.get('userId'):
                     self.sqlThread.DeleteAlerts(self.userData.get('userId'))

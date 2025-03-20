@@ -2823,7 +2823,7 @@ QCheckBox::indicator:hover {
                      <number>7</number>
                     </property>
                     <item>
-                     <widget class="QTableWidget" name="reportPreviewTableWidget">
+                     <widget class="QTableView" name="reportPreviewTableView">
                       <property name="minimumSize">
                        <size>
                         <width>551</width>
@@ -2837,7 +2837,7 @@ QCheckBox::indicator:hover {
                        </font>
                       </property>
                       <property name="styleSheet">
-                       <string notr="true">QTableWidget {
+                       <string notr="true">QTableView {
     border-radius: 8px;
     background-color: transparent;
     gridline-color: black;
@@ -2854,7 +2854,7 @@ QHeaderView::section {
 	border-bottom:2px solid black;
 }
 
-QTableWidget QHeaderView::section:vertical {
+QTableView QHeaderView::section:vertical {
     background-color: rgba(204, 204, 204, 0.6);
     color: black;
     font-size: 14px;
@@ -2862,20 +2862,16 @@ QTableWidget QHeaderView::section:vertical {
 	gridline-color: black;
 }
 
-QTableWidget::item {
+QTableView::item {
     padding: 6px;
 }
 
-
-
-
-
-QTableWidget::corner {
+QTableView::corner {
     background-color: #3498db;
     border-top-left-radius: 8px;
 }
 
-QTableWidget QScrollBar:vertical {
+QTableView QScrollBar:vertical {
     width: 4px;
     margin: 0px;
 	border: none;
@@ -2883,7 +2879,7 @@ QTableWidget QScrollBar:vertical {
 
 }
 
-QTableWidget QScrollBar::handle:vertical {
+QTableView QScrollBar::handle:vertical {
     background: black;
 }
 
@@ -2898,20 +2894,14 @@ QTableWidget QScrollBar::handle:vertical {
                       <property name="textElideMode">
                        <enum>Qt::ElideLeft</enum>
                       </property>
-                      <attribute name="horizontalHeaderCascadingSectionResizes">
-                       <bool>false</bool>
-                      </attribute>
                       <attribute name="horizontalHeaderMinimumSectionSize">
                        <number>110</number>
                       </attribute>
-                      <attribute name="horizontalHeaderDefaultSectionSize">
-                       <number>110</number>
-                      </attribute>
                       <attribute name="horizontalHeaderHighlightSections">
-                       <bool>true</bool>
+                       <bool>false</bool>
                       </attribute>
                       <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-                       <bool>false</bool>
+                       <bool>true</bool>
                       </attribute>
                       <attribute name="horizontalHeaderStretchLastSection">
                        <bool>true</bool>
@@ -2919,58 +2909,18 @@ QTableWidget QScrollBar::handle:vertical {
                       <attribute name="verticalHeaderVisible">
                        <bool>false</bool>
                       </attribute>
+                      <attribute name="verticalHeaderCascadingSectionResizes">
+                       <bool>true</bool>
+                      </attribute>
                       <attribute name="verticalHeaderMinimumSectionSize">
                        <number>30</number>
                       </attribute>
                       <attribute name="verticalHeaderDefaultSectionSize">
-                       <number>30</number>
-                      </attribute>
-                      <attribute name="verticalHeaderShowSortIndicator" stdset="0">
-                       <bool>false</bool>
+                       <number>32</number>
                       </attribute>
                       <attribute name="verticalHeaderStretchLastSection">
-                       <bool>false</bool>
+                       <bool>true</bool>
                       </attribute>
-                      <column>
-                       <property name="text">
-                        <string>Interface</string>
-                       </property>
-                      </column>
-                      <column>
-                       <property name="text">
-                        <string>Attack Type</string>
-                       </property>
-                      </column>
-                      <column>
-                       <property name="text">
-                        <string>Source IP</string>
-                       </property>
-                      </column>
-                      <column>
-                       <property name="text">
-                        <string>Source Mac</string>
-                       </property>
-                      </column>
-                      <column>
-                       <property name="text">
-                        <string>Destination IP</string>
-                       </property>
-                      </column>
-                      <column>
-                       <property name="text">
-                        <string>Destination Mac</string>
-                       </property>
-                      </column>
-                      <column>
-                       <property name="text">
-                        <string>Protocol</string>
-                       </property>
-                      </column>
-                      <column>
-                       <property name="text">
-                        <string>Timestamp</string>
-                       </property>
-                      </column>
                      </widget>
                     </item>
                    </layout>

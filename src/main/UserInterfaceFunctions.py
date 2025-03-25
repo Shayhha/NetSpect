@@ -371,9 +371,9 @@ def GetDefaultStyleSheetRegisterLineEdits(lineEditName):
 
 # custom popup message box class that will be used to show error messages to the user at certain times
 class CustomMessageBox(QDialog):
-    isShown = False 
+    isShown = False #represents flag for indicating if popup is shown
 
-    # ctor that gets the title, message and icon type (will be shown inside) of the message box pop up window.
+    # constructor that gets the title, message and icon type (will be shown inside) of the message box pop up window
     def __init__(self, title, message, iconType):
         super().__init__()
 
@@ -398,9 +398,10 @@ class CustomMessageBox(QDialog):
         # handle the icon (it might return a QPixmap or QIcon depending on Qt version)
         if isinstance(icon, QPixmap):
             pixmap = icon.scaled(32, 32, Qt.KeepAspectRatio)
-        else:  # Assuming QIcon
+        else:
             pixmap = icon.pixmap(32, 32)
         iconLabel.setPixmap(pixmap)
+        iconLabel.setContentsMargins(15, 0, 15, 0)
         iconLabel.setAlignment(Qt.AlignCenter) #center the icon vertically
 
         # set the message
@@ -411,7 +412,6 @@ class CustomMessageBox(QDialog):
 
         # add the icon and message to the horizontal layout with spacing
         horizontalLayout.addWidget(iconLabel)
-        horizontalLayout.addSpacing(15) #add spacing between icon and text
         horizontalLayout.addWidget(messageLabel)
         horizontalLayout.setAlignment(Qt.AlignCenter) #center the entire horizontalLayout
 
@@ -420,13 +420,27 @@ class CustomMessageBox(QDialog):
         layout.addLayout(horizontalLayout)
         layout.addStretch(1) #add stretch after the content
 
-        # add buttons
+        # create buttons layout
         buttonLayout = QHBoxLayout()
         buttonLayout.setAlignment(Qt.AlignCenter) #center the buttons
-        button = QPushButton('OK')
-        button.setCursor(QCursor(Qt.PointingHandCursor))
-        button.clicked.connect(self.reject)
-        buttonLayout.addWidget(button)
+
+        # if question message box, we show "Yes" and "No" buttons
+        if iconType == 'Question':
+            yesButton = QPushButton('Yes')
+            yesButton.setCursor(QCursor(Qt.PointingHandCursor))
+            yesButton.clicked.connect(self.accept)
+            noButton = QPushButton('No')
+            noButton.setCursor(QCursor(Qt.PointingHandCursor))
+            noButton.clicked.connect(self.reject)
+            buttonLayout.addWidget(yesButton)
+            buttonLayout.addSpacing(15)
+            buttonLayout.addWidget(noButton)
+        # else we show "OK" button
+        else:
+            okButton = QPushButton('OK')
+            okButton.setCursor(QCursor(Qt.PointingHandCursor))
+            okButton.clicked.connect(self.reject)
+            buttonLayout.addWidget(okButton)
 
         # apply layout to the dialog
         layout.addLayout(buttonLayout)
@@ -452,7 +466,7 @@ class CustomMessageBox(QDialog):
                 margin-left: 10px;
             }
                         
-            QPushButton[text='OK']  {
+            QPushButton {
                 background-color: #3a8e32; 
                 border: 1px solid black;  
                 border-radius: 10px;         
@@ -462,14 +476,16 @@ class CustomMessageBox(QDialog):
                 color: #f3f3f3;   
                 min-width: 80px;  
             }
-            QPushButton[text='OK']:hover {
+                           
+            QPushButton:hover {
                 background-color: #4D9946;
             }
-            QPushButton[text='OK']:pressed {
+                           
+            QPushButton:pressed {
                 background-color: #2E7128;
             }
                         
-            QPushButton[text='Cancel']  {
+            QPushButton[text='No']  {
                 background-color: #D84F4F; 
                 border: 1px solid black;  
                 border-radius: 10px;         
@@ -479,10 +495,12 @@ class CustomMessageBox(QDialog):
                 color: #f3f3f3;    
                 min-width: 80px;    
             }
-            QPushButton[text='Cancel']:hover {
+                           
+            QPushButton[text='No']:hover {
                 background-color: #DB6060;
             }
-            QPushButton[text='Cancel']:pressed {
+                           
+            QPushButton[text='No']:pressed {
                 background-color: #AC3f3F;
             }
         ''')
@@ -518,8 +536,12 @@ def ShowPopup(title, message, iconType='Warning'):
         centerPosition = cp.center() - qr.center()
         popup.move(centerPosition) #move to the center
 
+        # set isShown and show messagebox
         CustomMessageBox.isShown = True
-        popup.exec_()
+        result = popup.exec_()
+
+        # return result value for question messagebox, else none
+        return result == QDialog.Accepted if iconType == 'Question' else None
 
 #---------------------------------------------POPUP-WINDOW-END-----------------------------------------------#
 

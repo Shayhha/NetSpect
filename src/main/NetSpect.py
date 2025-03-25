@@ -1001,8 +1001,10 @@ class NetSpect(QMainWindow):
                 UserInterfaceFunctions.ShowPopup('Error Deleting Account', 'Please stop detection before attempting to delete account.', 'Information')
             # else we emit signal to sql thread to delete account from database
             else:
-                #! need to add here a question message box for asking user if he wants to delete account
-                self.sqlThread.DeleteAccount(self.userData.get('userId'))
+                result = UserInterfaceFunctions.ShowPopup('Delete Account Confirmation', 'Deleting your account will permanently remove all your data. Do you want to proceed?', 'Question')
+                # if true we proceed and delete user's account
+                if result:
+                    self.sqlThread.DeleteAccount(self.userData.get('userId'))
 
 
     # method for adding alert to tables and also to database if user is logged in

@@ -1,7 +1,7 @@
 import UserInterfaceFunctions
 from PyQt5.QtCore import QTimer, QRegExp, QThread, QMutex, QMutexLocker, QWaitCondition, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QRegExpValidator
-from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMainWindow, QTableWidgetItem
+from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMainWindow, QTableWidgetItem, QFileDialog
 from PyQt5.uic import loadUi
 from hashlib import sha256
 from MainFunctions import *
@@ -23,6 +23,7 @@ class NetSpect(QMainWindow):
     dnsDict = {} #represents dict of {(flow tuple) - [packet list]} related to dns tunneling
     arpCounter, tcpUdpCounter, dnsCounter = 0, 0, 0 #represents counters for our packet data structures for arp, portDos and dns
     sqlThread, snifferThread, arpThread, portScanDosThread, dnsThread = None, None, None, None, None #represents our worker threads for SQL queries, sniffing and detecting network cyber attacks
+    reportThread, loggerThread = None, None #represents our report thread for creating report and logger thread for logging app events into logging file
     arpMutex, portScanDosMutex, dnsMutex = QMutex(), QMutex(), QMutex() #represents mutex objects for thread safe operations on our dictionaries
     arpAttackDict, portScanDosAttackDict, dnsAttackDict = {'ipToMac': {}, 'macToIp': {}}, {}, {} #represents attack dictionaries for each attack we previously detected
 
@@ -54,11 +55,8 @@ class NetSpect(QMainWindow):
         self.emailPushButton.clicked.connect(self.SaveEmailButtonClicked)
         self.usernamePushButton.clicked.connect(self.SaveUsernameButtonClicked)
         self.passwordPushButton.clicked.connect(self.SavePasswordButtonClicked)
-        self.arpSpoofingCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
-        self.portScanningCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
-        self.denialOfServiceCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
-        self.dnsTunnelingCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
-        self.reportDurationComboBox.currentTextChanged.connect(lambda: UserInterfaceFunctions.ReportDurationComboboxChanged(self))
+        self.downloadReportPushButton.clicked.connect(self.DownloadReportButtonClicked)
+        self.cancelReportPushButton.clicked.connect(self.CancelReportButtonClicked)
 
         # connect interface labels to their methods
         self.accountIcon.mousePressEvent = lambda event: UserInterfaceFunctions.AccountIconClicked(self)
@@ -72,11 +70,16 @@ class NetSpect(QMainWindow):
         self.settingsIcon.mousePressEvent = lambda event: UserInterfaceFunctions.ChangePageIndex(self, 3) #switch to Settings Page
         self.logoutIcon.mousePressEvent = lambda event: self.LogoutButtonClicked() #log out of user's account and clear interface
 
-        # connect comboboxes to their methods
+        # connect comboboxes and checkboxes to their methods
+        self.arpSpoofingCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
+        self.portScanningCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
+        self.denialOfServiceCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
+        self.dnsTunnelingCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
+        self.reportDurationComboBox.currentIndexChanged.connect(lambda: UserInterfaceFunctions.ReportDurationComboboxChanged(self))
         self.networkInterfaceComboBox.clear() #clear interfaces combobox
         self.networkInterfaceComboBox.addItems(NetworkInformation.InitNetworkInfo()) #intialize our interfaces combobox with host network info
         self.networkInterfaceComboBox.currentIndexChanged.connect(self.ChangeNetworkInterface) #connect interfaces combobox to its method
-        self.ChangeNetworkInterface() #set default network interface from combobox 
+        self.ChangeNetworkInterface() #set default network interface from combobox
 
         # initialize other interface components and show interface
         UserInterfaceFunctions.InitAnimationsUI(self) # setup left sidebar elements and login/register popup frame
@@ -104,12 +107,16 @@ class NetSpect(QMainWindow):
         if self.isDetection:
             self.StopDetection() #stop detection and stop running threads
 
+        # we check if report thread is active, if so we close it
+        if self.reportThread:
+            self.reportThread.StopThread(True) #stop report thread
+
         # we check if sql thread is active, if so we close it
         if self.sqlThread:
             self.sqlThread.StopThread() #stop sql thread and close connection
 
         # wait for each of our threads to finish its work
-        for thread in [self.snifferThread, self.arpThread, self.portScanDosThread, self.dnsThread, self.sqlThread]:
+        for thread in [self.snifferThread, self.arpThread, self.portScanDosThread, self.dnsThread, self.reportThread, self.sqlThread]:
             if thread and thread.isRunning(): #check if the thread exists and is still running
                 thread.wait() #wait until the thread finishes execution
         
@@ -129,16 +136,16 @@ class NetSpect(QMainWindow):
         # intialize sql thread for database operations
         self.sqlThread = SQL_Thread(self)
         # connect relevant signals for sql thread
-        self.sqlThread.loginResultSignal.connect(self.LoginResult) # shay
-        self.sqlThread.registrationResultSignal.connect(self.RegisterResult) # shay
-        self.sqlThread.changeEmailResultSignal.connect(self.SaveEmailResult) # max
-        self.sqlThread.changeUsernameResultSignal.connect(self.SaveUsernameResult) # max
-        self.sqlThread.changePasswordResultSignal.connect(self.SavePasswordResult) # max
-        self.sqlThread.deleteAccountResultSignal.connect(self.DeleteAccountResult) # shay
-        self.sqlThread.addAlertResultSignal.connect(self.AddAlertResult) # shay
-        self.sqlThread.deleteAlertsResultSignal.connect(self.DeleteAlertsResult) # shay
-        self.sqlThread.addBlacklistMacResultSignal.connect(self.AddMacToBlackListResult) # max
-        self.sqlThread.deleteBlacklistMacResultSignal.connect(self.DeleteMacFromBlackListResult) # max
+        self.sqlThread.loginResultSignal.connect(self.LoginResult)
+        self.sqlThread.registrationResultSignal.connect(self.RegisterResult)
+        self.sqlThread.changeEmailResultSignal.connect(self.SaveEmailResult)
+        self.sqlThread.changeUsernameResultSignal.connect(self.SaveUsernameResult)
+        self.sqlThread.changePasswordResultSignal.connect(self.SavePasswordResult)
+        self.sqlThread.deleteAccountResultSignal.connect(self.DeleteAccountResult)
+        self.sqlThread.addAlertResultSignal.connect(self.AddAlertResult)
+        self.sqlThread.deleteAlertsResultSignal.connect(self.DeleteAlertsResult)
+        self.sqlThread.addBlacklistMacResultSignal.connect(self.AddMacToBlackListResult)
+        self.sqlThread.deleteBlacklistMacResultSignal.connect(self.DeleteMacFromBlackListResult)
         self.sqlThread.finishSignal.connect(self.CloseSQLThread)
         # start sql thread
         self.sqlThread.start()
@@ -191,12 +198,11 @@ class NetSpect(QMainWindow):
     def NotifyInvalidLineEdit(self, lineEditWidget, lineEditName, errorMessageLabel=None):
         currentStylesheet = f''' 
             #{lineEditName} {{
-                background-color: #f0f0f0; 
-                border: 2px solid lightgray;  
-                border-radius: 10px;         
-                padding: 5px;              
-                font-size: 14px;            
-                color: black;             
+                background-color: #f0f0f0;
+                border: 2px solid lightgray;
+                border-radius: 10px;
+                padding: 5px;
+                color: black;
                 {'margin: 0px 5px 0px 5px;' if ('Password' in lineEditName) else 'margin: 0px 5px 10px 5px;'}
             }}
         '''
@@ -267,6 +273,19 @@ class NetSpect(QMainWindow):
         UserInterfaceFunctions.DisableSelectionIpListWidget(self)
 
 
+    # method for showing file dialog for user to choose his desired path and file name
+    def GetPathFromReportFileDialog(self):
+        options = QFileDialog.Options()
+        filePath, _ = QFileDialog.getSaveFileName(
+            None, #represents parent window
+            'Download Report', #represents dialog title
+            'alerts_report.txt', #represents default filename
+            'Text Files (*.txt);;CSV Files (*.csv)',
+            options=options
+        )
+        return filePath
+    
+
     # method for initializing mac addresses blacklist in gui
     def InitMacAddresses(self, macBlacklist):
         self.macAddressListWidget.clear() #clear mac addresses list
@@ -289,8 +308,8 @@ class NetSpect(QMainWindow):
 
         #iterate over each alert in list and add it to our table
         for alert in alertList:
-            self.AddRowToReportTable(alert.get('interface'), alert.get('attackType'), alert.get('srcIp'), alert.get('srcMac'),
-                                       alert.get('dstIp'), alert.get('dstMac'), alert.get('protocol'), alert.get('timestamp'))
+            self.AddRowToReportTable(alert.get('interface'), alert.get('attackType'), alert.get('srcIp'), alert.get('srcMac'), alert.get('dstIp'), 
+                                       alert.get('dstMac'), alert.get('protocol'), alert.get('osType'), alert.get('timestamp'))
     
 
     # method for adding row to history table widget in gui
@@ -310,7 +329,7 @@ class NetSpect(QMainWindow):
     
 
     # method for adding row to report preview table widget in gui
-    def AddRowToReportTable(self, interface, attackType, srcIp, srcMac, dstIp, dstMac, protocol, timestamp):
+    def AddRowToReportTable(self, interface, attackType, srcIp, srcMac, dstIp, dstMac, protocol, osType, timestamp):
         if interface and attackType and srcIp and srcMac and dstIp and dstMac and protocol and timestamp:
             newRow = self.reportPreviewTableModel.AddRowToReportTable() #create a new row add all the values into it by index
             self.reportPreviewTableModel.SetRowItemReportTable(newRow, 0, interface)
@@ -321,6 +340,7 @@ class NetSpect(QMainWindow):
             self.reportPreviewTableModel.SetRowItemReportTable(newRow, 5, dstMac)
             self.reportPreviewTableModel.SetRowItemReportTable(newRow, 6, protocol)
             self.reportPreviewTableModel.SetRowItemReportTable(newRow, 7, timestamp)
+            self.reportPreviewTableModel.SetRowItemReportTable(newRow, 8, osType)
 
 
     # method for setting user interface to logged in or logged out state 
@@ -339,6 +359,8 @@ class NetSpect(QMainWindow):
                 self.InitHistoryTable(self.userData.get('alertList')) #initialize our history table
                 self.InitReportTable(self.userData.get('alertList')) #initialize our report table
                 self.InitMacAddresses(self.userData.get('blackList')) #intialize our mac address black list
+                UserInterfaceFunctions.ReportDurationComboboxChanged(self) #trigger default sort for duration combobox
+                UserInterfaceFunctions.ReportCheckboxToggled(self) #trigger default sort for checkboxes
                 UserInterfaceFunctions.UpdateChartAfterLogin(self, self.userData.get('pieChartData')) #initialize pie chart
 
             # means we set user interface for logged out user
@@ -360,6 +382,12 @@ class NetSpect(QMainWindow):
                 self.userData['numberOfDetections'] = value
             # set numberOfDetectionsCounter with new value
             self.numberOfDetectionsCounter.setText(str(self.userData.get('numberOfDetections')))
+
+
+    # method for updating report progress bar in gui
+    @pyqtSlot(int)
+    def UpdateReportProgressBar(self, value):
+         self.reportProgressBar.setValue(value)
 
 
     # method for updating running time label in gui
@@ -562,7 +590,26 @@ class NetSpect(QMainWindow):
         self.sqlThread = None #set thread to none
         # in case of an error we show error message
         if stateDict.get('state') == False and stateDict.get('message'):
-            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message') , 'Critical')
+            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message'), 'Critical')
+
+
+    # method for closing report thread and setting it back to none
+    @pyqtSlot(dict, bool)
+    def CloseReportThread(self, stateDict, isClosing=False):
+        self.reportThread = None #set thread to none
+        # toggle report interface to be hidden
+        UserInterfaceFunctions.ToggleReportInterface(self, False)
+        # only show popup messages if isClosing flag is not set
+        if not isClosing:
+            # in case of an error we show error message
+            if stateDict.get('state') == False and stateDict.get('message'):
+                UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message'), 'Critical')
+            # in case of cancelation, we show cancelation messsage
+            elif stateDict.get('state') == True and stateDict.get('message'):
+                UserInterfaceFunctions.ShowPopup('Canceled Report Generation', stateDict.get('message'), 'Information')
+            # else we show success message
+            else:
+                UserInterfaceFunctions.ShowPopup('Generated Report Successfully', 'Generated report in desired format successfully.', 'Information')
 
 
     # method for closing sniffer thread and setting it back to none
@@ -575,7 +622,7 @@ class NetSpect(QMainWindow):
         # in case of an error we stop detection and show error message
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
-            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message') , 'Critical')
+            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message'), 'Critical')
     
 
     # method for closing arp thread and setting it back to none
@@ -589,7 +636,7 @@ class NetSpect(QMainWindow):
         # in case of an error we stop detection and show error message
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
-            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message') , 'Critical')
+            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message'), 'Critical')
 
 
     # method for closing portScanDos thread and setting it back to none
@@ -602,7 +649,7 @@ class NetSpect(QMainWindow):
         # in case of an error we stop detection and show error message
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
-            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message') , 'Critical')
+            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message'), 'Critical')
 
 
     # method for closing dns thread and setting it back to none
@@ -615,7 +662,7 @@ class NetSpect(QMainWindow):
         # in case of an error we stop detection and show error message
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
-            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message') , 'Critical')
+            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message'), 'Critical')
     
 
     # method for analyzing detection result of arp spoofing attack
@@ -869,7 +916,6 @@ class NetSpect(QMainWindow):
             self.startStopButton.setText('START')
             self.StopDetection()
 
-
     #-----------------------------------------------CLICKED-METHODS----------------------------------------------#
 
     # method for loggin into user's account and intialize our userData dictionary
@@ -900,6 +946,9 @@ class NetSpect(QMainWindow):
                 UserInterfaceFunctions.ShowPopup('Error In Logout', 'Please stop detection before attempting to log out.', 'Information')
             # else we log out and clear interface
             else:
+                # check if report thread is active, if so we stop thread
+                if self.reportThread:
+                    self.reportThread.StopThread(True)
                 self.ChangeUserState(False) #call our method to log out and clear interface
 
 
@@ -979,7 +1028,7 @@ class NetSpect(QMainWindow):
             UserInterfaceFunctions.UpdateChartAfterAttack(self, attackType) #increment attack type in pie chart
             self.AddRowToHistoryTable(alert.get('srcIp'), alert.get('srcMac'), alert.get('dstIp'), alert.get('dstMac'), alert.get('attackType'), alert.get('timestamp'))
             self.AddRowToReportTable(alert.get('interface'), alert.get('attackType'), alert.get('srcIp'), alert.get('srcMac'), alert.get('dstIp'), alert.get('dstMac'), 
-                                            alert.get('protocol'), alert.get('timestamp'))
+                                            alert.get('protocol'), alert.get('osType'), alert.get('timestamp'))
             
             # add alert to database if user is logged in
             if self.sqlThread and self.userData.get('userId'):
@@ -1087,6 +1136,40 @@ class NetSpect(QMainWindow):
                         if self.ValidatePassword(newPassword, self.savePasswordErrorMessageLabel, 'You have entered an invalid password in the second field, please enter a valid new password before clicking the save button.'):
                             if self.ValidatePassword(confirmPassword, self.savePasswordErrorMessageLabel, 'You have entered an invalid password in the third field, please enter a valid new password before clicking the save button.'):
                                 self.sqlThread.ChangePassword(self.userData.get('userId'), NetSpect.ToSHA256(newPassword), NetSpect.ToSHA256(oldPassword))
+
+
+    # method for creating alerts report for user in desired format, txt or csv
+    def DownloadReportButtonClicked(self):
+        if not self.reportThread:
+            # get system info and filtered alert list
+            systemInfo = NetworkInformation.systemInfo if self.machineInfoCheckBox.isChecked() else None
+            alertList = UserInterfaceFunctions.GetFilteredAlerts(self)
+
+            # if alertList is empty, we show message
+            if not alertList:
+                UserInterfaceFunctions.ShowPopup('No Detection History', 'There are no detected alerts available for report generation.', 'Information')
+            # else we proceed
+            else:
+                # get desired path for report from file dialog
+                filePath = self.GetPathFromReportFileDialog()
+                
+                # if user chose a path we generate a report with our thread
+                if filePath:
+                    # toggle report interface to be shown
+                    UserInterfaceFunctions.ToggleReportInterface(self, True)
+                    # create report thread with our parameters and create report in specified format
+                    self.reportThread = Report_Thread(self, filePath, alertList, systemInfo)
+                    # connect relevant signals for report thread
+                    self.reportThread.updateProgressBarSignal.connect(self.UpdateReportProgressBar)
+                    self.reportThread.finishSignal.connect(self.CloseReportThread)
+                    # start report thread
+                    self.reportThread.start()
+
+
+    # method for canceling report generation and stopping report thread
+    def CancelReportButtonClicked(self):
+        if self.reportThread:
+            self.reportThread.StopThread()
 
     #---------------------------------------------CLICKED-METHODS-END--------------------------------------------#
 
@@ -1543,6 +1626,157 @@ class Dns_Thread(QThread):
             print('Dns_Thread: Finsihed analysis of traffic.\n')
 
 #--------------------------------------------------------DNS-THREAD-END---------------------------------------------------------#
+
+#--------------------------------------------------------REPORT-THREAD----------------------------------------------------------#
+# thread for creating alert report for user, in txt format or csv format
+class Report_Thread(QThread):
+    # represents our system info and table headers
+    systemInfoHeaders = {'osType': 'OS Type:', 'osVersion': 'OS Version:', 
+                         'architecture': 'Architecture:', 'hostName': 'Host Name:'}
+    
+    tableHeaders = ['Interface', 'Attack Type', 'Source IP', 'Source MAC', 'Destination IP',
+                     'Destination MAC', 'Protocol', 'OS Type', 'Timestamp']
+    
+    # represents our system info and table formats
+    systemInfoFormat = '{:<15} {:<50}\n'
+    
+    tableFormat = '{:<13} {:<15} {:<40} {:<20} {:<40} {:<20} {:<10} {:<13} {}\n'
+
+    # define signals for interacting with main gui thread
+    updateProgressBarSignal = pyqtSignal(int)
+    finishSignal = pyqtSignal(dict, bool)
+
+    # constructor of report thread
+    def __init__(self, parent=None, filePath=None, alertList=None, systemInfo=None):
+        super().__init__(parent)
+        self.parent = parent #represents main thread
+        self.stopFlag = False #represents stop flag for canceling process
+        self.isClosing = False #represents close flag for popup messages
+        self.filePath = filePath #represents file path
+        self.alertList = alertList #represents alerts list
+        self.systemInfo = systemInfo #represents system info dict
+        self.progressStep = 100 / len(self.alertList) if self.alertList else 100 #represents progress step
+
+    
+    # method for stopping dns thread
+    @pyqtSlot()
+    def StopThread(self, isClosing=False):
+        self.stopFlag = True #set stop flag
+        self.isClosing = isClosing #set close flag
+
+
+    # run method for creating alerts report for user
+    def run(self):
+        stateDict = {'state': True, 'message': ''} #represents state of thread when finishes
+        try:
+            # if file ends with .txt we create a txt report
+            if self.filePath.endswith('.txt'):
+                self.GenerateTxtReport()
+            # if file ends with .csv we create a csv report
+            elif self.filePath.endswith('.csv'):
+                self.GenerateCsvReport()
+            # else we received unsupported file format
+            else:
+                stateDict.update({'state': False, 'message': 'Failed creating report, file format not supported.'})
+            
+            # check if stop flag set, if so we update message
+            if self.stopFlag:
+                stateDict.update({'state': True, 'message': 'Canceled report generation successfully.'})
+                print('Report_Thread: Stopping report generation.')
+                # we check if file was partially written, if so delete it
+                if os.path.exists(self.filePath):
+                    os.remove(self.filePath)
+
+        except Exception as e: #we catch an exception if error occured
+            stateDict.update({'state': False, 'message': f'An error occurred: {e}.'})
+            print(f'Report_Thread: {stateDict['message']}') #print error message in terminal
+            # we check if file was partially written, if so delete it
+            if os.path.exists(self.filePath):
+                os.remove(self.filePath)
+        finally:
+            self.finishSignal.emit(stateDict, self.isClosing) #send finish signal to main thread
+            print('Report_Thread: Finsihed Creating Report.\n')
+
+
+    # method for writing detection report into a text file
+    def GenerateTxtReport(self):
+        # open file for writing in desired path
+        with open(self.filePath, 'w', encoding='utf-8') as f:
+            # if system info given we write system info into txt file
+            if self.systemInfo:
+                # write system info header
+                f.write('System Information:\n')
+                f.write('=' * 40 + '\n')
+                
+                # write system info with predefined headers
+                for key, value in self.systemInfo.items():
+                    f.write(self.systemInfoFormat.format(self.systemInfoHeaders[key], value))
+            
+            # if alert list given we write our detection history into txt file
+            if self.alertList:
+                # write detection history header
+                f.write('\nDetection History:\n')
+                f.write('=' * 40 + '\n\n')
+
+                # write table headers
+                f.write(self.tableFormat.format(*self.tableHeaders))
+                f.write('=' * 196 + '\n')
+                
+                # iterate over alert list and add each alert into txt file
+                for i, alert in enumerate(self.alertList, start=1):
+                    # check stop flag before writing
+                    if self.stopFlag:
+                        return
+                    
+                    # write line into file and emit a signal to update progress bar
+                    f.write(self.tableFormat.format(*alert.values()))
+                    self.updateProgressBarSignal.emit(int(i * self.progressStep))
+
+
+    # method for writing detection report into a csv file
+    def GenerateCsvReport(self):
+        # open file for writing in desired path
+        with open(self.filePath, 'w', newline='', encoding='utf-8') as f:
+            # create writer for csv
+            writer = csv.writer(f)
+
+            # if system info given we write system info into csv file
+            if self.systemInfo:
+                # write system info header
+                writer.writerow(['System Information'])  
+
+                # write a blank row to separate system info header from info
+                writer.writerow([])
+
+                # write system info with predefined headers
+                for key, value in self.systemInfo.items():
+                    writer.writerow([self.systemInfoHeaders[key], value])
+
+                # write a blank row to separate system info from alerts
+                writer.writerow([])
+
+            # if alert list given we write our detection history into csv file
+            if self.alertList:
+                # write detection history header
+                writer.writerow(['Detection History'])
+
+                # write a blank row to separate header from alerts
+                writer.writerow([])
+
+                # write table headers
+                writer.writerow(self.tableHeaders)
+
+                # iterate over alert list and add each alert into csv file
+                for i, alert in enumerate(self.alertList, start=1):
+                     # check stop flag before writing
+                    if self.stopFlag:
+                        return
+                    
+                    # write line into file and emit a signal to update progress bar
+                    writer.writerow(alert.values())
+                    self.updateProgressBarSignal.emit(int(i * self.progressStep))
+
+#------------------------------------------------------REPORT-THREAD-END--------------------------------------------------------#
 
 #------------------------------------------------------------MAIN---------------------------------------------------------------#
 

@@ -144,7 +144,6 @@ def ToggleUserInterface(self, state):
     if state:
         self.accountIcon.hide()
         self.reportDurationComboBox.setEnabled(True)
-        self.reportDurationComboBox.setCurrentIndex(0)
         self.welcomeLabel.show()
         self.logoutIcon.show()
         ShowSettingsInputFields(self)
@@ -154,7 +153,6 @@ def ToggleUserInterface(self, state):
         HideSettingsInputFields(self)
         self.logoutIcon.hide()
         self.welcomeLabel.hide()
-        self.reportDurationComboBox.setCurrentIndex(3)
         self.reportDurationComboBox.setEnabled(False)
         self.welcomeLabel.clear()
         self.accountIcon.show()
@@ -166,6 +164,7 @@ def ToggleUserInterface(self, state):
     ResetChartToDefault(self) #reset our pie chart
 
     #set combobox and checkboxes default state
+    self.reportDurationComboBox.setCurrentIndex(3)
     self.colorModeComboBox.setCurrentIndex(0)
     self.arpSpoofingCheckBox.setChecked(True)
     self.portScanningCheckBox.setChecked(True)
@@ -190,12 +189,29 @@ def ToggleUserInterface(self, state):
     self.saveUsernameErrorMessageLabel.clear()
     self.savePasswordErrorMessageLabel.clear()
     self.macAddressBlacklistErrorMessageLabel.clear()
+    ToggleReportInterface(self, False)
     self.registerEmailLineEdit.setStyleSheet(GetDefaultStyleSheetRegisterLineEdits('registerEmailLineEdit'))
     self.registerUsernameLineEdit.setStyleSheet(GetDefaultStyleSheetRegisterLineEdits('registerUsernameLineEdit'))
     self.registerPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetRegisterLineEdits('registerPasswordLineEdit'))
     self.oldPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetSettingsLineEdits('oldPasswordLineEdit'))
     self.newPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetSettingsLineEdits('newPasswordLineEdit'))
     self.confirmPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetSettingsLineEdits('confirmPasswordLineEdit'))
+
+
+# helper function for showing and hiding report interface
+def ToggleReportInterface(self, state):
+    # if true we need to show report interface
+    if state:
+        self.downloadReportPushButton.hide()
+        self.cancelReportPushButton.show()
+        self.reportProgressBar.setValue(0)
+        self.reportProgressBar.show()
+    # else we hide report interface
+    else:
+        self.reportProgressBar.hide()
+        self.reportProgressBar.setValue(0)
+        self.cancelReportPushButton.hide()
+        self.downloadReportPushButton.show()
 
 
 # helper function for chaning the current page index on the stack widget
@@ -324,12 +340,11 @@ def ShowSettingsInputFields(self):
 def GetDefaultStyleSheetSettingsLineEdits(lineEditName):
     defaultStylesheet = f''' 
         #{lineEditName} {{
-            background-color: #f0f0f0; 
-            border: 2px solid lightgray;  
-            border-radius: 10px;         
-            padding: 5px;              
-            font-size: 14px;            
-            color: black;             
+            background-color: #f0f0f0;
+            border: 2px solid lightgray;
+            border-radius: 10px;
+            padding: 5px;
+            color: black;
             {'margin: 0px 0px 10px 0px;' if (('old' in lineEditName) or ('new' in lineEditName)) else 'margin: 0px 0px 0px 0px;'}
         }}
     '''
@@ -340,12 +355,11 @@ def GetDefaultStyleSheetSettingsLineEdits(lineEditName):
 def GetDefaultStyleSheetRegisterLineEdits(lineEditName):
     defaultStylesheet = f''' 
         #{lineEditName} {{
-            background-color: #f0f0f0; 
-            border: 2px solid lightgray;  
-            border-radius: 10px;         
-            padding: 5px;              
-            font-size: 14px;            
-            color: black;             
+            background-color: #f0f0f0;
+            border: 2px solid lightgray;
+            border-radius: 10px;
+            padding: 5px;
+            color: black;
             {'margin: 0px 5px 0px 5px;' if ('Password' in lineEditName) else 'margin: 0px 5px 10px 5px;'}
         }}
     '''
@@ -365,7 +379,11 @@ class CustomMessageBox(QDialog):
 
         # setting the title and message
         self.setWindowTitle(title)
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self.setGeometry(0, 0, 0, 0)
+
+        # set the popup window icon
+        self.setWindowIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'NetSpectIconTransparent.png')))
 
         # create the main layout (vertical)
         layout = QVBoxLayout()
@@ -384,9 +402,6 @@ class CustomMessageBox(QDialog):
             pixmap = icon.pixmap(32, 32)
         iconLabel.setPixmap(pixmap)
         iconLabel.setAlignment(Qt.AlignCenter) #center the icon vertically
-
-        # set the popup window icon
-        self.setWindowIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'NetSpectIconTransparent.png')))
 
         # set the message
         messageLabel = QLabel(message)
@@ -730,10 +745,12 @@ def ResetChartToDefault(self):
 # Custom Table Model that will sit inside the TableView object in the report page and will contain all the relevant data and functions
 class CustomTableModel(QAbstractTableModel):
     reportPreviewColumnHeaders = ['Interface', 'Attack Type', 'Source IP', 'Source Mac', 'Destination IP', 'Destination Mac', 'Protocol', 'Timestamp']
+    alertListData = [] #represents our alerts list in table view
 
+    # constructor of table model class
     def __init__(self, data=None, parent=None):
         super().__init__(parent)
-        self.alertListData = data if data is not None else [] #list of dicts (row data)
+        self.alertListData = data
 
 
     # overwrite inherited function to get number of rows
@@ -743,7 +760,7 @@ class CustomTableModel(QAbstractTableModel):
 
     # overwrite inherited function to get number of columns
     def columnCount(self, parent=None):
-        return len(self.reportPreviewColumnHeaders) #get number of columns (constant)
+        return len(self.reportPreviewColumnHeaders) + 1 #get number of columns (includes osType)
 
 
     # overwrite inherited function to get data from a specific cell
@@ -763,8 +780,8 @@ class CustomTableModel(QAbstractTableModel):
 
     # overwrite inherited function to set the column names
     def headerData(self, section, orientation, role=Qt.DisplayRole):
-        if role == Qt.DisplayRole:
-            if orientation == Qt.Horizontal: #add column headers
+        if role == Qt.DisplayRole and orientation == Qt.Horizontal:
+            if section < len(self.reportPreviewColumnHeaders):
                 return self.reportPreviewColumnHeaders[section]
         return None
     
@@ -802,10 +819,16 @@ class CustomTableModel(QAbstractTableModel):
 
 # Custom Proxy Model for filtering the TableView that is in the report page, this class will hold the filtering logic and functions
 class CustomFilterProxyModel(QSortFilterProxyModel):
+    # represents our  alertList columns of our table
+    alertListColumns = [('interface', 0), ('attackType', 1), ('srcIp', 2), ('srcMac', 3), ('dstIp', 4),
+                        ('dstMac', 5), ('protocol', 6), ('osType', 8), ('timestamp', 7)]
+    selectedAttacks = set() #stores selected attacks by checkboxes
+    timeFilter = None #represents time combobox filther option
+
+    # constructor of filter proxy class
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.selectedAttacks = set() #stores selected class values
-        self.timeFilter = 'All' #default value is 'All Available Data'
+        self.timeFilter = 'All Available Data' #set to all available data by default
 
 
     # update selected classes and refresh filter (for checkboxes)
@@ -825,8 +848,8 @@ class CustomFilterProxyModel(QSortFilterProxyModel):
         model = self.sourceModel()
 
         # get timestamp and attack type row data
-        timestampValue = model.data(model.index(sourceRow, 7), Qt.DisplayRole) # column 7 = Timestamp
-        attackTypeValue = model.data(model.index(sourceRow, 1), Qt.DisplayRole) # column 1 = Attack Type
+        timestampValue = model.data(model.index(sourceRow, 7), Qt.DisplayRole) #column 7 = Timestamp
+        attackTypeValue = model.data(model.index(sourceRow, 1), Qt.DisplayRole) #column 1 = Attack Type
         
         # validate that the data the this method gets is valid before continuing with the filter
         if timestampValue == 'None' or attackTypeValue == 'None':
@@ -836,7 +859,7 @@ class CustomFilterProxyModel(QSortFilterProxyModel):
         rowTimestamp = datetime.strptime(timestampValue, '%H:%M:%S %d/%m/%y')
         currentTime = datetime.now()
 
-        # time filtering logic, if the checkbox is selected with 'All Available Data' then it will skip the time filter
+        # time filtering logic, if the combobox is selected with 'All Available Data' then it will skip the time filter
         if self.timeFilter == 'Last 24 Hours' and rowTimestamp < currentTime - timedelta(days=1):
             return False
         if self.timeFilter == 'Last 7 Days' and rowTimestamp < currentTime - timedelta(days=7):
@@ -844,8 +867,8 @@ class CustomFilterProxyModel(QSortFilterProxyModel):
         if self.timeFilter == 'Last 30 Days' and rowTimestamp < currentTime - timedelta(days=30):
             return False
 
-        # attack filtering logic (only filter if there are selected classes)
-        if self.selectedAttacks and attackTypeValue not in self.selectedAttacks:
+        # attack filtering logic by attack checkboxes
+        if not self.selectedAttacks or attackTypeValue not in self.selectedAttacks:
             return False #dont show the row if it did not pass one of the filters
 
         return True #show current row if it passed all filters
@@ -874,6 +897,24 @@ def ReportDurationComboboxChanged(self):
     self.proxyReportPreviewTableModel.SetTimeFilter(self.reportDurationComboBox.currentText())
 
 
+# helper function for getting flitered alert list from proxy model
+def GetFilteredAlerts(self):
+    filteredAlertList = []
+    
+    # iterate over each filtered row from the proxy model
+    for row in range(self.proxyReportPreviewTableModel.rowCount()):
+        alert = {} #represents our current alert in row
+
+        # iterate over each iltered column from the proxy model
+        for header, col in self.proxyReportPreviewTableModel.alertListColumns:
+            # get the index from the proxy model
+            index = self.proxyReportPreviewTableModel.index(row, col)
+            alert[header] = self.proxyReportPreviewTableModel.data(index, Qt.DisplayRole)
+        filteredAlertList.append(alert)
+
+    return filteredAlertList
+
+
 # helper function for initializing the table view in the report page when the application loads up
 def InitReportTableView(self):
     # initialize the Table View and custom table filter
@@ -883,6 +924,7 @@ def InitReportTableView(self):
 
     # change some of the table attributes to make it look how we want it
     self.reportPreviewTableView.setModel(self.proxyReportPreviewTableModel)
+    self.reportPreviewTableView.setColumnHidden(self.reportPreviewTableModel.columnCount() - 1, True) #hide osType column
     self.reportPreviewTableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) #distribute column widths equally
     self.reportPreviewTableView.verticalHeader().setDefaultSectionSize(30) #set max row height to 30px
     self.reportPreviewTableView.verticalHeader().setSectionResizeMode(QHeaderView.Fixed) #fix row heights
@@ -907,8 +949,10 @@ def InitAnimationsUI(self):
     # initilize pie chart on screen
     InitPieChart(self)
 
-    # initilize report preview table view
+    # initilize report preview table view and initialize selected attacks and time filter
     InitReportTableView(self)
+    ReportDurationComboboxChanged(self)
+    ReportCheckboxToggled(self)
 
     # hide some labels and icons
     HideSideBarLabels(self)

@@ -1143,20 +1143,20 @@ QToolTip {
                          </property>
                          <property name="styleSheet">
                           <string notr="true">#startStopButton {
-                    border-radius: 60px;
-                    background-color: #3A8E32;
-                    border: 1px solid black;
-                    color: black;
-                    font-weight: bold;
+    border-radius: 60px;
+    background-color: #3A8E32;
+    border: 1px solid black;
+    color: black;
+    font-weight: bold;
 }
 
-                #startStopButton:hover {
-                    background-color: #4D9946;
-                }
+#startStopButton:hover {
+     background-color: #4D9946;
+}
 
-                #startStopButton:pressed {
-                    background-color: #2E7128;
-                }</string>
+#startStopButton:pressed {
+     background-color: #2E7128;
+}</string>
                          </property>
                          <property name="text">
                           <string>START</string>
@@ -2670,10 +2670,34 @@ QCheckBox::indicator:hover {
                      </widget>
                     </item>
                     <item>
-                     <widget class="QFrame" name="downloadReportButtonFrame">
-                      <layout class="QHBoxLayout" name="passwordButtonHorizontalLayout_2">
+                     <widget class="QFrame" name="downloadReportButtonVerticalFrame">
+                      <property name="maximumSize">
+                       <size>
+                        <width>16777215</width>
+                        <height>16777215</height>
+                       </size>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::LeftToRight</enum>
+                      </property>
+                      <layout class="QVBoxLayout" name="verticalLayout_26">
+                       <property name="spacing">
+                        <number>10</number>
+                       </property>
+                       <property name="sizeConstraint">
+                        <enum>QLayout::SetDefaultConstraint</enum>
+                       </property>
+                       <property name="leftMargin">
+                        <number>25</number>
+                       </property>
                        <property name="topMargin">
                         <number>15</number>
+                       </property>
+                       <property name="rightMargin">
+                        <number>25</number>
+                       </property>
+                       <property name="bottomMargin">
+                        <number>9</number>
                        </property>
                        <item>
                         <widget class="QPushButton" name="downloadReportPushButton">
@@ -2682,6 +2706,14 @@ QCheckBox::indicator:hover {
                            <width>160</width>
                            <height>31</height>
                           </size>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <family>Cairo</family>
+                           <pointsize>11</pointsize>
+                           <weight>75</weight>
+                           <bold>true</bold>
+                          </font>
                          </property>
                          <property name="cursor">
                           <cursorShape>PointingHandCursor</cursorShape>
@@ -2694,9 +2726,7 @@ QCheckBox::indicator:hover {
     background-color: #4E4F5A; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
-    padding: 5px;              
-    font-size: 14px; 
-	font-weight: bold;          
+    padding: 5px;                  
     color: #f3f3f3;       
 }
 
@@ -2712,6 +2742,96 @@ QCheckBox::indicator:hover {
                          </property>
                          <property name="text">
                           <string>Download Report</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="cancelReportPushButton">
+                         <property name="maximumSize">
+                          <size>
+                           <width>160</width>
+                           <height>31</height>
+                          </size>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <family>Cairo</family>
+                           <pointsize>11</pointsize>
+                           <weight>75</weight>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="cursor">
+                          <cursorShape>PointingHandCursor</cursorShape>
+                         </property>
+                         <property name="toolTip">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cancel report creation.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">#cancelReportPushButton  {
+    background-color: #D84F4F; 
+    border: 1px solid black;  
+    border-radius: 10px;         
+    padding: 5px;                       
+    color: black;       
+}
+
+#cancelReportPushButton:hover {
+     background-color: #DB6060;
+}
+
+ #cancelReportPushButton:pressed {
+    background-color: #AC3f3F;
+}</string>
+                         </property>
+                         <property name="text">
+                          <string>Cancel Report</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QProgressBar" name="reportProgressBar">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>160</width>
+                           <height>26</height>
+                          </size>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <family>Cairo</family>
+                           <pointsize>11</pointsize>
+                           <weight>75</weight>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="toolTip">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Report creation progress.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">#reportProgressBar {
+    border: 2px solid #d3d3d3;
+    border-radius: 10px;
+    background-color: #f0f0f0;
+    text-align: center;         
+    font-weight: bold;
+    color: black;
+}
+
+#reportProgressBar::chunk {
+    background-color: #3a8e32;
+    border-radius: 10px;
+}
+</string>
+                         </property>
+                         <property name="value">
+                          <number>0</number>
                          </property>
                         </widget>
                        </item>
@@ -5175,8 +5295,16 @@ color: #f3f3f3
                             <property name="maximumSize">
                              <size>
                               <width>500</width>
-                              <height>16777215</height>
+                              <height>33</height>
                              </size>
+                            </property>
+                            <property name="font">
+                             <font>
+                              <family>Cairo</family>
+                              <pointsize>11</pointsize>
+                              <weight>50</weight>
+                              <bold>false</bold>
+                             </font>
                             </property>
                             <property name="toolTip">
                              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter a valid email address (e.g., name@example.com).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -5186,10 +5314,8 @@ color: #f3f3f3
     background-color: #f3f3f3; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
-    padding: 5px;              
-    font-size: 14px;            
+    padding: 5px;                        
     color: black;             
-	/*margin-bottom: 10px;*/
 }</string>
                             </property>
                             <property name="text">
@@ -5295,6 +5421,14 @@ color: #f3f3f3
                                  <height>16777215</height>
                                 </size>
                                </property>
+                               <property name="font">
+                                <font>
+                                 <family>Cairo</family>
+                                 <pointsize>12</pointsize>
+                                 <weight>75</weight>
+                                 <bold>true</bold>
+                                </font>
+                               </property>
                                <property name="cursor">
                                 <cursorShape>PointingHandCursor</cursorShape>
                                </property>
@@ -5306,9 +5440,7 @@ color: #f3f3f3
     background-color: #4E4F5A; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
-    padding: 5px;              
-    font-size: 14px; 
-	font-weight: bold;          
+    padding: 5px;                      
     color: #f3f3f3;       
 }
 
@@ -5375,8 +5507,14 @@ color: #f3f3f3
                             <property name="maximumSize">
                              <size>
                               <width>500</width>
-                              <height>16777215</height>
+                              <height>33</height>
                              </size>
+                            </property>
+                            <property name="font">
+                             <font>
+                              <family>Cairo</family>
+                              <pointsize>11</pointsize>
+                             </font>
                             </property>
                             <property name="toolTip">
                              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose a username that is at most 10 characters long.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -5386,8 +5524,7 @@ color: #f3f3f3
     background-color: #f3f3f3; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
-    padding: 5px;              
-    font-size: 14px;            
+    padding: 5px;                        
     color: black;             
 	/*margin-bottom: 10px;*/
 }</string>
@@ -5471,6 +5608,14 @@ color: #f3f3f3
                                  <height>16777215</height>
                                 </size>
                                </property>
+                               <property name="font">
+                                <font>
+                                 <family>Cairo</family>
+                                 <pointsize>12</pointsize>
+                                 <weight>75</weight>
+                                 <bold>true</bold>
+                                </font>
+                               </property>
                                <property name="cursor">
                                 <cursorShape>PointingHandCursor</cursorShape>
                                </property>
@@ -5482,9 +5627,7 @@ color: #f3f3f3
     background-color: #4E4F5A; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
-    padding: 5px;              
-    font-size: 14px; 
-	font-weight: bold;          
+    padding: 5px;                     
     color: #f3f3f3;       
 }
 
@@ -5550,8 +5693,14 @@ color: #f3f3f3
                             <property name="maximumSize">
                              <size>
                               <width>500</width>
-                              <height>16777215</height>
+                              <height>43</height>
                              </size>
+                            </property>
+                            <property name="font">
+                             <font>
+                              <family>Cairo</family>
+                              <pointsize>11</pointsize>
+                             </font>
                             </property>
                             <property name="toolTip">
                              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter your current password.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -5561,8 +5710,7 @@ color: #f3f3f3
     background-color: #f3f3f3; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
-    padding: 5px;              
-    font-size: 14px;            
+    padding: 5px;                    
     color: black;             
 	margin-bottom: 10px;
 }</string>
@@ -5580,8 +5728,14 @@ color: #f3f3f3
                             <property name="maximumSize">
                              <size>
                               <width>500</width>
-                              <height>16777215</height>
+                              <height>43</height>
                              </size>
+                            </property>
+                            <property name="font">
+                             <font>
+                              <family>Cairo</family>
+                              <pointsize>11</pointsize>
+                             </font>
                             </property>
                             <property name="toolTip">
                              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Your new password must have at least one uppercase letter and one digit. Minimum 6 characters and at most 20.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -5591,8 +5745,7 @@ color: #f3f3f3
     background-color: #f3f3f3; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
-    padding: 5px;              
-    font-size: 14px;            
+    padding: 5px;                    
     color: black;             
 	margin-bottom: 10px;
 }</string>
@@ -5610,8 +5763,14 @@ color: #f3f3f3
                             <property name="maximumSize">
                              <size>
                               <width>500</width>
-                              <height>16777215</height>
+                              <height>33</height>
                              </size>
+                            </property>
+                            <property name="font">
+                             <font>
+                              <family>Cairo</family>
+                              <pointsize>11</pointsize>
+                             </font>
                             </property>
                             <property name="toolTip">
                              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Confirm your new password by entering it again.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -5621,10 +5780,8 @@ color: #f3f3f3
     background-color: #f3f3f3; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
-    padding: 5px;              
-    font-size: 14px;            
+    padding: 5px;                      
     color: black;             
-	/*margin-bottom: 10px;*/
 }</string>
                             </property>
                             <property name="text">
@@ -5707,6 +5864,14 @@ color: #f3f3f3
                                  <height>16777215</height>
                                 </size>
                                </property>
+                               <property name="font">
+                                <font>
+                                 <family>Cairo</family>
+                                 <pointsize>12</pointsize>
+                                 <weight>75</weight>
+                                 <bold>true</bold>
+                                </font>
+                               </property>
                                <property name="cursor">
                                 <cursorShape>PointingHandCursor</cursorShape>
                                </property>
@@ -5718,9 +5883,7 @@ color: #f3f3f3
     background-color: #4E4F5A; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
-    padding: 5px;              
-    font-size: 14px; 
-	font-weight: bold;          
+    padding: 5px;                   
     color: #f3f3f3;       
 }
 
@@ -6115,7 +6278,8 @@ color: #f3f3f3
                                </property>
                                <property name="font">
                                 <font>
-                                 <pointsize>12</pointsize>
+                                 <family>Cairo</family>
+                                 <pointsize>13</pointsize>
                                 </font>
                                </property>
                                <property name="toolTip">
@@ -6189,6 +6353,18 @@ color: #f3f3f3
                                 </property>
                                 <item>
                                  <widget class="QLineEdit" name="macAddressLineEdit">
+                                  <property name="maximumSize">
+                                   <size>
+                                    <width>16777215</width>
+                                    <height>33</height>
+                                   </size>
+                                  </property>
+                                  <property name="font">
+                                   <font>
+                                    <family>Cairo</family>
+                                    <pointsize>11</pointsize>
+                                   </font>
+                                  </property>
                                   <property name="toolTip">
                                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input a Mac address (eg. f7:58:15:f3:ce:22)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                   </property>
@@ -6197,8 +6373,7 @@ color: #f3f3f3
     background-color: #f0f0f0; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
-    padding: 5px;              
-    font-size: 14px;            
+    padding: 5px;                        
     color: black;             
 }</string>
                                   </property>
@@ -6224,8 +6399,16 @@ color: #f3f3f3
                                   <property name="maximumSize">
                                    <size>
                                     <width>70</width>
-                                    <height>16777215</height>
+                                    <height>35</height>
                                    </size>
+                                  </property>
+                                  <property name="font">
+                                   <font>
+                                    <family>Cairo</family>
+                                    <pointsize>12</pointsize>
+                                    <weight>75</weight>
+                                    <bold>true</bold>
+                                   </font>
                                   </property>
                                   <property name="cursor">
                                    <cursorShape>PointingHandCursor</cursorShape>
@@ -6238,20 +6421,17 @@ color: #f3f3f3
     background-color: #3a8e32; 
     border: 1px solid black;  
     border-radius: 10px;         
-    padding: 5px;              
-    font-size: 14px; 
-	font-weight: bold;          
+    padding: 5px;                        
     color: black;       
 }
 
+#addMacAddressPushButton:hover {
+     background-color: #4D9946;
+ }
 
-                #addMacAddressPushButton:hover {
-                    background-color: #4D9946;
-                }
-
-                #addMacAddressPushButton:pressed {
-                    background-color: #2E7128;
-                }</string>
+#addMacAddressPushButton:pressed {
+    background-color: #2E7128;
+}</string>
                                   </property>
                                   <property name="text">
                                    <string>Add</string>
@@ -6377,14 +6557,22 @@ color: #f3f3f3
                             <property name="minimumSize">
                              <size>
                               <width>145</width>
-                              <height>0</height>
+                              <height>31</height>
                              </size>
                             </property>
                             <property name="maximumSize">
                              <size>
                               <width>145</width>
-                              <height>16777215</height>
+                              <height>31</height>
                              </size>
+                            </property>
+                            <property name="font">
+                             <font>
+                              <family>Cairo</family>
+                              <pointsize>12</pointsize>
+                              <weight>75</weight>
+                              <bold>true</bold>
+                             </font>
                             </property>
                             <property name="cursor">
                              <cursorShape>PointingHandCursor</cursorShape>
@@ -6397,21 +6585,17 @@ color: #f3f3f3
     background-color: #D84F4F; 
     border: 1px solid black;  
     border-radius: 10px;         
-    padding: 5px;              
-    font-size: 14px; 
-	font-weight: bold;          
+    padding: 5px;                      
     color: black;       
 }
 
+#clearHistoryPushButton:hover {
+     background-color: #DB6060;
+}
 
-
-                #clearHistoryPushButton:hover {
-                    background-color: #DB6060;
-                }
-
-                #clearHistoryPushButton:pressed {
-                    background-color: #AC3f3F;
-                }</string>
+ #clearHistoryPushButton:pressed {
+    background-color: #AC3f3F;
+}</string>
                             </property>
                             <property name="text">
                              <string>Clear History</string>
@@ -6423,14 +6607,22 @@ color: #f3f3f3
                             <property name="minimumSize">
                              <size>
                               <width>145</width>
-                              <height>0</height>
+                              <height>31</height>
                              </size>
                             </property>
                             <property name="maximumSize">
                              <size>
                               <width>145</width>
-                              <height>16777215</height>
+                              <height>31</height>
                              </size>
+                            </property>
+                            <property name="font">
+                             <font>
+                              <family>Cairo</family>
+                              <pointsize>12</pointsize>
+                              <weight>75</weight>
+                              <bold>true</bold>
+                             </font>
                             </property>
                             <property name="cursor">
                              <cursorShape>PointingHandCursor</cursorShape>
@@ -6443,20 +6635,18 @@ color: #f3f3f3
     background-color: #D84F4F; 
     border: 1px solid black;  
     border-radius: 10px;         
-    padding: 5px;              
-    font-size: 14px; 
-	font-weight: bold;          
+    padding: 5px;                      
     color: black;       
 }
 
 
-                #deleteAccoutPushButton:hover {
-                    background-color: #DB6060;
-                }
+#deleteAccoutPushButton:hover {
+    background-color: #DB6060;
+}
 
-                #deleteAccoutPushButton:pressed {
-                    background-color: #AC3f3F;
-                }</string>
+#deleteAccoutPushButton:pressed {
+    background-color: #AC3f3F;
+}</string>
                             </property>
                             <property name="text">
                              <string>Delete Account</string>
@@ -6662,6 +6852,12 @@ color: #f3f3f3
                     <height>44</height>
                    </size>
                   </property>
+                  <property name="font">
+                   <font>
+                    <family>Cairo</family>
+                    <pointsize>12</pointsize>
+                   </font>
+                  </property>
                   <property name="toolTip">
                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter your account username. If you dont have an account click the blue text below.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
@@ -6670,8 +6866,7 @@ color: #f3f3f3
     background-color: #f0f0f0; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
-    padding: 5px;              
-    font-size: 14px;            
+    padding: 5px;                    
     color: black;             
 	margin: 0px 5px 10px 5px;
 }</string>
@@ -6704,6 +6899,14 @@ color: #f3f3f3
                     <height>34</height>
                    </size>
                   </property>
+                  <property name="font">
+                   <font>
+                    <family>Cairo</family>
+                    <pointsize>12</pointsize>
+                    <weight>50</weight>
+                    <bold>false</bold>
+                   </font>
+                  </property>
                   <property name="toolTip">
                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter your password, if you dont remember either contact support or open a new account.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
@@ -6712,8 +6915,7 @@ color: #f3f3f3
     background-color: #f0f0f0; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
-    padding: 5px;  
-    font-size: 14px;            
+    padding: 5px;         
     color: black;             
 	margin: 0px 5px 0px 5px;
 }
@@ -6810,8 +7012,16 @@ color: #f3f3f3
                      <property name="maximumSize">
                       <size>
                        <width>100</width>
-                       <height>16777215</height>
+                       <height>36</height>
                       </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <family>Cairo</family>
+                       <pointsize>12</pointsize>
+                       <weight>75</weight>
+                       <bold>true</bold>
+                      </font>
                      </property>
                      <property name="cursor">
                       <cursorShape>PointingHandCursor</cursorShape>
@@ -6821,9 +7031,7 @@ color: #f3f3f3
     background-color: #4E4F5A; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
-    padding: 5px;              
-    font-size: 14px; 
-	font-weight: bold;          
+    padding: 5px;                      
     color: #f3f3f3;       
 }
 
@@ -7044,6 +7252,12 @@ color: #f3f3f3
                     <height>0</height>
                    </size>
                   </property>
+                  <property name="font">
+                   <font>
+                    <family>Cairo</family>
+                    <pointsize>12</pointsize>
+                   </font>
+                  </property>
                   <property name="toolTip">
                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter a valid email address (e.g., name@example.com).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
@@ -7052,8 +7266,7 @@ color: #f3f3f3
     background-color: #f0f0f0; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
-    padding: 5px;              
-    font-size: 14px;            
+    padding: 5px;                     
     color: black;             
 	margin: 0px 5px 10px 5px;
 }</string>
@@ -7092,6 +7305,12 @@ color: #f3f3f3
                     <height>0</height>
                    </size>
                   </property>
+                  <property name="font">
+                   <font>
+                    <family>Cairo</family>
+                    <pointsize>12</pointsize>
+                   </font>
+                  </property>
                   <property name="toolTip">
                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose a username that is at most 10 characters long.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
@@ -7100,10 +7319,9 @@ color: #f3f3f3
     background-color: #f0f0f0; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
-    padding: 5px;              
-    font-size: 14px;            
+    padding: 5px;                      
     color: black;             
-		margin: 0px 5px 10px 5px;
+	margin: 0px 5px 10px 5px;
 }</string>
                   </property>
                   <property name="text">
@@ -7140,6 +7358,12 @@ color: #f3f3f3
                     <height>0</height>
                    </size>
                   </property>
+                  <property name="font">
+                   <font>
+                    <family>Cairo</family>
+                    <pointsize>12</pointsize>
+                   </font>
+                  </property>
                   <property name="toolTip">
                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Your password must have at least one uppercase letter and one digit. Minimum 6 characters and at most 20.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
@@ -7151,8 +7375,7 @@ color: #f3f3f3
     background-color: #f0f0f0; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
-    padding: 5px;              
-    font-size: 14px;            
+    padding: 5px;                       
     color: black;             
 	margin: 0px 5px 0px 5px;
 }
@@ -7247,8 +7470,16 @@ color: #f3f3f3
                      <property name="maximumSize">
                       <size>
                        <width>100</width>
-                       <height>16777215</height>
+                       <height>36</height>
                       </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <family>Cairo</family>
+                       <pointsize>12</pointsize>
+                       <weight>75</weight>
+                       <bold>true</bold>
+                      </font>
                      </property>
                      <property name="cursor">
                       <cursorShape>PointingHandCursor</cursorShape>
@@ -7258,9 +7489,7 @@ color: #f3f3f3
     background-color: #4E4F5A; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
-    padding: 5px;              
-    font-size: 14px; 
-	font-weight: bold;          
+    padding: 5px;                     
     color: #f3f3f3;       
 }
 

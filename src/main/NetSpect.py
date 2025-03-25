@@ -1701,26 +1701,26 @@ class Report_Thread(QThread):
     # method for writing detection report into a text file
     def GenerateTxtReport(self):
         # open file for writing in desired path
-        with open(self.filePath, 'w', encoding='utf-8') as f:
+        with open(self.filePath, 'w', encoding='utf-8') as file:
             # if system info given we write system info into txt file
             if self.systemInfo:
                 # write system info header
-                f.write('System Information:\n')
-                f.write('=' * 40 + '\n')
+                file.write('System Information:\n')
+                file.write('=' * 40 + '\n')
                 
                 # write system info with predefined headers
                 for key, value in self.systemInfo.items():
-                    f.write(self.systemInfoFormat.format(self.systemInfoHeaders[key], value))
+                    file.write(self.systemInfoFormat.format(self.systemInfoHeaders[key], value))
             
             # if alert list given we write our detection history into txt file
             if self.alertList:
                 # write detection history header
-                f.write('\nDetection History:\n')
-                f.write('=' * 40 + '\n\n')
+                file.write('\nDetection History:\n')
+                file.write('=' * 40 + '\n\n')
 
                 # write table headers
-                f.write(self.tableFormat.format(*self.tableHeaders))
-                f.write('=' * 196 + '\n')
+                file.write(self.tableFormat.format(*self.tableHeaders))
+                file.write('=' * 196 + '\n')
                 
                 # iterate over alert list and add each alert into txt file
                 for i, alert in enumerate(self.alertList, start=1):
@@ -1729,16 +1729,16 @@ class Report_Thread(QThread):
                         return
                     
                     # write line into file and emit a signal to update progress bar
-                    f.write(self.tableFormat.format(*alert.values()))
+                    file.write(self.tableFormat.format(*alert.values()))
                     self.updateProgressBarSignal.emit(int(i * self.progressStep))
 
 
     # method for writing detection report into a csv file
     def GenerateCsvReport(self):
         # open file for writing in desired path
-        with open(self.filePath, 'w', newline='', encoding='utf-8') as f:
+        with open(self.filePath, 'w', newline='', encoding='utf-8') as file:
             # create writer for csv
-            writer = csv.writer(f)
+            writer = csv.writer(file)
 
             # if system info given we write system info into csv file
             if self.systemInfo:

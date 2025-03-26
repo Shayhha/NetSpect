@@ -389,6 +389,8 @@ class NetSpect(QMainWindow):
             self.reportPreviewTableModel.SetRowItemReportTable(newRow, 6, protocol)
             self.reportPreviewTableModel.SetRowItemReportTable(newRow, 7, timestamp)
             self.reportPreviewTableModel.SetRowItemReportTable(newRow, 8, osType)
+            UserInterfaceFunctions.ReportDurationComboboxChanged(self) #trigger default sort for duration combobox
+            UserInterfaceFunctions.ReportCheckboxToggled(self) #trigger default sort for checkboxes
 
 
     # method for setting user interface to logged in or logged out state 

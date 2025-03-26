@@ -1,4 +1,4 @@
-import sys, os, socket, platform, joblib, csv, logging
+import sys, os, socket, platform, joblib, csv
 import numpy as np
 import pandas as pd
 from abc import ABC, abstractmethod
@@ -26,8 +26,9 @@ class Default_Packet(ABC):
     srcPort = None #represents source port of packet 
     dstPort = None #represents destination port of packet
     ipParam = None #represents IPv4 / IPv6 fields as tuple (ttl, dscp) / (hopLimit, trafficClass)
-    packetLen = None #size of packet (including headers)
-    payloadLen = None #size of packet (without headers)
+    packetLen = None #size of packet (including headers, IP and payload)
+    headerLen = None #size of packet header (packet specific header with its payload)
+    payloadLen = None #size of payload of packet
     ipFlagDict = {} #represents ip flags
     time = None #timestamp of packet
 
@@ -38,6 +39,7 @@ class Default_Packet(ABC):
         self.srcMac = self.packet.src
         self.dstMac = self.packet.dst
         self.packetLen = len(self.packet)
+        self.headerLen = 0
         self.payloadLen = len(self.packet[Raw].load) if Raw in self.packet else 0
         self.time = packet.time
         self.IpInfo() #initialize ip info
@@ -93,6 +95,7 @@ class TCP_Packet(Default_Packet):
     dstPort = None
     seqNum = None
     ackNum = None
+    segmentSize = None
     windowSize = None
     flagDict = {}
     optionDict = {}
@@ -102,7 +105,9 @@ class TCP_Packet(Default_Packet):
         super().__init__('TCP', packet) #call parent ctor
         if packet.haslayer(TCP): #checks if packet is TCP
             self.packetType = TCP #specify the packet type
-        self.InitTCP() #call method to initialize tcp specific params
+            self.headerLen = len(self.packet[TCP]) #add header len of tcp
+            self.segmentSize = len(self.packet[TCP].payload) #add segment size of tcp
+            self.InitTCP() #call method to initialize tcp specific params
 
 
     # method for TCP packet information
@@ -139,6 +144,7 @@ class UDP_Packet(Default_Packet):
         super().__init__('UDP', packet) #call parent ctor
         if packet.haslayer(UDP): #checks if packet is UDP
             self.packetType = UDP #add packet type
+            self.headerLen = len(self.packet[UDP]) #add header len of udp
 
 #---------------------------------------------------UDP-END--------------------------------------------------#
 
@@ -150,14 +156,13 @@ class DNS_Packet(Default_Packet):
     dnsDomainName = None
     dnsNumOfReqOrRes = None
     dnsData = None
-    dnsPacketLen = None
 
     def __init__(self, packet=None):
         super().__init__('DNS', packet) #call parent ctor
         if packet.haslayer(DNS): #checks if packet is DNS
             self.packetType = DNS #add packet type
-        self.dnsPacketLen = len(self.packet[DNS])
-        self.InitDNS() #call method to initialize dns specific params
+            self.headerLen = len(self.packet[DNS]) #add header len of dns
+            self.InitDNS() #call method to initialize dns specific params
 
     #method for packet information
     def InitDNS(self):
@@ -194,7 +199,8 @@ class ARP_Packet(Default_Packet):
         super().__init__('ARP', packet) #call parent ctor
         if packet.haslayer(ARP): #checks if packet is ARP
             self.packetType = ARP #add packet type
-        self.InitARP() #call method to initialize ARP specific params
+            self.headerLen = len(self.packet[ARP]) #add header len of arp
+            self.InitARP() #call method to initialize ARP specific params
 
     # method for ARP packet information
     def InitARP(self):
@@ -639,12 +645,12 @@ class PortScanDoS(ABC):
     loadedModel = joblib.load(currentDir.parent / 'models' / 'port_scan_dos_svm_model.pkl') #load SVM model for portScanDos
     loadedScaler = joblib.load(currentDir.parent / 'models' / 'port_scan_dos_scaler.pkl') #load scaler for SVM model
     selectedColumns = [
-        'Number of Ports', 'Average Packet Size', 'Packet Length Min', 'Packet Length Max', 
-        'Packet Length Mean', 'Packet Length Std', 'Packet Length Variance', 'Total Length of Fwd Packet', 
-        'Fwd Packet Length Max', 'Fwd Packet Length Mean', 'Bwd Packet Length Max', 'Bwd Packet Length Mean', 
-        'Bwd Packet Length Min', 'Bwd Packet Length Std', 'Fwd Segment Size Avg', 'Bwd Segment Size Avg', 
-        'Subflow Fwd Bytes', 'SYN Flag Count', 'ACK Flag Count', 'RST Flag Count', 'Flow Duration', 
-        'Packets Per Second', 'IAT Total', 'IAT Max', 'IAT Mean', 'IAT Std'
+        'Number of Ports', 'Average Packet Length', 'Packet Length Min', 'Packet Length Max', 
+        'Packet Length Std', 'Packet Length Variance', 'Total Length of Fwd Packet', 'Fwd Packet Length Max', 
+        'Fwd Packet Length Mean', 'Fwd Packet Length Min', 'Fwd Packet Length Std', 'Bwd Packet Length Max', 
+        'Bwd Packet Length Mean', 'Bwd Packet Length Min', 'Bwd Packet Length Std', 'Fwd Segment Size Avg', 
+        'Bwd Segment Size Avg', 'Subflow Fwd Bytes', 'SYN Flag Count', 'ACK Flag Count', 'RST Flag Count', 
+        'Flow Duration', 'Packets Per Second', 'IAT Max', 'IAT Mean', 'IAT Std'
     ]
 
     # function for processing the flowDict and creating the dataframe that will be passed to classifier
@@ -655,26 +661,23 @@ class PortScanDoS(ABC):
         # iterate over our flow dict and calculate features
         for flow, packetList in portScanDosDict.items():
             uniquePorts = set() #represents the unique destination ports in flow
+            packetLengths = [] #represents packet length of all packets in flow
             fwdLengths = [] #represents length of forward packets in flow
             bwdLengths = [] #represents length of backward packets in flow
-            payloadLengths = [] #represents payload length of all packets in flow
+            fwdSegmentLengths = [] #represents length of forward tcp packets segment size in flow
+            bwdSegmentLengths = [] #represents length of backward tcp packets segment size in flow
             timestamps = [] #represents timestamps of each packet in flow
             subflowLastPacketTS, subflowCount = -1, 0 #last timestamp of the subflow and the counter of subflows
             synFlags, ackFlags, rstFlags = 0, 0, 0 #counter for tcp flags
-            firstSeenPacket, lastSeenPacket = 0, 0 #represnts timestemps for first and last packets
 
             # iterate over each packet in flow
             for packet in packetList:
-                payloadLengths.append(packet.payloadLen) #append payload length to list
+                #append packet length to list
+                packetLengths.append(packet.packetLen)
 
-                # append each packet timestemp to out list for IAT
+                # append each packet timestemp to our list for IAT
                 if packet.time:
                     timestamps.append(packet.time)
-                
-                    # for calculating flow duration
-                    if firstSeenPacket == 0:
-                        firstSeenPacket = packet.time
-                    lastSeenPacket = packet.time
 
                 # check if packet is tcp and calculate its specific parameters
                 if isinstance(packet, TCP_Packet):
@@ -687,7 +690,12 @@ class PortScanDoS(ABC):
                         rstFlags += 1
 
                 if packet.srcIp == flow[0]: #means forward packet
-                    fwdLengths.append(packet.payloadLen)
+                    # add forward packet lengths
+                    fwdLengths.append(packet.headerLen)
+
+                    #add forward segment size for tcp packets
+                    if isinstance(packet, TCP_Packet):
+                        fwdSegmentLengths.append(packet.segmentSize)
 
                     # check for unique destination ports and add it if new port
                     if packet.dstPort not in uniquePorts:
@@ -700,41 +708,45 @@ class PortScanDoS(ABC):
                         subflowCount += 1
 
                 else: #else means backward packets
-                    bwdLengths.append(packet.payloadLen)
+                    # add backward packets lengths
+                    bwdLengths.append(packet.headerLen)
 
+                    #add backward segment size for tcp packets
+                    if isinstance(packet, TCP_Packet):
+                        bwdSegmentLengths.append(packet.segmentSize)
 
-            # inter-arrival time features (IAT) and flow duration
+            # calculate inter-arrival time features (IAT) and flow duration
             interArrivalTimes = [t2 - t1 for t1, t2 in zip(timestamps[:-1], timestamps[1:])]
-            flowDuration = lastSeenPacket - firstSeenPacket
+            flowDuration = np.sum(interArrivalTimes) if interArrivalTimes else 0
 
             # calculate the value dictionary for the current flow and insert it into the featuresDict
             flowParametes = {
-                'Number of Ports': len(uniquePorts), # number of unique destination ports
-                'Average Packet Size': np.mean(payloadLengths) if payloadLengths else 0,
-                'Packet Length Min': np.min(payloadLengths) if payloadLengths else 0, # packet length features
-                'Packet Length Max': np.max(payloadLengths) if payloadLengths else 0,
-                'Packet Length Mean': np.mean(payloadLengths) if payloadLengths else 0,
-                'Packet Length Std': np.std(payloadLengths) if payloadLengths else 0,
-                'Packet Length Variance': np.var(payloadLengths) if payloadLengths else 0,
-                'Total Length of Fwd Packet': np.sum(fwdLengths) if fwdLengths else 0, # total and average size features
-                'Fwd Packet Length Max': np.max(fwdLengths) if fwdLengths else 0, # FWD/BWD packet length features
-                'Fwd Packet Length Mean': np.mean(fwdLengths) if fwdLengths else 0,
-                'Bwd Packet Length Max': np.max(bwdLengths) if bwdLengths else 0,
-                'Bwd Packet Length Mean': np.mean(bwdLengths) if bwdLengths else 0,
-                'Bwd Packet Length Min': np.min(bwdLengths) if bwdLengths else 0,
-                'Bwd Packet Length Std': np.std(bwdLengths) if bwdLengths else 0,
-                'Fwd Segment Size Avg': np.mean(fwdLengths) if fwdLengths else 0,
-                'Bwd Segment Size Avg': np.mean(bwdLengths) if bwdLengths else 0,
-                'Subflow Fwd Bytes': np.sum(fwdLengths) / subflowCount if subflowCount > 0 else 0, # subflow feature
-                'SYN Flag Count': synFlags, # SYN, ACK and RST flag counts
-                'ACK Flag Count': ackFlags,
-                'RST Flag Count': rstFlags,
-                'Flow Duration': flowDuration, # flow duration and packets per second in flow
-                'Packets Per Second': len(packetList) / flowDuration if flowDuration > 0 else 0,
-                'IAT Total': np.sum(interArrivalTimes) if interArrivalTimes else 0, # inter-arrival time features (IAT)
-                'IAT Max': np.max(interArrivalTimes) if interArrivalTimes else 0, 
-                'IAT Mean': np.mean(interArrivalTimes) if interArrivalTimes else 0,
-                'IAT Std': np.std(interArrivalTimes) if interArrivalTimes else 0
+                'Number of Ports': len(uniquePorts), #represents number of unique destination ports
+                'Average Packet Length': np.mean(packetLengths) if packetLengths else 0, #represents average packet length
+                'Packet Length Min': np.min(packetLengths) if packetLengths else 0, #represents min packet length
+                'Packet Length Max': np.max(packetLengths) if packetLengths else 0, #represents max packet length
+                'Packet Length Std': np.std(packetLengths) if packetLengths else 0, #represents std packet length
+                'Packet Length Variance': np.var(packetLengths) if packetLengths else 0, #represents packet length variance
+                'Total Length of Fwd Packet': np.sum(fwdLengths) if fwdLengths else 0, # total length of forward packets
+                'Fwd Packet Length Max': np.max(fwdLengths) if fwdLengths else 0, #represents max forward packets length
+                'Fwd Packet Length Mean': np.mean(fwdLengths) if fwdLengths else 0, #represents mean forward packets length
+                'Fwd Packet Length Min': np.min(fwdLengths) if fwdLengths else 0, #represents min forward packets length
+                'Fwd Packet Length Std': np.std(fwdLengths) if fwdLengths else 0, #represents std forward packets length
+                'Bwd Packet Length Max': np.max(bwdLengths) if bwdLengths else 0, #represents max backward packets length
+                'Bwd Packet Length Mean': np.mean(bwdLengths) if bwdLengths else 0, #represents mean backward packets length
+                'Bwd Packet Length Min': np.min(bwdLengths) if bwdLengths else 0, #represents min backward packets length
+                'Bwd Packet Length Std': np.std(bwdLengths) if bwdLengths else 0, #represents std backward packets length
+                'Fwd Segment Size Avg': np.mean(fwdSegmentLengths) if fwdSegmentLengths else 0, #represents average forward segment size
+                'Bwd Segment Size Avg': np.mean(bwdSegmentLengths) if bwdSegmentLengths else 0, #represents average backward segment size
+                'Subflow Fwd Bytes': np.sum(fwdLengths) / subflowCount if subflowCount > 0 else 0, #represents subflow bytes of forward packets
+                'SYN Flag Count': synFlags, #represents SYN flag count
+                'ACK Flag Count': ackFlags, #represents ACK flag count
+                'RST Flag Count': rstFlags, #represents RST flag count
+                'Flow Duration': flowDuration if flowDuration else 0, #represents flow duration, sum of all IAT of packets
+                'Packets Per Second': len(packetList) / flowDuration if flowDuration > 0 else 0, #represents packets per second in flow
+                'IAT Max': np.max(interArrivalTimes) if interArrivalTimes else 0, #represents max inter-arrival time
+                'IAT Mean': np.mean(interArrivalTimes) if interArrivalTimes else 0, #represents mean inter-arrival time
+                'IAT Std': np.std(interArrivalTimes) if interArrivalTimes else 0 #represents std inter-arrival time
             }   
             featuresDict[flow] = flowParametes #save the dictionary of values into the featuresDict
         return dict(featuresDict)
@@ -835,7 +847,7 @@ class DNSTunneling(ABC):
         'Min Domain Name Length', 'Max Domain Name Length', 'Average Sub Domain Name Length', 'Min Sub Domain Name Length', 
         'Max Sub Domain Name Length', 'Average Packet Length', 'Min Packet Length', 'Max Packet Length', 'Number of Domian Names',
         'Number of Sub Domian Names', 'Total Length of Fwd Packet', 'Total Length of Bwd Packet', 'Total Number of Packets', 
-        'Flow Duration', 'IAT Total', 'IAT Max', 'IAT Mean', 'IAT Std'
+        'Flow Duration', 'IAT Max', 'IAT Mean', 'IAT Std'
     ]
 
     # function for processing the flowDict and creating the dataframe that will be passed to classifier
@@ -860,7 +872,6 @@ class DNSTunneling(ABC):
             fwdLengths = [] #represents length of forward packets in flow
             bwdLengths = [] #represents length of backward packets in flow
             timestamps = [] #represents timestamps of each packet in flow
-            firstSeenPacket, lastSeenPacket = 0, 0 #represnts timestemps for first and last packets
 
             # iterate over each packet in flow
             for packet in packetList:
@@ -868,15 +879,10 @@ class DNSTunneling(ABC):
                     # add packet length to list
                     packetLengths.append(packet.packetLen)
 
-                    # append each packet timestemp to out list for IAT
+                    # append each packet timestemp to our list for IAT
                     if packet.time:
                         timestamps.append(packet.time)
                     
-                        # for calculating flow duration
-                        if firstSeenPacket == 0:
-                            firstSeenPacket = packet.time
-                        lastSeenPacket = packet.time
-
                     # check the dns sub type and increment the correct counter
                     if packet.dnsSubType == 1: #means A record
                         ARecordCount += 1
@@ -894,7 +900,8 @@ class DNSTunneling(ABC):
                         ipDfFlags += 1
                     
                     if packet.srcIp == flow[0]: #means forward packet
-                        fwdLengths.append(packet.dnsPacketLen)
+                        # add forward packet lengths
+                        fwdLengths.append(packet.headerLen)
                         if packet.dnsType == 'Response': #means response packet
                             # add response data to response data list
                             if packet.dnsData:
@@ -906,7 +913,8 @@ class DNSTunneling(ABC):
                                 responseDataLengths.append(totalLength) #add the total length to our list
 
                     else: #else means backward packets
-                        bwdLengths.append(packet.dnsPacketLen)
+                        # add backward packet lengths
+                        bwdLengths.append(packet.headerLen)
                         if packet.dnsType == 'Request': #means request packet
                             domainNameLengths.append(len(packet.dnsDomainName)) #add domian name length
                             subdomains = str(packet.dnsDomainName).split('.') #get all subdomain names
@@ -920,41 +928,40 @@ class DNSTunneling(ABC):
                             for subdomain in subdomains:
                                 if subdomain not in uniqueDomainNames:
                                     uniqueSubDomainNames.add(subdomain)
-                        
-            # inter-arrival time features (IAT) and flow duration
+
+            # calculate inter-arrival time features (IAT) and flow duration
             interArrivalTimes = [t2 - t1 for t1, t2 in zip(timestamps[:-1], timestamps[1:])]
-            flowDuration = lastSeenPacket - firstSeenPacket
+            flowDuration = np.sum(interArrivalTimes) if interArrivalTimes else 0
 
             # calculate the value dictionary for the current flow and insert it into the featuresDict
             flowParametes = {
-                'A Record Count': ARecordCount, # counters and flags
-                'AAAA Record Count': AAAARecordCount,
-                'CName Record Count': CNameRecordCount,
-                'TXT Record Count': TxtRecordCount,
-                'MX Record Count': MXRecordCount,
-                'DF Flag Count': ipDfFlags,
-                'Average Response Data Length': np.mean(responseDataLengths) if responseDataLengths else 0, # response data length
-                'Min Response Data Length': np.min(responseDataLengths) if responseDataLengths else 0,
-                'Max Response Data Length': np.max(responseDataLengths) if responseDataLengths else 0,
-                'Average Domain Name Length': np.mean(domainNameLengths) if domainNameLengths else 0, # domain name length
-                'Min Domain Name Length': np.min(domainNameLengths) if domainNameLengths else 0,
-                'Max Domain Name Length': np.max(domainNameLengths) if domainNameLengths else 0,
-                'Average Sub Domain Name Length': np.mean(subDomainLengths) if subDomainLengths else 0, # sub domain name length
-                'Min Sub Domain Name Length': np.min(subDomainLengths) if subDomainLengths else 0,
-                'Max Sub Domain Name Length': np.max(subDomainLengths) if subDomainLengths else 0,
-                'Average Packet Length': np.mean(packetLengths) if packetLengths else 0, # packet length
-                'Min Packet Length': np.min(packetLengths) if packetLengths else 0,
-                'Max Packet Length': np.max(packetLengths) if packetLengths else 0,
-                'Number of Domian Names': len(uniqueDomainNames) if uniqueDomainNames else 0, # unique domains and sub domains
-                'Number of Sub Domian Names': len(uniqueSubDomainNames) if uniqueSubDomainNames else 0,
-                'Total Length of Fwd Packet': np.sum(fwdLengths) if fwdLengths else 0, # total length of forward and backward packets
-                'Total Length of Bwd Packet': np.sum(bwdLengths) if bwdLengths else 0, 
-                'Total Number of Packets': len(packetList) if packetList else 0,
-                'Flow Duration': flowDuration, # flow duration and packets per second in flow
-                'IAT Total': np.sum(interArrivalTimes) if interArrivalTimes else 0, # inter-arrival time features (IAT)
-                'IAT Max': np.max(interArrivalTimes) if interArrivalTimes else 0, 
-                'IAT Mean': np.mean(interArrivalTimes) if interArrivalTimes else 0,
-                'IAT Std': np.std(interArrivalTimes) if interArrivalTimes else 0
+                'A Record Count': ARecordCount, #represents A record count
+                'AAAA Record Count': AAAARecordCount, #represents AAAA record count
+                'CName Record Count': CNameRecordCount, #represents C-Name record count
+                'TXT Record Count': TxtRecordCount, #represents TXT record count
+                'MX Record Count': MXRecordCount, #represents MX record count
+                'DF Flag Count': ipDfFlags, #represents DF flag count
+                'Average Response Data Length': np.mean(responseDataLengths) if responseDataLengths else 0, #represents average response data length
+                'Min Response Data Length': np.min(responseDataLengths) if responseDataLengths else 0, #represents min response data length
+                'Max Response Data Length': np.max(responseDataLengths) if responseDataLengths else 0, #represents max response data length
+                'Average Domain Name Length': np.mean(domainNameLengths) if domainNameLengths else 0, #represents average domain name length
+                'Min Domain Name Length': np.min(domainNameLengths) if domainNameLengths else 0, #represents min domain name length
+                'Max Domain Name Length': np.max(domainNameLengths) if domainNameLengths else 0, #represents max domain name length
+                'Average Sub Domain Name Length': np.mean(subDomainLengths) if subDomainLengths else 0, #represents average sub domain name length
+                'Min Sub Domain Name Length': np.min(subDomainLengths) if subDomainLengths else 0, #represents min sub domain name length
+                'Max Sub Domain Name Length': np.max(subDomainLengths) if subDomainLengths else 0, #represents max sub domain name length
+                'Average Packet Length': np.mean(packetLengths) if packetLengths else 0, #represents average packet length
+                'Min Packet Length': np.min(packetLengths) if packetLengths else 0, #represents min packet length
+                'Max Packet Length': np.max(packetLengths) if packetLengths else 0, #represents max packet length
+                'Number of Domian Names': len(uniqueDomainNames) if uniqueDomainNames else 0, #represents number of unique domain names
+                'Number of Sub Domian Names': len(uniqueSubDomainNames) if uniqueSubDomainNames else 0, #represents number of unique sub domain names
+                'Total Length of Fwd Packet': np.sum(fwdLengths) if fwdLengths else 0, #represents total length of forward packets
+                'Total Length of Bwd Packet': np.sum(bwdLengths) if bwdLengths else 0, #represents total length of backward packets
+                'Total Number of Packets': len(packetList) if packetList else 0, #represents total number of packets in flow
+                'Flow Duration': flowDuration if flowDuration else 0, #represents flow duration, sum of all IAT of packets
+                'IAT Max': np.max(interArrivalTimes) if interArrivalTimes else 0, #represents max inter-arrival time
+                'IAT Mean': np.mean(interArrivalTimes) if interArrivalTimes else 0, #represents min inter-arrival time
+                'IAT Std': np.std(interArrivalTimes) if interArrivalTimes else 0 #represents std inter-arrival time
             }
             featuresDict[flow] = flowParametes #save the dictionary of values into the featuresDict
         return dict(featuresDict)

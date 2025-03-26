@@ -19,6 +19,7 @@ class SQL_Thread(QThread):
     deleteAlertsResultSignal = pyqtSignal(dict)
     addBlacklistMacResultSignal = pyqtSignal(dict)
     deleteBlacklistMacResultSignal = pyqtSignal(dict)
+    connectionResultSignal = pyqtSignal(dict)
     finishSignal = pyqtSignal(dict)
 
     # constructor of sql thread
@@ -39,16 +40,27 @@ class SQL_Thread(QThread):
 
     # method for connecting to SQL server database
     def Connect(self):
-        try:
-            # load environment variables from env file
-            load_dotenv(dotenv_path=currentDir.parent / 'database' / '.env' )
-            # getting necessary database credentials from env file for database connection
-            connectionString = os.getenv('DB_CONNECTION_STRING')
-            self.connection = pyodbc.connect(connectionString)
-            self.cursor = self.connection.cursor() #initialize cursor 
-            print('SQL_Thread: Connected to database successfully.')
-        except pyodbc.Error as e:
-            raise Exception('Database connection failed. The application will function, but login will be unavailable')
+        stateDict = {'state': True, 'message': ''} #represents state of database connection
+        maxRetries = 3 #represents max retries before we declare failed connection
+        failedaAttempts = 0 #represents number of failed attempts
+
+        # we try to connect to the database, if failed more then max attemps we return failed connection
+        while failedaAttempts < maxRetries:
+            try:
+                # load environment variables from env file
+                load_dotenv(dotenv_path=currentDir.parent / 'database' / '.env' )
+                # getting necessary database credentials from env file for database connection
+                connectionString = os.getenv('DB_CONNECTION_STRING')
+                self.connection = pyodbc.connect(connectionString)
+                self.cursor = self.connection.cursor() #initialize cursor 
+                stateDict.update({'state': True, 'message': 'Connected to database successfully.'})
+                return stateDict
+            except pyodbc.Error as e:
+                failedaAttempts += 1 #increment failed attempt
+                # if reached max attempts we finish with failed connection
+                if failedaAttempts == maxRetries:
+                    stateDict.update({'state': False, 'message': 'Database connection failed. The application will function, but login will be unavailable.'})
+                    return stateDict
 
 
     # method for closing database connection
@@ -64,15 +76,15 @@ class SQL_Thread(QThread):
     def run(self):
         stateDict = {'state': True, 'message': ''} #represents state of thread when finishes
         try:
-            self.Connect() #connect to our SQL server database
+            # initialize database connection and send result to main thread
+            result = self.Connect() #connect to our SQL server database
+            self.connectionResultSignal.emit(result) #send connection result signal to main thread
             self.exec_() #execute sql thread process
         except Exception as e: #we catch an exception if error occured
             stateDict.update({'state': False, 'message': f'An error occurred: {e}.'})
-            print(f'SQL_Thread: {stateDict['message']}') #print error message in terminal
         finally:
             self.Close() #close database connection
             self.finishSignal.emit(stateDict) #send finish signal to main thread
-            print('SQL_Thread: Finsihed database tasks.\n')
 
 
     #----------------------------------------------SQL-FUNCTIONS-------------------------------------------------#

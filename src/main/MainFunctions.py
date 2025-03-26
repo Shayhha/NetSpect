@@ -420,7 +420,7 @@ class ArpTable():
             srcIp, srcMac, dstIp, dstMac = device[1].psrc, device[1].hwsrc, device[1].pdst, device[1].hwdst
 
             # add srcIp srcMac pair to ARP table
-            if srcIp not in arpTable: #means ip not in ARP table, we add it with its mac address
+            if srcIp not in arpTable and srcIp != '0.0.0.0': #means ip not in ARP table, we add it with its mac address
                 arpTable[srcIp] = srcMac #set the srcMac address in srcIp index
             elif arpTable[srcIp] != srcMac: #else srcMac do not match with known srcMac in srcIp index
                 srcMacs = {arpTable[srcIp], srcMac} #represents srcMacs we detected for arp spoofing
@@ -429,10 +429,9 @@ class ArpTable():
                                                                'protocol': 'ARP', 'timestamp': NetworkInformation.GetCurrentTimestamp()})['srcMac'].update(srcMacs)
 
             # add srcMac srcIp pair to inverse ARP table
-            if srcMac not in invArpTable: #means mac not in inv ARP table, we add it with its ip address
+            if srcMac not in invArpTable and srcMac != '00:00:00:00:00:00': #means mac not in inv ARP table, we add it with its ip address
                 invArpTable[srcMac] = srcIp #set the srcIp address in srcMac index
-            #! remeber that locally shay's arp table is spoofed... (20:1e:88:d8:3a:ce)
-            elif invArpTable[srcMac] != srcIp and srcMac != '20:1e:88:d8:3a:ce': #else srcIp do not match with known srcIp in srcMac index
+            elif invArpTable[srcMac] != srcIp: #else srcIp do not match with known srcIp in srcMac index
                 srcIps = {invArpTable[srcMac], srcIp} #represents srcIps we detected for arp spoofing
                 #add an anomaly: same MAC, different IP
                 totalAttackDict['macToIp'].setdefault(srcMac, {'srcIp': set(), 'srcMac': srcMac, 'dstIp': dstIp, 'dstMac': dstMac,
@@ -562,8 +561,8 @@ class ArpSpoofing(ABC):
 
             # iterate over our ARP dictionary and check each packet for inconsistencies
             for packet in arpList:
-                # we check that packet has a source ip and also that its not assinged to a temporary ip (0.0.0.0)
-                if isinstance(packet, ARP_Packet) and packet.srcIp != None and packet.srcIp != '0.0.0.0':
+                # we check that packet has a source ip and also that its not assinged to a temporary ip (0.0.0.0) or mac (00:00:00:00:00:00)
+                if isinstance(packet, ARP_Packet) and packet.srcIp != '0.0.0.0' and packet.srcMac != '00:00:00:00:00:00':
                     subnet = ArpSpoofing.GetSubnetForIP(packet.srcIp)
                     if not subnet: 
                         print(f'Error, received an ARP packet from an outside subnet, no ARP table mached the ARP packet source IP address "{packet.srcIp}"')

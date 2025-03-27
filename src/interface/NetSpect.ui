@@ -1249,7 +1249,7 @@ QToolTip {
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>160</width>
+                                 <width>16777215</width>
                                  <height>30</height>
                                 </size>
                                </property>
@@ -1507,7 +1507,7 @@ QToolTip {
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>135</width>
+                                 <width>16777215</width>
                                  <height>30</height>
                                 </size>
                                </property>
@@ -1646,7 +1646,7 @@ QToolTip {
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>190</width>
+                                 <width>16777215</width>
                                  <height>30</height>
                                 </size>
                                </property>
@@ -3219,7 +3219,7 @@ QTableView QScrollBar::handle:vertical {
                          </property>
                          <property name="maximumSize">
                           <size>
-                           <width>80</width>
+                           <width>16777215</width>
                            <height>40</height>
                           </size>
                          </property>
@@ -3354,7 +3354,7 @@ QTableView QScrollBar::handle:vertical {
                          </property>
                          <property name="maximumSize">
                           <size>
-                           <width>100</width>
+                           <width>16777215</width>
                            <height>40</height>
                           </size>
                          </property>
@@ -3489,7 +3489,7 @@ QTableView QScrollBar::handle:vertical {
                          </property>
                          <property name="maximumSize">
                           <size>
-                           <width>110</width>
+                           <width>16777215</width>
                            <height>40</height>
                           </size>
                          </property>
@@ -3624,7 +3624,7 @@ QTableView QScrollBar::handle:vertical {
                          </property>
                          <property name="maximumSize">
                           <size>
-                           <width>105</width>
+                           <width>16777215</width>
                            <height>40</height>
                           </size>
                          </property>
@@ -3829,7 +3829,7 @@ QTableView QScrollBar::handle:vertical {
                          </property>
                          <property name="maximumSize">
                           <size>
-                           <width>150</width>
+                           <width>16777215</width>
                            <height>40</height>
                           </size>
                          </property>
@@ -3963,7 +3963,7 @@ QTableView QScrollBar::handle:vertical {
                          </property>
                          <property name="maximumSize">
                           <size>
-                           <width>60</width>
+                           <width>16777215</width>
                            <height>40</height>
                           </size>
                          </property>
@@ -4221,7 +4221,7 @@ QTableView QScrollBar::handle:vertical {
                             </property>
                             <property name="maximumSize">
                              <size>
-                              <width>175</width>
+                              <width>16777215</width>
                               <height>40</height>
                              </size>
                             </property>
@@ -4356,7 +4356,7 @@ QTableView QScrollBar::handle:vertical {
                             </property>
                             <property name="maximumSize">
                              <size>
-                              <width>185</width>
+                              <width>16777215</width>
                               <height>40</height>
                              </size>
                             </property>
@@ -4491,7 +4491,7 @@ QTableView QScrollBar::handle:vertical {
                             </property>
                             <property name="maximumSize">
                              <size>
-                              <width>105</width>
+                              <width>16777215</width>
                               <height>40</height>
                              </size>
                             </property>
@@ -4626,7 +4626,7 @@ QTableView QScrollBar::handle:vertical {
                             </property>
                             <property name="maximumSize">
                              <size>
-                              <width>100</width>
+                              <width>16777215</width>
                               <height>40</height>
                              </size>
                             </property>
@@ -4761,7 +4761,7 @@ QTableView QScrollBar::handle:vertical {
                             </property>
                             <property name="maximumSize">
                              <size>
-                              <width>185</width>
+                              <width>16777215</width>
                               <height>40</height>
                              </size>
                             </property>
@@ -6009,7 +6009,7 @@ color: #f3f3f3
 }</string>
                                </property>
                                <property name="text">
-                                <string>Interface Settings:</string>
+                                <string>Interface Color Mode:</string>
                                </property>
                               </widget>
                              </item>
@@ -6017,13 +6017,13 @@ color: #f3f3f3
                               <widget class="QFrame" name="colorModeComboBoxFrame">
                                <property name="minimumSize">
                                 <size>
-                                 <width>175</width>
+                                 <width>195</width>
                                  <height>32</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>175</width>
+                                 <width>195</width>
                                  <height>32</height>
                                 </size>
                                </property>
@@ -6051,7 +6051,7 @@ color: #f3f3f3
                                <widget class="QFrame" name="colorModeComboBoxArrow">
                                 <property name="geometry">
                                  <rect>
-                                  <x>151</x>
+                                  <x>171</x>
                                   <y>0</y>
                                   <width>24</width>
                                   <height>32</height>
@@ -6099,19 +6099,19 @@ color: #f3f3f3
                                  <rect>
                                   <x>0</x>
                                   <y>0</y>
-                                  <width>175</width>
+                                  <width>195</width>
                                   <height>32</height>
                                  </rect>
                                 </property>
                                 <property name="minimumSize">
                                  <size>
-                                  <width>175</width>
+                                  <width>195</width>
                                   <height>32</height>
                                  </size>
                                 </property>
                                 <property name="maximumSize">
                                  <size>
-                                  <width>175</width>
+                                  <width>195</width>
                                   <height>32</height>
                                  </size>
                                 </property>
@@ -6171,6 +6171,243 @@ color: #f3f3f3
                           </item>
                           <item>
                            <spacer name="horizontalSpacer_23">
+                            <property name="orientation">
+                             <enum>Qt::Horizontal</enum>
+                            </property>
+                            <property name="sizeHint" stdset="0">
+                             <size>
+                              <width>40</width>
+                              <height>20</height>
+                             </size>
+                            </property>
+                           </spacer>
+                          </item>
+                         </layout>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QFrame" name="opperationModeHorizontalFrame">
+                         <layout class="QHBoxLayout" name="horizontalLayout_32">
+                          <property name="spacing">
+                           <number>0</number>
+                          </property>
+                          <property name="leftMargin">
+                           <number>0</number>
+                          </property>
+                          <property name="topMargin">
+                           <number>0</number>
+                          </property>
+                          <property name="rightMargin">
+                           <number>0</number>
+                          </property>
+                          <property name="bottomMargin">
+                           <number>0</number>
+                          </property>
+                          <item>
+                           <widget class="QFrame" name="verticalFrame_4">
+                            <layout class="QVBoxLayout" name="verticalLayout_27">
+                             <property name="spacing">
+                              <number>0</number>
+                             </property>
+                             <property name="leftMargin">
+                              <number>0</number>
+                             </property>
+                             <property name="topMargin">
+                              <number>0</number>
+                             </property>
+                             <property name="rightMargin">
+                              <number>0</number>
+                             </property>
+                             <property name="bottomMargin">
+                              <number>0</number>
+                             </property>
+                             <item>
+                              <widget class="QLabel" name="opperationModeLabel">
+                               <property name="minimumSize">
+                                <size>
+                                 <width>265</width>
+                                 <height>40</height>
+                                </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <family>Cairo</family>
+                                 <pointsize>14</pointsize>
+                                 <weight>75</weight>
+                                 <bold>true</bold>
+                                </font>
+                               </property>
+                               <property name="styleSheet">
+                                <string notr="true">#opperationModeLabel {
+color: #f3f3f3
+}</string>
+                               </property>
+                               <property name="text">
+                                <string>Opperation Mode:</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QFrame" name="opperationModeComboBoxFrame">
+                               <property name="minimumSize">
+                                <size>
+                                 <width>195</width>
+                                 <height>32</height>
+                                </size>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>195</width>
+                                 <height>32</height>
+                                </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <family>Cairo</family>
+                                 <pointsize>12</pointsize>
+                                </font>
+                               </property>
+                               <property name="styleSheet">
+                                <string notr="true">#opperationModeComboBoxFrame {
+    background-color: #f3f3f3;
+    color: black;
+    border: 2px solid lightgray; 
+    border-radius: 10px;
+    padding-left: 10px;
+}</string>
+                               </property>
+                               <property name="frameShape">
+                                <enum>QFrame::StyledPanel</enum>
+                               </property>
+                               <property name="frameShadow">
+                                <enum>QFrame::Raised</enum>
+                               </property>
+                               <widget class="QFrame" name="opperationModeComboBoxArrow">
+                                <property name="geometry">
+                                 <rect>
+                                  <x>171</x>
+                                  <y>0</y>
+                                  <width>24</width>
+                                  <height>32</height>
+                                 </rect>
+                                </property>
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>24</width>
+                                  <height>32</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>22</width>
+                                  <height>32</height>
+                                 </size>
+                                </property>
+                                <property name="font">
+                                 <font>
+                                  <family>Cairo</family>
+                                  <pointsize>12</pointsize>
+                                 </font>
+                                </property>
+                                <property name="styleSheet">
+                                 <string notr="true">#opperationModeComboBoxArrow {
+    background-color: lightgray;
+    color: black;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding-left: 10px;
+}</string>
+                                </property>
+                                <property name="frameShape">
+                                 <enum>QFrame::StyledPanel</enum>
+                                </property>
+                                <property name="frameShadow">
+                                 <enum>QFrame::Raised</enum>
+                                </property>
+                               </widget>
+                               <widget class="QComboBox" name="opperationModeComboBox">
+                                <property name="enabled">
+                                 <bool>true</bool>
+                                </property>
+                                <property name="geometry">
+                                 <rect>
+                                  <x>0</x>
+                                  <y>0</y>
+                                  <width>195</width>
+                                  <height>32</height>
+                                 </rect>
+                                </property>
+                                <property name="minimumSize">
+                                 <size>
+                                  <width>195</width>
+                                  <height>32</height>
+                                 </size>
+                                </property>
+                                <property name="maximumSize">
+                                 <size>
+                                  <width>195</width>
+                                  <height>32</height>
+                                 </size>
+                                </property>
+                                <property name="font">
+                                 <font>
+                                  <family>Cairo</family>
+                                  <pointsize>12</pointsize>
+                                 </font>
+                                </property>
+                                <property name="cursor">
+                                 <cursorShape>PointingHandCursor</cursorShape>
+                                </property>
+                                <property name="toolTip">
+                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the applocation's opperation mode, 'Real Time Detection' for detecting attacks in real time and 'Data Collection TCP/UDP' or 'Data Collection DNS' for collecting data from current network.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                </property>
+                                <property name="styleSheet">
+                                 <string notr="true">#opperationModeComboBox {
+    background-color: transparent;
+    border-radius: 10px;
+    border-style: outset;
+    border-width: 2px;
+    border-color: transparent;	
+    padding: 4px;
+	padding-left: 10px;
+}
+
+#opperationModeComboBox QAbstractItemView {
+    background-color:  #f3f3f3;
+    selection-background-color: rgb(95, 97, 109);
+    color: rgb(0, 0, 0);    
+    padding: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+#opperationModeComboBox QListView{
+    outline: 0px;
+}</string>
+                                </property>
+                                <item>
+                                 <property name="text">
+                                  <string>Real Time Detection</string>
+                                 </property>
+                                </item>
+                                <item>
+                                 <property name="text">
+                                  <string>Collection (TCP/UDP)</string>
+                                 </property>
+                                </item>
+                                <item>
+                                 <property name="text">
+                                  <string>Collection (DNS)</string>
+                                 </property>
+                                </item>
+                               </widget>
+                              </widget>
+                             </item>
+                            </layout>
+                           </widget>
+                          </item>
+                          <item>
+                           <spacer name="horizontalSpacer_28">
                             <property name="orientation">
                              <enum>Qt::Horizontal</enum>
                             </property>

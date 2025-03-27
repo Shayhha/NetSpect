@@ -913,6 +913,7 @@ class NetSpect(QMainWindow):
             # enable interface combobox and reset our data structures and counters
             self.SendLogDict(f'Main_Thread: Stopping detection. Remaining packets - TCP/UDP: {self.tcpUdpCounter}, ARP: {self.arpCounter}, DNS: {self.dnsCounter}', 'INFO') #log stop event
             self.networkInterfaceComboBox.setEnabled(True) #enable interface changes
+            self.opperationModeComboBox.setEnabled(True) #disable interface changes
             self.arpCounter, self.tcpUdpCounter, self.dnsCounter = 0, 0, 0 #reset our counters
             self.arpList, self.portScanDosDict, self.dnsDict = [], {}, {} #reset our packet data structures
             self.arpAttackDict, self.portScanDosAttackDict, self.dnsAttackDict = {'ipToMac': {}, 'macToIp': {}}, {}, {} #reset known attacks
@@ -923,6 +924,7 @@ class NetSpect(QMainWindow):
         if not self.snifferThread and not self.arpThread and not self.portScanDosThread and not self.dnsThread:
             self.isDetection = True #set flag to true indication we started a detection
             self.networkInterfaceComboBox.setEnabled(False) #disable interface changes
+            self.opperationModeComboBox.setEnabled(False) #disable interface changes
 
             # initialize sniffer thread for real time packet gathering
             self.snifferThread = Sniffing_Thread(self, NetworkInformation.selectedInterface)

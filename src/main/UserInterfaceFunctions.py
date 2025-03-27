@@ -325,6 +325,7 @@ def ClearErrorMessageText(errorMessageObject):
 # hide the change email, username, password and color mode from settings page 
 def HideSettingsInputFields(self):
     self.settingsChangeVerticalFrame.hide()
+    self.opperationModeHorizontalFrame.hide()
     self.deleteAccoutPushButton.hide()
     self.settingsInterfaceMacButtonsVerticalFrame.setContentsMargins(40, 0, 0, 0) 
 
@@ -332,6 +333,7 @@ def HideSettingsInputFields(self):
 # show the change email, username, password and color mode from settings page 
 def ShowSettingsInputFields(self):
     self.settingsChangeVerticalFrame.show()
+    self.opperationModeHorizontalFrame.show()
     self.deleteAccoutPushButton.show()
     self.settingsInterfaceMacButtonsVerticalFrame.setContentsMargins(0, 10, 0, 0) #returning the default values
 

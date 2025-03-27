@@ -91,9 +91,12 @@ class SQL_Thread(QThread):
         stateDict = {'state': True, 'message': ''} #represents state of thread when finishes
         try:
             # initialize database connection and send result to main thread
-            result = self.Connect() #connect to our SQL server database
-            self.connectionResultSignal.emit(result) #send connection result signal to main thread
-            self.exec_() #execute sql thread process
+            stateDict = self.Connect() #connect to our SQL server database
+            self.connectionResultSignal.emit(stateDict) #send connection result signal to main thread
+
+            # execute thread process only if connection was established
+            if stateDict.get('state'):
+                self.exec_() #execute sql thread process
         except Exception as e: #we catch an exception if error occured
             stateDict.update({'state': False, 'message': f'An error occurred: {e}.'})
         finally:

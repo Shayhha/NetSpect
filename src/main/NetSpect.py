@@ -648,7 +648,7 @@ class NetSpect(QMainWindow):
         self.sqlThread = None #set thread to none
         # in case of an error we show error message
         if stateDict.get('state') == False and stateDict.get('message'):
-            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message'), 'Critical')
+            UserInterfaceFunctions.ShowPopup('Database Connection Failed', stateDict.get('message'), 'Critical')
             self.SendLogDict(f'SQL_Thread: {stateDict.get('message')}', 'ERROR') #log error event
         self.SendLogDict('SQL_Thread: Finsihed database tasks.', 'INFO') #log finish event
 
@@ -751,11 +751,6 @@ class NetSpect(QMainWindow):
         # we check if connected to database succcessfully
         if stateDict.get('state') == True and stateDict.get('message'):
             self.SendLogDict(f'SQL_Thread: {stateDict.get('message')}', 'INFO') #log connection event
-            
-        # else we check if failed connecting to database, we show error message
-        elif stateDict.get('state') == False and stateDict.get('message'):
-            UserInterfaceFunctions.ShowPopup('Database Connection Failed', stateDict.get('message'), 'Critical')
-            self.SendLogDict(f'SQL_Thread: {stateDict.get('message')}', 'ERROR') #log error event
 
 
     # method for analyzing detection result of arp spoofing attack

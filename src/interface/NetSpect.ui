@@ -1402,6 +1402,7 @@ QToolTip {
     border-color: transparent;	
     padding: 4px;
 	padding-left: 10px;
+    color: black;
 }
 
 #networkInterfaceComboBox QAbstractItemView {
@@ -2316,6 +2317,7 @@ QTableWidget {
     border-color: transparent;	
     padding: 4px;
 	padding-left: 10px;
+    color: black;
 }
 
 #reportDurationComboBox QAbstractItemView {
@@ -6136,6 +6138,7 @@ color: #f3f3f3
     border-color: transparent;	
     padding: 4px;
 	padding-left: 10px;
+    color: black;
 }
 
 #colorModeComboBox QAbstractItemView {
@@ -6958,6 +6961,7 @@ color: #f3f3f3
             <property name="styleSheet">
              <string notr="true">#loginFrame {
 	background-color: #2D2E36;
+    border: none;
 }</string>
             </property>
             <property name="frameShape">
@@ -7366,7 +7370,8 @@ color: #f3f3f3
             </property>
             <property name="styleSheet">
              <string notr="true">#registerFrame {
-    background-color: #2D2E36
+    background-color: #2D2E36;
+    border: none;
 }</string>
             </property>
             <property name="frameShape">

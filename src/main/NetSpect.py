@@ -966,7 +966,7 @@ class NetSpect(QMainWindow):
             self.SendLogDict('Sniffer_Thread: Starting Network Scan.', 'INFO') #log sniffer start event
             self.SendLogDict('Arp_Thread: Starting Arp thread.', 'INFO') #log arp start event
             self.SendLogDict('PortScanDos_Thread: Starting portScanDos thread.', 'INFO') #log portScanDos start event
-            self.SendLogDict('Dns_Thread: Starting Dbs thread.', 'INFO') #log arp start event
+            self.SendLogDict('Dns_Thread: Starting Dns thread.', 'INFO') #log dns start event
 
         else:
             UserInterfaceFunctions.ShowPopup('Error Starting Detection', 'One of the threads is still in process, cannot start new detection.', 'Warning')

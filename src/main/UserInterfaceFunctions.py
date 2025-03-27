@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve, QEasingCurve, QTimer, QSortFilterProxyModel, QAbstractTableModel, QModelIndex
-from PyQt5.QtWidgets import QGraphicsDropShadowEffect, QApplication, QAction, QMenu, QTableWidget, QWidget, QGridLayout, QLineEdit, QHeaderView, QMessageBox, QDesktopWidget, QDialog, QLabel, QPushButton, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QGraphicsDropShadowEffect, QApplication, QAction, QMenu, QTableWidget, QWidget, QGridLayout, QLineEdit, QHeaderView, QMessageBox, QSystemTrayIcon, QDesktopWidget, QDialog, QLabel, QPushButton, QVBoxLayout, QHBoxLayout
 from PyQt5.QtGui import QColor, QIcon, QPixmap, QFont, QCursor, QPainter
 from PyQt5.QtChart import QChart, QChartView, QPieSeries
 from datetime import datetime, timedelta
@@ -959,6 +959,86 @@ def InitReportTableView(self):
 
 #------------------------------------------TABLE-VIEW-FILTER-END---------------------------------------------#
 
+#---------------------------------------------SYSTEM-TRAY-ICON-----------------------------------------------#
+
+# method for initializing system tray icon for various alert messages
+def InitTrayIcon(self):
+    # check if system tray is available
+    if QSystemTrayIcon.isSystemTrayAvailable():
+        # create tray icon
+        self.trayIcon = QSystemTrayIcon(self)
+        self.trayIcon.setIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'NetSpectIconTransparent.png')))
+        self.trayIcon.setVisible(True)
+
+        # set hover tooltip for the tray icon
+        self.trayIcon.setToolTip('NetSpect™ IDS')
+
+        # initialize context menu for the tray icon
+        trayMenu = QMenu()
+
+        # start/stop detection
+        self.toggleDetection = QAction('Start Detection', self)
+        self.toggleDetection.triggered.connect(lambda event: ToggleDetection(self))
+        trayMenu.addAction(self.toggleDetection)
+
+        # open homepage page
+        self.openHomepageAction = QAction('Homepage', self)
+        self.openHomepageAction.triggered.connect(lambda event: ChangePageIndex(self, 0))
+        trayMenu.addAction(self.openHomepageAction)
+
+        # open report preview page
+        self.openReportPreviewAction = QAction('Report Preview', self)
+        self.openReportPreviewAction.triggered.connect(lambda event: ChangePageIndex(self, 1))
+        trayMenu.addAction(self.openReportPreviewAction)
+
+        # open information page
+        self.openInformationAction = QAction('Information', self)
+        self.openInformationAction.triggered.connect(lambda event: ChangePageIndex(self, 2))
+        trayMenu.addAction(self.openInformationAction)
+
+        # open settings page
+        self.openSettingsAction = QAction('Settings', self)
+        self.openSettingsAction.triggered.connect(lambda event: ChangePageIndex(self, 3))
+        trayMenu.addAction(self.openSettingsAction)
+
+        # exit application
+        self.exitAction = QAction('Exit', self)
+        self.exitAction.triggered.connect(lambda event: self.close())
+        trayMenu.addAction(self.exitAction)
+
+        # attach context menu to the tray icon
+        self.trayIcon.setContextMenu(trayMenu)
+
+
+# method for starting or stopping detection
+def ToggleDetection(self):
+    # if detection active we stop it
+    if self.isDetection:
+        self.StartStopButtonClicked()
+        self.toggleDetection.setText('Start Detection')
+    # else means no detection active, we start new detection
+    else:
+        self.StartStopButtonClicked()
+        self.toggleDetection.setText('Stop Detection')
+
+
+# method for showing tray icon messages in operating system
+def ShowTrayMessage(self, title, message, iconType='Information', duration=5000):
+    icon = GetTrayIcon(self, iconType)
+    self.trayIcon.showMessage(title, message, icon, duration)
+
+
+# helper fucntion to map the iconType to the appropriate QSystemTrayIcon
+def GetTrayIcon(self, iconType):
+    icon = QSystemTrayIcon.Information
+    if iconType == 'Warning':
+        icon = QSystemTrayIcon.Warning
+    elif iconType == 'Critical':
+        icon = QSystemTrayIcon.Critical
+    return icon
+
+#-------------------------------------------SYSTEM-TRAY-ICON-END---------------------------------------------#
+
 #----------------------------------------------MAIN-FUNCTION-------------------------------------------------#
 
 # main function that sets up all the ui elements on startup
@@ -967,6 +1047,9 @@ def InitAnimationsUI(self):
     self.loginRegisterVerticalFrame.setFixedWidth(0)
     self.registerFrame.hide()
     self.sideFrame.setFixedWidth(70)
+
+    #initialize system tray icon
+    InitTrayIcon(self)
 
     # initilize pie chart on screen
     InitPieChart(self)

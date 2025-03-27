@@ -1108,9 +1108,10 @@ class NetSpect(QMainWindow):
             }
             self.userData.setdefault('alertList', []).append(alert)
 
-            # add alert to our history and report tables in user interface and update counter
+            # add alert to our history and report tables in user interface, update counter and show tray message
             self.UpdateNumberOfDetectionsCounterLabel(1, True) #increment the number of detections counter
             UserInterfaceFunctions.UpdateChartAfterAttack(self, attackType) #increment attack type in pie chart
+            UserInterfaceFunctions.ShowTrayMessage(self, 'Security Alert', f'Potential {alert.get('attackType')} attack detected from IP: {alert.get('srcIp')}. Immediate action recommended.', 'Warning')
             self.AddRowToHistoryTable(alert.get('srcIp'), alert.get('srcMac'), alert.get('dstIp'), alert.get('dstMac'), alert.get('attackType'), alert.get('timestamp'))
             self.AddRowToReportTable(alert.get('interface'), alert.get('attackType'), alert.get('srcIp'), alert.get('srcMac'), alert.get('dstIp'), alert.get('dstMac'), 
                                             alert.get('protocol'), alert.get('osType'), alert.get('timestamp'))

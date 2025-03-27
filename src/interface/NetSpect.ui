@@ -160,8 +160,8 @@ QToolTip {
          </property>
          <property name="maximumSize">
           <size>
-           <width>186</width>
-           <height>60</height>
+           <width>16777215</width>
+           <height>16777215</height>
           </size>
          </property>
          <property name="font">
@@ -1042,8 +1042,8 @@ QToolTip {
                       </property>
                       <property name="maximumSize">
                        <size>
-                        <width>200</width>
-                        <height>30</height>
+                        <width>16777215</width>
+                        <height>16777215</height>
                        </size>
                       </property>
                       <property name="font">
@@ -1402,7 +1402,6 @@ QToolTip {
     border-color: transparent;	
     padding: 4px;
 	padding-left: 10px;
-    color: black;
 }
 
 #networkInterfaceComboBox QAbstractItemView {
@@ -1854,8 +1853,8 @@ QToolTip {
                    </property>
                    <property name="maximumSize">
                     <size>
-                     <width>165</width>
-                     <height>30</height>
+                     <width>16777215</width>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="font">
@@ -2138,8 +2137,8 @@ QTableWidget {
                    </property>
                    <property name="maximumSize">
                     <size>
-                     <width>180</width>
-                     <height>40</height>
+                     <width>16777215</width>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="font">
@@ -2317,7 +2316,6 @@ QTableWidget {
     border-color: transparent;	
     padding: 4px;
 	padding-left: 10px;
-    color: black;
 }
 
 #reportDurationComboBox QAbstractItemView {
@@ -2887,8 +2885,8 @@ QCheckBox::indicator:hover {
                    </property>
                    <property name="maximumSize">
                     <size>
-                     <width>100</width>
-                     <height>40</height>
+                     <width>16777215</width>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="font">
@@ -3131,8 +3129,8 @@ QTableView QScrollBar::handle:vertical {
                    </property>
                    <property name="maximumSize">
                     <size>
-                     <width>300</width>
-                     <height>40</height>
+                     <width>16777215</width>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="font">
@@ -3744,8 +3742,8 @@ QTableView QScrollBar::handle:vertical {
                    </property>
                    <property name="maximumSize">
                     <size>
-                     <width>300</width>
-                     <height>40</height>
+                     <width>16777215</width>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="font">
@@ -4133,8 +4131,8 @@ QTableView QScrollBar::handle:vertical {
                       </property>
                       <property name="maximumSize">
                        <size>
-                        <width>335</width>
-                        <height>40</height>
+                        <width>16777215</width>
+                        <height>16777215</height>
                        </size>
                       </property>
                       <property name="font">
@@ -4881,8 +4879,8 @@ QTableView QScrollBar::handle:vertical {
                       </property>
                       <property name="maximumSize">
                        <size>
-                        <width>335</width>
-                        <height>40</height>
+                        <width>16777215</width>
+                        <height>16777215</height>
                        </size>
                       </property>
                       <property name="font">
@@ -6138,7 +6136,6 @@ color: #f3f3f3
     border-color: transparent;	
     padding: 4px;
 	padding-left: 10px;
-    color: black;
 }
 
 #colorModeComboBox QAbstractItemView {
@@ -6777,6 +6774,7 @@ color: #f3f3f3
                <property name="styleSheet">
                 <string notr="true">#loginVerticalFrame {
 	background-color: #2D2E36;
+	border: none;
 }</string>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -7171,7 +7169,10 @@ color: #f3f3f3
                 </size>
                </property>
                <property name="styleSheet">
-                <string notr="true">    background-color: #2D2E36</string>
+                <string notr="true">#registerVerticalFrame {
+	background-color: #2D2E36;
+	border: none;
+}</string>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_21">
                 <property name="spacing">
@@ -7428,6 +7429,7 @@ color: #f3f3f3
                    <string notr="true">#registerErrorMessageLabel {
 	color: #D84F4F;
 	padding-bottom: 5px;
+	background-color: #2D2E36;
 }</string>
                   </property>
                   <property name="text">
@@ -7451,6 +7453,11 @@ color: #f3f3f3
                     <width>500</width>
                     <height>70</height>
                    </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">#registerButtonFrame {
+	background-color: #2D2E36;
+}</string>
                   </property>
                   <layout class="QHBoxLayout" name="usernameButtonHorizontalLayout_3">
                    <property name="spacing">
@@ -7547,7 +7554,8 @@ color: #f3f3f3
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#moveToLoginLabel {
-	color: #6BA6FD
+	color: #6BA6FD;
+	background-color: #2D2E36;
 }
 
 #moveToLoginLabel:hover {

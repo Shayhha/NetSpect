@@ -381,6 +381,7 @@ class CustomMessageBox(QDialog):
         self.setWindowTitle(title)
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self.setGeometry(0, 0, 0, 0)
+        self.setFont(QFont('Cairo', 13))
 
         # set the popup window icon
         self.setWindowIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'NetSpectIconTransparent.png')))
@@ -409,6 +410,7 @@ class CustomMessageBox(QDialog):
         messageLabel.setWordWrap(True) #ensure long messages wrap properly
         messageLabel.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter) #vertically center the text
         messageLabel.setContentsMargins(0, 0, 0, 0)
+        messageLabel.setMinimumWidth(250)
 
         # add the icon and message to the horizontal layout with spacing
         horizontalLayout.addWidget(iconLabel)
@@ -459,7 +461,6 @@ class CustomMessageBox(QDialog):
                         
             QLabel {
                 color: black;
-                font-size: 16px;
             }
 
             QLabel[alignment='Qt::AlignVCenter|Qt::AlignLeft'] {
@@ -470,8 +471,7 @@ class CustomMessageBox(QDialog):
                 background-color: #3a8e32; 
                 border: 1px solid black;  
                 border-radius: 10px;         
-                padding: 5px;              
-                font-size: 14px; 
+                font-size: 16px; 
                 font-weight: bold;          
                 color: #f3f3f3;   
                 min-width: 80px;  
@@ -485,12 +485,11 @@ class CustomMessageBox(QDialog):
                 background-color: #2E7128;
             }
                         
-            QPushButton[text='No']  {
+            QPushButton[text='No'] {
                 background-color: #D84F4F; 
                 border: 1px solid black;  
-                border-radius: 10px;         
-                padding: 5px;              
-                font-size: 14px; 
+                border-radius: 10px;                
+                font-size: 16px; 
                 font-weight: bold;          
                 color: #f3f3f3;    
                 min-width: 80px;    

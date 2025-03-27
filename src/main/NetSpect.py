@@ -748,8 +748,12 @@ class NetSpect(QMainWindow):
     # method for receiving database connection result
     @pyqtSlot(dict)
     def ConnectionResult(self, stateDict):
-        # we check if failed connecting to database, we show error message
-        if stateDict.get('state') == False and stateDict.get('message'):
+        # we check if connected to database succcessfully
+        if stateDict.get('state') == True and stateDict.get('message'):
+            self.SendLogDict(f'SQL_Thread: {stateDict.get('message')}', 'INFO') #log connection event
+            
+        # else we check if failed connecting to database, we show error message
+        elif stateDict.get('state') == False and stateDict.get('message'):
             UserInterfaceFunctions.ShowPopup('Database Connection Failed', stateDict.get('message'), 'Critical')
             self.SendLogDict(f'SQL_Thread: {stateDict.get('message')}', 'ERROR') #log error event
 

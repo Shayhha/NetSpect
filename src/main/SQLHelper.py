@@ -26,6 +26,7 @@ class SQL_Thread(QThread):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.parent = parent #represents main thread
+        self.envFilePath = currentDir.parent / 'database' / '.env' #represents env file path
         self.connection = None # connection for SQL server database
         self.cursor = None # cursor for executig SQL commands
 
@@ -38,21 +39,34 @@ class SQL_Thread(QThread):
             self.wait() #we wait to ensure thread cleanup
 
 
-    # method for connecting to SQL server database
+    # method for connecting to SQL server database and initialize connection
     def Connect(self):
         stateDict = {'state': True, 'message': ''} #represents state of database connection
         maxRetries = 3 #represents max retries before we declare failed connection
         failedaAttempts = 0 #represents number of failed attempts
 
+        # check if env file does'nt exists, if so we return error message
+        if not self.envFilePath.exists():
+            stateDict.update({'state': False, 'message': 'Database .env file was not found. Please ensure it exists in database folder.'})
+            return stateDict
+
+        # load environment variables from env file
+        load_dotenv(dotenv_path=self.envFilePath)
+
+        # receive necessary database credentials from env file for database connection
+        connectionString = os.getenv('DB_CONNECTION_STRING')
+
+        # check if env file missing the connection string, if so we return error message
+        if not connectionString:
+            stateDict.update({'state': False, 'message': 'Database connection string is missing from .env file. Please ensure the file contains a valid connection string.'})
+            return stateDict
+        
         # we try to connect to the database, if failed more then max attemps we return failed connection
         while failedaAttempts < maxRetries:
             try:
-                # load environment variables from env file
-                load_dotenv(dotenv_path=currentDir.parent / 'database' / '.env' )
-                # getting necessary database credentials from env file for database connection
-                connectionString = os.getenv('DB_CONNECTION_STRING')
+                # try to initialize database connection and cursor 
                 self.connection = pyodbc.connect(connectionString)
-                self.cursor = self.connection.cursor() #initialize cursor 
+                self.cursor = self.connection.cursor()
                 stateDict.update({'state': True, 'message': 'Connected to database successfully.'})
                 return stateDict
             except pyodbc.Error as e:
@@ -63,9 +77,9 @@ class SQL_Thread(QThread):
                     return stateDict
 
 
-    # method for closing database connection
+    # method for closing database connection and curosr
     def Close(self):
-        # close cursor and connection
+        # close connection and cursor
         if self.cursor:
             self.cursor.close() #close cursor
         if self.connection: 

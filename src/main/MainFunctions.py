@@ -1024,27 +1024,41 @@ class SaveData(ABC):
 
     # function for saving the collected flows into a CSV file (used to collect benign data)
     @staticmethod
-    def SaveCollectedData(flows, filename='benign_dataset.csv', selectedColumns=PortScanDoS.selectedColumns):
-        # create a dataframe from the collected data
-        values = list(flows.values())
-        ordered_values = [[valueDict[col] for col in selectedColumns] for valueDict in values] #reorder the values in the same order that the models were trained on
-        valuesDataframe = pd.DataFrame(ordered_values, columns=selectedColumns)
+    def SaveCollectedData(flows, filePath='benign_dataset.csv', selectedColumns=PortScanDoS.selectedColumns):
+        collectedRows = 0 # represents number of collected rows
+        
+        try:
+            # create a dataframe from the collected data
+            values = list(flows.values())
 
-        if not os.path.isfile(filename):
-            valuesDataframe.to_csv(filename, index=False) #save the new data if needed
-        else:
-            # open an existing file and merge the collected data to it
-            readBenignCsv = pd.read_csv(filename)
-            mergedDataframe = pd.concat([readBenignCsv , valuesDataframe], axis=0)
-            mergedDataframe.to_csv(filename, index=False)
-            print(f'Found {valuesDataframe.shape[0]} rows.')
+            #reorder the values in the same order that the models were trained on
+            ordered_values = [[valueDict[col] for col in selectedColumns] for valueDict in values]
+            valuesDataframe = pd.DataFrame(ordered_values, columns=selectedColumns)
+            
+            # create new csv file for data collection in desired path
+            if not os.path.isfile(filePath):
+                valuesDataframe.to_csv(filePath, index=False) #save the new data if needed
+                collectedRows = valuesDataframe.shape[0] #save number of collected rows
+
+            # else open an existing file and merge the collected data to it
+            else:
+                readBenignCsv = pd.read_csv(filePath)
+                mergedDataframe = pd.concat([readBenignCsv , valuesDataframe], axis=0)
+                mergedDataframe.to_csv(filePath, index=False)
+                collectedRows = valuesDataframe.shape[0] #save number of collected rows
+
+            return collectedRows
+        
+        # if file is open in another program we avoid exeption and return 0 to indicate no collected rows
+        except PermissionError:
+            return collectedRows
 
     
     # function for saving the collected flows into a txt file
     @staticmethod
-    def SaveFlowsInFile(flows, filename='detectedFlows.txt'):
+    def SaveFlowsInFile(flows, filePath='detected_flows.txt'):
         # write result of flows captured in txt file
-        with open(filename, 'w') as file:
+        with open(filePath, 'w', encoding='utf-8') as file:
             for flow, features in flows.items():
                 file.write(f'Flow: {flow}\n')
                 for feature, value in features.items():

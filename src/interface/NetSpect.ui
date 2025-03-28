@@ -25,7 +25,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>NetSpect</string>
+   <string>NetSpect™</string>
   </property>
   <property name="styleSheet">
    <string notr="true">QWidget {
@@ -6225,7 +6225,7 @@ color: #f3f3f3
                               <number>0</number>
                              </property>
                              <item>
-                              <widget class="QLabel" name="opperationModeLabel">
+                              <widget class="QLabel" name="operationModeLabel">
                                <property name="minimumSize">
                                 <size>
                                  <width>265</width>
@@ -6241,17 +6241,17 @@ color: #f3f3f3
                                 </font>
                                </property>
                                <property name="styleSheet">
-                                <string notr="true">#opperationModeLabel {
+                                <string notr="true">#operationModeLabel {
 color: #f3f3f3
 }</string>
                                </property>
                                <property name="text">
-                                <string>Opperation Mode:</string>
+                                <string>Operation Mode:</string>
                                </property>
                               </widget>
                              </item>
                              <item>
-                              <widget class="QFrame" name="opperationModeComboBoxFrame">
+                              <widget class="QFrame" name="operationModeComboBoxFrame">
                                <property name="minimumSize">
                                 <size>
                                  <width>195</width>
@@ -6271,7 +6271,7 @@ color: #f3f3f3
                                 </font>
                                </property>
                                <property name="styleSheet">
-                                <string notr="true">#opperationModeComboBoxFrame {
+                                <string notr="true">#operationModeComboBoxFrame {
     background-color: #f3f3f3;
     color: black;
     border: 2px solid lightgray; 
@@ -6285,7 +6285,7 @@ color: #f3f3f3
                                <property name="frameShadow">
                                 <enum>QFrame::Raised</enum>
                                </property>
-                               <widget class="QFrame" name="opperationModeComboBoxArrow">
+                               <widget class="QFrame" name="operationModeComboBoxArrow">
                                 <property name="geometry">
                                  <rect>
                                   <x>171</x>
@@ -6313,7 +6313,7 @@ color: #f3f3f3
                                  </font>
                                 </property>
                                 <property name="styleSheet">
-                                 <string notr="true">#opperationModeComboBoxArrow {
+                                 <string notr="true">#operationModeComboBoxArrow {
     background-color: lightgray;
     color: black;
     border-top-right-radius: 10px;
@@ -6328,7 +6328,7 @@ color: #f3f3f3
                                  <enum>QFrame::Raised</enum>
                                 </property>
                                </widget>
-                               <widget class="QComboBox" name="opperationModeComboBox">
+                               <widget class="QComboBox" name="operationModeComboBox">
                                 <property name="enabled">
                                  <bool>true</bool>
                                 </property>
@@ -6365,7 +6365,7 @@ color: #f3f3f3
                                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the applocation's opperation mode, 'Real Time Detection' for detecting attacks in real time and 'Data Collection TCP/UDP' or 'Data Collection DNS' for collecting data from current network.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                 </property>
                                 <property name="styleSheet">
-                                 <string notr="true">#opperationModeComboBox {
+                                 <string notr="true">#operationModeComboBox {
     background-color: transparent;
     border-radius: 10px;
     border-style: outset;
@@ -6375,7 +6375,7 @@ color: #f3f3f3
 	padding-left: 10px;
 }
 
-#opperationModeComboBox QAbstractItemView {
+#operationModeComboBox QAbstractItemView {
     background-color:  #f3f3f3;
     selection-background-color: rgb(95, 97, 109);
     color: rgb(0, 0, 0);    
@@ -6384,7 +6384,7 @@ color: #f3f3f3
     padding-right: 5px;
 }
 
-#opperationModeComboBox QListView{
+#operationModeComboBox QListView{
     outline: 0px;
 }</string>
                                 </property>

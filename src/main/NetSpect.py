@@ -22,8 +22,8 @@ class NetSpect(QMainWindow):
     portScanDosDict = {} #represents dict of {(flow tuple) - [packet list]} related to port scanning and dos
     dnsDict = {} #represents dict of {(flow tuple) - [packet list]} related to dns tunneling
     arpCounter, tcpUdpCounter, dnsCounter = 0, 0, 0 #represents counters for our packet data structures for arp, portDos and dns
-    sqlThread, snifferThread, arpThread, portScanDosThread, dnsThread = None, None, None, None, None #represents our worker threads for SQL queries, sniffing and detecting network cyber attacks
-    reportThread, loggerThread = None, None #represents our report thread for creating report and logger thread for logging app events into logging file
+    sqlThread, reportThread, loggerThread, dataCollectorThread = None, None, None, None #represents our worker threads for sql queires, report creation and data collection for training models
+    snifferThread, arpThread, portScanDosThread, dnsThread = None, None, None, None #represents our worker threads for sniffing and detecting network cyber attacks
     arpMutex, portScanDosMutex, dnsMutex = QMutex(), QMutex(), QMutex() #represents mutex objects for thread safe operations on our dictionaries
     arpAttackDict, portScanDosAttackDict, dnsAttackDict = {'ipToMac': {}, 'macToIp': {}}, {}, {} #represents attack dictionaries for each attack we previously detected
 
@@ -37,7 +37,6 @@ class NetSpect(QMainWindow):
     
     # method to initialize GUI methods and events
     def initUI(self):
-        self.setWindowTitle('NetSpect') #set title of window
         # connect timers for detection
         self.totalTimer, self.arpTimer, self.portScanDosTimer, self.dnsTimer = QTimer(self), QTimer(self), QTimer(self), QTimer(self) #initailize our timers
         self.totalTimer.timeout.connect(self.UpdateRunningTimeCounterLabel) #connect timeout event for total timer
@@ -76,6 +75,7 @@ class NetSpect(QMainWindow):
         self.denialOfServiceCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
         self.dnsTunnelingCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
         self.reportDurationComboBox.currentIndexChanged.connect(lambda: UserInterfaceFunctions.ReportDurationComboboxChanged(self))
+        self.operationModeComboBox.currentIndexChanged.connect(lambda: UserInterfaceFunctions.OperationModeComboboxChanged(self))
         self.networkInterfaceComboBox.clear() #clear interfaces combobox
         self.networkInterfaceComboBox.addItems(NetworkInformation.InitNetworkInfo()) #intialize our interfaces combobox with host network info
         self.networkInterfaceComboBox.currentIndexChanged.connect(self.ChangeNetworkInterface) #connect interfaces combobox to its method
@@ -268,7 +268,7 @@ class NetSpect(QMainWindow):
 
     # method for changing the styles of a line edit when it does not match the regex
     def NotifyInvalidLineEditSettings(self, lineEditWidget, lineEditName, errorMessageLabel=None):
-        # Getting the current stylesheet by object name for the given line edit in settings page
+        # get current stylesheet by object name for the given line edit in settings page
         defaultStylesheet = UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits(lineEditName)
 
         # set initial styles
@@ -307,7 +307,7 @@ class NetSpect(QMainWindow):
     def ChangeNetworkInterface(self):
         # set selected interface to chosen interfaces selected in combobox in gui
         NetworkInformation.selectedInterface = self.networkInterfaceComboBox.currentText()
-        print(f'Selected interface: {NetworkInformation.selectedInterface}')
+        self.SendLogDict(f'Main_Thread: Changed interface to {NetworkInformation.selectedInterface}', 'INFO') #log interface change event
 
         # initialize network information section (right side)
         selectedInterface = NetworkInformation.networkInfo.get(NetworkInformation.selectedInterface)
@@ -322,13 +322,13 @@ class NetSpect(QMainWindow):
 
 
     # method for showing file dialog for user to choose his desired path and file name
-    def GetPathFromReportFileDialog(self):
+    def GetPathFromFileDialog(self, title, fileName, extensions):
         options = QFileDialog.Options()
         filePath, _ = QFileDialog.getSaveFileName(
-            None, #represents parent window
-            'Download Report', #represents dialog title
-            'alerts_report.txt', #represents default filename
-            'Text Files (*.txt);;CSV Files (*.csv)',
+            parent=None, #represents parent window
+            caption=title, #represents dialog title
+            directory=fileName, #represents default filename
+            filter=extensions, #represents supported extensions
             options=options
         )
         return filePath
@@ -556,8 +556,9 @@ class NetSpect(QMainWindow):
 
                 # Send the extracted batch to the worker thread
                 self.arpCounter -= len(arpBatch) #update arp counter
-                self.arpThread.ReceiveArpBatch(arpBatch) #send batch to arp thread
-                self.SendLogDict('Main_Thread: Sent arp list for analysis.', 'INFO') #log send event
+                if not self.dataCollectorThread and self.operationModeComboBox.currentIndex() == 0:
+                    self.arpThread.ReceiveArpBatch(arpBatch) #send batch to arp thread
+                    self.SendLogDict('Main_Thread: Sent arp list for analysis.', 'INFO') #log send event
 
 
     # method for extracting packet batches from portScanDos dict and sending to thread for analysis from main thread
@@ -597,8 +598,14 @@ class NetSpect(QMainWindow):
             # send packets batch only if batch isn't empty
             if totalPackets > 0:
                 self.tcpUdpCounter -= totalPackets #update tcp udp counter
-                self.portScanDosThread.ReceivePortScanDosBatch(portScanDosBatch) #send batch to portScanDos thread
-                self.SendLogDict('Main_Thread: Sent portScanDos list for analysis.', 'INFO') #log send event
+                # means we send batch to portScanDos thread for analysis
+                if not self.dataCollectorThread and self.operationModeComboBox.currentIndex() == 0:
+                    self.portScanDosThread.ReceivePortScanDosBatch(portScanDosBatch) #send batch to portScanDos thread
+                    self.SendLogDict('Main_Thread: Sent portScanDos list for analysis.', 'INFO') #log send event
+                # else we send batch to data collector thread for data collection
+                elif self.dataCollectorThread and self.operationModeComboBox.currentIndex() == 1:
+                    self.dataCollectorThread.ReceivePacketBatch(portScanDosBatch) #send batch to data collector thread
+                    self.SendLogDict('Main_Thread: Sent portScanDos list for data collection.', 'INFO') #log send event
 
 
     # method for extracting packet batches from dns dict and sending to thread for analysis from main thread
@@ -638,8 +645,14 @@ class NetSpect(QMainWindow):
             # send packets batch only if batch isn't empty
             if totalPackets > 0:
                 self.dnsCounter -= totalPackets #update dns counter
-                self.dnsThread.ReceiveDnsBatch(dnsBatch) #send batch to dns thread
-                self.SendLogDict('Main_Thread: Sent dns list for analysis.', 'INFO') #log send event
+                # means we send batch to dns thread for analysis
+                if not self.dataCollectorThread and self.operationModeComboBox.currentIndex() == 0:
+                    self.dnsThread.ReceiveDnsBatch(dnsBatch) #send batch to dns thread
+                    self.SendLogDict('Main_Thread: Sent dns list for analysis.', 'INFO') #log send event
+                # else we send batch to data collector thread for data collection
+                elif self.dataCollectorThread and self.operationModeComboBox.currentIndex() == 2:
+                    self.dataCollectorThread.ReceivePacketBatch(dnsBatch) #send batch to data collector thread
+                    self.SendLogDict('Main_Thread: Sent dns list for data collection.', 'INFO') #log send event
 
 
     # method for closing SQL thread and setting it back to none
@@ -745,12 +758,33 @@ class NetSpect(QMainWindow):
         self.SendLogDict('Dns_Thread: Finsihed analysis of traffic.', 'INFO') #log finish event
 
 
+    # method for closing data collector thread and setting it back to none
+    @pyqtSlot(dict)
+    def CloseDataCollectorThread(self, stateDict):
+        self.dataCollectorThread = None #set thread to none for next detection
+        # we check if it was the last thread, if so we set isDetection flag
+        if not self.snifferThread:
+            self.isDetection = False
+        # in case of an error we stop detection and show error message
+        if stateDict.get('state') == False and stateDict.get('message'):
+            self.StopDetection() #stop detection and stop running threads
+            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message') , 'Critical')
+            self.SendLogDict(f'Data_Collector_Thread: {stateDict.get('message')}', 'ERROR') #log error event
+        self.SendLogDict('Data_Collector_Thread: Finsihed collecting data.', 'INFO') #log finish event
+
+
     # method for receiving database connection result
     @pyqtSlot(dict)
     def ConnectionResult(self, stateDict):
         # we check if connected to database succcessfully
         if stateDict.get('state') == True and stateDict.get('message'):
             self.SendLogDict(f'SQL_Thread: {stateDict.get('message')}', 'INFO') #log connection event
+        
+    
+    # method for receiving number of collected flows in dataset for data collection
+    @pyqtSlot(int)
+    def CollectionResult(self, collectedFlows):
+        self.SendLogDict(f'Data_Collector_Thread: Collected {collectedFlows} flows.', 'INFO') #log collection event
 
 
     # method for analyzing detection result of arp spoofing attack
@@ -909,11 +943,14 @@ class NetSpect(QMainWindow):
                 self.portScanDosThread.StopThread()
             if self.dnsThread:
                 self.dnsThread.StopThread()
+            if self.dataCollectorThread:
+                self.dataCollectorThread.StopThread()
             
             # enable interface combobox and reset our data structures and counters
             self.SendLogDict(f'Main_Thread: Stopping detection. Remaining packets - TCP/UDP: {self.tcpUdpCounter}, ARP: {self.arpCounter}, DNS: {self.dnsCounter}', 'INFO') #log stop event
+            self.toggleDetection.setText('Start Detection') if self.operationModeComboBox.currentIndex() == 0 else self.toggleDetection.setText('Start Collection') #set tray lable
             self.networkInterfaceComboBox.setEnabled(True) #enable interface changes
-            self.opperationModeComboBox.setEnabled(True) #disable interface changes
+            self.operationModeComboBox.setEnabled(True) #enable operation mode changes
             self.arpCounter, self.tcpUdpCounter, self.dnsCounter = 0, 0, 0 #reset our counters
             self.arpList, self.portScanDosDict, self.dnsDict = [], {}, {} #reset our packet data structures
             self.arpAttackDict, self.portScanDosAttackDict, self.dnsAttackDict = {'ipToMac': {}, 'macToIp': {}}, {}, {} #reset known attacks
@@ -921,10 +958,10 @@ class NetSpect(QMainWindow):
 
     # method for starting our threads and detect network cyber attacks in real time
     def StartDetection(self):
-        if not self.snifferThread and not self.arpThread and not self.portScanDosThread and not self.dnsThread:
+        if not self.snifferThread and not self.arpThread and not self.portScanDosThread and not self.dnsThread and not self.dataCollectorThread:
             self.isDetection = True #set flag to true indication we started a detection
             self.networkInterfaceComboBox.setEnabled(False) #disable interface changes
-            self.opperationModeComboBox.setEnabled(False) #disable interface changes
+            self.operationModeComboBox.setEnabled(False) #disable operation mode changes
 
             # initialize sniffer thread for real time packet gathering
             self.snifferThread = Sniffing_Thread(self, NetworkInformation.selectedInterface)
@@ -935,35 +972,71 @@ class NetSpect(QMainWindow):
             self.snifferThread.updateDnsDictSignal.connect(self.UpdateDnsDict)
             self.snifferThread.finishSignal.connect(self.CloseSnifferThread)
 
-            # initialize arp thread for arp spoofing detection
-            self.arpThread = Arp_Thread(self)
-            # connect relevant signals for arp thread
-            self.arpThread.detectionResultSignal.connect(self.ArpDetectionResult)
-            self.arpThread.finishSignal.connect(self.CloseArpThread)
+            # means we start threads for detecting attacks in real time
+            if self.operationModeComboBox.currentIndex() == 0:
+                # set detection tray icon
+                self.toggleDetection.setText('Stop Detection')
 
-            # initialize portScanDos thread for port scan and dos detection
-            self.portScanDosThread = PortScanDos_Thread(self)
-            # connect relevant signals for portScanDos thread
-            self.portScanDosThread.detectionResultSignal.connect(self.PortScanDosDetectionResult)
-            self.portScanDosThread.finishSignal.connect(self.ClosePortScanDosThread)
+                # initialize arp thread for arp spoofing detection
+                self.arpThread = Arp_Thread(self)
+                # connect relevant signals for arp thread
+                self.arpThread.detectionResultSignal.connect(self.ArpDetectionResult)
+                self.arpThread.finishSignal.connect(self.CloseArpThread)
 
-            # initialize dns thread for dns tunneling detection
-            self.dnsThread = Dns_Thread(self)
-            # connect relevant signals for dns thread
-            self.dnsThread.detectionResultSignal.connect(self.DnsDetectionResult)
-            self.dnsThread.finishSignal.connect(self.CloseDnsThread)
+                # initialize portScanDos thread for port scan and dos detection
+                self.portScanDosThread = PortScanDos_Thread(self)
+                # connect relevant signals for portScanDos thread
+                self.portScanDosThread.detectionResultSignal.connect(self.PortScanDosDetectionResult)
+                self.portScanDosThread.finishSignal.connect(self.ClosePortScanDosThread)
 
-            # start our threads for detection
-            self.snifferThread.start()
-            self.arpThread.start()
-            self.portScanDosThread.start()
-            self.dnsThread.start()
+                # initialize dns thread for dns tunneling detection
+                self.dnsThread = Dns_Thread(self)
+                # connect relevant signals for dns thread
+                self.dnsThread.detectionResultSignal.connect(self.DnsDetectionResult)
+                self.dnsThread.finishSignal.connect(self.CloseDnsThread)
 
-            # log initializing of threads
-            self.SendLogDict('Sniffer_Thread: Starting Network Scan.', 'INFO') #log sniffer start event
-            self.SendLogDict('Arp_Thread: Starting Arp thread.', 'INFO') #log arp start event
-            self.SendLogDict('PortScanDos_Thread: Starting portScanDos thread.', 'INFO') #log portScanDos start event
-            self.SendLogDict('Dns_Thread: Starting Dns thread.', 'INFO') #log dns start event
+                # start our threads for detection
+                self.snifferThread.start()
+                self.arpThread.start()
+                self.portScanDosThread.start()
+                self.dnsThread.start()
+
+                # log initializing of threads
+                self.SendLogDict('Sniffer_Thread: Starting Network Scan.', 'INFO') #log sniffer start event
+                self.SendLogDict('Arp_Thread: Starting Arp thread.', 'INFO') #log arp start event
+                self.SendLogDict('PortScanDos_Thread: Starting portScanDos thread.', 'INFO') #log portScanDos start event
+                self.SendLogDict('Dns_Thread: Starting Dns thread.', 'INFO') #log dns start event
+
+            # else it means we start threads for data collection
+            else:
+                # set default selected data to be PortScanDos for collecting TCP/UDP flows
+                fileName, selectedData = 'port_scan_dos_benign_dataset.csv', 'PortScanDos'
+
+                # if user selected DNS we set selected data to be DNSTunneling for collecting DNS flows
+                if self.operationModeComboBox.currentIndex() == 2:
+                    fileName, selectedData = 'dns_benign_dataset.csv', 'DNSTunneling'
+
+                # get desired path for data collection from file dialog
+                filePath = self.GetPathFromFileDialog('Save Dataset', fileName, 'CSV Files (*.csv)')
+
+                # if user chose a path we generate csv dataset with our thread
+                if filePath:
+                    # set collection tray icon
+                    self.toggleDetection.setText('Stop Collection')
+
+                    # initialize data collector thread for collecting datasets for training models
+                    self.dataCollectorThread = Data_Collector_Thread(self, filePath, selectedData)
+                    # connect relevant signals for data collector thread
+                    self.dataCollectorThread.collectionResultSignal.connect(self.CollectionResult)
+                    self.dataCollectorThread.finishSignal.connect(self.CloseDataCollectorThread)
+
+                    # start our threads for data collection
+                    self.snifferThread.start()
+                    self.dataCollectorThread.start()
+
+                    # log initializing of threads
+                    self.SendLogDict('Sniffer_Thread: Starting Network Scan.', 'INFO') #log sniffer start event
+                    self.SendLogDict('Data_Collector_Thread: Starting data collector thread.', 'INFO') #log data collector start event
 
         else:
             UserInterfaceFunctions.ShowPopup('Error Starting Detection', 'One of the threads is still in process, cannot start new detection.', 'Warning')
@@ -990,8 +1063,6 @@ class NetSpect(QMainWindow):
                 {'background-color: #2E7128;' if self.startStopButton.text() == 'STOP' else 'background-color: #AC3f3F;'}
             }}
         '''
-        # apply the correct style sheet to the button
-        self.startStopButton.setStyleSheet(currentStyleSheet)
 
         # start and stop the sniffer and change the button text correctly
         if self.startStopButton.text() == 'START':
@@ -1000,6 +1071,9 @@ class NetSpect(QMainWindow):
         else:
             self.startStopButton.setText('START')
             self.StopDetection()
+        
+        # apply the correct style sheet to the button
+        self.startStopButton.setStyleSheet(currentStyleSheet)
 
     #-----------------------------------------------CLICKED-METHODS----------------------------------------------#
 
@@ -1241,8 +1315,8 @@ class NetSpect(QMainWindow):
             # else we proceed
             else:
                 # get desired path for report from file dialog
-                filePath = self.GetPathFromReportFileDialog()
-                
+                filePath = self.GetPathFromFileDialog('Download Report', 'alerts_report.txt', 'Text Files (*.txt);;CSV Files (*.csv)')
+
                 # if user chose a path we generate a report with our thread
                 if filePath:
                     # toggle report interface to be shown
@@ -1967,6 +2041,80 @@ class Logger_Thread(QThread):
             print(logLine, end='')
 
 #------------------------------------------------------LOGGER-THREAD-END--------------------------------------------------------#
+
+#-----------------------------------------------------DATA-COLLECTOR-THREAD-----------------------------------------------------#
+# thread for collecting benign traffic for port scan, dos and dns tunneling
+class Data_Collector_Thread(QThread):
+    # define signals for interacting with main gui thread
+    collectionResultSignal = pyqtSignal(int)
+    finishSignal = pyqtSignal(dict)
+
+    # constructor of data collector thread
+    def __init__(self, parent=None, filePath='port_scan_dos_benign_dataset.csv', selectedData='PortScanDos'):
+        super().__init__(parent)
+        self.parent = parent #represents main thread
+        self.stopFlag = False #represents stop flag for indicating when we should end analysis
+        self.packetBatch = None #represents packet dict batch of adding it to our dataset
+        self.filePath = filePath #represents file path of benign dataset
+        self.selectedData = selectedData #represents selected data to gather can be PortScanDos or DNSTunneling
+        self.mutex = QMutex() #shared mutex for thread safe operations with wait condition
+        self.waitCondition = QWaitCondition() #wait condition for thread to wait for received packet batch from main thread
+    
+
+    # method for receiving packet batch from main thread
+    @pyqtSlot(dict)
+    def ReceivePacketBatch(self, packetDict):
+        with QMutexLocker(self.mutex):
+            self.packetBatch = packetDict #set our packet dict batch received from main thread
+            self.waitCondition.wakeAll() #wake thread and process packet batch
+
+
+    # method for stopping data collector thread
+    @pyqtSlot()
+    def StopThread(self):
+        self.stopFlag = True #set stop flag
+        with QMutexLocker(self.mutex):
+            self.waitCondition.wakeAll() #wake thread and finish work
+
+
+    # run method for gathering begnin traffic data for various attacks
+    def run(self):
+        stateDict = {'state': True, 'message': ''} #represents state of thread when finishes
+        try:
+            # process packets until stop condition received
+            while not self.stopFlag:
+                # wait until we receive the packet batch using wait condition
+                self.mutex.lock()
+                while not self.packetBatch and not self.stopFlag:
+                    self.waitCondition.wait(self.mutex)
+
+                # if true we exit and finish threads work
+                if self.stopFlag:
+                    self.mutex.unlock()
+                    break
+
+                # retrieve the packet dict batch and reset for next iteration
+                localPacketDict = self.packetBatch
+                self.packetBatch = None
+                self.mutex.unlock()
+
+                # means we process TCP/UDP flows and save them for portScanDos dataset
+                if self.selectedData == 'PortScanDos':
+                    portScanDosFlows = PortScanDoS.ProcessFlows(localPacketDict) #call our port scan dos process flows
+                    collectedRows = SaveData.SaveCollectedData(portScanDosFlows, self.filePath, PortScanDoS.selectedColumns) #save TCP/UDP flows in CSV format
+                    self.collectionResultSignal.emit(collectedRows) #emit number of rows added to main thread
+                # else we process DNS flows and save them for DNS Tunneling dataset
+                elif self.selectedData == 'DNSTunneling':
+                    dnsFlows = DNSTunneling.ProcessFlows(localPacketDict) #call our dns tunneling process flows
+                    collectedRows = SaveData.SaveCollectedData(dnsFlows, self.filePath, DNSTunneling.selectedColumns) #save DNS flows in CSV format
+                    self.collectionResultSignal.emit(collectedRows) #emit number of rows added to main thread
+
+        except Exception as e: #we catch an exception if error occured
+            stateDict.update({'state': False, 'message': f'An error occurred: {e}.'})
+        finally:
+            self.finishSignal.emit(stateDict) #send finish signal to main thread
+
+#----------------------------------------------------DATA-COLLECTOR-THREAD-END--------------------------------------------------#
 
 #------------------------------------------------------------MAIN---------------------------------------------------------------#
 

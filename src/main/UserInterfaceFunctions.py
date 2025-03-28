@@ -166,6 +166,7 @@ def ToggleUserInterface(self, state):
     #set combobox and checkboxes default state
     self.reportDurationComboBox.setCurrentIndex(3)
     self.colorModeComboBox.setCurrentIndex(0)
+    self.operationModeComboBox.setCurrentIndex(0)
     self.arpSpoofingCheckBox.setChecked(True)
     self.portScanningCheckBox.setChecked(True)
     self.denialOfServiceCheckBox.setChecked(True)
@@ -212,6 +213,18 @@ def ToggleReportInterface(self, state):
         self.reportProgressBar.setValue(0)
         self.cancelReportPushButton.hide()
         self.downloadReportPushButton.show()
+
+
+# helper function for toggling between detection and collection interfaces
+def OperationModeComboboxChanged(self):
+    # means we need to change to detection interface
+    if self.operationModeComboBox.currentIndex() == 0:
+        self.initiateDefenceLabel.setText('Initiate Detection')
+        self.toggleDetection.setText('Start Detection')
+    # else means we need to change to data collection interface
+    else:
+        self.initiateDefenceLabel.setText('Initiate Collection')
+        self.toggleDetection.setText('Start Collection')
 
 
 # helper function for chaning the current page index on the stack widget
@@ -979,7 +992,7 @@ def InitTrayIcon(self):
 
         # start/stop detection
         self.toggleDetection = QAction('Start Detection', self)
-        self.toggleDetection.triggered.connect(lambda event: ToggleDetection(self))
+        self.toggleDetection.triggered.connect(lambda event: self.StartStopButtonClicked())
         trayMenu.addAction(self.toggleDetection)
 
         # open homepage page
@@ -1011,18 +1024,6 @@ def InitTrayIcon(self):
         self.trayIcon.setContextMenu(trayMenu)
 
 
-# method for starting or stopping detection
-def ToggleDetection(self):
-    # if detection active we stop it
-    if self.isDetection:
-        self.StartStopButtonClicked()
-        self.toggleDetection.setText('Start Detection')
-    # else means no detection active, we start new detection
-    else:
-        self.StartStopButtonClicked()
-        self.toggleDetection.setText('Stop Detection')
-
-
 # method for showing tray icon messages in operating system
 def ShowTrayMessage(self, title, message, iconType='Information', duration=5000):
     icon = GetTrayIcon(self, iconType)
@@ -1044,6 +1045,10 @@ def GetTrayIcon(self, iconType):
 
 # main function that sets up all the ui elements on startup
 def InitAnimationsUI(self):
+    # set the title and icon for main window
+    self.setWindowTitle('NetSpect™')
+    self.setWindowIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'NetSpectIconTransparent.png')))
+
     # set initial width of elements
     self.loginRegisterVerticalFrame.setFixedWidth(0)
     self.registerFrame.hide()
@@ -1089,8 +1094,6 @@ def InitAnimationsUI(self):
     self.registerEyeButton = self.registerPasswordLineEdit.addAction(icon, QLineEdit.TrailingPosition)
     self.registerEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self.registerPasswordLineEdit, self.registerEyeButton))
 
-    # set the main window icon
-    self.setWindowIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'NetSpectIconTransparent.png')))
 
     # hide the error messages in the settings page
     self.saveEmailErrorMessageLabel.hide()

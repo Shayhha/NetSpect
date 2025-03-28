@@ -960,28 +960,31 @@ class NetSpect(QMainWindow):
             self.arpCounter, self.tcpUdpCounter, self.dnsCounter = 0, 0, 0 #reset our counters
             self.arpList, self.portScanDosDict, self.dnsDict = [], {}, {} #reset our packet data structures
             self.arpAttackDict, self.portScanDosAttackDict, self.dnsAttackDict = {'ipToMac': {}, 'macToIp': {}}, {}, {} #reset known attacks
+            return True #indication of successful operation
+        return False #indication of failed operation
 
 
     # method for starting our threads and detect network cyber attacks in real time
     def StartDetection(self):
         if not self.snifferThread and not self.arpThread and not self.portScanDosThread and not self.dnsThread and not self.dataCollectorThread:
-            self.isDetection = True #set flag to true indication we started a detection
-            self.networkInterfaceComboBox.setEnabled(False) #disable interface changes
-            self.operationModeComboBox.setEnabled(False) #disable operation mode changes
-
-            # initialize sniffer thread for real time packet gathering
-            self.snifferThread = Sniffing_Thread(self, NetworkInformation.selectedInterface)
-            # connect relevant signals for sniffer thread
-            self.snifferThread.updateTimerSignal.connect(self.UpdateTimer)
-            self.snifferThread.updateArpListSignal.connect(self.UpdateArpList)
-            self.snifferThread.updatePortScanDosDictSignal.connect(self.UpdatePortScanDosDict)
-            self.snifferThread.updateDnsDictSignal.connect(self.UpdateDnsDict)
-            self.snifferThread.finishSignal.connect(self.CloseSnifferThread)
-
             # means we start threads for detecting attacks in real time
             if self.operationModeComboBox.currentIndex() == 0:
+                # set isDetection flag and disable interface and operation mode comboboxes
+                self.isDetection = True
+                self.networkInterfaceComboBox.setEnabled(False)
+                self.operationModeComboBox.setEnabled(False)
+
                 # set detection tray icon
                 self.toggleDetection.setText('Stop Detection')
+
+                # initialize sniffer thread for real time packet gathering
+                self.snifferThread = Sniffing_Thread(self, NetworkInformation.selectedInterface)
+                # connect relevant signals for sniffer thread
+                self.snifferThread.updateTimerSignal.connect(self.UpdateTimer)
+                self.snifferThread.updateArpListSignal.connect(self.UpdateArpList)
+                self.snifferThread.updatePortScanDosDictSignal.connect(self.UpdatePortScanDosDict)
+                self.snifferThread.updateDnsDictSignal.connect(self.UpdateDnsDict)
+                self.snifferThread.finishSignal.connect(self.CloseSnifferThread)
 
                 # initialize arp thread for arp spoofing detection
                 self.arpThread = Arp_Thread(self)
@@ -1012,6 +1015,7 @@ class NetSpect(QMainWindow):
                 self.SendLogDict('Arp_Thread: Starting Arp thread.', 'INFO') #log arp start event
                 self.SendLogDict('PortScanDos_Thread: Starting portScanDos thread.', 'INFO') #log portScanDos start event
                 self.SendLogDict('Dns_Thread: Starting Dns thread.', 'INFO') #log dns start event
+                return True #indication of successful operation
 
             # else it means we start threads for data collection
             else:
@@ -1027,8 +1031,22 @@ class NetSpect(QMainWindow):
 
                 # if user chose a path we generate csv dataset with our thread
                 if filePath:
+                    # set isDetection flag and disable interface and operation mode comboboxes
+                    self.isDetection = True
+                    self.networkInterfaceComboBox.setEnabled(False)
+                    self.operationModeComboBox.setEnabled(False)
+
                     # set collection tray icon
                     self.toggleDetection.setText('Stop Collection')
+
+                    # initialize sniffer thread for real time packet gathering
+                    self.snifferThread = Sniffing_Thread(self, NetworkInformation.selectedInterface)
+                    # connect relevant signals for sniffer thread
+                    self.snifferThread.updateTimerSignal.connect(self.UpdateTimer)
+                    self.snifferThread.updateArpListSignal.connect(self.UpdateArpList)
+                    self.snifferThread.updatePortScanDosDictSignal.connect(self.UpdatePortScanDosDict)
+                    self.snifferThread.updateDnsDictSignal.connect(self.UpdateDnsDict)
+                    self.snifferThread.finishSignal.connect(self.CloseSnifferThread)
 
                     # initialize data collector thread for collecting datasets for training models
                     self.dataCollectorThread = Data_Collector_Thread(self, filePath, selectedData)
@@ -1043,10 +1061,12 @@ class NetSpect(QMainWindow):
                     # log initializing of threads
                     self.SendLogDict('Sniffer_Thread: Starting Network Scan.', 'INFO') #log sniffer start event
                     self.SendLogDict('Data_Collector_Thread: Starting data collector thread.', 'INFO') #log data collector start event
+                    return True #indication of successful operation
 
         else:
             UserInterfaceFunctions.ShowPopup('Error Starting Detection', 'One of the threads is still in process, cannot start new detection.', 'Warning')
             self.SendLogDict('Main_Thread: One of the threads is still in process, cannot start new detection.', 'INFO') #log event
+        return False #indication of failed operation
 
     
     # method for startStop button for starting or stopping detection
@@ -1070,16 +1090,15 @@ class NetSpect(QMainWindow):
             }}
         '''
 
-        # start and stop the sniffer and change the button text correctly
+        # start and stop the sniffer and change the button stylesheet correctly
         if self.startStopButton.text() == 'START':
-            self.startStopButton.setText('STOP')
-            self.StartDetection()
+            if self.StartDetection():
+                self.startStopButton.setText('STOP')
+                self.startStopButton.setStyleSheet(currentStyleSheet)
         else:
-            self.startStopButton.setText('START')
-            self.StopDetection()
-        
-        # apply the correct style sheet to the button
-        self.startStopButton.setStyleSheet(currentStyleSheet)
+            if self.StopDetection():
+                self.startStopButton.setText('START')
+                self.startStopButton.setStyleSheet(currentStyleSheet)
 
     #-----------------------------------------------CLICKED-METHODS----------------------------------------------#
 

@@ -134,6 +134,12 @@ class NetSpect(QMainWindow):
             self.dnsThread.wait() #wait until the thread finishes execution
             self.CloseDnsThread(stateDict) #call close method
 
+        # we check if data collector thread is active, if so we close it
+        if self.dataCollectorThread:
+            self.dataCollectorThread.StopThread() #stop data collector thread
+            self.dataCollectorThread.wait() #wait until the thread finishes execution
+            self.CloseDataCollectorThread(stateDict) #call close method
+
         # we check if report thread is active, if so we close it
         if self.reportThread:
             self.reportThread.StopThread(True) #stop report thread

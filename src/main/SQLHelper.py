@@ -19,6 +19,7 @@ class SQL_Thread(QThread):
     deleteAlertsResultSignal = pyqtSignal(dict)
     addBlacklistMacResultSignal = pyqtSignal(dict)
     deleteBlacklistMacResultSignal = pyqtSignal(dict)
+    updateLightModeResultSignal = pyqtSignal(dict)
     connectionResultSignal = pyqtSignal(dict)
     finishSignal = pyqtSignal(dict)
 
@@ -563,6 +564,35 @@ class SQL_Thread(QThread):
         finally:
             # emit delete blacklist mac address signal to main thread
             self.deleteBlacklistMacResultSignal.emit(resultDict)
+    
+
+    # method for updating value of light mode for given user in Users table
+    @pyqtSlot(int, int)
+    def UpdateLightMode(self, userId, lightMode=0):
+        resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
+        try:
+            # update lightMode for user in Users table
+            query = '''
+                UPDATE Users 
+                SET lightMode = ? 
+                WHERE userId = ?
+            '''
+            self.cursor.execute(query, (lightMode, userId))
+            
+            if self.cursor.rowcount > 0:
+                self.connection.commit()
+                resultDict['message'] = 'Updated light mode status.'
+                resultDict['state'] = True
+            else:
+                resultDict['message'] = 'Failed updating light mode status.'
+
+        except Exception as e:
+            self.connection.rollback() #rollback on error
+            resultDict['message'] = f'Error updating light mode: {e}.'
+            resultDict['error'] = True
+        finally:
+            # emit update light mode signal to main thread
+            self.updateLightModeResultSignal.emit(resultDict)
 
     #---------------------------------------------SQL-FUNCTIONS-END----------------------------------------------#
 

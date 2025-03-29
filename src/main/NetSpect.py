@@ -83,6 +83,7 @@ class NetSpect(QMainWindow):
         self.networkInterfaceComboBox.clear() #clear interfaces combobox
         self.networkInterfaceComboBox.addItems(NetworkInformation.InitNetworkInfo()) #intialize our interfaces combobox with host network info
         self.networkInterfaceComboBox.currentIndexChanged.connect(self.ChangeNetworkInterface) #connect interfaces combobox to its method
+        self.colorModeComboBox.currentIndexChanged.connect(self.ChangeColorMode)
         self.ChangeNetworkInterface() #set default network interface from combobox
 
         # initialize other interface components and show interface
@@ -203,6 +204,7 @@ class NetSpect(QMainWindow):
         self.sqlThread.deleteBlacklistMacResultSignal.connect(self.DeleteMacFromBlackListResult)
         self.sqlThread.connectionResultSignal.connect(self.ConnectionResult)
         self.sqlThread.finishSignal.connect(self.CloseSQLThread)
+        self.sqlThread.updateLightModeResultSignal.connect(self.UpdateColorModeResult)
         # start sql thread
         self.sqlThread.start()
         # log initializing sql thread
@@ -256,8 +258,8 @@ class NetSpect(QMainWindow):
     def NotifyInvalidLineEdit(self, lineEditWidget, lineEditName, errorMessageLabel=None):
         currentStylesheet = f''' 
             #{lineEditName} {{
-                background-color: #f0f0f0;
-                border: 2px solid lightgray;
+                {f'background-color: #f3f3f3;' if self.userData['lightMode'] == 0 else f'background-color: {'#fbfcfd' if any(prefix in lineEditName for prefix in ['login', 'register', 'reset']) else '#EBEFF7'};'}
+                {'border: 2px solid lightgray;' if self.userData['lightMode'] == 0 else 'border: 2px solid #899fce;'}
                 border-radius: 10px;
                 padding: 5px;
                 color: black;
@@ -273,13 +275,16 @@ class NetSpect(QMainWindow):
 
         # check if the input matches the regex, if not update the border style to red (invalid input)
         if not lineEditWidget.hasAcceptableInput():
-            lineEditWidget.setStyleSheet(currentStylesheet.replace('border: 2px solid lightgray;', 'border: 2px solid #D84F4F;'))
+            if self.userData['lightMode'] == 0:
+                lineEditWidget.setStyleSheet(currentStylesheet.replace('border: 2px solid lightgray;', 'border: 2px solid #D84F4F;'))
+            else:
+                lineEditWidget.setStyleSheet(currentStylesheet.replace('border: 2px solid #899fce;', 'border: 2px solid #D84F4F;'))
 
 
     # method for changing the styles of a line edit when it does not match the regex
     def NotifyInvalidLineEditSettings(self, lineEditWidget, lineEditName, errorMessageLabel=None):
         # get current stylesheet by object name for the given line edit in settings page
-        defaultStylesheet = UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits(lineEditName)
+        defaultStylesheet = UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits(self, lineEditName)
 
         # set initial styles
         lineEditWidget.setStyleSheet(defaultStylesheet)
@@ -290,7 +295,10 @@ class NetSpect(QMainWindow):
 
         # check if the input matches the regex, if not update the border style to red (invalid input)
         if not lineEditWidget.hasAcceptableInput():
-            lineEditWidget.setStyleSheet(defaultStylesheet.replace('border: 2px solid lightgray;', 'border: 2px solid #D84F4F;'))
+            if self.userData['lightMode'] == 0:
+                lineEditWidget.setStyleSheet(defaultStylesheet.replace('border: 2px solid lightgray;', 'border: 2px solid #D84F4F;'))
+            else:
+                lineEditWidget.setStyleSheet(defaultStylesheet.replace('border: 2px solid #899fce;', 'border: 2px solid #D84F4F;'))
 
 
     # method that validates that a given password matches the password validator regex
@@ -322,7 +330,7 @@ class NetSpect(QMainWindow):
         # initialize network information section (right side)
         selectedInterface = NetworkInformation.networkInfo.get(NetworkInformation.selectedInterface)
         self.connectedInterfaceInfoLabel.setText(selectedInterface.get('name'))
-        self.maxAddressInfoLabel.setText(selectedInterface.get('mac'))
+        self.macAddressInfoLabel.setText(selectedInterface.get('mac'))
         self.descriptionInfoLabel.setText(selectedInterface.get('description'))
         self.maxSpeedInfoLabel.setText(str(selectedInterface.get('maxSpeed')))
         self.maxTransmitionUnitInfoLabel.setText(str(selectedInterface.get('maxTransmitionUnit')))
@@ -411,6 +419,7 @@ class NetSpect(QMainWindow):
             if state and userData:
                 self.userData = userData #save user data dictionary for logged in user
                 UserInterfaceFunctions.AccountIconClicked(self) #close login popup
+                self.colorModeComboBox.setCurrentIndex(self.userData.get('lightMode')) #set the combobox to the value received from database
                 UserInterfaceFunctions.ToggleUserInterface(self, True) #toggle user interface
                 self.welcomeLabel.setText(f'Welcome {self.userData.get('userName')}')
                 self.UpdateNumberOfDetectionsCounterLabel(self.userData.get('numberOfDetections')) #set num of detections counter
@@ -1083,6 +1092,7 @@ class NetSpect(QMainWindow):
                 border: 1px solid black;
                 color: black;
                 font-weight: bold;
+                outline: none;
             }}
 
             #startStopButton:hover {{
@@ -1351,6 +1361,20 @@ class NetSpect(QMainWindow):
                                 self.sqlThread.ChangePassword(self.userData.get('userId'), NetSpect.ToSHA256(newPassword), NetSpect.ToSHA256(oldPassword))
 
 
+    # method for changing the UI color mode
+    def ChangeColorMode(self):
+        # send a log that the user is changing the ui color preference
+        self.SendLogDict(f'Main_Thread: {'User ' + self.userData.get('userName') if self.userData.get('userId') != None else 'Default user'} is changing the UI color preference to: "{self.colorModeComboBox.currentText()}".', 'INFO')
+
+        # update the ui based on the users selection
+        UserInterfaceFunctions.ToggleColorMode(self)
+        
+        # change the value of lightMode in the database for the current user
+        if self.sqlThread:
+            if self.userData.get('userId') != None:
+                self.sqlThread.UpdateLightMode(self.userData.get('userId'), self.userData.get('lightMode'))
+
+
     # method for creating alerts report for user in desired format, txt or csv
     def DownloadReportButtonClicked(self):
         if not self.reportThread:
@@ -1546,10 +1570,23 @@ class NetSpect(QMainWindow):
             self.confirmPasswordLineEdit.clear()
 
             # for each password input field we want to and reset the border to light gray
-            self.oldPasswordLineEdit.setStyleSheet(UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits('oldPasswordLineEdit'))
-            self.newPasswordLineEdit.setStyleSheet(UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits('newPasswordLineEdit'))
-            self.confirmPasswordLineEdit.setStyleSheet(UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits('confirmPasswordLineEdit'))
+            self.oldPasswordLineEdit.setStyleSheet(UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits(self, 'oldPasswordLineEdit'))
+            self.newPasswordLineEdit.setStyleSheet(UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits(self, 'newPasswordLineEdit'))
+            self.confirmPasswordLineEdit.setStyleSheet(UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits(self, 'confirmPasswordLineEdit'))
             UserInterfaceFunctions.ShowPopup('Password Changed Successfullly', 'You\'r password has changed successfully.', 'Information')
+
+    
+    # method for updating the UI color mode in the database
+    @pyqtSlot(dict)
+    def UpdateColorModeResult(self, resultDict):
+        if resultDict.get('error'):
+            self.SendLogDict(f'Main_Thread: Error saving color preference due to server error.', 'ERROR') #log error event
+            UserInterfaceFunctions.ShowPopup('Error Saving Color Preference', 'Error saving color preference due to server error, please try again later.', 'Critical')
+        elif not resultDict.get('state'):
+            self.SendLogDict(f'Main_Thread: Error Updating Color Preference. {resultDict.get('message')}', 'ERROR') #log change password event
+            UserInterfaceFunctions.ShowPopup('Error Updating Color Preference', resultDict.get('message'))
+        elif resultDict.get('state'):
+            self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has changed the UI color preference successfully.', 'INFO') #log change password event
 
     #--------------------------------------------SQL-RESULT-SLOTS-END--------------------------------------------#
 

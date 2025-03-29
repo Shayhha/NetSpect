@@ -1,0 +1,1389 @@
+
+/*
+*  These are DARK MODE styles for objects in out .ui file
+*  devided into section, each section is a different page
+*/
+
+/*---------------------------------Default-Styles---------------------------------*/
+
+QWidget {
+    background-color:#3C3D4A;
+    outline: none;
+}
+
+QToolTip { 
+   color: rgb(245,245,245);
+   background-color: rgba(46, 47, 56, 0.8);
+   border: 1px solid rgb(102,102,102);
+   padding: 4px;
+}
+
+/* Scroll Bar */
+
+QScrollBar:vertical, QScrollBar:horizontal {
+    background-color: rgba(247, 247, 247, 150);
+    border: 1px solid rgb(153, 153, 153);
+    width: 10px;
+    height: 10px; 
+    margin: 0px 0px 0px 0px;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
+    background-color: black;
+    min-height: 100px;
+    border: 0px solid black;
+    border-radius: 4px;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::add-line:horizontal {
+    height: 0px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+QScrollBar::sub-line:vertical, QScrollBar::sub-line:horizontal {
+    height: 0px;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
+
+
+/* List View */
+
+QListView::item:hover { 
+    background-color: rgb(173, 174, 184); 
+    color: black;
+    border: 1px solid black;
+}
+
+QListView::item:selected { 
+    background-color: rgb(187, 188, 196);
+    color: black;
+    border: 1px solid black;
+}
+
+QTableWidget {
+        border-radius: 8px;
+        background-color: transparent;
+        gridline-color: black;
+        border: none; 
+    }
+
+QHeaderView::section {
+    background-color: rgba(204, 204, 204, 0.6);
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    border-right: 1px solid black;
+    border-top: none;
+    border-left: none;
+    border-bottom: 2px solid black;
+}
+
+QTableWidget::item {
+    padding: 6px;
+    border: none;  
+}
+
+QTableWidget::item:selected {
+    background: transparent;  
+    border: none;  
+}
+
+QTableWidget::focus {
+    outline: none;  
+}
+
+QTableWidget QScrollBar:vertical {
+    width: 4px;
+    margin: 0px;
+    border: none;
+    background: #f3f3f3;
+}
+
+QTableWidget QScrollBar::handle:vertical {
+    background: black;
+}
+
+QTableWidget::corner {
+    background-color: #3498db;
+    border-top-left-radius: 8px;
+}
+
+QTableView {
+    border-radius: 8px;
+    background-color: transparent;
+    gridline-color: black;
+}
+
+QTableView QHeaderView::section:vertical {
+    background-color: rgba(204, 204, 204, 0.6);
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+	gridline-color: black;
+}
+
+QTableView::item {
+    padding: 6px;
+}
+
+QTableView::corner {
+    background-color: #3498db;
+    border-top-left-radius: 8px;
+}
+
+QTableView QScrollBar:vertical {
+    width: 4px;
+    margin: 0px;
+	border: none;
+ 	background: #f3f3f3;
+
+}
+
+QTableView QScrollBar::handle:vertical {
+    background: black;
+}
+
+QCheckBox::indicator {
+    width: 16px; 
+    height: 16px;
+}
+
+QCheckBox::indicator:checked {
+    background-color: #3a8e32; 
+    border: 2px solid #2e7128;
+}
+
+QCheckBox::indicator:unchecked {
+    background-color: white;
+    border: 2px solid lightgray;
+}
+
+QCheckBox::indicator:hover {
+    border: 2px solid #4d9946;
+}
+
+QCheckBox {
+    spacing: 10px; 
+    color: #f3f3f3; 
+}
+
+/*-------------------------------Default-Styles-End-------------------------------*/
+
+/*---------------------------------General-Styles---------------------------------*/
+
+#topFrame {
+    background-color: #1E1E20
+}
+
+#logoLabel {
+	background-color: transparent;
+  	color: #f3f3f3;
+}
+
+#welcomeLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#logoutIcon {
+	background-color: transparent;
+}
+
+#accountIcon {
+	background-color: transparent;
+}
+
+#settingsIcon {
+	background-color: transparent;
+}
+
+#sideFrame {
+    background-color: #2D2E36
+}
+
+#menuIconHorizontalFrame {
+	background-color: #2D2E36;
+}
+
+#menuIcon {
+	background-color: #2D2E36;
+}
+
+#closeMenuIcon {
+	background-color: #2D2E36;
+}
+
+#homePageIconHorizontalFrame {
+	background-color: #2D2E36;
+}
+
+#homePageIcon {
+	background-color: #2D2E36;
+}
+
+#homePageLabel {
+	color: #f3f3f3;
+	background-color: #2D2E36;
+}
+
+#reportIconHorizontalFrame {
+	background-color: #2D2E36;
+}
+
+#reportIcon {
+	background-color: #2D2E36;
+}
+
+#reportLabel {
+	color: #f3f3f3;
+	background-color: #2D2E36;
+}
+
+#infoIconHorizontalFrame {
+	background-color: #2D2E36;
+}
+
+#infoIcon {
+	background-color: #2D2E36;
+}
+
+#infoLabel {
+	color: #f3f3f3;
+	background-color: #2D2E36;
+}
+
+#loginRegisterVerticalFrame {
+    background-color: #2D2E36;
+}
+
+#loginFrame {
+	background-color: #2D2E36;
+    border: none;
+}
+
+#loginVerticalFrame {
+	background-color: #2D2E36;
+	border: none;
+}
+
+#loginLabel {
+	color: #f3f3f3;
+	background-color: #2D2E36;
+}
+
+#loginUsernameLineEdit {
+    background-color: #f3f3f3; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;                    
+    color: black;             
+	margin: 0px 5px 10px 5px;
+}
+
+#loginPasswordLineEdit {
+    background-color: #f3f3f3; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;         
+    color: black;             
+	margin: 0px 5px 0px 5px;
+}
+
+#loginErrorMessageLabel {
+	color: #D84F4F;
+	background-color: #2D2E36;
+}
+
+#loginButtonFrame {
+	background-color: #2D2E36;
+}
+
+#loginPushButton  {
+    background-color: #4E4F5A; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;                      
+    color: #f3f3f3;       
+}
+
+#loginPushButton:hover {
+    background-color: #464751; 
+	border-color: #D7D7D7;
+}
+
+#loginPushButton:pressed {
+    background-color: #383840; 
+	border-color:#D7D7D7;
+}
+
+#moveToRegisterLabel {
+	color: #6BA6FD;
+	background-color: #2D2E36;
+}
+
+#moveToRegisterLabel:hover {
+	color: #6095E3;
+}
+
+#registerFrame {
+    background-color: #2D2E36;
+    border: none;
+}
+
+#registerVerticalFrame {
+	background-color: #2D2E36;
+	border: none;
+}
+
+#registerLabel {
+	color: #f3f3f3;
+	background-color: #2D2E36;
+}
+
+#registerEmailLineEdit {
+    background-color: #f3f3f3; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;                     
+    color: black;             
+	margin: 0px 5px 10px 5px;
+}
+
+#registerUsernameLineEdit {
+    background-color: #f3f3f3; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;                      
+    color: black;             
+	margin: 0px 5px 10px 5px;
+}
+
+#registerPasswordLineEdit {
+    background-color: #f3f3f3; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;                       
+    color: black;             
+	margin: 0px 5px 0px 5px;
+}
+
+#registerErrorMessageLabel {
+	color: #D84F4F;
+	padding-bottom: 5px;
+	background-color: #2D2E36;
+}
+
+#registerButtonFrame {
+	background-color: #2D2E36;
+}
+
+#registerPushButton  {
+    background-color: #4E4F5A; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;                     
+    color: #f3f3f3;       
+}
+
+#registerPushButton:hover {
+    background-color: #464751; 
+	border-color: #D7D7D7;
+}
+
+#registerPushButton:pressed {
+    background-color: #383840; 
+	border-color:#D7D7D7;
+}
+
+#moveToLoginLabel {
+	color: #6BA6FD;
+	background-color: #2D2E36;
+}
+
+#moveToLoginLabel:hover {
+	color: #6095E3;
+}
+
+#moveToForgotPasswordLabel {
+	color: #6BA6FD;
+	background-color: #2D2E36;
+}
+
+#moveToForgotPasswordLabel:hover {
+	color: #6095E3;
+}
+
+#resetPasswordVerticalFrame {
+	background-color: #2D2E36;
+	border: none;
+}
+
+#cancelResetPasswordProcessLabel {
+	color: #6BA6FD;
+	background-color: #2D2E36;
+}
+
+#cancelResetPasswordProcessLabel:hover {
+	color: #6095E3;
+}
+
+#resetPasswordCodeErrorMessageLabel {
+	color: #D84F4F;
+	background-color: #2D2E36;
+}
+
+#resetPasswordCodeLineEdit {
+    background-color: #f3f3f3; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;         
+    color: black;             
+	margin: 0px 5px 0px 5px;
+}
+
+#resetPasswordEmailErrorMessageLabel {
+	color: #D84F4F;
+	background-color: #2D2E36;
+}
+
+#resetPasswordEmailLineEdit {
+    background-color: #f3f3f3; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;                    
+    color: black;             
+	margin: 0px 5px 0px 5px;
+}
+
+#resetPasswordLabel {
+	color: #f3f3f3;
+	background-color: #2D2E36;
+	margin: 10px 0 10px 0;
+}
+
+#sendCodeButtonFrame {
+	background-color: #2D2E36;
+}
+
+#sendCodePushButton  {
+    background-color: #4E4F5A; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;                      
+    color: #f3f3f3;       
+}
+
+#sendCodePushButton:hover {
+    background-color: #464751; 
+	border-color: #D7D7D7;
+}
+
+#sendCodePushButton:pressed {
+    background-color: #383840; 
+	border-color:#D7D7D7;
+}
+
+#verifyCodeButtonFrame {
+	background-color: #2D2E36;
+}
+
+#verifyCodePushButton  {
+    background-color: #4E4F5A; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;                      
+    color: #f3f3f3;       
+}
+
+#verifyCodePushButton:hover {
+    background-color: #464751; 
+	border-color: #D7D7D7;
+}
+
+#verifyCodePushButton:pressed {
+    background-color: #383840; 
+	border-color:#D7D7D7;
+}
+
+/*-------------------------------General-Styles-End-------------------------------*/
+
+/*----------------------------------Main-Window-----------------------------------*/
+
+#startVerticalFrame {
+   background-color: rgba(204, 204, 204, 0.6);
+   color: black;
+   border-radius: 15px;
+   border-style: outset;
+   border-width: 2px;
+   border-color: black;	
+   padding: 4px;
+}
+
+#initiateDefenceLabel {
+	background-color: transparent;
+	color: black;
+	padding-top: 5px;
+	padding-left: 5px;
+}
+
+#startHorizontalFrame {
+   background-color: transparent;
+   color: black;
+}
+
+#startStopButton {
+    border-radius: 60px;
+    background-color: #3A8E32;
+    border: 1px solid black;
+    color: black;
+    font-weight: bold;
+    outline: none;
+}
+
+#startStopButton:hover {
+     background-color: #4D9946;
+}
+
+#startStopButton:pressed {
+     background-color: #2E7128;
+}
+
+#startInfoVerticalFrame {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#networlInterfaceHorizontalFrame {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#networkInterfaceLabel {
+	background-color: transparent;
+	color: black;
+}
+
+#networkInterfaceComboBoxFrame {
+    background-color: #f3f3f3;
+    color: black;
+    border: 2px transparent; 
+    border-radius: 10px;
+    padding-left: 5px;
+    height: 29px;
+}
+
+#networkInterfaceComboBoxFrameArrow {
+    background-color: lightgray;
+    color: black;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding-left: 10px;
+}
+
+#networkInterfaceComboBox {
+    background-color: transparent;
+    border-radius: 10px;
+    border-style: outset;
+    border-width: 2px;
+    border-color: transparent;	
+    padding: 4px;
+	padding-left: 10px;
+    color: black;
+}
+
+#networkInterfaceComboBox QAbstractItemView {
+    background-color:  rgb(245,245,245);
+    selection-background-color: rgb(95, 97, 109);
+    color: rgb(0, 0, 0);    
+    padding: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+#networkInterfaceComboBox QListView{
+    outline: 0px;
+}
+
+#runningTimeHorizontalFrame {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#runningTimeLabel {
+	background-color: transparent;
+	color: black;
+}
+
+#runningTimeCounter {
+    background-color: transparent;
+    color: black;
+}
+
+#numberOfDetectionsHorizontalFrame {
+    background-color: transparent;
+    color: #f3f3f3;
+}
+
+#numberOfDetectionsLabel {
+    background-color: transparent;
+    color: black;
+}
+
+#numberOfDetectionsCounter {
+    background-color: transparent;
+    color: black;
+}
+
+#chartVerticalFrame {
+    background-color: rgba(204, 204, 204, 0.6);
+    color: black;
+    border-radius: 15px;
+    border-style: outset;
+    border-width: 2px;
+    border-color: black;
+    padding: 4px;
+}
+
+#rightVerticalFrame {
+    background-color: rgba(204, 204, 204, 0.6);
+    color: black;
+    border-radius: 15px;
+    border-style: outset;
+    border-width: 2px;
+    border-color: black;
+}
+
+#historyLabel {
+    background-color: transparent;
+    color: black;
+    padding-top: 5px;
+    padding-left: 5px;
+}
+
+
+
+
+
+#legendWidget {
+    background-color: transparent;
+    color: black;
+    border-top: 1px solid black;
+}
+
+#pieChartTitleLabel {
+    background-color: transparent;
+    color: black;
+    font-size: 24px;
+    font-family: Cairo;
+    font-weight: bold;
+    padding: 0px;
+    padding-left: 5px;
+    margin: 0px;
+}
+
+#ARPSpoofingLegendLabel, #PortScanningLegendLabel, #DenialofServiceLegendLabel, #DNSTunnelingLegendLabel {
+    padding-left: 5px; 
+    background-color: transparent; 
+    border: none; 
+    color: black;
+}
+
+
+#ARPSpoofingLegendColorLabel {
+    background-color: #90cfef; 
+    border: 1px solid black;
+}
+
+#PortScanningLegendColorLabel {
+    background-color: #209fdf; 
+    border: 1px solid black;
+}
+
+#DenialofServiceLegendColorLabel {
+    background-color: #15668f; 
+    border: 1px solid black;
+}
+
+#DNSTunnelingLegendColorLabel {
+    background-color: #092d40; 
+    border: 1px solid black;
+}
+
+/*--------------------------------Main-Window-End---------------------------------*/
+
+/*---------------------------------Report-Window----------------------------------*/
+
+#reportSelectionLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#reportDurationComboBoxFrame {
+    background-color: #f3f3f3;
+    color: black;
+    border: 2px solid lightgray; 
+    border-radius: 10px;
+    padding-left: 10px;
+}
+
+#reportDurationComboBoxArrow {
+    background-color: lightgray;
+    color: black;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding-left: 10px;
+}
+
+#reportDurationComboBox {
+    background-color: transparent;
+    border-radius: 10px;
+    border-style: outset;
+    border-width: 2px;
+    border-color: transparent;	
+    padding: 4px;
+	padding-left: 10px;
+    color: black;
+}
+
+#reportDurationComboBox QAbstractItemView {
+    background-color:  rgb(245,245,245);
+    selection-background-color: rgb(95, 97, 109);
+    color: rgb(0, 0, 0);    
+    padding: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+#reportDurationComboBox QListView{
+    outline: 0px;
+}
+
+#horizontalLine1 {
+	color: #f3f3f3;
+}
+
+#arpSpoofingCheckBox {
+    spacing: 10px; 
+    color: #f3f3f3; 
+}
+
+#portScanningCheckBox {
+    spacing: 10px; 
+    color: #f3f3f3; 
+}
+
+#denialOfServiceCheckBox {
+    spacing: 10px; 
+    color: #f3f3f3; 
+}
+
+#dnsTunnelingCheckBox {
+    spacing: 10px; 
+    color: #f3f3f3;
+}
+
+#horizontalLine2 {
+    color: #f3f3f3
+}
+
+#downloadReportPushButton  {
+    background-color: #4E4F5A; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;                  
+    color: #f3f3f3;       
+}
+
+#downloadReportPushButton:hover {
+    background-color: #464751; 
+	border-color: #D7D7D7;
+}
+
+#downloadReportPushButton:pressed {
+    background-color: #383840; 
+	border-color:#D7D7D7;
+}
+
+#cancelReportPushButton  {
+    background-color: #D84F4F; 
+    border: 1px solid black;  
+    border-radius: 10px;         
+    padding: 5px;                       
+    color: black;       
+}
+
+#cancelReportPushButton:hover {
+     background-color: #DB6060;
+}
+
+#cancelReportPushButton:pressed {
+    background-color: #AC3f3F;
+}
+
+#reportProgressBar {
+    border: 2px solid #d3d3d3;
+    border-radius: 10px;
+    background-color: #f0f0f0;
+    text-align: center;         
+    font-weight: bold;
+    color: black;
+}
+
+#reportProgressBar::chunk {
+    background-color: #3a8e32;
+    border-radius: 10px;
+}
+
+#reportPreviewLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#previewTableVerticalFrame {
+   background-color: rgba(204, 204, 204, 0.6);
+   color: black;
+   border-radius: 15px;
+   border-style: outset;
+   border-width: 2px;
+   border-color: black;	
+}
+
+/*-------------------------------Report-Window-End--------------------------------*/
+
+/*-------------------------------Information-Window--------------------------------*/
+
+#machineInformationLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#OSTypeFrame {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#OSTypeLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#OSTypeInfoLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#OSVersionFrame {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#OSVersionLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#OSVersionInfoLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#architectureFrame {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#architectureLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#architectureInfoLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#hostNameFrame {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#hostNameLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#hostNameInfoLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#programInformationLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#OSVersionFrame {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#netspectVersionLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#netspectVersionInfoLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#architectureFrame {
+	background-color: transparent;
+}
+
+#githubLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#githubInfoLabel {
+    background-color: transparent;
+    color: #f3f3f3;
+}
+
+#networkInterfaceInformationLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#connectedInterfaceFrame {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#connectedInterfaceLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#connectedInterfaceInfoLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#connectedInterfaceFrame {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#macAddressLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#macAddressInfoLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#connectedInterfaceFrame {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#descriptionLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#descriptionInfoLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#connectedInterfaceFrame {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#maxSpeedLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#maxSpeedInfoLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#connectedInterfaceFrame {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#maxTransmitionUnitLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#maxTransmitionUnitInfoLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#myIpAddressesLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#myIpAddressesFrame {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#ipAddressesListWidget {
+   background-color: rgba(198, 198, 198, 0.6);
+   border-radius: 15px;
+   border-style: outset;
+   border-width: 2px;
+   border-color: black;
+  padding: 4px;
+}
+
+#ipAddressesListWidget::corner {
+    background-color: #3498db;
+    border-top-left-radius: 8px;
+}
+
+#ipAddressesListWidget QScrollBar:vertical {
+    width: 6px;
+    margin: 0px;
+	border: none;
+ 	background: #f3f3f3;
+}
+
+#ipAddressesListWidget QScrollBar::handle:vertical {
+    background: black;
+	border-radius: 2px;
+}
+
+#ipAddressesListWidget::item { 
+    color: black; 
+}
+
+/*-----------------------------Information-Window-End------------------------------*/
+
+/*---------------------------------Settings-Window---------------------------------*/
+
+#userSettingsLabel {
+    color: #f3f3f3;
+}
+
+#changeEmailLabel {
+    color: #f3f3f3
+}
+
+#emailLineEdit {
+    background-color: #f3f3f3; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;                        
+    color: black;             
+}
+
+#saveEmailErrorMessageLabel {
+	color: #D84F4F;
+	background-color: #3C3D4A;
+	border: none;
+}
+
+#emailPushButton  {
+    background-color: #4E4F5A; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;                      
+    color: #f3f3f3;       
+}
+
+#emailPushButton:hover {
+    background-color: #464751; 
+	border-color: #D7D7D7;
+}
+
+#emailPushButton:pressed {
+    background-color: #383840; 
+	border-color:#D7D7D7;
+}
+
+#changeUsernameLabel {
+    color: #f3f3f3
+}
+
+#usernameLineEdit {
+    background-color: #f3f3f3; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;                        
+    color: black;             
+}
+
+#saveUsernameErrorMessageLabel {
+	color: #D84F4F;
+	background-color: #3C3D4A;
+}
+
+#usernamePushButton  {
+    background-color: #4E4F5A; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;                     
+    color: #f3f3f3;       
+}
+
+#usernamePushButton:hover {
+    background-color: #464751; 
+	border-color: #D7D7D7;
+}
+
+#usernamePushButton:pressed {
+    background-color: #383840; 
+	border-color:#D7D7D7;
+}
+
+#changePasswordLabel {
+    color: #f3f3f3
+}
+
+#oldPasswordLineEdit {
+    background-color: #f3f3f3; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;                    
+    color: black;             
+	margin-bottom: 10px;
+}
+
+#newPasswordLineEdit {
+    background-color: #f3f3f3; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;                    
+    color: black;             
+	margin-bottom: 10px;
+}
+
+#confirmPasswordLineEdit {
+    background-color: #f3f3f3; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;                      
+    color: black;             
+}
+
+#savePasswordErrorMessageLabel {
+	color: #D84F4F;
+	background-color: #3C3D4A;
+	line-height: 50%;
+}
+
+#passwordPushButton  {
+    background-color: #4E4F5A; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;                   
+    color: #f3f3f3;       
+}
+
+#passwordPushButton:hover {
+    background-color: #464751; 
+	border-color: #D7D7D7;
+}
+
+#passwordPushButton:pressed {
+    background-color: #383840; 
+	border-color:#D7D7D7;
+}
+
+#interfaceSettingsLabel {
+    color: #f3f3f3
+}
+
+#colorModeComboBoxFrame {
+    background-color: #f3f3f3;
+    color: black;
+    border: 2px solid lightgray; 
+    border-radius: 10px;
+    padding-left: 10px;
+}
+
+#colorModeComboBoxArrow {
+    background-color: lightgray;
+    color: black;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding-left: 10px;
+}
+
+#colorModeComboBox {
+    background-color: transparent;
+    border-radius: 10px;
+    border-style: outset;
+    border-width: 2px;
+    border-color: transparent;	
+    padding: 4px;
+	padding-left: 10px;
+    color: black;
+}
+
+#colorModeComboBox QAbstractItemView {
+    background-color:  #f3f3f3;
+    selection-background-color: rgb(95, 97, 109);
+    color: rgb(0, 0, 0);    
+    padding: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+#colorModeComboBox QListView{
+    outline: 0px;
+}
+
+#macAddressBlacklistSettingsLabel {
+    color: #f3f3f3
+}
+
+#macAddressListWidget {
+   background-color: #f3f3f3;
+   border-radius: 15px;
+   border-style: outset;
+   border-width: 2px;
+   border-color: lightgray;
+   padding: 5px;
+}
+
+#macAddressListWidget::corner {
+    background-color: #f3f3f3;
+    border-top-left-radius: 8px;
+}
+
+#macAddressListWidget QScrollBar:vertical {
+    width: 6px;
+    margin: 0px;
+	border: none;
+ 	background: #f3f3f3;
+}
+
+#macAddressListWidget QScrollBar::handle:vertical {
+    background: black;
+	border-radius: 2px;
+
+}
+
+#macAddressLineEdit {
+    background-color: #f3f3f3; 
+    border: 2px solid lightgray;  
+    border-radius: 10px;         
+    padding: 5px;                        
+    color: black;             
+}
+
+#addMacAddressPushButton  {
+    background-color: #3a8e32; 
+    border: 1px solid black;  
+    border-radius: 10px;         
+    padding: 5px;                        
+    color: black;       
+}
+
+#addMacAddressPushButton:hover {
+     background-color: #4D9946;
+ }
+
+#addMacAddressPushButton:pressed {
+    background-color: #2E7128;
+}
+
+#macAddressBlacklistErrorMessageLabel {
+	color: #D84F4F;
+	background-color: #3C3D4A;
+}
+
+#clearHistoryPushButton  {
+    background-color: #D84F4F; 
+    border: 1px solid black;  
+    border-radius: 10px;         
+    padding: 5px;                      
+    color: black;       
+}
+
+#clearHistoryPushButton:hover {
+     background-color: #DB6060;
+}
+
+#clearHistoryPushButton:pressed {
+    background-color: #AC3f3F;
+}
+
+#deleteAccoutPushButton  {
+    background-color: #D84F4F; 
+    border: 1px solid black;  
+    border-radius: 10px;         
+    padding: 5px;                      
+    color: black;       
+}
+
+#deleteAccoutPushButton:hover {
+    background-color: #DB6060;
+}
+
+#deleteAccoutPushButton:pressed {
+    background-color: #AC3f3F;
+}
+
+#operationModeLabel {
+    color: #f3f3f3;
+}
+
+#operationModeComboBoxFrame {
+    background-color: #f3f3f3;
+    color: black;
+    border: 2px solid lightgray; 
+    border-radius: 10px;
+    padding-left: 10px;
+}
+
+#operationModeComboBoxArrow {
+    background-color: lightgray;
+    color: black;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding-left: 10px;
+}
+
+#operationModeComboBox {
+    background-color: transparent;
+    border-radius: 10px;
+    border-style: outset;
+    border-width: 2px;
+    border-color: transparent;	
+    padding: 4px;
+	padding-left: 10px;
+}
+
+#operationModeComboBox QAbstractItemView {
+    background-color:  #f3f3f3;
+    selection-background-color: rgb(95, 97, 109);
+    color: rgb(0, 0, 0);    
+    padding: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+#operationModeComboBox QListView{
+    outline: 0px;
+}
+
+/*-------------------------------Settings-Window-End-------------------------------*/

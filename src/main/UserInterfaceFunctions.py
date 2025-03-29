@@ -232,6 +232,7 @@ def ToggleUserInterface(self, state):
         self.reportDurationComboBox.setEnabled(False)
         self.welcomeLabel.clear()
         self.accountIcon.show()
+        self.colorModeComboBox.setCurrentIndex(0) #only reset the color checkbox if the user has logged out
 
     #clear history and report tables and blacklist and pie chart
     self.historyTableWidget.setRowCount(0)
@@ -241,7 +242,6 @@ def ToggleUserInterface(self, state):
 
     #set combobox and checkboxes default state
     self.reportDurationComboBox.setCurrentIndex(3)
-    self.colorModeComboBox.setCurrentIndex(0)
     self.operationModeComboBox.setCurrentIndex(0)
     self.arpSpoofingCheckBox.setChecked(True)
     self.portScanningCheckBox.setChecked(True)
@@ -267,12 +267,13 @@ def ToggleUserInterface(self, state):
     self.savePasswordErrorMessageLabel.clear()
     self.macAddressBlacklistErrorMessageLabel.clear()
     ToggleReportInterface(self, False)
-    self.registerEmailLineEdit.setStyleSheet(GetDefaultStyleSheetRegisterLineEdits('registerEmailLineEdit'))
-    self.registerUsernameLineEdit.setStyleSheet(GetDefaultStyleSheetRegisterLineEdits('registerUsernameLineEdit'))
-    self.registerPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetRegisterLineEdits('registerPasswordLineEdit'))
-    self.oldPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetSettingsLineEdits('oldPasswordLineEdit'))
-    self.newPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetSettingsLineEdits('newPasswordLineEdit'))
-    self.confirmPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetSettingsLineEdits('confirmPasswordLineEdit'))
+    self.registerEmailLineEdit.setStyleSheet(GetDefaultStyleSheetRegisterLineEdits(self, 'registerEmailLineEdit'))
+    self.registerUsernameLineEdit.setStyleSheet(GetDefaultStyleSheetRegisterLineEdits(self, 'registerUsernameLineEdit'))
+    self.registerPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetRegisterLineEdits(self, 'registerPasswordLineEdit'))
+    self.oldPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetSettingsLineEdits(self, 'oldPasswordLineEdit'))
+    self.newPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetSettingsLineEdits(self, 'newPasswordLineEdit'))
+    self.confirmPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetSettingsLineEdits(self, 'confirmPasswordLineEdit'))
+    ToggleColorMode(self) #reset the styles to match the selected index in the color mode checkbox
 
 
 # helper function for showing and hiding report interface
@@ -324,6 +325,65 @@ def TogglePasswordVisibility(lineEditWidget, eyeIcon):
         lineEditWidget.setEchoMode(QLineEdit.Password) #hide the password
         eyeIcon.setIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'EyeOpen.png'))) #change to closed eye icon
 
+
+# function for toggling between light and dark mode by the user (also used when logging in and out of an account)
+def ToggleColorMode(self):
+    # clear existing css from each element in the .ui file (needed to make sure that no style changes are transferred from previous color mode selection)
+    self.setStyleSheet('') #clear css from main element
+    for child in self.findChildren(QWidget): #clear css from all child elements
+        child.setStyleSheet('')
+
+    # apply default dark mode or light mode theme to the application based on users selection
+    if self.colorModeComboBox.currentText() == 'Dark Mode':
+        self.userData['lightMode'] = 0
+        self.accountIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'AccountLight.png')))
+        self.settingsIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'SettingsLight.png')))
+        self.logoutIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'LogoutLight.png')))
+        self.menuIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'BulletedMenuLight.png')))
+        self.closeMenuIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'BulletedMenuLightRotated.png')))
+        self.homePageIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'WorkStationLight.png')))
+        self.reportIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'DocumentLight.png')))
+        self.infoIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'InfoLight.png')))
+        self.githubInfoLabel.setText('''
+            <html>
+                <head/>
+                <body>
+                    <p>
+                        <a href='https://github.com/Shayhha/NetSpect'>
+                            <span style="text-decoration: underline; color: #f3f3f3;">Visit NetSpect</span>
+                        </a>
+                    </p>
+                </body>
+            </html>
+        ''')
+        self.piChart.setBackgroundBrush(QColor(204, 204, 204, 153))
+        with open(currentDir.parent / 'interface' / 'darkModeStyles.qss', 'r') as stylesFile: #load styles from file
+            self.setStyleSheet(stylesFile.read())
+    else:
+        self.userData['lightMode'] = 1
+        self.accountIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'AccountDark.png')))
+        self.settingsIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'SettingsDark.png')))
+        self.logoutIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'LogoutDark.png')))
+        self.menuIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'BulletedMenuDark.png')))
+        self.closeMenuIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'BulletedMenuDarkRotated.png')))
+        self.homePageIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'WorkStationDark.png')))
+        self.reportIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'DocumentDark.png')))
+        self.infoIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'InfoDark.png')))
+        self.githubInfoLabel.setText('''
+            <html>
+                <head/>
+                <body>
+                    <p>
+                        <a href='https://github.com/Shayhha/NetSpect'>
+                            <span style="text-decoration: underline; color: #151519;">Visit NetSpect Page</span>
+                        </a>
+                    </p>
+                </body>
+            </html>
+        ''')
+        self.piChart.setBackgroundBrush(QColor(193, 208, 239))
+        with open(currentDir.parent / 'interface' / 'lightModeStyles.qss', 'r') as stylesFile: #load styles from file
+            self.setStyleSheet(stylesFile.read())
 
 #-------------------------------------------CLICK-FUNCTIONS-END----------------------------------------------#
 
@@ -434,11 +494,11 @@ def ShowSettingsInputFields(self):
 
 
 # helper function for returning the default style sheet of the line edits in the settings page
-def GetDefaultStyleSheetSettingsLineEdits(lineEditName):
+def GetDefaultStyleSheetSettingsLineEdits(self, lineEditName):
     defaultStylesheet = f''' 
         #{lineEditName} {{
-            background-color: #f0f0f0;
-            border: 2px solid lightgray;
+            {'background-color: #f3f3f3;' if self.userData['lightMode'] == 0 else 'background-color: #EBEFF7;'}
+            {'border: 2px solid lightgray;' if self.userData['lightMode'] == 0 else 'border: 2px solid #899fce;'}
             border-radius: 10px;
             padding: 5px;
             color: black;
@@ -449,11 +509,11 @@ def GetDefaultStyleSheetSettingsLineEdits(lineEditName):
 
 
 # helper function for returning the default style sheet of the line edits in register
-def GetDefaultStyleSheetRegisterLineEdits(lineEditName):
+def GetDefaultStyleSheetRegisterLineEdits(self, lineEditName):
     defaultStylesheet = f''' 
         #{lineEditName} {{
-            background-color: #f0f0f0;
-            border: 2px solid lightgray;
+            {f'background-color: #f3f3f3;' if self.userData['lightMode'] == 0 else f'background-color: {'#fbfcfd' if any(prefix in lineEditName for prefix in ['login', 'register', 'reset']) else '#EBEFF7'};'}
+            {'border: 2px solid lightgray;' if self.userData['lightMode'] == 0 else 'border: 2px solid #899fce;'}
             border-radius: 10px;
             padding: 5px;
             color: black;
@@ -685,17 +745,13 @@ def InitPieChart(self):
         # create a legend widget
         legendWidget = QWidget()
         self.legendLayout = QGridLayout(legendWidget)
-        legendWidget.setStyleSheet('''
-            background-color: transparent;
-            color: black;
-            border-top: 1px solid black;
-        ''')
+        legendWidget.setObjectName('legendWidget')
 
         # setup the base chart widget
         chart.legend().setVisible(False)
         chart.layout().setContentsMargins(0, 0, 0, 0)
         chart.setBackgroundRoundness(0)
-        chart.setBackgroundBrush(QColor(204, 204, 204, 153)) 
+        chart.setBackgroundBrush(QColor(204, 204, 204, 153)) if self.userData['lightMode'] == 1 else chart.setBackgroundBrush(QColor(193, 208, 239))
         chart.setTitle('No Data To Display...')
         chart.setTitleFont(titleFont)
         
@@ -710,30 +766,18 @@ def InitPieChart(self):
 
         # add stles to the title
         titleLabel = QLabel('Attacks Distribution')
-        titleLabel.setStyleSheet('''       
-            QLabel {
-                background-color: transparent;
-                color: black;
-                font-size: 24px;
-                font-family: Cairo;
-                font-weight: bold;
-                padding: 0px;
-                padding-left: 5px;
-                margin: 0px;
-            }
-        ''')
+        titleLabel.setObjectName('pieChartTitleLabel') 
 
         # setup the pie chart legends in advance
         for i, (attackName, sliceColor) in enumerate(zip(pieChartLabelDict.values(), defaultPieChartSliceColors.values())):
             legendFont = QFont('Cairo', 12, QFont.Bold, False) # font settings for legend (defined once)
             legendLabel = QLabel(f'{attackName} 0%')
             legendLabel.setFont(legendFont)
-            legendLabel.setStyleSheet('''padding-left: 5px; background-color: transparent; border: none;''')
             legendLabel.setObjectName(f'{attackName.replace(' ', '')}LegendLabel') #for example: ARPSpoofingLegendLabel
-            
+
             colorLabel = QLabel()
+            colorLabel.setObjectName(f'{attackName.replace(' ', '')}LegendColorLabel') 
             colorLabel.setFixedSize(20, 20)
-            colorLabel.setStyleSheet(f'background-color: {sliceColor}; border: 1px solid black;')
 
             row = i // 2
             col = (i % 2) * 2
@@ -776,7 +820,7 @@ def UpdateChartAfterAttack(self, attackName):
             newSlice.setLabelVisible(True)
             newSlice.setLabelArmLengthFactor(0.075)
             newSlice.setLabel(f'{correctAttackName} {newSlice.percentage()*100:.1f}%')
-            newSlice.setLabelColor(QColor(1, 1, 1, 255))
+            newSlice.setLabelColor(QColor(1, 1, 1, 255)) if self.userData['lightMode'] == 1 else newSlice.setLabelColor(QColor(45, 46, 54, 255))
             newSlice.setColor(QColor(defaultPieChartSliceColors.get(attackName)))
 
         # set the title to be empty (hide the title) if there is atleast one attack detection in history
@@ -836,7 +880,7 @@ def UpdateChartAfterLogin(self, pieChartData):
             slice.setLabelFont(sliceFont)
             slice.setLabelVisible(True)
             slice.setLabelArmLengthFactor(0.075)
-            slice.setLabelColor(QColor(1, 1, 1, 255))
+            slice.setLabelColor(QColor(1, 1, 1, 255)) if self.userData['lightMode'] == 1 else slice.setLabelColor(QColor(45, 46, 54, 255))
             slice.setColor(QColor(defaultPieChartSliceColors.get(attackName)))
 
     except Exception as e:

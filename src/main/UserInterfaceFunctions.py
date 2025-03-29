@@ -65,6 +65,12 @@ def AccountIconClicked(self):
         animation.setStartValue(0)
         animation.setEndValue(303)
         self.loginUsernameLineEdit.setFocus() if self.loginFrame.isVisible() else self.registerEmailLineEdit.setFocus()
+        if self.resetPasswordFrame.isVisible():
+            self.resetPasswordFrame.hide()
+            self.loginFrame.show()
+            self.loginUsernameLineEdit.setFocus()
+            ClearResetPasswordLineEdits(self)
+
     else: #fade out animation
         animation.setStartValue(303)
         animation.setEndValue(0)
@@ -98,6 +104,24 @@ def SwitchBetweenLoginAndRegister(self, showRegister=True):
     anim1.finished.connect(lambda: ReopenRegistryFrame(self, showRegister)) 
 
 
+# function for changing between the login and reset password sideframes
+def SwitchBetweenLoginAndForgotPassword(self, showResetPassword):
+    # first animation: Close the frame
+    anim1 = QPropertyAnimation(self.loginRegisterVerticalFrame, b'maximumWidth')
+    anim1.setDuration(200)
+    anim1.setEasingCurve(QEasingCurve.InOutQuad)
+    
+    # use the current width as the start value
+    currentWidth = self.loginRegisterVerticalFrame.width()
+    anim1.setStartValue(currentWidth)
+    anim1.setEndValue(0)
+    
+    # start the first animation and chain the second animation to start after the first finishes
+    anim1.start()
+    self.loginRegisterVerticalFrame.currentAnimation = anim1
+    anim1.finished.connect(lambda: ReopenResetPasswordFrame(self, showResetPassword)) 
+
+
 # this is the second animation and visibility switch for the login register side frame
 def ReopenRegistryFrame(self, showRegister):
     # switch visibility
@@ -112,6 +136,34 @@ def ReopenRegistryFrame(self, showRegister):
         self.loginUsernameLineEdit.setFocus()
         self.registerEmailLineEdit.clearFocus()
     
+    # second animation: Open the frame
+    anim2 = QPropertyAnimation(self.loginRegisterVerticalFrame, b'maximumWidth')
+    anim2.setDuration(375)
+    anim2.setEasingCurve(QEasingCurve.InOutQuad)
+    anim2.setStartValue(0)
+    anim2.setEndValue(303)
+    anim2.start()
+    self.loginRegisterVerticalFrame.currentAnimation = anim2
+
+
+# this is the second animation and visibility switch for the login register side frame
+def ReopenResetPasswordFrame(self, showResetPassword):
+    # switch visibility
+    if showResetPassword:
+        self.loginFrame.hide()
+        self.resetPasswordFrame.show()
+        self.loginUsernameLineEdit.clearFocus()
+        self.resetPasswordEmailLineEdit.setFocus()
+    else:
+        self.resetPasswordFrame.hide()
+        self.loginFrame.show()
+        self.loginUsernameLineEdit.setFocus()
+        self.resetPasswordEmailLineEdit.clearFocus()
+        ClearResetPasswordLineEdits(self)
+    
+    # show the correct line edit and push button
+    ToggleBetweenEmailAndCodeResetPassword(self, showResetPassword)
+
     # second animation: Open the frame
     anim2 = QPropertyAnimation(self.loginRegisterVerticalFrame, b'maximumWidth')
     anim2.setDuration(375)
@@ -136,6 +188,30 @@ def HideSideBarLabels(self):
 def ShowSideBarMenuIcon(self):
     self.menuIcon.show()
     self.closeMenuIcon.hide()
+
+
+# helper function for changing between enter email and enter code screens in reset password
+def ToggleBetweenEmailAndCodeResetPassword(self, isEmail=True):
+    if isEmail:
+        # show email section
+        self.resetPasswordEmailLineEdit.show()
+        self.resetPasswordEmailErrorMessageLabel.hide()
+        self.sendCodeButtonFrame.show()
+
+        # hide the email section
+        self.resetPasswordCodeLineEdit.hide()
+        self.resetPasswordCodeErrorMessageLabel.hide()
+        self.verifyCodeButtonFrame.hide()
+    else:
+        # hide email section
+        self.resetPasswordEmailLineEdit.hide()
+        self.resetPasswordEmailErrorMessageLabel.hide()
+        self.sendCodeButtonFrame.hide()
+
+        # show the email section
+        self.resetPasswordCodeLineEdit.show()
+        self.resetPasswordCodeErrorMessageLabel.hide()
+        self.verifyCodeButtonFrame.show()
 
 
 # helper function for showing and hiding user interface
@@ -241,19 +317,25 @@ def ChangePageIndex(self, index):
 
 # function for toggling the password visibility using an icon
 def TogglePasswordVisibility(lineEditWidget, eyeIcon):
-    openEyePath = currentDir.parent / 'interface' / 'Icons' / 'EyeOpen.png'
-    closedEyePath = currentDir.parent / 'interface' / 'Icons' / 'EyeClosed.png'
     if lineEditWidget.echoMode() == QLineEdit.Password:
         lineEditWidget.setEchoMode(QLineEdit.Normal) #show the password
-        eyeIcon.setIcon(QIcon(str(closedEyePath))) #change to open eye icon
+        eyeIcon.setIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'EyeClosed.png'))) #change to open eye icon
     else:
         lineEditWidget.setEchoMode(QLineEdit.Password) #hide the password
-        eyeIcon.setIcon(QIcon(str(openEyePath))) #change to closed eye icon
+        eyeIcon.setIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'EyeOpen.png'))) #change to closed eye icon
 
 
 #-------------------------------------------CLICK-FUNCTIONS-END----------------------------------------------#
 
 #---------------------------------------------OTHER-FUNCTIONS------------------------------------------------#
+
+# function for clearing the reset password line edits end error messages
+def ClearResetPasswordLineEdits(self):
+    self.resetPasswordEmailLineEdit.clear()
+    self.resetPasswordCodeLineEdit.clear()
+    self.resetPasswordEmailErrorMessageLabel.clear()
+    self.resetPasswordCodeErrorMessageLabel.clear()
+
 
 # function for adding a box shadow to the login/register side popup frame
 def ApplyShadowLoginRegister(self):
@@ -389,7 +471,7 @@ class CustomMessageBox(QDialog):
     isShown = False #represents flag for indicating if popup is shown
 
     # constructor that gets the title, message and icon type (will be shown inside) of the message box pop up window
-    def __init__(self, title, message, iconType):
+    def __init__(self, title, message, iconType, isSelectable=False):
         super().__init__()
 
         # setting the title and message
@@ -426,6 +508,10 @@ class CustomMessageBox(QDialog):
         messageLabel.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter) #vertically center the text
         messageLabel.setContentsMargins(0, 0, 0, 0)
         messageLabel.setMinimumWidth(250)
+
+        # makes the text selectable by the user only when we show the new password after reset password ended successfully
+        if isSelectable:
+            messageLabel.setTextInteractionFlags(Qt.TextSelectableByMouse)
 
         # add the icon and message to the horizontal layout with spacing
         horizontalLayout.addWidget(iconLabel)
@@ -1052,7 +1138,11 @@ def InitAnimationsUI(self):
     # set initial width of elements
     self.loginRegisterVerticalFrame.setFixedWidth(0)
     self.registerFrame.hide()
+    self.resetPasswordFrame.hide()
     self.sideFrame.setFixedWidth(70)
+
+    # hide the verify code in reset password side frame
+    ToggleBetweenEmailAndCodeResetPassword(self, True)
 
     #initialize system tray icon
     InitTrayIcon(self)
@@ -1087,13 +1177,11 @@ def InitAnimationsUI(self):
     self.historyTableWidget.setTextElideMode(Qt.ElideMiddle)
 
     # set the toggle password visability icon in the login and register
-    openEyePath = currentDir.parent / 'interface' / 'Icons' / 'EyeOpen.png'
-    icon = QIcon(str(openEyePath))
+    icon = QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'EyeOpen.png'))
     self.loginEyeButton = self.loginPasswordLineEdit.addAction(icon, QLineEdit.TrailingPosition)
     self.loginEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self.loginPasswordLineEdit, self.loginEyeButton))
     self.registerEyeButton = self.registerPasswordLineEdit.addAction(icon, QLineEdit.TrailingPosition)
     self.registerEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self.registerPasswordLineEdit, self.registerEyeButton))
-
 
     # hide the error messages in the settings page
     self.saveEmailErrorMessageLabel.hide()

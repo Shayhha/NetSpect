@@ -48,6 +48,8 @@ class NetSpect(QMainWindow):
         self.startStopButton.clicked.connect(self.StartStopButtonClicked)
         self.loginPushButton.clicked.connect(self.LoginButtonClicked)
         self.registerPushButton.clicked.connect(self.RegisterButtonClicked)
+        self.sendCodePushButton.clicked.connect(self.SendCodeButtonClicked)
+        self.verifyCodePushButton.clicked.connect(self.VerifyCodeButtonClicked)
         self.deleteAccoutPushButton.clicked.connect(self.DeleteAccoutButtonClicked)
         self.clearHistoryPushButton.clicked.connect(self.DeleteAlertsButtonClicked)
         self.addMacAddressPushButton.clicked.connect(self.AddMacAddressButtonClicked)
@@ -61,6 +63,8 @@ class NetSpect(QMainWindow):
         self.accountIcon.mousePressEvent = lambda event: UserInterfaceFunctions.AccountIconClicked(self)
         self.moveToRegisterLabel.mousePressEvent = lambda event: UserInterfaceFunctions.SwitchBetweenLoginAndRegister(self)
         self.moveToLoginLabel.mousePressEvent = lambda event: UserInterfaceFunctions.SwitchBetweenLoginAndRegister(self, False)
+        self.moveToForgotPasswordLabel.mousePressEvent = lambda event: UserInterfaceFunctions.SwitchBetweenLoginAndForgotPassword(self, True)
+        self.cancelResetPasswordProcessLabel.mousePressEvent = lambda event: UserInterfaceFunctions.SwitchBetweenLoginAndForgotPassword(self, False)
         self.menuIcon.mousePressEvent = lambda event: UserInterfaceFunctions.OpenSideFrame(self)
         self.closeMenuIcon.mousePressEvent = lambda event: UserInterfaceFunctions.CloseSideFrame(self)
         self.homePageIconHorizontalFrame.mousePressEvent = lambda event: UserInterfaceFunctions.ChangePageIndex(self, 0) #switch to Home Page
@@ -1175,6 +1179,26 @@ class NetSpect(QMainWindow):
                 # else we process the register request to our sql thread
                 else:
                     self.sqlThread.Register(email, username, NetSpect.ToSHA256(password))
+
+
+    # method for sending a reset password code the users email to reset the password
+    def SendCodeButtonClicked(self):
+        # check if user entered an email
+        if len(self.resetPasswordEmailLineEdit.text()) == 0:
+            UserInterfaceFunctions.ChangeErrorMessageText(self.resetPasswordEmailErrorMessageLabel, 'Please enter you\'r user\'s email address to receive a validation code')
+
+        else:
+            # check if email exists in the database
+
+            # send code to users email
+
+            # change to the reset password page
+            UserInterfaceFunctions.ToggleBetweenEmailAndCodeResetPassword(self, False)
+
+
+    # method for verifying the reset password code from the users email to reset the password
+    def VerifyCodeButtonClicked(self):
+        pass
 
 
     # method for deleting user account from database when user clicks the delete account button in settings page

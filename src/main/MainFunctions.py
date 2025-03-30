@@ -263,7 +263,7 @@ class NetworkInformation(ABC):
             return guid #we exit the function
         interfaces = get_windows_if_list() #use the windows method to get list of guid number interfaces
         for interface in interfaces: #iterating over the list of interfaces
-            if interface['guid'] == guid: #we find the matching guid number interface
+            if interface.get('guid') == guid: #we find the matching guid number interface
                 return interface['name'] #return the name of the interface associated with guid number
         return guid #else we didnt find the guid number so we return given guid
 
@@ -318,7 +318,7 @@ class NetworkInformation(ABC):
                         'ipv6Addrs': ipv6Addrs,
                         'ipv6Subnets': ipv6Subnets
                     }
-                    networkInterfaces[interfaceDict['name']] = interfaceDict #add interface to our network interfaces
+                    networkInterfaces[interfaceDict.get('name')] = interfaceDict #add interface to our network interfaces
         
         return networkInterfaces #return the filtered and matched interfaces
 
@@ -333,7 +333,6 @@ class NetworkInformation(ABC):
             for addr in addresses:
                 if addr.family.name == 'AF_INET' and addr.address == ipAddress:
                     return addr.netmask #return the subnet mask if the IP matches
-                    
         return None #return None if the IP is not found
 
 
@@ -379,15 +378,15 @@ class ArpSpoofingException(Exception):
         details = '\n##### ARP SPOOFING ATTACK ######\n'
         if self.type == 1:
             details += '\n'.join([
-                f'[*] IP: {ip} ==> Source IP: {entry['srcIp']}, '
-                f'Source MAC: {', '.join(sorted(entry['srcMac']))}, '
-                f'Destination IP: {entry['dstIp']}, Destination MAC: {entry['dstMac']}'
+                f'[*] IP: {ip} ==> Source IP: {entry.get('srcIp')}, '
+                f'Source MAC: {', '.join(sorted(entry.get('srcMac')))}, '
+                f'Destination IP: {entry.get('dstIp')}, Destination MAC: {entry.get('dstMac')}'
                 for ip, entry in self.attackDict.items()])
         elif self.type == 2:
             details += '\n'.join([
-                f'[*] MAC: {mac} ==> Source IP: {', '.join(sorted(entry['srcIp']))}, '
-                f'Source MAC: {entry['srcMac']}, '
-                f'Destination IP: {entry['dstIp']}, Destination MAC: {entry['dstMac']}'
+                f'[*] MAC: {mac} ==> Source IP: {', '.join(sorted(entry.get('srcIp')))}, '
+                f'Source MAC: {entry.get('srcMac')}, '
+                f'Destination IP: {entry.get('dstIp')}, Destination MAC: {entry.get('dstMac')}'
                 for mac, entry in self.attackDict.items()])
         return f'{self.args[0]}\nDetails:\n{details}\n'
 
@@ -425,19 +424,19 @@ class ArpTable():
             srcIp, srcMac, dstIp, dstMac = device[1].psrc, device[1].hwsrc, device[1].pdst, device[1].hwdst
 
             # add srcIp srcMac pair to ARP table
-            if srcIp not in arpTable and srcIp != '0.0.0.0': #means ip not in ARP table, we add it with its mac address
+            if not arpTable.get(srcIp) and srcIp != '0.0.0.0': #means ip not in ARP table, we add it with its mac address
                 arpTable[srcIp] = srcMac #set the srcMac address in srcIp index
-            elif arpTable[srcIp] != srcMac: #else srcMac do not match with known srcMac in srcIp index
-                srcMacs = {arpTable[srcIp], srcMac} #represents srcMacs we detected for arp spoofing
+            elif arpTable.get(srcIp) and arpTable.get(srcIp) != srcMac: #else srcMac do not match with known srcMac in srcIp index
+                srcMacs = {arpTable.get(srcIp), srcMac} #represents srcMacs we detected for arp spoofing
                 #add an anomaly: same IP, different MAC
                 totalAttackDict['ipToMac'].setdefault(srcIp, {'srcIp': srcIp, 'srcMac': set(), 'dstIp': dstIp, 'dstMac': dstMac,
                                                                'protocol': 'ARP', 'timestamp': NetworkInformation.GetCurrentTimestamp()})['srcMac'].update(srcMacs)
 
             # add srcMac srcIp pair to inverse ARP table
-            if srcMac not in invArpTable and srcMac != '00:00:00:00:00:00': #means mac not in inv ARP table, we add it with its ip address
+            if not invArpTable.get(srcMac) and srcMac != '00:00:00:00:00:00': #means mac not in inv ARP table, we add it with its ip address
                 invArpTable[srcMac] = srcIp #set the srcIp address in srcMac index
-            elif invArpTable[srcMac] != srcIp: #else srcIp do not match with known srcIp in srcMac index
-                srcIps = {invArpTable[srcMac], srcIp} #represents srcIps we detected for arp spoofing
+            elif invArpTable.get(srcMac) and invArpTable.get(srcMac) != srcIp: #else srcIp do not match with known srcIp in srcMac index
+                srcIps = {invArpTable.get(srcMac), srcIp} #represents srcIps we detected for arp spoofing
                 #add an anomaly: same MAC, different IP
                 totalAttackDict['macToIp'].setdefault(srcMac, {'srcIp': set(), 'srcMac': srcMac, 'dstIp': dstIp, 'dstMac': dstMac,
                                                                 'protocol': 'ARP', 'timestamp': NetworkInformation.GetCurrentTimestamp()})['srcIp'].update(srcIps)
@@ -445,20 +444,20 @@ class ArpTable():
         # we check if isInit is not set, if so we check if we had an attack and throw exeption
         if not isInit:
             # we check if one of the attack dicts is not empty, means we have an attack
-            if totalAttackDict['ipToMac']:
+            if totalAttackDict.get('ipToMac'):
                 #throw an exeption to inform user of its presence
                 raise ArpSpoofingException(
                     'Detected ARP spoofing incidents: IP-to-MAC anomalies',
                     type=1,
-                    attackDict=totalAttackDict['ipToMac']
+                    attackDict=totalAttackDict.get('ipToMac')
                 )
                 
-            elif totalAttackDict['macToIp']:
+            elif totalAttackDict.get('macToIp'):
                 # throw an exeption to inform user of its presence
                 raise ArpSpoofingException(
                     'Detected ARP spoofing incidents: MAC-to-IP anomalies',
                     type=2,
-                    attackDict=totalAttackDict['macToIp']
+                    attackDict=totalAttackDict.get('macToIp')
                 )
         
         return (arpTable, invArpTable) if not isInit else (arpTable, invArpTable, totalAttackDict)
@@ -495,19 +494,19 @@ class ArpSpoofing(ABC):
                     # if attackDict is not empty, merge its data into totalAttackDict
                     if attackDict:
                         # merge the ipToMac dictionary from this attackDict into totalAttackDict
-                        if attackDict['ipToMac']:
+                        if attackDict.get('ipToMac'):
                             for ip, entry in attackDict['ipToMac'].items():
-                                totalAttackDict['ipToMac'].setdefault(ip, {'srcIp': ip, 'srcMac': set(), 'dstIp': entry['dstIp'], 'dstMac': entry['dstMac'],
-                                                                            'protocol': entry['protocol'], 'timestamp': entry['timestamp']})['srcMac'].update(entry['srcMac'])
+                                totalAttackDict['ipToMac'].setdefault(ip, {'srcIp': ip, 'srcMac': set(), 'dstIp': entry.get('dstIp'), 'dstMac': entry.get('dstMac'),
+                                                                            'protocol': entry.get('protocol'), 'timestamp': entry.get('timestamp')})['srcMac'].update(entry.get('srcMac'))
 
                         # merge the macToIp dictionary from this attackDict into totalAttackDict:
-                        if attackDict['macToIp']:
+                        if attackDict.get('macToIp'):
                             for mac, entry in attackDict['macToIp'].items():
-                                totalAttackDict['macToIp'].setdefault(mac, {'srcIp': set(), 'srcMac': mac, 'dstIp': entry['dstIp'], 'dstMac': entry['dstMac'],
-                                                                             'protocol': entry['protocol'], 'timestamp': entry['timestamp']})['srcIp'].update(entry['srcIp'])
+                                totalAttackDict['macToIp'].setdefault(mac, {'srcIp': set(), 'srcMac': mac, 'dstIp': entry.get('dstIp'), 'dstMac': entry.get('dstMac'),
+                                                                             'protocol': entry.get('protocol'), 'timestamp': entry.get('timestamp')})['srcIp'].update(entry.get('srcIp'))
 
             # check if we have attacks detected if so we update result dict
-            if totalAttackDict['ipToMac'] or totalAttackDict['macToIp']:
+            if totalAttackDict.get('ipToMac') or totalAttackDict.get('macToIp'):
                 result.update({'state': False, 'type': 3, 'attackDict': totalAttackDict})
 
             # print our static ARP tables
@@ -574,10 +573,10 @@ class ArpSpoofing(ABC):
                         continue
                     arpTableObject = ArpSpoofing.arpTables.get(subnet) #get the specific arp table using the correct subnet
 
-                    if packet.srcIp not in arpTableObject.arpTable: #means ip is not present in our ARP table
+                    if not arpTableObject.arpTable.get(packet.srcIp): #means ip is not present in our ARP table
                         # means mac was assinged to different ip, we assume there's a possiblility 
                         # that this device got assigned a new ip from dhcp server
-                        if packet.srcMac in arpTableObject.invArpTable:
+                        if arpTableObject.invArpTable.get(packet.srcMac):
                             oldIp = arpTableObject.invArpTable[packet.srcMac] #save old ip that was assigned to this mac
                             del arpTableObject.arpTable[oldIp] #remove old ip entry from ARP table
                             del arpTableObject.invArpTable[packet.srcMac] #remove mac from inverse ARP table
@@ -585,18 +584,18 @@ class ArpSpoofing(ABC):
                         # we create new temp ARP table to check if we got valid response from only one device and that mac's match
                         ipArpTable = ArpTable.InitArpTable(packet.srcIp) #initialize temp ip ARP table for specific ip and check if valid
                         if ipArpTable[0]: #we check if there's a reply, if not we dismiss the packet
-                            if ipArpTable[0][packet.srcIp] == packet.srcMac: #means macs match, valid 
+                            if ipArpTable[0].get(packet.srcIp) == packet.srcMac: #means macs match, valid 
                                 arpTableObject.arpTable[packet.srcIp] = packet.srcMac #assign the mac address to its ip in our ARP table
                                 arpTableObject.invArpTable[packet.srcMac] = packet.srcIp #assign to the inverse ARP table
                             else: #means macs dont match, we alret because differnet device asnwered us
-                                srcIp, srcMacs = packet.srcIp, {ipArpTable[0][packet.srcIp], packet.srcMac} #create the details for exception
+                                srcIp, srcMacs = packet.srcIp, {ipArpTable[0].get(packet.srcIp), packet.srcMac} #create the details for exception
                                  #add an anomaly: same IP, different MAC
                                 attackDict.setdefault(srcIp, {'srcIp': srcIp, 'srcMac': set(), 'dstIp': packet.dstIp, 'dstMac': packet.dstMac,
                                                                'protocol': 'ARP', 'timestamp': NetworkInformation.GetCurrentTimestamp()})['srcMac'].update(srcMacs)
 
                     else: #means ip is present in our ARP table, we check its parameters
-                        if arpTableObject.arpTable[packet.srcIp] != packet.srcMac: #means we have a spoofed mac address
-                            srcIp, srcMacs = packet.srcIp, {arpTableObject.arpTable[packet.srcIp], packet.srcMac} #create the details for exception
+                        if arpTableObject.arpTable.get(packet.srcIp) != packet.srcMac: #means we have a spoofed mac address
+                            srcIp, srcMacs = packet.srcIp, {arpTableObject.arpTable.get(packet.srcIp), packet.srcMac} #create the details for exception
                             #add an anomaly: same IP, different MAC
                             attackDict.setdefault(srcIp, {'srcIp': srcIp, 'srcMac': set(), 'dstIp': packet.dstIp, 'dstMac': packet.dstMac,
                                                            'protocol': 'ARP', 'timestamp': NetworkInformation.GetCurrentTimestamp()})['srcMac'].update(srcMacs)
@@ -681,11 +680,11 @@ class PortScanDoS(ABC):
                 # check if packet is tcp and calculate its specific parameters
                 if isinstance(packet, TCP_Packet):
                     # check each flag in tcp and increment counter if set
-                    if 'SYN' in packet.flagDict and packet.flagDict['SYN']:
+                    if packet.flagDict.get('SYN'):
                         synFlags += 1
-                    if 'ACK' in packet.flagDict and packet.flagDict['ACK']:
+                    if packet.flagDict.get('ACK'):
                         ackFlags += 1
-                    if 'RST' in packet.flagDict and packet.flagDict['RST']:
+                    if packet.flagDict.get('RST'):
                         rstFlags += 1
 
                 if packet.srcIp == flow[0]: #means forward packet
@@ -892,7 +891,7 @@ class DNSTunneling(ABC):
                         AAAARecordCount += 1
 
                     # check DF flag in ipv4 and increment counter if set
-                    if 'DF' in packet.ipFlagDict and packet.ipFlagDict['DF']:
+                    if packet.ipFlagDict.get('DF'):
                         ipDfFlags += 1
                     
                     if packet.srcIp == flow[0]: #means forward packet

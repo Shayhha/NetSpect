@@ -582,7 +582,7 @@ QCheckBox {
    color: #151519;
 }
 
-#startStopButton {
+#startStopPushButton[text='START'] {
     border-radius: 60px;
     background-color: #3A8E32;
     border: 1px solid black;
@@ -591,12 +591,29 @@ QCheckBox {
     outline: none;
 }
 
-#startStopButton:hover {
+#startStopPushButton[text='START']:hover {
     background-color: #4D9946;
 }
 
-#startStopButton:pressed {
+#startStopPushButton[text='START']:pressed {
     background-color: #2E7128;
+}
+
+#startStopPushButton[text='STOP'] {
+    border-radius: 60px;
+    background-color: #D84F4F;
+    border: 1px solid black;
+    color: black;
+    font-weight: bold;
+    outline: none;
+}
+
+#startStopPushButton[text='STOP']:hover {
+    background-color: #DB6060;
+}
+
+#startStopPushButton[text='STOP']:pressed {
+    background-color: #AC3f3F;
 }
 
 #startInfoVerticalFrame {

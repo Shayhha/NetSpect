@@ -48,7 +48,7 @@ class NetSpect(QMainWindow):
         self.dnsTimer.timeout.connect(self.SendDnsDict) #connect timeout event for dns timer
 
         # connect interface buttons to their methods
-        self.startStopButton.clicked.connect(self.StartStopButtonClicked)
+        self.startStopPushButton.clicked.connect(self.StartStopButtonClicked)
         self.loginPushButton.clicked.connect(self.LoginButtonClicked)
         self.registerPushButton.clicked.connect(self.RegisterButtonClicked)
         self.sendCodePushButton.clicked.connect(self.SendCodeButtonClicked)
@@ -1123,38 +1123,38 @@ class NetSpect(QMainWindow):
             self.SendLogDict('Main_Thread: One of the threads is still in process, cannot start new detection.', 'INFO') #log event
         return False #indication of failed operation
 
-    
+
     # method for startStop button for starting or stopping detection
     def StartStopButtonClicked(self):
-        # get the correct styles based on the button text (start / stop)
+        # get the correct styles based on the start/stop button text
         currentStyleSheet = f'''
-            #startStopButton {{
+            #startStopPushButton {{
                 border-radius: 60px;
-                {'background-color: #3A8E32;' if self.startStopButton.text() == 'STOP' else 'background-color: #D84F4F;'}
+                {'background-color: #3A8E32;' if self.startStopPushButton.text() == 'STOP' else 'background-color: #D84F4F;'}
                 border: 1px solid black;
                 color: black;
                 font-weight: bold;
                 outline: none;
             }}
 
-            #startStopButton:hover {{
-                {'background-color: #4D9946;' if self.startStopButton.text() == 'STOP' else 'background-color: #DB6060;'}
+            #startStopPushButton:hover {{
+                {'background-color: #4D9946;' if self.startStopPushButton.text() == 'STOP' else 'background-color: #DB6060;'}
             }}
 
-            #startStopButton:pressed {{
-                {'background-color: #2E7128;' if self.startStopButton.text() == 'STOP' else 'background-color: #AC3f3F;'}
+            #startStopPushButton:pressed {{
+                {'background-color: #2E7128;' if self.startStopPushButton.text() == 'STOP' else 'background-color: #AC3f3F;'}
             }}
         '''
 
         # start and stop the sniffer and change the button stylesheet correctly
-        if self.startStopButton.text() == 'START':
+        if self.startStopPushButton.text() == 'START':
             if self.StartDetection():
-                self.startStopButton.setText('STOP')
-                self.startStopButton.setStyleSheet(currentStyleSheet)
+                self.startStopPushButton.setText('STOP')
+                self.startStopPushButton.setStyleSheet(currentStyleSheet)
         else:
             if self.StopDetection():
-                self.startStopButton.setText('START')
-                self.startStopButton.setStyleSheet(currentStyleSheet)
+                self.startStopPushButton.setText('START')
+                self.startStopPushButton.setStyleSheet(currentStyleSheet)
 
     #-----------------------------------------------CLICKED-METHODS----------------------------------------------#
 
@@ -1430,7 +1430,7 @@ class NetSpect(QMainWindow):
 
         # update the ui based on the users selection
         UserInterfaceFunctions.ToggleColorMode(self)
-        
+
         # change the value of lightMode in the database for the current user
         if self.sqlThread:
             if self.userData.get('userId'):

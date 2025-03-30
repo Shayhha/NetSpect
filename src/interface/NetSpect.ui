@@ -1108,7 +1108,7 @@ QToolTip {
                         </spacer>
                        </item>
                        <item>
-                        <widget class="QPushButton" name="startStopButton">
+                        <widget class="QPushButton" name="startStopPushButton">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                            <horstretch>0</horstretch>
@@ -1142,7 +1142,7 @@ QToolTip {
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Start/Stop Scanning&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                          <property name="styleSheet">
-                          <string notr="true">#startStopButton {
+                          <string notr="true">#startStopPushButton {
     border-radius: 60px;
     background-color: #3A8E32;
     border: 1px solid black;
@@ -1150,11 +1150,11 @@ QToolTip {
     font-weight: bold;
 }
 
-#startStopButton:hover {
+#startStopPushButton:hover {
      background-color: #4D9946;
 }
 
-#startStopButton:pressed {
+#startStopPushButton:pressed {
      background-color: #2E7128;
 }</string>
                          </property>

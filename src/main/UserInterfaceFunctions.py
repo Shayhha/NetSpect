@@ -350,7 +350,7 @@ def ToggleColorMode(self):
                 <body>
                     <p>
                         <a href='https://github.com/Shayhha/NetSpect'>
-                            <span style="text-decoration: underline; color: #f3f3f3;">Visit NetSpect</span>
+                            <span style="text-decoration: underline; color: #f3f3f3;">Visit NetSpect Page</span>
                         </a>
                     </p>
                 </body>

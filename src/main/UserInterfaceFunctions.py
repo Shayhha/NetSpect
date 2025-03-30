@@ -497,8 +497,8 @@ def ShowSettingsInputFields(self):
 def GetDefaultStyleSheetSettingsLineEdits(self, lineEditName):
     defaultStylesheet = f''' 
         #{lineEditName} {{
-            {'background-color: #f3f3f3;' if self.userData['lightMode'] == 0 else 'background-color: #EBEFF7;'}
-            {'border: 2px solid lightgray;' if self.userData['lightMode'] == 0 else 'border: 2px solid #899fce;'}
+            {'background-color: #f3f3f3;' if self.userData.get('lightMode') == 0 else 'background-color: #EBEFF7;'}
+            {'border: 2px solid lightgray;' if self.userData.get('lightMode') == 0 else 'border: 2px solid #899fce;'}
             border-radius: 10px;
             padding: 5px;
             color: black;
@@ -512,8 +512,8 @@ def GetDefaultStyleSheetSettingsLineEdits(self, lineEditName):
 def GetDefaultStyleSheetRegisterLineEdits(self, lineEditName):
     defaultStylesheet = f''' 
         #{lineEditName} {{
-            {f'background-color: #f3f3f3;' if self.userData['lightMode'] == 0 else f'background-color: {'#fbfcfd' if any(prefix in lineEditName for prefix in ['login', 'register', 'reset']) else '#EBEFF7'};'}
-            {'border: 2px solid lightgray;' if self.userData['lightMode'] == 0 else 'border: 2px solid #899fce;'}
+            {f'background-color: #f3f3f3;' if self.userData.get('lightMode') == 0 else f'background-color: {'#fbfcfd' if any(prefix in lineEditName for prefix in ['login', 'register', 'reset']) else '#EBEFF7'};'}
+            {'border: 2px solid lightgray;' if self.userData.get('lightMode') == 0 else 'border: 2px solid #899fce;'}
             border-radius: 10px;
             padding: 5px;
             color: black;
@@ -685,10 +685,10 @@ class CustomMessageBox(QDialog):
 
 
 # helper function to show a popup window
-def ShowPopup(title, message, iconType='Warning'):
+def ShowPopup(title, message, iconType='Warning', isSelectable=False):
     #iconType options are: Information, Warning, Critical, Question
     if not CustomMessageBox.isShown:
-        popup = CustomMessageBox(title, message, iconType)
+        popup = CustomMessageBox(title, message, iconType, isSelectable)
 
         # center the popup window
         cp = QDesktopWidget().availableGeometry()
@@ -751,7 +751,7 @@ def InitPieChart(self):
         chart.legend().setVisible(False)
         chart.layout().setContentsMargins(0, 0, 0, 0)
         chart.setBackgroundRoundness(0)
-        chart.setBackgroundBrush(QColor(204, 204, 204, 153)) if self.userData['lightMode'] == 1 else chart.setBackgroundBrush(QColor(193, 208, 239))
+        chart.setBackgroundBrush(QColor(204, 204, 204, 153)) if self.userData.get('lightMode') == 1 else chart.setBackgroundBrush(QColor(193, 208, 239))
         chart.setTitle('No Data To Display...')
         chart.setTitleFont(titleFont)
         
@@ -820,7 +820,7 @@ def UpdateChartAfterAttack(self, attackName):
             newSlice.setLabelVisible(True)
             newSlice.setLabelArmLengthFactor(0.075)
             newSlice.setLabel(f'{correctAttackName} {newSlice.percentage()*100:.1f}%')
-            newSlice.setLabelColor(QColor(1, 1, 1, 255)) if self.userData['lightMode'] == 1 else newSlice.setLabelColor(QColor(45, 46, 54, 255))
+            newSlice.setLabelColor(QColor(1, 1, 1, 255)) if self.userData.get('lightMode') == 1 else newSlice.setLabelColor(QColor(45, 46, 54, 255))
             newSlice.setColor(QColor(defaultPieChartSliceColors.get(attackName)))
 
         # set the title to be empty (hide the title) if there is atleast one attack detection in history
@@ -880,7 +880,7 @@ def UpdateChartAfterLogin(self, pieChartData):
             slice.setLabelFont(sliceFont)
             slice.setLabelVisible(True)
             slice.setLabelArmLengthFactor(0.075)
-            slice.setLabelColor(QColor(1, 1, 1, 255)) if self.userData['lightMode'] == 1 else slice.setLabelColor(QColor(45, 46, 54, 255))
+            slice.setLabelColor(QColor(1, 1, 1, 255)) if self.userData.get('lightMode') == 1 else slice.setLabelColor(QColor(45, 46, 54, 255))
             slice.setColor(QColor(defaultPieChartSliceColors.get(attackName)))
 
     except Exception as e:

@@ -1,6 +1,8 @@
 import sys, os, pyodbc
 from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot
 from dotenv import load_dotenv
+from smtplib import SMTP
+from email.message import EmailMessage
 from pathlib import Path
 
 currentDir = Path(__file__).resolve().parent #represents the path to the current working direcotry where this file is located
@@ -14,13 +16,16 @@ class SQL_Thread(QThread):
     changeEmailResultSignal = pyqtSignal(dict)
     changeUsernameResultSignal = pyqtSignal(dict)
     changePasswordResultSignal = pyqtSignal(dict)
+    resetPasswordResultSignal = pyqtSignal(dict)
     deleteAccountResultSignal = pyqtSignal(dict)
     addAlertResultSignal = pyqtSignal(dict)
     deleteAlertsResultSignal = pyqtSignal(dict)
     addBlacklistMacResultSignal = pyqtSignal(dict)
     deleteBlacklistMacResultSignal = pyqtSignal(dict)
     updateLightModeResultSignal = pyqtSignal(dict)
+    sendCodeResultSignal = pyqtSignal(dict)
     connectionResultSignal = pyqtSignal(dict)
+    initEmailCredentilsResultSignal = pyqtSignal(dict)
     finishSignal = pyqtSignal(dict)
 
     # constructor of sql thread
@@ -28,8 +33,11 @@ class SQL_Thread(QThread):
         super().__init__(parent)
         self.parent = parent #represents main thread
         self.envFilePath = currentDir.parent / 'database' / '.env' #represents env file path
-        self.connection = None # connection for SQL server database
-        self.cursor = None # cursor for executig SQL commands
+        self.connection = None #represents our connection for SQL server database
+        self.cursor = None #represents our cursor for executig SQL commands
+        self.appEmail = None #represents app email for sending reset codes
+        self.appPassword = None #represents app password for sending reset codes
+        self.appEmailHost = None #represents app email host for sending reset codes
 
 
     # method for stopping sql thread
@@ -87,13 +95,33 @@ class SQL_Thread(QThread):
             self.connection.close() #close connection
 
 
+    # method for initializing app email credentils from env file
+    def InitEmailCredentils(self):
+        stateDict = {'state': True, 'message': ''} #represents state of app email initialization
+
+        # receive necessary app email credentials from env file for reset code emails
+        self.appEmail = os.getenv('APP_EMAIL')
+        self.appPassword = os.getenv('APP_PASSWORD')
+        self.appEmailHost = os.getenv('APP_EMAIL_HOST')
+
+        # check if env file missing the app email credentials, if so we return error message
+        if not self.appEmail or not self.appPassword or not self.appEmailHost:
+            stateDict.update({'state': False, 'message': 'App email credentials are missing from .env file. Please ensure the file contains valid app email credentials.'})
+        return stateDict
+
+
     # run method for performing various database related commands
     def run(self):
         stateDict = {'state': True, 'message': ''} #represents state of thread when finishes
         try:
             # initialize database connection and send result to main thread
-            stateDict = self.Connect() #connect to our SQL server database
-            self.connectionResultSignal.emit(stateDict) #send connection result signal to main thread
+            connectionResult = self.Connect() #connect to our SQL server database
+            stateDict.update({'state': connectionResult.get('state')}) #set the connection result state in stateDict
+            self.connectionResultSignal.emit(connectionResult) #send connection result signal to main thread
+
+            # initialize app email credentils and send result to main thread
+            emailCredentilsResult = self.InitEmailCredentils()
+            self.initEmailCredentilsResultSignal.emit(emailCredentilsResult) #send email credentils result signal to main thread
 
             # execute thread process only if connection was established
             if stateDict.get('state'):
@@ -116,7 +144,7 @@ class SQL_Thread(QThread):
                 SELECT userId, email, userName, lightMode 
                 FROM Users 
                 WHERE userName = ? AND password = ? AND isDeleted = 0
-            '''
+                '''
             self.cursor.execute(query, (username, password))
             result = self.cursor.fetchone()
             
@@ -169,7 +197,7 @@ class SQL_Thread(QThread):
                 query = '''
                     INSERT INTO Users (email, userName, password) 
                     VALUES (?, ?, ?)
-                '''
+                    '''
                 self.cursor.execute(query, (email, username, password))
                 
                 # we check if operation was successful
@@ -204,7 +232,7 @@ class SQL_Thread(QThread):
                     UPDATE Users 
                     SET email = ? 
                     WHERE userId = ?
-                '''
+                    '''
                 self.cursor.execute(query, (newEmail, userId))
             
                 if self.cursor.rowcount > 0:
@@ -225,16 +253,23 @@ class SQL_Thread(QThread):
 
     # method to check if the email is taken in database
     @pyqtSlot(str)
-    def CheckEmail(self, email):
+    def CheckEmail(self, email, isDeleted=None):
         # check if username is present in Users table
         query = '''
-            SELECT COUNT(*) 
+            SELECT userId
             FROM Users 
             WHERE email = ?
-        '''
-        self.cursor.execute(query, (email,))
+            '''
+        
+        # check if isDeleted given, if so we add it
+        if isDeleted:
+            query += 'AND isDeleted = ?'
+            self.cursor.execute(query, (email, isDeleted))
+        else:
+            self.cursor.execute(query, (email,))
+
         result = self.cursor.fetchone()
-        return result[0] > 0 if result else True
+        return result[0] if result else None
 
     
     # method for changing user's username in Users table
@@ -252,7 +287,7 @@ class SQL_Thread(QThread):
                     UPDATE Users 
                     SET userName = ? 
                     WHERE userId = ?
-                '''
+                    '''
                 self.cursor.execute(query, (newUsername, userId))
             
                 if self.cursor.rowcount > 0:
@@ -273,16 +308,23 @@ class SQL_Thread(QThread):
 
     # method to check if the username is taken in database
     @pyqtSlot(str)
-    def CheckUserName(self, username):
+    def CheckUserName(self, username, isDeleted=None):
         # check if username is present in Users table
         query = '''
-            SELECT COUNT(*) 
+            SELECT userId
             FROM Users 
             WHERE userName = ?
-        '''
-        self.cursor.execute(query, (username,))
+            '''
+        
+        # check if isDeleted given, if so we add it
+        if isDeleted:
+            query += 'AND isDeleted = ?'
+            self.cursor.execute(query, (username, isDeleted))
+        else:
+            self.cursor.execute(query, (username,))
+
         result = self.cursor.fetchone()
-        return result[0] > 0 if result else True
+        return result[0] if result else None
 
 
     # method for updating passowrd of user in Users table
@@ -299,7 +341,7 @@ class SQL_Thread(QThread):
                     UPDATE Users SET 
                     password = ? 
                     WHERE userId = ?
-                '''
+                    '''
                 self.cursor.execute(query, (newPassword, userId))
                 
                 if self.cursor.rowcount > 0:
@@ -318,18 +360,54 @@ class SQL_Thread(QThread):
             self.changePasswordResultSignal.emit(resultDict)
 
 
+    # method for resetting passowrd of user with specified password in Users table
+    @pyqtSlot(int, str, str)
+    def ResetPassword(self, email, newPassword):
+        resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
+        try:
+            # reset the password in the database
+            query = '''
+                UPDATE Users SET 
+                password = ? 
+                WHERE email = ?
+                '''
+            self.cursor.execute(query, (newPassword, email))
+            
+            if self.cursor.rowcount > 0:
+                self.connection.commit() #commit the transaction for the update
+                resultDict['message'] = 'password resetted successfully.'
+                resultDict['state'] = True
+            else:
+                resultDict['message'] = 'Password reset failed.'
+
+        except Exception as e:
+            self.connection.rollback() #rollback on error
+            resultDict['message'] = f'Error resetting password: {e}.'
+            resultDict['error'] = True
+        finally:
+            # emit reset password signal to main thread
+            self.resetPasswordResultSignal.emit(resultDict)
+
+
     # method for checking if the provided password is correct for given user
     @pyqtSlot(int, str)
-    def CheckPassword(self, userId, password):
+    def CheckPassword(self, userId, password, isDeleted=None):
         # check if password matches user's password in Users table
         query = '''
-            SELECT COUNT(*) 
+            SELECT userId
             FROM Users 
             WHERE userId = ? AND password = ?
-        '''
-        self.cursor.execute(query, (userId, password))
+            '''
+
+        # check if isDeleted given, if so we add it
+        if isDeleted:
+            query += 'AND isDeleted = ?'
+            self.cursor.execute(query, (userId, password, isDeleted))
+        else:
+            self.cursor.execute(query, (userId, password))
+
         result = self.cursor.fetchone()
-        return result[0] > 0 if result else False
+        return result[0] if result else None
     
 
     # method for deleting user account from Users table
@@ -345,7 +423,7 @@ class SQL_Thread(QThread):
                 UPDATE Alerts 
                 SET isDeleted = 1 
                 WHERE userId = ?
-            '''
+                '''
             self.cursor.execute(alertsQuery, (userId,))
 
             # delete given user from Users table by userId
@@ -353,7 +431,7 @@ class SQL_Thread(QThread):
                 UPDATE Users SET 
                 isDeleted = 1 
                 WHERE userId = ?
-            '''
+                '''
             self.cursor.execute(usersQuery, (userId,))
             
             if self.cursor.rowcount > 0:
@@ -383,7 +461,7 @@ class SQL_Thread(QThread):
             FROM Alerts
             WHERE userId = ? AND isDeleted = 0
             ORDER BY CONVERT(datetime, SUBSTRING(timestamp, 10, 8) + ' ' + SUBSTRING(timestamp, 1, 8), 3) ASC
-        '''
+            '''
         self.cursor.execute(query, (userId,))
         alerts = self.cursor.fetchall()
         alertsList = [] #represents our alerts list
@@ -417,7 +495,7 @@ class SQL_Thread(QThread):
             FROM Alerts
             WHERE userId = ? AND isDeleted = 0
             GROUP BY attackType
-        '''
+            '''
         self.cursor.execute(query, (userId,))
         result = self.cursor.fetchall()
         pieChartData = {} #represents dict of attacks count
@@ -439,7 +517,7 @@ class SQL_Thread(QThread):
                 INSERT INTO Alerts (userId, interface, attackType, sourceIp, sourceMac, 
                                     destinationIp, destinationMac, protocol, osType, timestamp)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            '''
+                '''
             self.cursor.execute(query, (userId, interface, attackType, sourceIp, sourceMac, 
                                         destinationIp, destinationMac, protocol, osType, timestamp))
             
@@ -469,7 +547,7 @@ class SQL_Thread(QThread):
                 UPDATE Alerts 
                 SET isDeleted = 1 
                 WHERE userId = ?
-            '''
+                '''
             self.cursor.execute(query, (userId,))
             
             if self.cursor.rowcount > 0:
@@ -495,7 +573,7 @@ class SQL_Thread(QThread):
             SELECT macAddress 
             FROM Blacklist 
             WHERE userId = ?
-        '''
+            '''
         self.cursor.execute(query, (userId,))
         blacklistResults = self.cursor.fetchall()
 
@@ -521,7 +599,7 @@ class SQL_Thread(QThread):
                 query = '''
                     INSERT INTO Blacklist (userId, macAddress) 
                     VALUES (?, ?)
-                '''
+                    '''
                 self.cursor.execute(query, (userId, macAddress))
 
                 if self.cursor.rowcount > 0:
@@ -548,7 +626,7 @@ class SQL_Thread(QThread):
             query = '''
                 DELETE FROM Blacklist 
                 WHERE userId = ? AND macAddress = ?
-            '''
+                '''
             self.cursor.execute(query, (userId, macAddress))
             
             if self.cursor.rowcount > 0:
@@ -576,7 +654,7 @@ class SQL_Thread(QThread):
                 UPDATE Users 
                 SET lightMode = ? 
                 WHERE userId = ?
-            '''
+                '''
             self.cursor.execute(query, (lightMode, userId))
             
             if self.cursor.rowcount > 0:
@@ -593,6 +671,68 @@ class SQL_Thread(QThread):
         finally:
             # emit update light mode signal to main thread
             self.updateLightModeResultSignal.emit(resultDict)
+
+
+    # method for sending reset password code for a user in Users table
+    @pyqtSlot(str, str)
+    def SendResetPasswordCode(self, userEmail, resetCode):
+        resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
+        try:
+            # check if email exists in database and not associated to deleted user
+            if not self.CheckEmail(userEmail, isDeleted=0):
+                resultDict['message'] = 'Email is not associated with any account, please try another one.'
+            else:
+                # check that both email and app password are set before trying to send email
+                if self.appEmail and self.appPassword and self.appEmailHost:
+                    # try to send reset code to user'e email with app email credentials
+                    if self.SendEmail(userEmail, resetCode, self.appEmail, self.appPassword, self.appEmailHost):
+                        resultDict['message'] = 'Sent reset password email to user.'
+                        resultDict['state'] = True
+                    else:
+                        resultDict['message'] = 'Failed Sending reset password email to user.'
+                else:
+                     resultDict['message'] = 'App email credentials are missing from .env file. Please ensure the file contains valid app email credentials.'
+                     resultDict['error'] = True
+
+        except Exception as e:
+            resultDict['message'] = f'Error sending reset password email: {e}.'
+            resultDict['error'] = True
+        finally:
+            # emit send code result signal to main thread
+            self.sendCodeResultSignal.emit(resultDict)
+
+
+    # method for sending email with reset code to user's registered email
+    @pyqtSlot(str, str, str, str, str)
+    def SendEmail(self, userEmail, resetCode, appEmail, appPassword, appEmailHost):
+        try:
+            # create email message with our desired format with password reset code
+            message = EmailMessage()
+            message.set_content(f'''
+                <html>
+                    <body>
+                        <p>Hello,</p>
+                        <p>You requested a password reset for your NetSpect account.</p>
+                        <p>Your reset code is: <strong>{resetCode}</strong></p>
+                        <p>This code is valid for 5 minutes.</p>
+                        <p>If you did not request this reset, please ignore this email.</p>
+                        <p>Best Regards,<br>NetSpect Team</p>
+                    </body>
+                </html>
+                ''', subtype='html')
+            message['Subject'] = 'NetSpect Password Reset Request'
+            message['From'] = appEmail
+            message['To'] = userEmail
+
+            # sending reset password email with host smtp server with TLS
+            with SMTP(appEmailHost, 587) as server:
+                server.ehlo()
+                server.starttls()
+                server.login(appEmail, appPassword)
+                server.send_message(message)
+            return True
+        except Exception as e:
+            return False
 
     #---------------------------------------------SQL-FUNCTIONS-END----------------------------------------------#
 

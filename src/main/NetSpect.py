@@ -857,10 +857,10 @@ class NetSpect(QMainWindow):
             self.SendLogDict('Arp_Thread: Initialized ARP tables successfully.', 'INFO') #log arp tables initialization event
 
         # process only if an attack is detected state is false and an attackDict provided
-        if result.get('state') is False and result.get('attackDict'):
+        if result.get('state') == False and result.get('attackDict'):
             type = result.get('type') #represents type of result, 1-ipToMac, 2-macToIp, 3-Both
             attackDict = result.get('attackDict') #represents attack dictionary with all anomalies found
-            
+
             # handle Ip to Mac anomalies we found in arp spoofing attack (including initialization)
             if type in (1, 3):
                 # represents the ipDict of arp spoofing, for type 3 its nested under 'ipToMac'
@@ -869,17 +869,17 @@ class NetSpect(QMainWindow):
                     isNewAttack = False #represents a flag for indicating if attack is new or not
 
                     # we check if detected ip is in our known attacks in arpAttackDict
-                    if ip not in self.arpAttackDict['ipToMac']:
+                    if ip not in self.arpAttackDict.get('ipToMac', {}):
                         self.arpAttackDict['ipToMac'][ip] = details #add new ip entry in our arpAttackDict
                         isNewAttack = True #set new attack to true
-                    
+
                     # we check if detected ip is already in our known attacks in arpAttackDict
-                    elif ip in self.arpAttackDict['ipToMac']:
+                    elif ip in self.arpAttackDict.get('ipToMac', {}):
                         # we check if its a repeated attack from same source, we alert again after some time
                         if NetworkInformation.CompareTimepstemps(self.arpAttackDict['ipToMac'][ip].get('timestamp'), details.get('timestamp'), minutes=self.repeatedAttackTimeout):
                             self.arpAttackDict['ipToMac'][ip]['timestamp'] = details.get('timestamp') #update timestamp with new attack time
                             isNewAttack = True #set new attack to true
-                        
+
                         # else we check if there is a new mac addresses associated with ip
                         else:
                             # represents new mac addresses we found in arp spoofing attack
@@ -904,12 +904,12 @@ class NetSpect(QMainWindow):
                     isNewAttack = False #represents a flag for indicating if attack is new or not
 
                     # we check if detected mac is in our known attacks in arpAttackDict
-                    if mac not in self.arpAttackDict['macToIp']:
+                    if mac not in self.arpAttackDict.get('macToIp', {}):
                         self.arpAttackDict['macToIp'][mac] = details #add new mac entry in our arpAttackDict
                         isNewAttack = True #set new attack to true
-                    
+
                     # we check if detected mac is already in our known attacks in arpAttackDict
-                    elif mac in self.arpAttackDict['macToIp']:
+                    elif mac in self.arpAttackDict.get('macToIp', {}):
                         # we check if its a repeated attack from same source, we alert again after some time
                         if NetworkInformation.CompareTimepstemps(self.arpAttackDict['macToIp'][mac].get('timestamp'), details.get('timestamp'), minutes=self.repeatedAttackTimeout):
                             self.arpAttackDict['macToIp'][mac]['timestamp'] = details.get('timestamp') #update timestamp with new attack time
@@ -1119,8 +1119,8 @@ class NetSpect(QMainWindow):
                     return True #indication of successful operation
 
         else:
-            UserInterfaceFunctions.ShowPopup('Error Starting Detection', 'One of the threads is still in process, cannot start new detection.', 'Warning')
-            self.SendLogDict('Main_Thread: One of the threads is still in process, cannot start new detection.', 'INFO') #log event
+            UserInterfaceFunctions.ShowPopup('Error Starting Scan', 'One of the threads is still in process, cannot start new scan.', 'Warning')
+            self.SendLogDict('Main_Thread: One of the threads is still in process, cannot start new scan.', 'INFO') #log event
         return False #indication of failed operation
 
 
@@ -1163,7 +1163,7 @@ class NetSpect(QMainWindow):
         if self.sqlThread:
             # means we had detection active
             if self.isDetection:
-                UserInterfaceFunctions.ShowPopup('Error In Login', 'Please stop detection before attempting to log in.', 'Information')
+                UserInterfaceFunctions.ShowPopup('Error In Login', 'Please stop network scan before attempting to log in.', 'Information')
             # means both fields are empty
             elif not self.loginUsernameLineEdit.text() and not self.loginPasswordLineEdit.text():
                 UserInterfaceFunctions.ChangeErrorMessageText(self.loginErrorMessageLabel, 'Please enter username and password.')
@@ -1177,13 +1177,13 @@ class NetSpect(QMainWindow):
             else:
                 self.sqlThread.Login(self.loginUsernameLineEdit.text(), NetSpect.ToSHA256(self.loginPasswordLineEdit.text()))
 
-    
+
     # method for loggin out of user's account and clear user interface
     def LogoutButtonClicked(self):
         if self.sqlThread:
             # means we had detection active
             if self.isDetection:
-                UserInterfaceFunctions.ShowPopup('Error In Logout', 'Please stop detection before attempting to log out.', 'Information')
+                UserInterfaceFunctions.ShowPopup('Error In Logout', 'Please stop network scan before attempting to log out.', 'Information')
             # else we log out and clear interface
             else:
                 # check if report thread is active, if so we stop thread
@@ -1197,7 +1197,7 @@ class NetSpect(QMainWindow):
         if self.sqlThread:
             # means we had detection active
             if self.isDetection:
-                UserInterfaceFunctions.ShowPopup('Error In Registration', 'Please stop detection before attempting to register.', 'Information')
+                UserInterfaceFunctions.ShowPopup('Error In Registration', 'Please stop network scan before attempting to register.', 'Information')
             # else we register new user
             else:
                 email = self.registerEmailLineEdit.text()
@@ -1278,7 +1278,7 @@ class NetSpect(QMainWindow):
         if self.sqlThread:
             # means we had detection active
             if self.isDetection:
-                UserInterfaceFunctions.ShowPopup('Error Deleting Account', 'Please stop detection before attempting to delete account.', 'Information')
+                UserInterfaceFunctions.ShowPopup('Error Deleting Account', 'Please stop network scan before attempting to delete account.', 'Information')
             # else we emit signal to sql thread to delete account from database
             else:
                 result = UserInterfaceFunctions.ShowPopup('Delete Account Confirmation', 'Deleting your account will permanently remove all your data. Do you want to proceed?', 'Question')
@@ -1322,7 +1322,7 @@ class NetSpect(QMainWindow):
     # method for deleting all previous detected alerts of user and also updating database if user is logged in
     def DeleteAlertsButtonClicked(self):
         if self.isDetection:
-            UserInterfaceFunctions.ShowPopup('Error Deleting Alerts', 'Please stop detection before attempting to delete alerts history.', 'Information')
+            UserInterfaceFunctions.ShowPopup('Error Deleting Alerts', 'Please stop network scan before attempting to delete alerts history.', 'Information')
         else:
             if self.userData:
                 # clear history and report tables and also reset alertsList and user interface counter
@@ -1343,38 +1343,31 @@ class NetSpect(QMainWindow):
 
     # method for adding an item to the mac address blacklist when user clicks the add button in settings page
     def AddMacAddressButtonClicked(self):
-        if self.isDetection:
-            UserInterfaceFunctions.ShowPopup('Error Adding To Blacklist', 'Please stop detection before attempting to add an item to the blacklist.', 'Information')
-        else:
-            newMacAddress = self.macAddressLineEdit.text().lower() #convert characters to lower case for ease of use
-            listOfMacAddresses = [self.macAddressListWidget.item(i).text() for i in range(self.macAddressListWidget.count())]
-            if not QRegExp(r'^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$').exactMatch(newMacAddress):
-                UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, 'Please enter a valid MAC address')
-            elif (len(listOfMacAddresses) > 0) and (newMacAddress in listOfMacAddresses):
-                UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, 'This MAC address already exists in blacklist')
-            else: #means that this mac address is NOT already in the list
-                UserInterfaceFunctions.ClearErrorMessageText(self.macAddressBlacklistErrorMessageLabel)
-                if self.sqlThread and self.userData.get('userId'):
-                    self.sqlThread.AddBlacklistMac(self.userData.get('userId'), newMacAddress)
-                else:
-                    self.macAddressListWidget.addItem(newMacAddress)
-                    self.macAddressLineEdit.clear()
-                    self.userData.setdefault('blackList', []).append(newMacAddress)
-                    self.SendLogDict(f'Main_Thread: User has added a new mac address to mac blacklist successfully.', 'INFO') #log add mac event
+        newMacAddress = self.macAddressLineEdit.text().lower() #convert characters to lower case for ease of use
+        if not QRegExp(r'^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$').exactMatch(newMacAddress):
+            UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, 'Please enter a valid MAC address')
+        elif newMacAddress in self.userData.get('blackList'):
+            UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, 'This MAC address already exists in blacklist')
+        else: #means that this mac address is NOT already in the list
+            UserInterfaceFunctions.ClearErrorMessageText(self.macAddressBlacklistErrorMessageLabel)
+            if self.sqlThread and self.userData.get('userId'):
+                self.sqlThread.AddBlacklistMac(self.userData.get('userId'), newMacAddress)
+            else:
+                self.macAddressListWidget.addItem(newMacAddress)
+                self.macAddressLineEdit.clear()
+                self.userData.setdefault('blackList', []).append(newMacAddress)
+                self.SendLogDict(f'Main_Thread: User has added a new mac address to mac blacklist successfully.', 'INFO') #log add mac event
 
 
     # method for removing an item from the mac address blacklist when the user clicks the 'delete' button in the contex menu of the list widget
     def DeleteMacAddressButtonClicked(self, item): 
-        if self.isDetection:
-            UserInterfaceFunctions.ShowPopup('Error Deleting From Blacklist', 'Please stop detection before attempting to delete an item from the blacklist.', 'Information')
+        self.seletecItemForDelete = item #represents item for deletion
+        if self.sqlThread and self.userData.get('userId'):
+            self.sqlThread.DeleteBlacklistMac(self.userData.get('userId'), item.text())
         else:
-            self.seletecItemForDelete = item
-            if self.sqlThread and self.userData.get('userId'):
-                self.sqlThread.DeleteBlacklistMac(self.userData.get('userId'), item.text())
-            else:
-                self.macAddressListWidget.takeItem(self.macAddressListWidget.row(self.seletecItemForDelete))
-                self.userData.setdefault('blackList', []).remove(self.seletecItemForDelete.text())
-                self.SendLogDict(f'Main_Thread: User has removed mac address from mac blacklist successfully.', 'INFO') #log remove mac event
+            self.macAddressListWidget.takeItem(self.macAddressListWidget.row(self.seletecItemForDelete))
+            self.userData.setdefault('blackList', []).remove(self.seletecItemForDelete.text())
+            self.SendLogDict(f'Main_Thread: User has removed mac address from mac blacklist successfully.', 'INFO') #log remove mac event
 
 
     # method for saving and updating the user's email after user clicks save button in settings page
@@ -1607,10 +1600,11 @@ class NetSpect(QMainWindow):
             self.SendLogDict(f'Main_Thread: {resultDict.get('message')}', 'ERROR') #log error event
             UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, resultDict.get('message'))
         elif resultDict.get('state'):
-            self.macAddressListWidget.addItem(self.macAddressLineEdit.text())
-            self.userData.setdefault('blackList', []).append(self.macAddressLineEdit.text())
+            newMacAddress = self.macAddressLineEdit.text().lower() #convert characters to lower case for ease of use
+            self.macAddressListWidget.addItem(newMacAddress)
+            self.macAddressLineEdit.clear()
+            self.userData.setdefault('blackList', []).append(newMacAddress)
             self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has added a new mac address to mac blacklist successfully.', 'INFO') #log add mac event
-        self.macAddressLineEdit.clear()
 
 
     # method for showing results to the user after removing a mac address from blacklist 
@@ -1625,8 +1619,8 @@ class NetSpect(QMainWindow):
         elif resultDict.get('state'):
             self.macAddressListWidget.takeItem(self.macAddressListWidget.row(self.seletecItemForDelete))
             self.userData.setdefault('blackList', []).remove(self.seletecItemForDelete.text())
+            self.seletecItemForDelete = None
             self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has removed mac address from mac blacklist successfully.', 'INFO') #log remove mac event
-        self.seletecItemForDelete = None
 
 
     # method for showing results to the user after changing email

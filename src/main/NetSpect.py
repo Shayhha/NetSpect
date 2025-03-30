@@ -1384,7 +1384,7 @@ class NetSpect(QMainWindow):
                 newEmail = self.emailLineEdit.text()
                 state, _, _ = self.emailValidator.validate(newEmail, 0)
                 if newEmail == self.userData.get('email'):
-                    UserInterfaceFunctions.ChangeErrorMessageText(self.saveEmailErrorMessageLabel ,'You\'r new email is the same as the current email, please enter a different email before clicking the save button.')
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.saveEmailErrorMessageLabel ,'Your new email is the same as the current email, please enter a different email before clicking the save button.')
                 elif state != self.emailValidator.Acceptable:
                     UserInterfaceFunctions.ChangeErrorMessageText(self.saveEmailErrorMessageLabel ,'Please enter a valid email address into the field before clicking the save button.')
                 else:
@@ -1398,7 +1398,7 @@ class NetSpect(QMainWindow):
                 newUsername = self.usernameLineEdit.text()
                 state, _, _ = self.usernameValidator.validate(newUsername, 0)
                 if newUsername == self.userData.get('username'):
-                    UserInterfaceFunctions.ChangeErrorMessageText(self.saveUsernameErrorMessageLabel ,'You\'r new username is the same as the current username, please enter a different username before clicking the save button.')
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.saveUsernameErrorMessageLabel ,'Your new username is the same as the current username, please enter a different username before clicking the save button.')
                 elif state != self.usernameValidator.Acceptable:
                     UserInterfaceFunctions.ChangeErrorMessageText(self.saveUsernameErrorMessageLabel ,'Please enter a valid username into the field before clicking the save button.')
                 else:

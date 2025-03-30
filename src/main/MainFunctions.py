@@ -9,7 +9,6 @@ from scapy.layers.dns import DNS
 from collections import defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path
-import shutil #temporary import for saving a copy of a file with false positive data
 
 currentDir = Path(__file__).resolve().parent #represents the path to the current working direcotry where this file is located
 
@@ -777,7 +776,6 @@ class PortScanDoS(ABC):
             if (1 in predictions) and (2 in predictions): #1 and 2 means PortScan and DoS attacks together
                 # we convert the dataframe into dict where each key is flow: (srcIp, srcMac, dstIp, dstMac, protocol, result), value: {details}
                 attackDict = flowDataframe[flowDataframe['Result'] != 0].set_index(attackDictKeys).to_dict(orient='index') #indication of PortScan and DoS attacks together
-                # shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_PortAndDoS.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
                     'Detected PortScan and DoS attack',
                     type=3,
@@ -787,7 +785,6 @@ class PortScanDoS(ABC):
             elif 1 in predictions: #1 means PortScan attack
                 # we convert the dataframe into dict where each key is flow: (srcIp, srcMac, dstIp, dstMac, protocol, result), value: {details}
                 attackDict = flowDataframe[flowDataframe['Result'] == 1].set_index(attackDictKeys).to_dict(orient='index') #indication of PortScan attack
-                # shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_Port.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
                     'Detected PortScan attack',
                     type=1,
@@ -797,7 +794,6 @@ class PortScanDoS(ABC):
             elif 2 in predictions: #2 means DoS attack
                 # we convert the dataframe into dict where each key is flow: (srcIp, srcMac, dstIp, dstMac, protocol, result), value: {details}
                 attackDict = flowDataframe[flowDataframe['Result'] == 2].set_index(attackDictKeys).to_dict(orient='index') #indication of DoS attack
-                # shutil.copy('detectedFlows.txt', f'{np.random.randint(1,1000000)}_detectedFlows_DoS.txt') # temporary code for saving false positive if the occure during scans
                 raise PortScanDoSException( #throw an exeption to inform user of its presence
                     'Detected DoS attack',
                     type=2,
@@ -992,7 +988,6 @@ class DNSTunneling(ABC):
             if 1 in predictions: #1 means DNS Tunneling attack
                 # we convert the dataframe into dict where each key is flow: (srcIp, srcMac, dstIp, dstMac, protocol, result), value: {details}
                 attackDict = flowDataframe[flowDataframe['Result'] == 1].set_index(attackDictKeys).to_dict(orient='index') #indication of DNS attack
-                # shutil.copy('detectedFlowsDNS.txt', f'{np.random.randint(1,1000000)}_detectedFlowsDNS.txt') # temporary code for saving false positive if the occure during scans
                 raise DNSTunnelingException( #throw an exeption to inform user of its presence
                     'Detected DNS Tunneling attack',
                     type=1,
@@ -1053,7 +1048,7 @@ class SaveData(ABC):
         except PermissionError:
             return collectedRows
 
-    
+
     # function for saving the collected flows into a txt file
     @staticmethod
     def SaveFlowsInFile(flows, filePath='detected_flows.txt'):

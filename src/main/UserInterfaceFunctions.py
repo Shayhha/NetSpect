@@ -528,7 +528,7 @@ def GetDefaultStyleSheetRegisterLineEdits(self, lineEditName):
 
 # custom popup message box class that will be used to show error messages to the user at certain times
 class CustomMessageBox(QDialog):
-    isShown = False #represents flag for indicating if popup is shown
+    isPopupShown = False #represents flag for indicating if popup message is shown
 
     # constructor that gets the title, message and icon type (will be shown inside) of the message box pop up window
     def __init__(self, title, message, iconType, isSelectable=False):
@@ -668,26 +668,25 @@ class CustomMessageBox(QDialog):
 
     # overriting the original reject function for when the user closes the popup window to add some new functionality
     def reject(self):
-        CustomMessageBox.isShown = False
+        CustomMessageBox.isPopupShown = False
         super().reject() 
     
 
     # helper fucntion to map the iconType to the appropriate built-in QIcon
     def GetBuiltInIcon(self, iconType):
-        icon = QMessageBox.standardIcon(QMessageBox.Information)
         if iconType == 'Warning':
-            icon = QMessageBox.standardIcon(QMessageBox.Warning)
+            return QMessageBox.standardIcon(QMessageBox.Warning)
         elif iconType == 'Critical':
-            icon = QMessageBox.standardIcon(QMessageBox.Critical)
+            return QMessageBox.standardIcon(QMessageBox.Critical)
         elif iconType == 'Question':
-            icon = QMessageBox.standardIcon(QMessageBox.Question)
-        return icon
+            return QMessageBox.standardIcon(QMessageBox.Question)
+        return QMessageBox.standardIcon(QMessageBox.Information)
 
 
 # helper function to show a popup window
-def ShowPopup(title, message, iconType='Warning', isSelectable=False):
+def ShowPopup(title, message, iconType='Information', isSelectable=False):
     #iconType options are: Information, Warning, Critical, Question
-    if not CustomMessageBox.isShown:
+    if not CustomMessageBox.isPopupShown:
         popup = CustomMessageBox(title, message, iconType, isSelectable)
 
         # center the popup window
@@ -696,8 +695,8 @@ def ShowPopup(title, message, iconType='Warning', isSelectable=False):
         centerPosition = cp.center() - qr.center()
         popup.move(centerPosition) #move to the center
 
-        # set isShown and show messagebox
-        CustomMessageBox.isShown = True
+        # set isPopupShown and show messagebox
+        CustomMessageBox.isPopupShown = True
         result = popup.exec_()
 
         # return result value for question messagebox, else none
@@ -1105,69 +1104,97 @@ def InitReportTableView(self):
 
 #---------------------------------------------SYSTEM-TRAY-ICON-----------------------------------------------#
 
-# method for initializing system tray icon for various alert messages
-def InitTrayIcon(self):
-    # check if system tray is available
-    if QSystemTrayIcon.isSystemTrayAvailable():
-        # create tray icon
-        self.trayIcon = QSystemTrayIcon(self)
-        self.trayIcon.setIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'NetSpectIconTransparent.png')))
-        self.trayIcon.setVisible(True)
+# system tray icon class that will be used to show alert messages in operation system from system tray icon
+class SystemTrayIcon():
+    isTrayMessageShown = False #represents flag for indicating if tray message is shown
+    trayMessageQueue = [] #represents tray message queue for showing tray messages
 
-        # set hover tooltip for the tray icon
-        self.trayIcon.setToolTip('NetSpect™ IDS')
+    # method for initializing system tray icon for various alert messages
+    def InitTrayIcon(self):
+        # check if system tray is available
+        if QSystemTrayIcon.isSystemTrayAvailable():
+            # create tray icon
+            self.trayIcon = QSystemTrayIcon(self)
+            self.trayIcon.setIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'NetSpectIconTransparent.png')))
+            self.trayIcon.setVisible(True)
 
-        # initialize context menu for the tray icon
-        trayMenu = QMenu()
+            # set hover tooltip for the tray icon
+            self.trayIcon.setToolTip('NetSpect™ IDS')
 
-        # start/stop detection
-        self.toggleDetection = QAction('Start Detection', self)
-        self.toggleDetection.triggered.connect(lambda event: self.StartStopButtonClicked())
-        trayMenu.addAction(self.toggleDetection)
+            # initialize context menu for the tray icon
+            trayMenu = QMenu()
 
-        # open homepage page
-        self.openHomepageAction = QAction('Homepage', self)
-        self.openHomepageAction.triggered.connect(lambda event: ChangePageIndex(self, 0))
-        trayMenu.addAction(self.openHomepageAction)
+            # start/stop detection
+            self.toggleDetection = QAction('Start Detection', self)
+            self.toggleDetection.triggered.connect(lambda event: self.StartStopButtonClicked())
+            trayMenu.addAction(self.toggleDetection)
+            trayMenu.addSeparator()
 
-        # open report preview page
-        self.openReportPreviewAction = QAction('Report Preview', self)
-        self.openReportPreviewAction.triggered.connect(lambda event: ChangePageIndex(self, 1))
-        trayMenu.addAction(self.openReportPreviewAction)
+            # open homepage page
+            self.openHomepageAction = QAction('Homepage', self)
+            self.openHomepageAction.triggered.connect(lambda event: ChangePageIndex(self, 0))
+            trayMenu.addAction(self.openHomepageAction)
 
-        # open information page
-        self.openInformationAction = QAction('Information', self)
-        self.openInformationAction.triggered.connect(lambda event: ChangePageIndex(self, 2))
-        trayMenu.addAction(self.openInformationAction)
+            # open report preview page
+            self.openReportPreviewAction = QAction('Report Preview', self)
+            self.openReportPreviewAction.triggered.connect(lambda event: ChangePageIndex(self, 1))
+            trayMenu.addAction(self.openReportPreviewAction)
 
-        # open settings page
-        self.openSettingsAction = QAction('Settings', self)
-        self.openSettingsAction.triggered.connect(lambda event: ChangePageIndex(self, 3))
-        trayMenu.addAction(self.openSettingsAction)
+            # open information page
+            self.openInformationAction = QAction('Information', self)
+            self.openInformationAction.triggered.connect(lambda event: ChangePageIndex(self, 2))
+            trayMenu.addAction(self.openInformationAction)
 
-        # exit application
-        self.exitAction = QAction('Exit', self)
-        self.exitAction.triggered.connect(lambda event: self.close())
-        trayMenu.addAction(self.exitAction)
+            # open settings page
+            self.openSettingsAction = QAction('Settings', self)
+            self.openSettingsAction.triggered.connect(lambda event: ChangePageIndex(self, 3))
+            trayMenu.addAction(self.openSettingsAction)
+            trayMenu.addSeparator()
 
-        # attach context menu to the tray icon
-        self.trayIcon.setContextMenu(trayMenu)
+            # exit application
+            self.exitAction = QAction('Exit', self)
+            self.exitAction.triggered.connect(lambda event: self.close())
+            trayMenu.addAction(self.exitAction)
+
+            # attach context menu to the tray icon
+            self.trayIcon.setContextMenu(trayMenu)
+
+
+    # helper fucntion to map the iconType to the appropriate QSystemTrayIcon
+    def GetTrayIcon(self, iconType):
+        if iconType == 'Warning':
+            return QSystemTrayIcon.Warning
+        elif iconType == 'Critical':
+            return QSystemTrayIcon.Critical
+        return QSystemTrayIcon.Information
+
+
+    # helper fucntion for showing queued tray messages
+    def ShowNextTrayMessage(self):
+        # check if tray message queue is not empty
+        if SystemTrayIcon.trayMessageQueue:
+            SystemTrayIcon.isTrayMessageShown = True #set flag to true
+
+            # pop first tray message and show it in operation system
+            title, message, icon, duration = SystemTrayIcon.trayMessageQueue.pop(0)
+            self.trayIcon.showMessage(title, message, icon, duration)
+
+            # schedule the next tray message and repeat until we have shown all queued tray messages
+            QTimer.singleShot(100, lambda: SystemTrayIcon.ShowNextTrayMessage(self))
+        # else we don't have any queued tray messages
+        else:
+            SystemTrayIcon.isTrayMessageShown = False #set flag to false
 
 
 # method for showing tray icon messages in operating system
 def ShowTrayMessage(self, title, message, iconType='Information', duration=5000):
-    icon = GetTrayIcon(self, iconType)
-    self.trayIcon.showMessage(title, message, icon, duration)
-
-
-# helper fucntion to map the iconType to the appropriate QSystemTrayIcon
-def GetTrayIcon(self, iconType):
-    icon = QSystemTrayIcon.Information
-    if iconType == 'Warning':
-        icon = QSystemTrayIcon.Warning
-    elif iconType == 'Critical':
-        icon = QSystemTrayIcon.Critical
-    return icon
+    # get desired tray icon for tray message
+    icon = SystemTrayIcon.GetTrayIcon(self, iconType)
+    # append tray message to tray message queue
+    SystemTrayIcon.trayMessageQueue.append((title, message, icon, duration))
+    # show tray message if not shown
+    if not SystemTrayIcon.isTrayMessageShown:
+        SystemTrayIcon.ShowNextTrayMessage(self)
 
 #-------------------------------------------SYSTEM-TRAY-ICON-END---------------------------------------------#
 
@@ -1189,7 +1216,7 @@ def InitAnimationsUI(self):
     ToggleBetweenEmailAndCodeResetPassword(self, True)
 
     #initialize system tray icon
-    InitTrayIcon(self)
+    SystemTrayIcon.InitTrayIcon(self)
 
     # initilize pie chart on screen
     InitPieChart(self)

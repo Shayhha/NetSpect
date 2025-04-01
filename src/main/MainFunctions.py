@@ -299,10 +299,10 @@ class NetworkInformation(ABC):
                         subnet = IPv4Interface(f'{ipAddress}/{netmask}').network #create ipv4 subnet object
                         ipv4Subnets.add((subnet, f'{'.'.join(ipAddress.split('.')[:3])}.0/24', netmask)) #set of tuples such that (subnet (real), range(/24), netmask)
 
-                # initialize ipv6 subnets based on ipv6 ips we found, excluding loopback
+                # initialize ipv6 subnets based on ipv6 ips we found
                 for ipAddress in ipv6Addrs:
                     netmask = NetworkInformation.GetNetmaskFromIp(Availableinterfaces, ipAddress) #get netmask with our function
-                    if ipAddress and netmask and (not ipAddress.startswith('::1')) and (not ipAddress.endswith('::1')): #exclude loopback
+                    if ipAddress and netmask:
                         netmaskPrefix = int(IPv6Address(netmask)).bit_count() #expand ipv6 netmask for calculating subnet
                         subnet = IPv6Interface(f'{ipAddress}/{netmaskPrefix}').network #create ipv6 subnet object
                         ipv6Subnets.add((subnet, f'{':'.join(ipAddress.split(':')[:4])}::/64', netmask)) #set of tuples such that (subnet (real), range(/64), netmask)

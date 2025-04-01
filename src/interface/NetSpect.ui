@@ -3688,7 +3688,7 @@ QTableView QScrollBar::handle:vertical {
 }</string>
                          </property>
                          <property name="text">
-                          <string>Max's PC</string>
+                          <string>User's PC</string>
                          </property>
                          <property name="alignment">
                           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -4162,7 +4162,7 @@ QTableView QScrollBar::handle:vertical {
                      </widget>
                     </item>
                     <item>
-                     <widget class="QFrame" name="verticalFrame_2">
+                     <widget class="QFrame" name="netowrkInterfaceInformationFrame">
                       <layout class="QVBoxLayout" name="verticalLayout_10">
                        <property name="spacing">
                         <number>6</number>
@@ -4329,7 +4329,7 @@ QTableView QScrollBar::handle:vertical {
                           </size>
                          </property>
                          <property name="styleSheet">
-                          <string notr="true">#connectedInterfaceFrame {
+                          <string notr="true">#macAddressFrame {
 	background-color: transparent;
 	color: #f3f3f3;
 }</string>
@@ -4450,7 +4450,7 @@ QTableView QScrollBar::handle:vertical {
                         </widget>
                        </item>
                        <item>
-                        <widget class="QFrame" name="connectedInterfaceFrame_3">
+                        <widget class="QFrame" name="descriptionFrame">
                          <property name="minimumSize">
                           <size>
                            <width>360</width>
@@ -4464,7 +4464,7 @@ QTableView QScrollBar::handle:vertical {
                           </size>
                          </property>
                          <property name="styleSheet">
-                          <string notr="true">#connectedInterfaceFrame {
+                          <string notr="true">#descriptionFrame {
 	background-color: transparent;
 	color: #f3f3f3;
 }</string>
@@ -4585,7 +4585,7 @@ QTableView QScrollBar::handle:vertical {
                         </widget>
                        </item>
                        <item>
-                        <widget class="QFrame" name="connectedInterfaceFrame_4">
+                        <widget class="QFrame" name="maxTransmitionUnitFrame">
                          <property name="minimumSize">
                           <size>
                            <width>360</width>
@@ -4599,142 +4599,7 @@ QTableView QScrollBar::handle:vertical {
                           </size>
                          </property>
                          <property name="styleSheet">
-                          <string notr="true">#connectedInterfaceFrame {
-	background-color: transparent;
-	color: #f3f3f3;
-}</string>
-                         </property>
-                         <layout class="QHBoxLayout" name="horizontalLayout_29">
-                          <property name="leftMargin">
-                           <number>0</number>
-                          </property>
-                          <property name="topMargin">
-                           <number>0</number>
-                          </property>
-                          <property name="rightMargin">
-                           <number>0</number>
-                          </property>
-                          <property name="bottomMargin">
-                           <number>0</number>
-                          </property>
-                          <item>
-                           <widget class="QLabel" name="maxSpeedLabel">
-                            <property name="minimumSize">
-                             <size>
-                              <width>100</width>
-                              <height>40</height>
-                             </size>
-                            </property>
-                            <property name="maximumSize">
-                             <size>
-                              <width>16777215</width>
-                              <height>40</height>
-                             </size>
-                            </property>
-                            <property name="font">
-                             <font>
-                              <family>Cairo</family>
-                              <pointsize>14</pointsize>
-                             </font>
-                            </property>
-                            <property name="styleSheet">
-                             <string notr="true">#maxSpeedLabel {
-	background-color: transparent;
-	color: #f3f3f3;
-}</string>
-                            </property>
-                            <property name="text">
-                             <string>Max Speed:</string>
-                            </property>
-                            <property name="alignment">
-                             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                            </property>
-                            <property name="wordWrap">
-                             <bool>false</bool>
-                            </property>
-                            <property name="textInteractionFlags">
-                             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="maxSpeedInfoLabel">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                             <size>
-                              <width>150</width>
-                              <height>40</height>
-                             </size>
-                            </property>
-                            <property name="maximumSize">
-                             <size>
-                              <width>400</width>
-                              <height>40</height>
-                             </size>
-                            </property>
-                            <property name="font">
-                             <font>
-                              <family>Cairo</family>
-                              <pointsize>14</pointsize>
-                             </font>
-                            </property>
-                            <property name="styleSheet">
-                             <string notr="true">#maxSpeedInfoLabel {
-	background-color: transparent;
-	color: #f3f3f3;
-}</string>
-                            </property>
-                            <property name="text">
-                             <string>1000</string>
-                            </property>
-                            <property name="alignment">
-                             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                            </property>
-                            <property name="wordWrap">
-                             <bool>false</bool>
-                            </property>
-                            <property name="textInteractionFlags">
-                             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <spacer name="horizontalSpacer_25">
-                            <property name="orientation">
-                             <enum>Qt::Horizontal</enum>
-                            </property>
-                            <property name="sizeHint" stdset="0">
-                             <size>
-                              <width>40</width>
-                              <height>20</height>
-                             </size>
-                            </property>
-                           </spacer>
-                          </item>
-                         </layout>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QFrame" name="connectedInterfaceFrame_5">
-                         <property name="minimumSize">
-                          <size>
-                           <width>360</width>
-                           <height>50</height>
-                          </size>
-                         </property>
-                         <property name="maximumSize">
-                          <size>
-                           <width>16777215</width>
-                           <height>50</height>
-                          </size>
-                         </property>
-                         <property name="styleSheet">
-                          <string notr="true">#connectedInterfaceFrame {
+                          <string notr="true">#maxTransmitionUnitFrame {
 	background-color: transparent;
 	color: #f3f3f3;
 }</string>
@@ -4825,7 +4690,7 @@ QTableView QScrollBar::handle:vertical {
 }</string>
                             </property>
                             <property name="text">
-                             <string>120</string>
+                             <string>1000</string>
                             </property>
                             <property name="alignment">
                              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -4910,7 +4775,7 @@ QTableView QScrollBar::handle:vertical {
                      </widget>
                     </item>
                     <item>
-                     <widget class="QFrame" name="verticalFrame">
+                     <widget class="QFrame" name="myIpAddressesFrameOutside">
                       <layout class="QVBoxLayout" name="verticalLayout_23">
                        <property name="spacing">
                         <number>0</number>
@@ -4928,7 +4793,7 @@ QTableView QScrollBar::handle:vertical {
                         <number>0</number>
                        </property>
                        <item>
-                        <widget class="QFrame" name="myIpAddressesFrame_2">
+                        <widget class="QFrame" name="myIpAddressesFrameInside">
                          <property name="minimumSize">
                           <size>
                            <width>360</width>
@@ -4942,7 +4807,7 @@ QTableView QScrollBar::handle:vertical {
                           </size>
                          </property>
                          <property name="styleSheet">
-                          <string notr="true">#myIpAddressesFrame {
+                          <string notr="true">#myIpAddressesFrameInside {
 	background-color: transparent;
 	color: #f3f3f3;
 }</string>

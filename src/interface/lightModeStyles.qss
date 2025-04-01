@@ -1049,7 +1049,7 @@ QCheckBox {
 	color: #151519;
 }
 
-#connectedInterfaceFrame {
+#macAddressFrame {
 	background-color: transparent;
 	color: #151519;
 }
@@ -1064,7 +1064,7 @@ QCheckBox {
 	color: #151519;
 }
 
-#connectedInterfaceFrame {
+#descriptionFrame {
 	background-color: transparent;
 	color: #151519;
 }
@@ -1079,22 +1079,7 @@ QCheckBox {
 	color: #151519;
 }
 
-#connectedInterfaceFrame {
-	background-color: transparent;
-	color: #151519;
-}
-
-#maxSpeedLabel {
-	background-color: transparent;
-	color: #151519;
-}
-
-#maxSpeedInfoLabel {
-	background-color: transparent;
-	color: #151519;
-}
-
-#connectedInterfaceFrame {
+#maxTransmitionUnitFrame {
 	background-color: transparent;
 	color: #151519;
 }
@@ -1114,7 +1099,7 @@ QCheckBox {
 	color: #151519;
 }
 
-#myIpAddressesFrame {
+#myIpAddressesFrameInside {
 	background-color: transparent;
 	color: #151519;
 }

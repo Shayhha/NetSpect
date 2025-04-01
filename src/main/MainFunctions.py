@@ -2,10 +2,10 @@ import sys, os, socket, platform, joblib, csv
 import numpy as np
 import pandas as pd
 from abc import ABC, abstractmethod
-from ipaddress import IPv4Address, IPv4Interface
-from psutil import net_if_addrs, net_if_stats
+from ipaddress import IPv4Interface, IPv6Interface, IPv4Address, IPv6Address
 from scapy.all import AsyncSniffer, srp, get_if_list, IP, IPv6, TCP, UDP, ICMP, ARP, Ether, Raw, conf
 from scapy.layers.dns import DNS
+from PyQt5.QtNetwork import QNetworkInterface
 from collections import defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -278,41 +278,43 @@ class NetworkInformation(ABC):
         return matchedInterfaces #return the matched interfaces as list
 
 
-    # function for collecting all available interfaces on the current machine and as much data about them as possible including name, speed, ip addresses, subnets and more
+    # function for collecting all available interfaces on the current machine including all their information including name, ipv4 and ipv6 addresses and subnets and more
     @staticmethod
     def GetNetworkInterfaces():
+        Availableinterfaces = QNetworkInterface.allInterfaces() #represents all available network interfaces for machine
         networkInterfaces = {} #represents network interfaces dict where keys are name of interface and value is interface dict
-        ifaceStats = net_if_stats() #for getting extra info about each interface using stats function
 
         # iterate through all network interfaces and initialize our network interfaces dict
         for iface in conf.ifaces.values():
             # we add only interfaces we support with scapy and that are up
             if iface.ips and any(iface.name.startswith(name) for name in NetworkInformation.supportedInterfaces):
-                # initialize our ipv4 and ipv6 addresses (always dict of two elements: 4: ipv4Addrs, 6: ipv6Addrs)
-                ipv4Addrs, ipv6Addrs, ipv4Subnets, ipv6Subnets = iface.ips[4], iface.ips[6], set(), set()
+                # initialize interface name, description, mac, MTU and ipv4 and ipv6 addresses (always dict of two elements: 4: ipv4Addrs, 6: ipv6Addrs)
+                name, description, mac, maxTransmitionUnit = iface.name, iface.description, iface.mac, NetworkInformation.GetMTUFromInterface(Availableinterfaces, iface.name)
+                ipv4Addrs, ipv6Addrs, ipv4Subnets, ipv6Subnets = iface.ips.get(4, []), iface.ips.get(6, []), set(), set()
 
                 # initialize ipv4 subnets based on ipv4 ips we found
                 for ipAddress in ipv4Addrs:
-                    netmask = NetworkInformation.GetNetmaskFromIp(ipAddress) #get netmask with our function
+                    netmask = NetworkInformation.GetNetmaskFromIp(Availableinterfaces, ipAddress) #get netmask with our function
                     if ipAddress and netmask:
                         subnet = IPv4Interface(f'{ipAddress}/{netmask}').network #create ipv4 subnet object
                         ipv4Subnets.add((subnet, f'{'.'.join(ipAddress.split('.')[:3])}.0/24', netmask)) #set of tuples such that (subnet (real), range(/24), netmask)
 
                 # initialize ipv6 subnets based on ipv6 ips we found, excluding loopback
                 for ipAddress in ipv6Addrs:
-                    if ipAddress and (not ipAddress.startswith('::1')) and (not ipAddress.endswith('::1')): #exclude loopback
-                        ipv6Subnets.add(f'{':'.join(ipAddress.split(':')[:4])}::/64') #represents /64 subnet estimation
+                    netmask = NetworkInformation.GetNetmaskFromIp(Availableinterfaces, ipAddress) #get netmask with our function
+                    if ipAddress and netmask and (not ipAddress.startswith('::1')) and (not ipAddress.endswith('::1')): #exclude loopback
+                        netmaskPrefix = int(IPv6Address(netmask)).bit_count() #expand ipv6 netmask for calculating subnet
+                        subnet = IPv6Interface(f'{ipAddress}/{netmaskPrefix}').network #create ipv6 subnet object
+                        ipv6Subnets.add((subnet, f'{':'.join(ipAddress.split(':')[:4])}::/64', netmask)) #set of tuples such that (subnet (real), range(/64), netmask)
 
                 # if interface is active and has ip address we add it to network interfaces
                 if ipv4Addrs or ipv6Addrs:
                     # initialize interface dict with all given information
                     interfaceDict = {
-                        'name': iface.name if iface.name else 'None',
-                        'description': iface.description if iface.description else 'None',
-                        'status': ifaceStats.get(iface.name).isup if ifaceStats.get(iface.name) else 'None',
-                        'maxSpeed': ifaceStats.get(iface.name).speed if ifaceStats.get(iface.name) else 'None',
-                        'maxTransmitionUnit': ifaceStats.get(iface.name).mtu if ifaceStats.get(iface.name) else 'None',
-                        'mac': iface.mac if iface.mac else 'None',
+                        'name': name if name else 'None',
+                        'description': description if description else 'None',
+                        'maxTransmitionUnit': maxTransmitionUnit if maxTransmitionUnit else 'None',
+                        'mac': mac if mac else 'None',
                         'ipv4Addrs': ipv4Addrs,
                         'ipv4Subnets': ipv4Subnets,
                         'ipv6Addrs': ipv6Addrs,
@@ -323,17 +325,27 @@ class NetworkInformation(ABC):
         return networkInterfaces #return the filtered and matched interfaces
 
 
-    # function for getting a correct netmask for a given IP address using psutil
+    # function for getting a correct netmask for a given IP address using QtNetwork
     @staticmethod
-    def GetNetmaskFromIp(ipAddress):
-        interfaces = net_if_addrs()
-
+    def GetNetmaskFromIp(Availableinterfaces, ipAddress):
         # iterate over each interface and find correct netmask
-        for addresses in interfaces.values():
-            for addr in addresses:
-                if addr.family.name == 'AF_INET' and addr.address == ipAddress:
-                    return addr.netmask #return the subnet mask if the IP matches
-        return None #return None if the IP is not found
+        for iface in Availableinterfaces:
+            for entry in iface.addressEntries():
+                # means we found our matching subnet for ip
+                if entry.ip().toString() == ipAddress:
+                    return entry.netmask().toString()
+        return None #return None if the IP was not found
+
+
+    # function for getting a correct MTU for a given interface using QtNetwork
+    @staticmethod
+    def GetMTUFromInterface(Availableinterfaces, interface):
+        # iterate over each interface and find correct interface
+        for iface in Availableinterfaces:
+            # means we found our matching interface, we return found MTU
+            if iface.humanReadableName() == interface or iface.name() == interface:
+                return str(iface.maximumTransmissionUnit())
+        return None #return None if interface was not found
 
 
     # function for getting system information

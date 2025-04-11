@@ -5555,107 +5555,135 @@ color: #f3f3f3
                            </widget>
                           </item>
                           <item>
-                           <widget class="QLineEdit" name="oldPasswordLineEdit">
-                            <property name="maximumSize">
-                             <size>
-                              <width>500</width>
-                              <height>43</height>
-                             </size>
-                            </property>
-                            <property name="font">
-                             <font>
-                              <family>Cairo</family>
-                              <pointsize>11</pointsize>
-                             </font>
-                            </property>
-                            <property name="toolTip">
-                             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter your current password.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                            </property>
-                            <property name="styleSheet">
-                             <string notr="true">#oldPasswordLineEdit {
+                           <widget class="QFrame" name="verticalFrame">
+                            <layout class="QVBoxLayout" name="changePasswordVerticalFrame">
+                             <property name="spacing">
+                              <number>15</number>
+                             </property>
+                             <property name="leftMargin">
+                              <number>0</number>
+                             </property>
+                             <property name="topMargin">
+                              <number>0</number>
+                             </property>
+                             <property name="rightMargin">
+                              <number>0</number>
+                             </property>
+                             <property name="bottomMargin">
+                              <number>0</number>
+                             </property>
+                             <item>
+                              <widget class="QLineEdit" name="oldPasswordLineEdit">
+                               <property name="maximumSize">
+                                <size>
+                                 <width>500</width>
+                                 <height>33</height>
+                                </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <family>Cairo</family>
+                                 <pointsize>11</pointsize>
+                                </font>
+                               </property>
+                               <property name="toolTip">
+                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter your current password.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                               </property>
+                               <property name="styleSheet">
+                                <string notr="true">#oldPasswordLineEdit {
     background-color: #f3f3f3; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
     padding: 5px;                    
     color: black;             
-	margin-bottom: 10px;
 }</string>
-                            </property>
-                            <property name="text">
-                             <string/>
-                            </property>
-                            <property name="placeholderText">
-                             <string>Old Password</string>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLineEdit" name="newPasswordLineEdit">
-                            <property name="maximumSize">
-                             <size>
-                              <width>500</width>
-                              <height>43</height>
-                             </size>
-                            </property>
-                            <property name="font">
-                             <font>
-                              <family>Cairo</family>
-                              <pointsize>11</pointsize>
-                             </font>
-                            </property>
-                            <property name="toolTip">
-                             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Your new password must have at least one uppercase letter and one digit. Minimum 6 characters and at most 20.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                            </property>
-                            <property name="styleSheet">
-                             <string notr="true">#newPasswordLineEdit {
+                               </property>
+                               <property name="text">
+                                <string/>
+                               </property>
+                               <property name="echoMode">
+                                <enum>QLineEdit::Password</enum>
+                               </property>
+                               <property name="placeholderText">
+                                <string>Old Password</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="newPasswordLineEdit">
+                               <property name="maximumSize">
+                                <size>
+                                 <width>500</width>
+                                 <height>33</height>
+                                </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <family>Cairo</family>
+                                 <pointsize>11</pointsize>
+                                </font>
+                               </property>
+                               <property name="toolTip">
+                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Your new password must have at least one uppercase letter and one digit. Minimum 6 characters and at most 20.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                               </property>
+                               <property name="styleSheet">
+                                <string notr="true">#newPasswordLineEdit {
     background-color: #f3f3f3; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
     padding: 5px;                    
     color: black;             
-	margin-bottom: 10px;
 }</string>
-                            </property>
-                            <property name="text">
-                             <string/>
-                            </property>
-                            <property name="placeholderText">
-                             <string>New Password</string>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLineEdit" name="confirmPasswordLineEdit">
-                            <property name="maximumSize">
-                             <size>
-                              <width>500</width>
-                              <height>33</height>
-                             </size>
-                            </property>
-                            <property name="font">
-                             <font>
-                              <family>Cairo</family>
-                              <pointsize>11</pointsize>
-                             </font>
-                            </property>
-                            <property name="toolTip">
-                             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Confirm your new password by entering it again.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                            </property>
-                            <property name="styleSheet">
-                             <string notr="true">#confirmPasswordLineEdit {
+                               </property>
+                               <property name="text">
+                                <string/>
+                               </property>
+                               <property name="echoMode">
+                                <enum>QLineEdit::Password</enum>
+                               </property>
+                               <property name="placeholderText">
+                                <string>New Password</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLineEdit" name="confirmPasswordLineEdit">
+                               <property name="maximumSize">
+                                <size>
+                                 <width>500</width>
+                                 <height>33</height>
+                                </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <family>Cairo</family>
+                                 <pointsize>11</pointsize>
+                                </font>
+                               </property>
+                               <property name="toolTip">
+                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Confirm your new password by entering it again.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                               </property>
+                               <property name="styleSheet">
+                                <string notr="true">#confirmPasswordLineEdit {
     background-color: #f3f3f3; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
     padding: 5px;                      
     color: black;             
 }</string>
-                            </property>
-                            <property name="text">
-                             <string/>
-                            </property>
-                            <property name="placeholderText">
-                             <string>Confirm Password</string>
-                            </property>
+                               </property>
+                               <property name="text">
+                                <string/>
+                               </property>
+                               <property name="echoMode">
+                                <enum>QLineEdit::Password</enum>
+                               </property>
+                               <property name="placeholderText">
+                                <string>Confirm Password</string>
+                               </property>
+                              </widget>
+                             </item>
+                            </layout>
                            </widget>
                           </item>
                           <item>

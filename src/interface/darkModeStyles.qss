@@ -1165,7 +1165,6 @@ QCheckBox {
     border-radius: 10px;         
     padding: 5px;                    
     color: black;             
-	margin-bottom: 10px;
 }
 
 #newPasswordLineEdit {
@@ -1174,7 +1173,6 @@ QCheckBox {
     border-radius: 10px;         
     padding: 5px;                    
     color: black;             
-	margin-bottom: 10px;
 }
 
 #confirmPasswordLineEdit {

@@ -502,7 +502,7 @@ def GetDefaultStyleSheetSettingsLineEdits(self, lineEditName):
             border-radius: 10px;
             padding: 5px;
             color: black;
-            {'margin: 0px 0px 10px 0px;' if (('old' in lineEditName) or ('new' in lineEditName)) else 'margin: 0px 0px 0px 0px;'}
+            margin: 0px 0px 0px 0px; 
         }}
     '''
     return defaultStylesheet
@@ -1253,6 +1253,14 @@ def InitAnimationsUI(self):
     self.loginEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self.loginPasswordLineEdit, self.loginEyeButton))
     self.registerEyeButton = self.registerPasswordLineEdit.addAction(icon, QLineEdit.TrailingPosition)
     self.registerEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self.registerPasswordLineEdit, self.registerEyeButton))
+
+    # set the toggle password cisability icon in the settings page for change password section
+    self.oldPasswordEyeButton = self.oldPasswordLineEdit.addAction(icon, QLineEdit.TrailingPosition)
+    self.oldPasswordEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self.oldPasswordLineEdit, self.oldPasswordEyeButton))
+    self.newPasswordEyeButton = self.newPasswordLineEdit.addAction(icon, QLineEdit.TrailingPosition)
+    self.newPasswordEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self.newPasswordLineEdit, self.newPasswordEyeButton))
+    self.confirmPasswordEyeButton = self.confirmPasswordLineEdit.addAction(icon, QLineEdit.TrailingPosition)
+    self.confirmPasswordEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self.confirmPasswordLineEdit, self.confirmPasswordEyeButton))
 
     # hide the error messages in the settings page
     self.saveEmailErrorMessageLabel.hide()

@@ -1,8 +1,16 @@
 import socket
 import random
-import time
 import subprocess
 import platform
+
+# This is a simple script that will generate DNS traffic on the network by sending DNS packets with various flags and sizes 
+# to different DNS servers on different pre-defined domains. For each DNS server there will be a random amount of packets
+# sent such that the traffic will appear as close to benign traffic as possible. Also the number of packets sent to each
+# DNS server will be randomized (in a reasonable range). After sending all the packets this script will clean the DNS cache on 
+# the current machine, allowing this script to be run again and again to generate more and more DNS traffic.
+# We used this script to generate DNS traffic when collecting benign traffic due to the limited amount of real DNS traffic
+# in any given network. This script was ran once every 40 seconds, ensuring that the data collected matches real world DNS 
+# traffic as close as possible.
 
 # list of DNS servers
 DNS_SERVERS = [
@@ -20,23 +28,15 @@ DNS_SERVERS = [
     '94.140.15.15',    # AdGuard Secondary DNS
     '185.228.168.9',   # CleanBrowsing DNS
     '185.228.169.9',   # CleanBrowsing Secondary DNS
-    # '76.76.19.19',     # Alternate DNS
-    # '76.223.122.150',  # Alternate Secondary DNS
-    # '4.2.2.1',         # Level3 DNS
-    # '4.2.2.2',         # Level3 Secondary DNS
-    # '84.200.69.80',    # DNS.Watch
-    # '84.200.70.40',    # DNS.Watch Secondary DNS
-    # '8.26.56.26',      # Comodo Secure DNS
-    # '8.20.247.20'      # Comodo Secure Secondary DNS
 ]
 
 # traffic distribution for query types
 QUERY_TYPES = {
-    'A': 70,      # IPv4 address
-    'AAAA': 20,   # IPv6 address
-    'MX': 5,      # Mail exchange
-    'TXT': 3,     # Metadata
-    'CNAME': 2    # CNAME
+    'A': 70, #IPv4 address
+    'AAAA': 20, #IPv6 address
+    'MX': 5, #Mail exchange
+    'TXT': 3, #Metadata
+    'CNAME': 2 #CNAME
 }
 
 # random list of 100 domains that are online
@@ -73,12 +73,12 @@ def addPadding(query):
 # construct a DNS query with specified query type and optional padding
 def constructDNSQuery(domain, queryType):
     query = (
-        b'\xaa\xbb' # Transaction ID
-        b'\x01\x00' # Standard query
-        b'\x00\x01' # Questions: 1
-        b'\x00\x00' # Answer RRs
-        b'\x00\x00' # Authority RRs
-        b'\x00\x00' # Additional RRs
+        b'\xaa\xbb' #transaction ID
+        b'\x01\x00' #standard query
+        b'\x00\x01' #questions: 1
+        b'\x00\x00' #answer RRs
+        b'\x00\x00' #authority RRs
+        b'\x00\x00' #additional RRs
     )
     # add domain name to query
     query += b''.join([bytes([len(part)]) + part.encode() for part in domain.split('.')]) + b'\x00'
@@ -117,7 +117,7 @@ def sendDNSQuery(domain, dnsServer, queryType, port=53):
 
         # receive the response
         response, _ = sock.recvfrom(512)
-        print(f'Received response for {domain} ({queryType}) from {dnsServer}: {response[:40]}...')  # Truncated for display
+        print(f'Received response for {domain} ({queryType}) from {dnsServer}: {response[:40]}...') #truncated for display
 
     except Exception as e:
         print(f'Error querying {domain} ({queryType}) from {dnsServer}: {e}')
@@ -125,7 +125,7 @@ def sendDNSQuery(domain, dnsServer, queryType, port=53):
         sock.close()
 
 
-# Generate and send DNS queries in a loop
+# generate and send DNS queries in a loop
 def generateDNSTraffic():
     # shuffle the list randomly and divide the list into 3 groups
     random.shuffle(DNS_SERVERS)
@@ -149,6 +149,7 @@ def generateDNSTraffic():
                 sendDNSQuery(domain, dnsServer, queryType)
 
 
+# main function for sending the DNS packets to the DNS servers
 if __name__ == '__main__':    
     # generate dns traffic using a helper function
     generateDNSTraffic()

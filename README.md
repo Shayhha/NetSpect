@@ -14,9 +14,7 @@
 [![PyQt5](https://img.shields.io/badge/PyQt5-5.15.11-2C3E50?style=for-the-badge&logo=github&logoColor=white)](https://www.riverbankcomputing.com/software/pyqt/)
 [![SQL Server](https://img.shields.io/badge/SQL%20Server-2022-blue?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)](https://www.microsoft.com/en-us/sql-server/sql-server-2022)
 [![Npcap](https://img.shields.io/badge/Npcap-1.79-59118e?style=for-the-badge&logo=Caffeine&logoColor=white)](https://npcap.com/)
-<picture>
-  <img src="https://img.shields.io/badge/Platforms-Windows%20%7C%20macOS%20%7C%20Linux-2C3E50?style=for-the-badge&logo=apple&logoColor=white" alt="Platforms: Windows | macOS | Linux">
-</picture>
+![Platforms](https://img.shields.io/badge/Platforms-Windows%20%7C%20macOS%20%7C%20Linux-2C3E50?style=for-the-badge&logo=apple&logoColor=white)
 [![MIT License](https://img.shields.io/badge/License-MIT-28A745?style=for-the-badge&logo=mit&logoColor=white)](https://opensource.org/licenses/MIT)
 </div>
 

@@ -10,7 +10,7 @@
   </div>
 
 [![Python](https://img.shields.io/badge/Python-3.12-3572A5?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/downloads/release/python-3120/) 
-[![Scapy](https://img.shields.io/badge/Scapy-2.6.1-2C3E50?style=for-the-badge&logo=github&logoColor=white)](https://github.com/secdev/scapy)
+[![Scapy](https://img.shields.io/badge/Scapy-2.5.0-2C3E50?style=for-the-badge&logo=github&logoColor=white)](https://github.com/secdev/scapy)
 [![PyQt5](https://img.shields.io/badge/PyQt5-5.15.11-2C3E50?style=for-the-badge&logo=github&logoColor=white)](https://www.riverbankcomputing.com/software/pyqt/)
 [![SQL Server](https://img.shields.io/badge/SQL%20Server-2022-blue?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)](https://www.microsoft.com/en-us/sql-server/sql-server-2022)
 [![Npcap](https://img.shields.io/badge/Npcap-1.79-59118e?style=for-the-badge&logo=Caffeine&logoColor=white)](https://npcap.com/)
@@ -176,13 +176,14 @@ The following screenshots showcase the application's interface, functionality, a
 Our application relies of the following requirements in order to work properly:
 > You can install them via the requirements.txt file as mentioned in [Installation & Setup](#installation--setup)
 
-- scapy
-- PyQt5
-- pandas
-- numpy
 - joblib
-- dotenv
+- numpy
+- pandas
+- PyQt5
+- python-dotenv
 - pyodbc
+- scapy
+- scikit-learn
 
 
 **Important** 

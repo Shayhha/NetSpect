@@ -1,8 +1,8 @@
 import UserInterfaceFunctions
-from PyQt5.QtCore import QTimer, QRegExp, QThread, QMutex, QMutexLocker, QWaitCondition, pyqtSignal, pyqtSlot
-from PyQt5.QtGui import QRegExpValidator
-from PyQt5.QtWidgets import QApplication, QDesktopWidget, QMainWindow, QTableWidgetItem, QFileDialog
-from PyQt5.uic import loadUi
+from ui_NetSpect import Ui_NetSpect
+from PySide6.QtCore import Signal, Slot, QTimer, QRegularExpression, QThread, QMutex, QMutexLocker, QWaitCondition
+from PySide6.QtGui import QGuiApplication, QValidator, QRegularExpressionValidator
+from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QFileDialog
 from hashlib import sha256
 from secrets import choice, token_hex
 from string import digits, ascii_letters, ascii_uppercase
@@ -12,6 +12,7 @@ from SQLHelper import *
 #--------------------------------------------------------NetSpect-CLASS---------------------------------------------------------#
 # class that represents main app of NetSpect
 class NetSpect(QMainWindow):
+    ui = None #represents main ui object of GUI with all our objects
     userData = {'userId': None, 'email': None, 'userName': None, 'numberOfDetections': 0, 'lightMode': 0, 'alertList': [], 'pieChartData': {}, 'blackList': []} #represents user data in interface
     isDetection = False #represents flag for indicating if detection is active
     resetPasswordValidator = {'resetCode': None, 'timestamp': None, 'newPassword': None} #represents reset password validator dictionary
@@ -33,8 +34,8 @@ class NetSpect(QMainWindow):
     # constructor of main gui application
     def __init__(self):
         super(NetSpect, self).__init__()
-        uiFile = currentDir.parent / 'interface' / 'NetSpect.ui'
-        loadUi(uiFile, self) #load the ui file
+        self.ui = Ui_NetSpect() #set mainwindow ui object
+        self.ui.setupUi(self) #load the ui file of NetSpect
         self.initUI() #call init method
         
     
@@ -48,45 +49,45 @@ class NetSpect(QMainWindow):
         self.dnsTimer.timeout.connect(self.SendDnsDict) #connect timeout event for dns timer
 
         # connect interface buttons to their methods
-        self.startStopPushButton.clicked.connect(self.StartStopButtonClicked)
-        self.loginPushButton.clicked.connect(self.LoginButtonClicked)
-        self.registerPushButton.clicked.connect(self.RegisterButtonClicked)
-        self.sendCodePushButton.clicked.connect(self.SendCodeButtonClicked)
-        self.verifyCodePushButton.clicked.connect(self.VerifyCodeButtonClicked)
-        self.deleteAccoutPushButton.clicked.connect(self.DeleteAccoutButtonClicked)
-        self.clearHistoryPushButton.clicked.connect(self.DeleteAlertsButtonClicked)
-        self.addMacAddressPushButton.clicked.connect(self.AddMacAddressButtonClicked)
-        self.emailPushButton.clicked.connect(self.SaveEmailButtonClicked)
-        self.usernamePushButton.clicked.connect(self.SaveUsernameButtonClicked)
-        self.passwordPushButton.clicked.connect(self.SavePasswordButtonClicked)
-        self.downloadReportPushButton.clicked.connect(self.DownloadReportButtonClicked)
-        self.cancelReportPushButton.clicked.connect(self.CancelReportButtonClicked)
+        self.ui.startStopPushButton.clicked.connect(self.StartStopButtonClicked)
+        self.ui.loginPushButton.clicked.connect(self.LoginButtonClicked)
+        self.ui.registerPushButton.clicked.connect(self.RegisterButtonClicked)
+        self.ui.sendCodePushButton.clicked.connect(self.SendCodeButtonClicked)
+        self.ui.verifyCodePushButton.clicked.connect(self.VerifyCodeButtonClicked)
+        self.ui.deleteAccoutPushButton.clicked.connect(self.DeleteAccoutButtonClicked)
+        self.ui.clearHistoryPushButton.clicked.connect(self.DeleteAlertsButtonClicked)
+        self.ui.addMacAddressPushButton.clicked.connect(self.AddMacAddressButtonClicked)
+        self.ui.emailPushButton.clicked.connect(self.SaveEmailButtonClicked)
+        self.ui.usernamePushButton.clicked.connect(self.SaveUsernameButtonClicked)
+        self.ui.passwordPushButton.clicked.connect(self.SavePasswordButtonClicked)
+        self.ui.downloadReportPushButton.clicked.connect(self.DownloadReportButtonClicked)
+        self.ui.cancelReportPushButton.clicked.connect(self.CancelReportButtonClicked)
 
         # connect interface labels to their methods
-        self.accountIcon.mousePressEvent = lambda event: UserInterfaceFunctions.AccountIconClicked(self)
-        self.moveToRegisterLabel.mousePressEvent = lambda event: UserInterfaceFunctions.SwitchBetweenLoginAndRegister(self)
-        self.moveToLoginLabel.mousePressEvent = lambda event: UserInterfaceFunctions.SwitchBetweenLoginAndRegister(self, False)
-        self.moveToForgotPasswordLabel.mousePressEvent = lambda event: UserInterfaceFunctions.SwitchBetweenLoginAndForgotPassword(self, True)
-        self.cancelResetPasswordProcessLabel.mousePressEvent = lambda event: UserInterfaceFunctions.SwitchBetweenLoginAndForgotPassword(self, False)
-        self.menuIcon.mousePressEvent = lambda event: UserInterfaceFunctions.OpenSideFrame(self)
-        self.closeMenuIcon.mousePressEvent = lambda event: UserInterfaceFunctions.CloseSideFrame(self)
-        self.homePageIconHorizontalFrame.mousePressEvent = lambda event: UserInterfaceFunctions.ChangePageIndex(self, 0) #switch to Home Page
-        self.reportIconHorizontalFrame.mousePressEvent = lambda event: UserInterfaceFunctions.ChangePageIndex(self, 1) #switch to Report Page
-        self.infoIconHorizontalFrame.mousePressEvent = lambda event: UserInterfaceFunctions.ChangePageIndex(self, 2) #switch to Information Page
-        self.settingsIcon.mousePressEvent = lambda event: UserInterfaceFunctions.ChangePageIndex(self, 3) #switch to Settings Page
-        self.logoutIcon.mousePressEvent = lambda event: self.LogoutButtonClicked() #log out of user's account and clear interface
+        self.ui.accountIcon.mousePressEvent = lambda event: UserInterfaceFunctions.AccountIconClicked(self)
+        self.ui.moveToRegisterLabel.mousePressEvent = lambda event: UserInterfaceFunctions.SwitchBetweenLoginAndRegister(self)
+        self.ui.moveToLoginLabel.mousePressEvent = lambda event: UserInterfaceFunctions.SwitchBetweenLoginAndRegister(self, False)
+        self.ui.moveToForgotPasswordLabel.mousePressEvent = lambda event: UserInterfaceFunctions.SwitchBetweenLoginAndForgotPassword(self, True)
+        self.ui.cancelResetPasswordProcessLabel.mousePressEvent = lambda event: UserInterfaceFunctions.SwitchBetweenLoginAndForgotPassword(self, False)
+        self.ui.menuIcon.mousePressEvent = lambda event: UserInterfaceFunctions.OpenSideFrame(self)
+        self.ui.closeMenuIcon.mousePressEvent = lambda event: UserInterfaceFunctions.CloseSideFrame(self)
+        self.ui.homePageIconHorizontalFrame.mousePressEvent = lambda event: UserInterfaceFunctions.ChangePageIndex(self, 0) #switch to Home Page
+        self.ui.reportIconHorizontalFrame.mousePressEvent = lambda event: UserInterfaceFunctions.ChangePageIndex(self, 1) #switch to Report Page
+        self.ui.infoIconHorizontalFrame.mousePressEvent = lambda event: UserInterfaceFunctions.ChangePageIndex(self, 2) #switch to Information Page
+        self.ui.settingsIcon.mousePressEvent = lambda event: UserInterfaceFunctions.ChangePageIndex(self, 3) #switch to Settings Page
+        self.ui.logoutIcon.mousePressEvent = lambda event: self.LogoutButtonClicked() #log out of user's account and clear interface
 
         # connect comboboxes and checkboxes to their methods
-        self.arpSpoofingCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
-        self.portScanningCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
-        self.denialOfServiceCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
-        self.dnsTunnelingCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
-        self.reportDurationComboBox.currentIndexChanged.connect(lambda: UserInterfaceFunctions.ReportDurationComboboxChanged(self))
-        self.operationModeComboBox.currentIndexChanged.connect(lambda: UserInterfaceFunctions.OperationModeComboboxChanged(self))
-        self.networkInterfaceComboBox.clear() #clear interfaces combobox
-        self.networkInterfaceComboBox.addItems(NetworkInformation.InitNetworkInfo()) #intialize our interfaces combobox with host network info
-        self.networkInterfaceComboBox.currentIndexChanged.connect(self.ChangeNetworkInterface) #connect interfaces combobox to its method
-        self.colorModeComboBox.currentIndexChanged.connect(self.ChangeColorMode) #connecct color mode combobox to its method
+        self.ui.arpSpoofingCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
+        self.ui.portScanningCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
+        self.ui.denialOfServiceCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
+        self.ui.dnsTunnelingCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
+        self.ui.reportDurationComboBox.currentIndexChanged.connect(lambda: UserInterfaceFunctions.ReportDurationComboboxChanged(self))
+        self.ui.operationModeComboBox.currentIndexChanged.connect(lambda: UserInterfaceFunctions.OperationModeComboboxChanged(self))
+        self.ui.networkInterfaceComboBox.clear() #clear interfaces combobox
+        self.ui.networkInterfaceComboBox.addItems(NetworkInformation.InitNetworkInfo()) #intialize our interfaces combobox with host network info
+        self.ui.networkInterfaceComboBox.currentIndexChanged.connect(self.ChangeNetworkInterface) #connect interfaces combobox to its method
+        self.ui.colorModeComboBox.currentIndexChanged.connect(self.ChangeColorMode) #connecct color mode combobox to its method
         self.ChangeNetworkInterface() #set default network interface from combobox
 
         # initialize other interface components and show interface
@@ -105,7 +106,7 @@ class NetSpect(QMainWindow):
     # method for making the app open in the center of screen
     def center(self):
         qr = self.frameGeometry()
-        cp = QDesktopWidget().availableGeometry().center()
+        cp = QGuiApplication.primaryScreen().availableGeometry().center()
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
@@ -237,46 +238,46 @@ class NetSpect(QMainWindow):
     # method for setting input validators on line edits in gui
     def InitValidators(self):
         # create regex expressions and validators
-        self.usernameValidator = QRegExpValidator(QRegExp('^[A-Za-z0-9]{4,16}$'))
-        self.passwordValidator = QRegExpValidator(QRegExp('[A-Za-z\\d$&?@#|.^*()%!]{6,50}')) 
-        self.finalPasswordValidator = QRegExpValidator(QRegExp('^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d$&?@#|.^*()%!]{6,50}$'))
-        self.emailValidator = QRegExpValidator(QRegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'))
+        self.usernameValidator = QRegularExpressionValidator(QRegularExpression('^[A-Za-z0-9]{4,16}$'))
+        self.passwordValidator = QRegularExpressionValidator(QRegularExpression('[A-Za-z\\d$&?@#|.^*()%!]{6,50}')) 
+        self.finalPasswordValidator = QRegularExpressionValidator(QRegularExpression('^(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d$&?@#|.^*()%!]{6,50}$'))
+        self.emailValidator = QRegularExpressionValidator(QRegularExpression('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'))
 
         # set validaotrs for username, password and email line edits in the register popup and settings page
-        self.loginUsernameLineEdit.setValidator(self.usernameValidator)
-        self.loginPasswordLineEdit.setValidator(self.passwordValidator)
-        self.registerEmailLineEdit.setValidator(self.emailValidator)
-        self.registerUsernameLineEdit.setValidator(self.usernameValidator)
-        self.registerPasswordLineEdit.setValidator(self.passwordValidator)
-        self.emailLineEdit.setValidator(self.emailValidator)
-        self.usernameLineEdit.setValidator(self.usernameValidator)
-        self.oldPasswordLineEdit.setValidator(self.passwordValidator)
-        self.newPasswordLineEdit.setValidator(self.passwordValidator)
-        self.confirmPasswordLineEdit.setValidator(self.passwordValidator)
+        self.ui.loginUsernameLineEdit.setValidator(self.usernameValidator)
+        self.ui.loginPasswordLineEdit.setValidator(self.passwordValidator)
+        self.ui.registerEmailLineEdit.setValidator(self.emailValidator)
+        self.ui.registerUsernameLineEdit.setValidator(self.usernameValidator)
+        self.ui.registerPasswordLineEdit.setValidator(self.passwordValidator)
+        self.ui.emailLineEdit.setValidator(self.emailValidator)
+        self.ui.usernameLineEdit.setValidator(self.usernameValidator)
+        self.ui.oldPasswordLineEdit.setValidator(self.passwordValidator)
+        self.ui.newPasswordLineEdit.setValidator(self.passwordValidator)
+        self.ui.confirmPasswordLineEdit.setValidator(self.passwordValidator)
     
         # connect the textChanged signal to the function that checks validation, this adds borders to the line edits if the text does not match the regex
-        self.loginUsernameLineEdit.textChanged.connect(lambda : UserInterfaceFunctions.ClearErrorMessageText(self.loginErrorMessageLabel))
-        self.loginPasswordLineEdit.textChanged.connect(lambda : UserInterfaceFunctions.ClearErrorMessageText(self.loginErrorMessageLabel))
-        self.registerEmailLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.registerEmailLineEdit, 'registerEmailLineEdit', self.registerErrorMessageLabel))
-        self.registerUsernameLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.registerUsernameLineEdit, 'registerUsernameLineEdit', self.registerErrorMessageLabel))
-        self.registerPasswordLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.registerPasswordLineEdit, 'registerPasswordLineEdit', self.registerErrorMessageLabel))
-        self.emailLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEditSettings(self.emailLineEdit, 'emailLineEdit', self.saveEmailErrorMessageLabel))
-        self.usernameLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEditSettings(self.usernameLineEdit, 'usernameLineEdit', self.saveUsernameErrorMessageLabel))
-        self.oldPasswordLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEditSettings(self.oldPasswordLineEdit, 'oldPasswordLineEdit', self.savePasswordErrorMessageLabel))
-        self.newPasswordLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEditSettings(self.newPasswordLineEdit, 'newPasswordLineEdit', self.savePasswordErrorMessageLabel))
-        self.confirmPasswordLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEditSettings(self.confirmPasswordLineEdit, 'confirmPasswordLineEdit', self.savePasswordErrorMessageLabel))
+        self.ui.loginUsernameLineEdit.textChanged.connect(lambda : UserInterfaceFunctions.ClearErrorMessageText(self.ui.loginErrorMessageLabel))
+        self.ui.loginPasswordLineEdit.textChanged.connect(lambda : UserInterfaceFunctions.ClearErrorMessageText(self.ui.loginErrorMessageLabel))
+        self.ui.registerEmailLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.ui.registerEmailLineEdit, 'registerEmailLineEdit', self.ui.registerErrorMessageLabel))
+        self.ui.registerUsernameLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.ui.registerUsernameLineEdit, 'registerUsernameLineEdit', self.ui.registerErrorMessageLabel))
+        self.ui.registerPasswordLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEdit(self.ui.registerPasswordLineEdit, 'registerPasswordLineEdit', self.ui.registerErrorMessageLabel))
+        self.ui.emailLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEditSettings(self.ui.emailLineEdit, 'emailLineEdit', self.ui.saveEmailErrorMessageLabel))
+        self.ui.usernameLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEditSettings(self.ui.usernameLineEdit, 'usernameLineEdit', self.ui.saveUsernameErrorMessageLabel))
+        self.ui.oldPasswordLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEditSettings(self.ui.oldPasswordLineEdit, 'oldPasswordLineEdit', self.ui.savePasswordErrorMessageLabel))
+        self.ui.newPasswordLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEditSettings(self.ui.newPasswordLineEdit, 'newPasswordLineEdit', self.ui.savePasswordErrorMessageLabel))
+        self.ui.confirmPasswordLineEdit.textChanged.connect(lambda : self.NotifyInvalidLineEditSettings(self.ui.confirmPasswordLineEdit, 'confirmPasswordLineEdit', self.ui.savePasswordErrorMessageLabel))
 
 
     # method for setting the text in the error message in login and register popups
     def ChangeLoginRegisterErrorMessage(self, message='', isLogin=True):
         if isLogin:
-            self.loginErrorMessageLabel.setText(message)
+            self.ui.loginErrorMessageLabel.setText(message)
             if message == '':
-                self.loginErrorMessageLabel.hide()
+                self.ui.loginErrorMessageLabel.hide()
         else:
-            self.registerErrorMessageLabel.setText(message)
+            self.ui.registerErrorMessageLabel.setText(message)
             if message == '':
-                self.registerErrorMessageLabel.hide()
+                self.ui.registerErrorMessageLabel.hide()
 
 
     # method for changing the styles of a line edit when it does not match the regex
@@ -328,8 +329,8 @@ class NetSpect(QMainWindow):
 
     # method that validates that a given password matches the password validator regex
     def ValidatePassword(self, password, errorLabelObject=None, errorMessage=None):
-        simpleValidatorState, _, _ = self.passwordValidator.validate(password, 0)
-        complexValidatorState, _, _ = self.finalPasswordValidator.validate(password, 0)
+        simpleValidatorState= self.passwordValidator.validate(password, 0)[0]
+        complexValidatorState = self.finalPasswordValidator.validate(password, 0)[0]
         if (simpleValidatorState != self.passwordValidator.Acceptable) or (complexValidatorState != self.finalPasswordValidator.Acceptable):
             if errorLabelObject and errorMessage:
                 UserInterfaceFunctions.ChangeErrorMessageText(errorLabelObject, errorMessage)
@@ -340,26 +341,26 @@ class NetSpect(QMainWindow):
     # method that sets the text in the info page with the system information of the users machine
     def InitSystemInfo(self, systemDict):
         # initialize system information section (left side)
-        self.OSTypeInfoLabel.setText(systemDict.get('osType'))
-        self.OSVersionInfoLabel.setText(systemDict.get('osVersion'))
-        self.architectureInfoLabel.setText(systemDict.get('architecture'))
-        self.hostNameInfoLabel.setText(systemDict.get('hostName'))
+        self.ui.OSTypeInfoLabel.setText(systemDict.get('osType'))
+        self.ui.OSVersionInfoLabel.setText(systemDict.get('osVersion'))
+        self.ui.architectureInfoLabel.setText(systemDict.get('architecture'))
+        self.ui.hostNameInfoLabel.setText(systemDict.get('hostName'))
 
 
     # method for updating network interface from combobox in gui
     def ChangeNetworkInterface(self):
         # set selected interface to chosen interfaces selected in combobox in gui
-        NetworkInformation.selectedInterface = self.networkInterfaceComboBox.currentText()
+        NetworkInformation.selectedInterface = self.ui.networkInterfaceComboBox.currentText()
         self.SendLogDict(f'Main_Thread: Changed interface to {NetworkInformation.selectedInterface}', 'INFO') #log interface change event
 
         # initialize network information section (right side)
         selectedInterface = NetworkInformation.networkInfo.get(NetworkInformation.selectedInterface)
-        self.connectedInterfaceInfoLabel.setText(selectedInterface.get('name'))
-        self.macAddressInfoLabel.setText(selectedInterface.get('mac'))
-        self.descriptionInfoLabel.setText(selectedInterface.get('description'))
-        self.maxTransmitionUnitInfoLabel.setText(selectedInterface.get('maxTransmitionUnit'))
-        self.ipAddressesListWidget.clear()
-        self.ipAddressesListWidget.addItems(selectedInterface.get('ipv4Addrs') + selectedInterface.get('ipv6Addrs'))
+        self.ui.connectedInterfaceInfoLabel.setText(selectedInterface.get('name'))
+        self.ui.macAddressInfoLabel.setText(selectedInterface.get('mac'))
+        self.ui.descriptionInfoLabel.setText(selectedInterface.get('description'))
+        self.ui.maxTransmitionUnitInfoLabel.setText(selectedInterface.get('maxTransmitionUnit'))
+        self.ui.ipAddressesListWidget.clear()
+        self.ui.ipAddressesListWidget.addItems(selectedInterface.get('ipv4Addrs') + selectedInterface.get('ipv6Addrs'))
         UserInterfaceFunctions.DisableSelectionIpListWidget(self)
 
 
@@ -378,13 +379,13 @@ class NetSpect(QMainWindow):
 
     # method for initializing mac addresses blacklist in gui
     def InitMacAddresses(self, macBlacklist):
-        self.macAddressListWidget.clear() #clear mac addresses list
-        self.macAddressListWidget.addItems(macBlacklist) #add all mac addresses to our blacklist
+        self.ui.macAddressListWidget.clear() #clear mac addresses list
+        self.ui.macAddressListWidget.addItems(macBlacklist) #add all mac addresses to our blacklist
 
 
     # method for initializing history table widget in gui
     def InitHistoryTable(self, alertList):
-        self.historyTableWidget.setRowCount(0) #clear history table
+        self.ui.historyTableWidget.setRowCount(0) #clear history table
 
         #iterate over each alert in list and add it to our table
         for alert in alertList:
@@ -394,7 +395,7 @@ class NetSpect(QMainWindow):
 
     # method for initializing report table widget in gui
     def InitReportTable(self, alertList):
-        self.reportPreviewTableModel.ClearReportTable() #clear report table
+        self.ui.reportPreviewTableModel.ClearReportTable() #clear report table
 
         #iterate over each alert in list and add it to our table
         for alert in alertList:
@@ -407,30 +408,30 @@ class NetSpect(QMainWindow):
         if srcIp and srcMac and dstIp and dstMac and attackType and timestamp:
             currentRow = 0 #add new row in the beginning of table
             # add our items into row for showing detected attack
-            self.historyTableWidget.insertRow(currentRow)
-            self.historyTableWidget.setItem(currentRow, 0, QTableWidgetItem(srcIp))
-            self.historyTableWidget.setItem(currentRow, 1, QTableWidgetItem(srcMac))
-            self.historyTableWidget.setItem(currentRow, 2, QTableWidgetItem(dstIp))
-            self.historyTableWidget.setItem(currentRow, 3, QTableWidgetItem(dstMac))
-            self.historyTableWidget.setItem(currentRow, 4, QTableWidgetItem(attackType))
-            self.historyTableWidget.setItem(currentRow, 5, QTableWidgetItem(timestamp))
+            self.ui.historyTableWidget.insertRow(currentRow)
+            self.ui.historyTableWidget.setItem(currentRow, 0, QTableWidgetItem(srcIp))
+            self.ui.historyTableWidget.setItem(currentRow, 1, QTableWidgetItem(srcMac))
+            self.ui.historyTableWidget.setItem(currentRow, 2, QTableWidgetItem(dstIp))
+            self.ui.historyTableWidget.setItem(currentRow, 3, QTableWidgetItem(dstMac))
+            self.ui.historyTableWidget.setItem(currentRow, 4, QTableWidgetItem(attackType))
+            self.ui.historyTableWidget.setItem(currentRow, 5, QTableWidgetItem(timestamp))
             # center the text of the last row after adding it
-            UserInterfaceFunctions.CenterSpecificTableRowText(self.historyTableWidget)
+            UserInterfaceFunctions.CenterSpecificTableRowText(self.ui.historyTableWidget)
     
 
     # method for adding row to report preview table widget in gui
     def AddRowToReportTable(self, interface, attackType, srcIp, srcMac, dstIp, dstMac, protocol, osType, timestamp):
         if interface and attackType and srcIp and srcMac and dstIp and dstMac and protocol and timestamp:
-            newRow = self.reportPreviewTableModel.AddRowToReportTable() #create a new row add all the values into it by index
-            self.reportPreviewTableModel.SetRowItemReportTable(newRow, 0, interface)
-            self.reportPreviewTableModel.SetRowItemReportTable(newRow, 1, attackType)
-            self.reportPreviewTableModel.SetRowItemReportTable(newRow, 2, srcIp)
-            self.reportPreviewTableModel.SetRowItemReportTable(newRow, 3, srcMac)
-            self.reportPreviewTableModel.SetRowItemReportTable(newRow, 4, dstIp)
-            self.reportPreviewTableModel.SetRowItemReportTable(newRow, 5, dstMac)
-            self.reportPreviewTableModel.SetRowItemReportTable(newRow, 6, protocol)
-            self.reportPreviewTableModel.SetRowItemReportTable(newRow, 7, timestamp)
-            self.reportPreviewTableModel.SetRowItemReportTable(newRow, 8, osType)
+            newRow = self.ui.reportPreviewTableModel.AddRowToReportTable() #create a new row add all the values into it by index
+            self.ui.reportPreviewTableModel.SetRowItemReportTable(newRow, 0, interface)
+            self.ui.reportPreviewTableModel.SetRowItemReportTable(newRow, 1, attackType)
+            self.ui.reportPreviewTableModel.SetRowItemReportTable(newRow, 2, srcIp)
+            self.ui.reportPreviewTableModel.SetRowItemReportTable(newRow, 3, srcMac)
+            self.ui.reportPreviewTableModel.SetRowItemReportTable(newRow, 4, dstIp)
+            self.ui.reportPreviewTableModel.SetRowItemReportTable(newRow, 5, dstMac)
+            self.ui.reportPreviewTableModel.SetRowItemReportTable(newRow, 6, protocol)
+            self.ui.reportPreviewTableModel.SetRowItemReportTable(newRow, 7, timestamp)
+            self.ui.reportPreviewTableModel.SetRowItemReportTable(newRow, 8, osType)
             UserInterfaceFunctions.ReportDurationComboboxChanged(self) #trigger default sort for duration combobox
             UserInterfaceFunctions.ReportCheckboxToggled(self) #trigger default sort for checkboxes
 
@@ -443,12 +444,12 @@ class NetSpect(QMainWindow):
             if state and userData:
                 self.userData = userData #save user data dictionary for logged in user
                 UserInterfaceFunctions.AccountIconClicked(self) #close login popup
-                self.colorModeComboBox.setCurrentIndex(self.userData.get('lightMode')) #set the combobox to the value received from database
+                self.ui.colorModeComboBox.setCurrentIndex(self.userData.get('lightMode')) #set the combobox to the value received from database
                 UserInterfaceFunctions.ToggleUserInterface(self, True) #toggle user interface
-                self.welcomeLabel.setText(f'Welcome {self.userData.get('userName')}')
+                self.ui.welcomeLabel.setText(f'Welcome {self.userData.get('userName')}')
                 self.UpdateNumberOfDetectionsCounterLabel(self.userData.get('numberOfDetections')) #set num of detections counter
-                self.emailLineEdit.setText(self.userData.get('email')) #set email of user in settings page
-                self.usernameLineEdit.setText(self.userData.get('userName')) #set username of user in settings page
+                self.ui.emailLineEdit.setText(self.userData.get('email')) #set email of user in settings page
+                self.ui.usernameLineEdit.setText(self.userData.get('userName')) #set username of user in settings page
                 self.InitHistoryTable(self.userData.get('alertList')) #initialize our history table
                 self.InitReportTable(self.userData.get('alertList')) #initialize our report table
                 self.InitMacAddresses(self.userData.get('blackList')) #intialize our mac address black list
@@ -476,11 +477,11 @@ class NetSpect(QMainWindow):
             else:
                 self.userData['numberOfDetections'] = value
             # set numberOfDetectionsCounter with new value
-            self.numberOfDetectionsCounter.setText(str(self.userData.get('numberOfDetections')))
+            self.ui.numberOfDetectionsCounter.setText(str(self.userData.get('numberOfDetections')))
 
 
     # method for sending logs to logger thread for writing logs
-    @pyqtSlot(str, str)
+    @Slot(str, str)
     def SendLogDict(self, message, level='INFO'):
         # if logger thread active we send logs
         if self.loggerThread:
@@ -489,13 +490,13 @@ class NetSpect(QMainWindow):
 
 
     # method for updating report progress bar in gui
-    @pyqtSlot(int)
+    @Slot(int)
     def UpdateReportProgressBar(self, value):
-         self.reportProgressBar.setValue(value)
+         self.ui.reportProgressBar.setValue(value)
 
 
     # method for updating running time label in gui
-    @pyqtSlot()
+    @Slot()
     def UpdateRunningTimeCounterLabel(self):
         # increment timer by 1 second
         self.timeElapsed += timedelta(seconds=1)
@@ -506,11 +507,11 @@ class NetSpect(QMainWindow):
         seconds = totalSeconds % 60 #get the remaining seconds
         formattedTime = f'{hours}:{minutes:02}:{seconds:02}'
         # update label with formatted time
-        self.runningTimeCounter.setText(formattedTime)
+        self.ui.runningTimeCounter.setText(formattedTime)
 
 
     # method for updating timer in main thread
-    @pyqtSlot(bool)
+    @Slot(bool)
     def UpdateTimer(self, state):
         if state:
             #starting timer for determine when to start our defence
@@ -525,11 +526,11 @@ class NetSpect(QMainWindow):
             self.portScanDosTimer.stop()
             self.dnsTimer.stop()
             self.timeElapsed = timedelta()
-            self.runningTimeCounter.setText('0:00:00')
+            self.ui.runningTimeCounter.setText('0:00:00')
 
     
     # method for updating arp list in main thread
-    @pyqtSlot(ARP_Packet)
+    @Slot(ARP_Packet)
     def UpdateArpList(self, arpPacket):
         # we check if our arp tables are initialized, if so continue
         if ArpSpoofing.isArpTables:
@@ -546,7 +547,7 @@ class NetSpect(QMainWindow):
 
     
     # method for updating portScanDos dict in main thread
-    @pyqtSlot(tuple, Default_Packet)
+    @Slot(tuple, Default_Packet)
     def UpdatePortScanDosDict(self, flowTuple, packet):
         # we ensure thread safety with our portScanDos mutex
         with QMutexLocker(self.portScanDosMutex):
@@ -564,7 +565,7 @@ class NetSpect(QMainWindow):
 
 
     # method for updating portScanDos dict in main thread
-    @pyqtSlot(tuple, DNS_Packet)
+    @Slot(tuple, DNS_Packet)
     def UpdateDnsDict(self, flowTuple, dnsPacket):
         # we ensure thread safety with our dns mutex
         with QMutexLocker(self.dnsMutex):
@@ -582,7 +583,7 @@ class NetSpect(QMainWindow):
 
     
     # method for extracting packet batches from arp list and sending to thread for analysis from main thread
-    @pyqtSlot()
+    @Slot()
     def SendArpList(self):
         # we ensure thread safety with our arp mutex
         with QMutexLocker(self.arpMutex):
@@ -599,13 +600,13 @@ class NetSpect(QMainWindow):
 
                 # Send the extracted batch to the worker thread
                 self.arpCounter -= len(arpBatch) #update arp counter
-                if not self.dataCollectorThread and self.operationModeComboBox.currentIndex() == 0:
+                if not self.dataCollectorThread and self.ui.operationModeComboBox.currentIndex() == 0:
                     self.arpThread.ReceiveArpBatch(arpBatch) #send batch to arp thread
                     self.SendLogDict('Main_Thread: Sent arp list for analysis.', 'INFO') #log send event
 
 
     # method for extracting packet batches from portScanDos dict and sending to thread for analysis from main thread
-    @pyqtSlot()
+    @Slot()
     def SendPortScanDosDict(self):
         # we ensure thread safety with our portScanDos mutex
         with QMutexLocker(self.portScanDosMutex):
@@ -642,17 +643,17 @@ class NetSpect(QMainWindow):
             if totalPackets > 0:
                 self.tcpUdpCounter -= totalPackets #update tcp udp counter
                 # means we send batch to portScanDos thread for analysis
-                if not self.dataCollectorThread and self.operationModeComboBox.currentIndex() == 0:
+                if not self.dataCollectorThread and self.ui.operationModeComboBox.currentIndex() == 0:
                     self.portScanDosThread.ReceivePortScanDosBatch(portScanDosBatch) #send batch to portScanDos thread
                     self.SendLogDict('Main_Thread: Sent portScanDos list for analysis.', 'INFO') #log send event
                 # else we send batch to data collector thread for data collection
-                elif self.dataCollectorThread and self.operationModeComboBox.currentIndex() == 1:
+                elif self.dataCollectorThread and self.ui.operationModeComboBox.currentIndex() == 1:
                     self.dataCollectorThread.ReceivePacketBatch(portScanDosBatch) #send batch to data collector thread
                     self.SendLogDict('Main_Thread: Sent portScanDos list for data collection.', 'INFO') #log send event
 
 
     # method for extracting packet batches from dns dict and sending to thread for analysis from main thread
-    @pyqtSlot()
+    @Slot()
     def SendDnsDict(self):
         # we ensure thread safety with our dns mutex
         with QMutexLocker(self.dnsMutex):
@@ -689,28 +690,28 @@ class NetSpect(QMainWindow):
             if totalPackets > 0:
                 self.dnsCounter -= totalPackets #update dns counter
                 # means we send batch to dns thread for analysis
-                if not self.dataCollectorThread and self.operationModeComboBox.currentIndex() == 0:
+                if not self.dataCollectorThread and self.ui.operationModeComboBox.currentIndex() == 0:
                     self.dnsThread.ReceiveDnsBatch(dnsBatch) #send batch to dns thread
                     self.SendLogDict('Main_Thread: Sent dns list for analysis.', 'INFO') #log send event
                 # else we send batch to data collector thread for data collection
-                elif self.dataCollectorThread and self.operationModeComboBox.currentIndex() == 2:
+                elif self.dataCollectorThread and self.ui.operationModeComboBox.currentIndex() == 2:
                     self.dataCollectorThread.ReceivePacketBatch(dnsBatch) #send batch to data collector thread
                     self.SendLogDict('Main_Thread: Sent dns list for data collection.', 'INFO') #log send event
 
 
     # method for closing SQL thread and setting it back to none
-    @pyqtSlot(dict)
+    @Slot(dict)
     def CloseSQLThread(self, stateDict):
         self.sqlThread = None #set thread to none
         # in case of an error we show error message
         if stateDict.get('state') == False and stateDict.get('message'):
             self.SendLogDict(f'SQL_Thread: {stateDict.get('message')}', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message'), 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Error Occurred', stateDict.get('message'), 'Critical')
         self.SendLogDict('SQL_Thread: Finsihed database tasks.', 'INFO') #log finish event
 
 
     # method for closing report thread and setting it back to none
-    @pyqtSlot(dict, bool)
+    @Slot(dict, bool)
     def CloseReportThread(self, stateDict, isClosing=False):
         self.reportThread = None #set thread to none
         # toggle report interface to be hidden
@@ -719,30 +720,30 @@ class NetSpect(QMainWindow):
         if not isClosing:
             # in case of an error we show error message
             if stateDict.get('state') == False and stateDict.get('message'):
-                UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message'), 'Critical')
+                UserInterfaceFunctions.ShowMessageBox('Error Occurred', stateDict.get('message'), 'Critical')
                 self.SendLogDict(f'Report_Thread: {stateDict.get('message')}', 'ERROR') #log error event
             # in case of cancelation, we show cancelation messsage
             elif stateDict.get('state') == True and stateDict.get('message'):
-                UserInterfaceFunctions.ShowPopup('Canceled Report Generation', stateDict.get('message'), 'Information')
+                UserInterfaceFunctions.ShowMessageBox('Canceled Report Generation', stateDict.get('message'), 'Information')
                 self.SendLogDict(f'Report_Thread: {stateDict.get('message')}', 'ERROR') #log error event
             # else we show success message
             else:
-                UserInterfaceFunctions.ShowPopup('Generated Report Successfully', 'Generated report in desired format successfully.', 'Information')
+                UserInterfaceFunctions.ShowMessageBox('Generated Report Successfully', 'Generated report in desired format successfully.', 'Information')
         self.SendLogDict('Report_Thread: Finsihed Creating Report.', 'INFO') #log finish event
 
 
     # method for closing logger thread and setting it back to none
-    @pyqtSlot(dict)
+    @Slot(dict)
     def CloseLoggerThread(self, stateDict):
         self.loggerThread = None #set thread to none
         # in case of an error we show error message
         if stateDict.get('state') == False and stateDict.get('message'):
             self.SendLogDict(f'Logger_Thread: {stateDict.get('message')}', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message'), 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Error Occurred', stateDict.get('message'), 'Critical')
 
 
     # method for closing sniffer thread and setting it back to none
-    @pyqtSlot(dict)
+    @Slot(dict)
     def CloseSnifferThread(self, stateDict):
         self.snifferThread = None #set thread to none for next detection
         # we check if it was the last thread, if so we set isDetection flag
@@ -752,12 +753,12 @@ class NetSpect(QMainWindow):
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
             self.SendLogDict(f'Sniffer_Thread: {stateDict.get('message')}', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message'), 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Error Occurred', stateDict.get('message'), 'Critical')
         self.SendLogDict('Sniffer_Thread: Finsihed network scan.', 'INFO') #log finish event
 
 
     # method for closing arp thread and setting it back to none
-    @pyqtSlot(dict)
+    @Slot(dict)
     def CloseArpThread(self, stateDict):
         self.arpThread = None #set thread to none for next detection
         ArpSpoofing.isArpTables = False #set our initialized flag to false for arp detection
@@ -768,12 +769,12 @@ class NetSpect(QMainWindow):
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
             self.SendLogDict(f'Arp_Thread: {stateDict.get('message')}', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message'), 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Error Occurred', stateDict.get('message'), 'Critical')
         self.SendLogDict('Arp_Thread: Finsihed analysis of traffic.', 'INFO') #log finish event
 
 
     # method for closing portScanDos thread and setting it back to none
-    @pyqtSlot(dict)
+    @Slot(dict)
     def ClosePortScanDosThread(self, stateDict):
         self.portScanDosThread = None #set thread to none for next detection
         # we check if it was the last thread, if so we set isDetection flag
@@ -783,12 +784,12 @@ class NetSpect(QMainWindow):
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
             self.SendLogDict(f'PortScanDos_Thread: {stateDict.get('message')}', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message'), 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Error Occurred', stateDict.get('message'), 'Critical')
         self.SendLogDict('PortScanDos_Thread: Finsihed analysis of traffic.', 'INFO') #log finish event
 
 
     # method for closing dns thread and setting it back to none
-    @pyqtSlot(dict)
+    @Slot(dict)
     def CloseDnsThread(self, stateDict):
         self.dnsThread = None #set thread to none for next detection
         # we check if it was the last thread, if so we set isDetection flag
@@ -798,12 +799,12 @@ class NetSpect(QMainWindow):
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
             self.SendLogDict(f'Dns_Thread: {stateDict.get('message')}', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message'), 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Error Occurred', stateDict.get('message'), 'Critical')
         self.SendLogDict('Dns_Thread: Finsihed analysis of traffic.', 'INFO') #log finish event
 
 
     # method for closing data collector thread and setting it back to none
-    @pyqtSlot(dict)
+    @Slot(dict)
     def CloseDataCollectorThread(self, stateDict):
         self.dataCollectorThread = None #set thread to none for next detection
         # we check if it was the last thread, if so we set isDetection flag
@@ -813,42 +814,42 @@ class NetSpect(QMainWindow):
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
             self.SendLogDict(f'Data_Collector_Thread: {stateDict.get('message')}', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Error Occurred', stateDict.get('message') , 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Error Occurred', stateDict.get('message') , 'Critical')
         self.SendLogDict('Data_Collector_Thread: Finsihed collecting data.', 'INFO') #log finish event
 
 
     # method for receiving database connection result
-    @pyqtSlot(dict)
+    @Slot(dict)
     def ConnectionResult(self, stateDict):
         # we check if failed connecting to database
         if stateDict.get('state') == False and stateDict.get('message'):
             self.SendLogDict(f'SQL_Thread: {stateDict.get('message')}', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Database Connection Failed', stateDict.get('message'), 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Database Connection Failed', stateDict.get('message'), 'Critical')
         # else we successfully connected to database
         elif stateDict.get('state') == True and stateDict.get('message'):
             self.SendLogDict(f'SQL_Thread: {stateDict.get('message')}', 'INFO') #log connection event
 
 
     # method for receiving initialize email credentils result
-    @pyqtSlot(dict)
+    @Slot(dict)
     def InitEmailCredentilsResult(self, stateDict):
         # we check if failed initialization of email credentils for reset password emails
         if stateDict.get('state') == False and stateDict.get('message'):
             self.SendLogDict(f'SQL_Thread: {stateDict.get('message')}', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Failed Initializing App Email', stateDict.get('message') , 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Failed Initializing App Email', stateDict.get('message') , 'Critical')
         # else we successfully initialized email credentils for reset password emails
         elif stateDict.get('state') == True and stateDict.get('message'):
             self.SendLogDict(f'SQL_Thread: {stateDict.get('message')}', 'INFO') #log initialize credentils event
     
 
     # method for receiving number of collected flows in dataset for data collection
-    @pyqtSlot(int)
+    @Slot(int)
     def CollectionResult(self, collectedFlows):
         self.SendLogDict(f'Data_Collector_Thread: Collected {collectedFlows} flows.', 'INFO') #log collection event
 
 
     # method for analyzing detection result of arp spoofing attack
-    @pyqtSlot(dict)
+    @Slot(dict)
     def ArpDetectionResult(self, result):
         # check if ARP tables are being initialized (type 3)
         if result.get('type') == 3:
@@ -932,7 +933,7 @@ class NetSpect(QMainWindow):
 
 
     # method for analyzing detection result of port scan and dos attacks 
-    @pyqtSlot(dict)
+    @Slot(dict)
     def PortScanDosDetectionResult(self, result):
         if result.get('state') == False and result.get('attackDict'):
             type = result.get('type') #represents type of result, 1-PortScan, 2-DoS
@@ -965,7 +966,7 @@ class NetSpect(QMainWindow):
 
     
     # method for analyzing detection result of dns tunneling attack
-    @pyqtSlot(dict)
+    @Slot(dict)
     def DnsDetectionResult(self, result):
         if result.get('state') == False and result.get('attackDict'):
             attackDict = result.get('attackDict') #represents attack dictionary with all anomalies found
@@ -1008,9 +1009,9 @@ class NetSpect(QMainWindow):
             
             # enable interface combobox and reset our data structures and counters
             self.SendLogDict(f'Main_Thread: Stopping detection. Remaining packets - TCP/UDP: {self.tcpUdpCounter}, ARP: {self.arpCounter}, DNS: {self.dnsCounter}', 'INFO') #log stop event
-            self.toggleDetection.setText('Start Detection') if self.operationModeComboBox.currentIndex() == 0 else self.toggleDetection.setText('Start Collection') #set tray lable
-            self.networkInterfaceComboBox.setEnabled(True) #enable interface changes
-            self.operationModeComboBox.setEnabled(True) #enable operation mode changes
+            self.ui.trayIcon.toggleDetectionAction.setText('Start Detection') if self.ui.operationModeComboBox.currentIndex() == 0 else self.ui.trayIcon.toggleDetectionAction.setText('Start Collection') #set tray lable
+            self.ui.networkInterfaceComboBox.setEnabled(True) #enable interface changes
+            self.ui.operationModeComboBox.setEnabled(True) #enable operation mode changes
             self.arpCounter, self.tcpUdpCounter, self.dnsCounter = 0, 0, 0 #reset our counters
             self.arpList, self.portScanDosDict, self.dnsDict = [], {}, {} #reset our packet data structures
             self.arpAttackDict, self.portScanDosAttackDict, self.dnsAttackDict = {'ipToMac': {}, 'macToIp': {}}, {}, {} #reset known attacks
@@ -1022,14 +1023,14 @@ class NetSpect(QMainWindow):
     def StartDetection(self):
         if not self.snifferThread and not self.arpThread and not self.portScanDosThread and not self.dnsThread and not self.dataCollectorThread:
             # means we start threads for detecting attacks in real time
-            if self.operationModeComboBox.currentIndex() == 0:
+            if self.ui.operationModeComboBox.currentIndex() == 0:
                 # set isDetection flag and disable interface and operation mode comboboxes
                 self.isDetection = True
-                self.networkInterfaceComboBox.setEnabled(False)
-                self.operationModeComboBox.setEnabled(False)
+                self.ui.networkInterfaceComboBox.setEnabled(False)
+                self.ui.operationModeComboBox.setEnabled(False)
 
                 # set detection tray icon
-                self.toggleDetection.setText('Stop Detection')
+                self.ui.trayIcon.toggleDetectionAction.setText('Stop Detection')
 
                 # initialize sniffer thread for real time packet gathering
                 self.snifferThread = Sniffing_Thread(self, NetworkInformation.selectedInterface)
@@ -1077,7 +1078,7 @@ class NetSpect(QMainWindow):
                 fileName, selectedData = 'port_scan_dos_benign_dataset.csv', 'PortScanDos'
 
                 # if user selected DNS we set selected data to be DNSTunneling for collecting DNS flows
-                if self.operationModeComboBox.currentIndex() == 2:
+                if self.ui.operationModeComboBox.currentIndex() == 2:
                     fileName, selectedData = 'dns_benign_dataset.csv', 'DNSTunneling'
 
                 # get desired path for data collection from file dialog
@@ -1087,11 +1088,11 @@ class NetSpect(QMainWindow):
                 if filePath:
                     # set isDetection flag and disable interface and operation mode comboboxes
                     self.isDetection = True
-                    self.networkInterfaceComboBox.setEnabled(False)
-                    self.operationModeComboBox.setEnabled(False)
+                    self.ui.networkInterfaceComboBox.setEnabled(False)
+                    self.ui.operationModeComboBox.setEnabled(False)
 
                     # set collection tray icon
-                    self.toggleDetection.setText('Stop Collection')
+                    self.ui.trayIcon.toggleDetectionAction.setText('Stop Collection')
 
                     # initialize sniffer thread for real time packet gathering
                     self.snifferThread = Sniffing_Thread(self, NetworkInformation.selectedInterface)
@@ -1118,7 +1119,7 @@ class NetSpect(QMainWindow):
                     return True #indication of successful operation
 
         else:
-            UserInterfaceFunctions.ShowPopup('Error Starting Scan', 'One of the threads is still in process, cannot start new scan.', 'Warning')
+            UserInterfaceFunctions.ShowMessageBox('Error Starting Scan', 'One of the threads is still in process, cannot start new scan.', 'Warning')
             self.SendLogDict('Main_Thread: One of the threads is still in process, cannot start new scan.', 'INFO') #log event
         return False #indication of failed operation
 
@@ -1129,7 +1130,7 @@ class NetSpect(QMainWindow):
         currentStyleSheet = f'''
             #startStopPushButton {{
                 border-radius: 60px;
-                {'background-color: #3A8E32;' if self.startStopPushButton.text() == 'STOP' else 'background-color: #D84F4F;'}
+                {'background-color: #3A8E32;' if self.ui.startStopPushButton.text() == 'STOP' else 'background-color: #D84F4F;'}
                 border: 1px solid black;
                 color: black;
                 font-weight: bold;
@@ -1137,23 +1138,23 @@ class NetSpect(QMainWindow):
             }}
 
             #startStopPushButton:hover {{
-                {'background-color: #4D9946;' if self.startStopPushButton.text() == 'STOP' else 'background-color: #DB6060;'}
+                {'background-color: #4D9946;' if self.ui.startStopPushButton.text() == 'STOP' else 'background-color: #DB6060;'}
             }}
 
             #startStopPushButton:pressed {{
-                {'background-color: #2E7128;' if self.startStopPushButton.text() == 'STOP' else 'background-color: #AC3f3F;'}
+                {'background-color: #2E7128;' if self.ui.startStopPushButton.text() == 'STOP' else 'background-color: #AC3f3F;'}
             }}
         '''
 
         # start and stop the sniffer and change the button stylesheet correctly
-        if self.startStopPushButton.text() == 'START':
+        if self.ui.startStopPushButton.text() == 'START':
             if self.StartDetection():
-                self.startStopPushButton.setText('STOP')
-                self.startStopPushButton.setStyleSheet(currentStyleSheet)
+                self.ui.startStopPushButton.setText('STOP')
+                self.ui.startStopPushButton.setStyleSheet(currentStyleSheet)
         else:
             if self.StopDetection():
-                self.startStopPushButton.setText('START')
-                self.startStopPushButton.setStyleSheet(currentStyleSheet)
+                self.ui.startStopPushButton.setText('START')
+                self.ui.startStopPushButton.setStyleSheet(currentStyleSheet)
 
     #-----------------------------------------------CLICKED-METHODS----------------------------------------------#
 
@@ -1162,19 +1163,19 @@ class NetSpect(QMainWindow):
         if self.sqlThread:
             # means we had detection active
             if self.isDetection:
-                UserInterfaceFunctions.ShowPopup('Error In Login', 'Please stop network scan before attempting to log in.', 'Information')
+                UserInterfaceFunctions.ShowMessageBox('Error In Login', 'Please stop network scan before attempting to log in.', 'Information')
             # means both fields are empty
-            elif not self.loginUsernameLineEdit.text() and not self.loginPasswordLineEdit.text():
-                UserInterfaceFunctions.ChangeErrorMessageText(self.loginErrorMessageLabel, 'Please enter username and password.')
+            elif not self.ui.loginUsernameLineEdit.text() and not self.ui.loginPasswordLineEdit.text():
+                UserInterfaceFunctions.ChangeErrorMessageText(self.ui.loginErrorMessageLabel, 'Please enter username and password.')
             # means username field empty
-            elif not self.loginUsernameLineEdit.text():
-                UserInterfaceFunctions.ChangeErrorMessageText(self.loginErrorMessageLabel, 'Please enter your username.')
+            elif not self.ui.loginUsernameLineEdit.text():
+                UserInterfaceFunctions.ChangeErrorMessageText(self.ui.loginErrorMessageLabel, 'Please enter your username.')
             # means password field empty
-            elif not self.loginPasswordLineEdit.text():
-                UserInterfaceFunctions.ChangeErrorMessageText(self.loginErrorMessageLabel, 'Please enter your password.')
+            elif not self.ui.loginPasswordLineEdit.text():
+                UserInterfaceFunctions.ChangeErrorMessageText(self.ui.loginErrorMessageLabel, 'Please enter your password.')
             # else we process the login request to our sql thread
             else:
-                self.sqlThread.Login(self.loginUsernameLineEdit.text(), NetSpect.ToSHA256(self.loginPasswordLineEdit.text()))
+                self.sqlThread.Login(self.ui.loginUsernameLineEdit.text(), NetSpect.ToSHA256(self.ui.loginPasswordLineEdit.text()))
 
 
     # method for loggin out of user's account and clear user interface
@@ -1182,7 +1183,7 @@ class NetSpect(QMainWindow):
         if self.sqlThread:
             # means we had detection active
             if self.isDetection:
-                UserInterfaceFunctions.ShowPopup('Error In Logout', 'Please stop network scan before attempting to log out.', 'Information')
+                UserInterfaceFunctions.ShowMessageBox('Error In Logout', 'Please stop network scan before attempting to log out.', 'Information')
             # else we log out and clear interface
             else:
                 # check if report thread is active, if so we stop thread
@@ -1196,37 +1197,37 @@ class NetSpect(QMainWindow):
         if self.sqlThread:
             # means we had detection active
             if self.isDetection:
-                UserInterfaceFunctions.ShowPopup('Error In Registration', 'Please stop network scan before attempting to register.', 'Information')
+                UserInterfaceFunctions.ShowMessageBox('Error In Registration', 'Please stop network scan before attempting to register.', 'Information')
             # else we register new user
             else:
-                email = self.registerEmailLineEdit.text()
-                emailState, _, _ = self.emailValidator.validate(email, 0)
-                username = self.registerUsernameLineEdit.text()
-                usernameState, _, _ = self.usernameValidator.validate(username, 0)
-                password = self.registerPasswordLineEdit.text()
+                email = self.ui.registerEmailLineEdit.text()
+                emailState = self.emailValidator.validate(email, 0)[0]
+                username = self.ui.registerUsernameLineEdit.text()
+                usernameState = self.usernameValidator.validate(username, 0)[0]
+                password = self.ui.registerPasswordLineEdit.text()
                 passwordState = self.ValidatePassword(password)
 
                 # means email, username and password fields are invalid
-                if emailState != self.emailValidator.Acceptable and usernameState != self.usernameValidator.Acceptable and not passwordState:
-                    UserInterfaceFunctions.ChangeErrorMessageText(self.registerErrorMessageLabel, 'Please enter a valid email address, username and passowrd into the fields.')
+                if emailState != QValidator.Acceptable and usernameState != QValidator.Acceptable and not passwordState:
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.ui.registerErrorMessageLabel, 'Please enter a valid email address, username and passowrd into the fields.')
                 # means email and username fields are invalid
-                elif emailState != self.emailValidator.Acceptable and usernameState != self.usernameValidator.Acceptable:
-                    UserInterfaceFunctions.ChangeErrorMessageText(self.registerErrorMessageLabel, 'Please enter a valid email address and username into the fields.')
+                elif emailState != QValidator.Acceptable and usernameState != QValidator.Acceptable:
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.ui.registerErrorMessageLabel, 'Please enter a valid email address and username into the fields.')
                 # means email and password fields are invalid
-                elif emailState != self.emailValidator.Acceptable and not passwordState:
-                    UserInterfaceFunctions.ChangeErrorMessageText(self.registerErrorMessageLabel, 'Please enter a valid email address and password into the fields.')
+                elif emailState != QValidator.Acceptable and not passwordState:
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.ui.registerErrorMessageLabel, 'Please enter a valid email address and password into the fields.')
                 # means username and password fields are invalid
-                elif usernameState != self.usernameValidator.Acceptable and not passwordState:
-                    UserInterfaceFunctions.ChangeErrorMessageText(self.registerErrorMessageLabel, 'Please enter a valid username and password into the fields.')
+                elif usernameState != QValidator.Acceptable and not passwordState:
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.ui.registerErrorMessageLabel, 'Please enter a valid username and password into the fields.')
                 # means email address field is invalid
-                elif emailState != self.emailValidator.Acceptable:
-                    UserInterfaceFunctions.ChangeErrorMessageText(self.registerErrorMessageLabel, 'Please enter a valid email address into the field.')
+                elif emailState != QValidator.Acceptable:
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.ui.registerErrorMessageLabel, 'Please enter a valid email address into the field.')
                 # means username field is invalid
-                elif usernameState != self.usernameValidator.Acceptable:
-                    UserInterfaceFunctions.ChangeErrorMessageText(self.registerErrorMessageLabel, 'Please enter a valid username into the field.')
+                elif usernameState != QValidator.Acceptable:
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.ui.registerErrorMessageLabel, 'Please enter a valid username into the field.')
                 # means password field is invalid
                 elif not passwordState:
-                    UserInterfaceFunctions.ChangeErrorMessageText(self.registerErrorMessageLabel, 'Please enter a valid password into the field.')
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.ui.registerErrorMessageLabel, 'Please enter a valid password into the field.')
                 # else we process the register request to our sql thread
                 else:
                     self.sqlThread.Register(email, username, NetSpect.ToSHA256(password))
@@ -1236,12 +1237,12 @@ class NetSpect(QMainWindow):
     def SendCodeButtonClicked(self):
         if self.sqlThread:
             # get user's email from line edit and get validator result
-            email = self.resetPasswordEmailLineEdit.text()
-            state, _, _ = self.emailValidator.validate(email, 0)
+            email = self.ui.resetPasswordEmailLineEdit.text()
+            state = self.emailValidator.validate(email, 0)[0]
 
             # check if user entered valid email
-            if state != self.emailValidator.Acceptable:
-                UserInterfaceFunctions.ChangeErrorMessageText(self.resetPasswordEmailErrorMessageLabel, 'Please enter a valid email address into the field before receiving a validation code.')
+            if state != QValidator.Acceptable:
+                UserInterfaceFunctions.ChangeErrorMessageText(self.ui.resetPasswordEmailErrorMessageLabel, 'Please enter a valid email address into the field before receiving a validation code.')
             # else we process the reset password request
             else:
                 # generate a 16-character reset code, timestamp and 8-character password for user and save them in resetPasswordValidator
@@ -1254,20 +1255,20 @@ class NetSpect(QMainWindow):
     def VerifyCodeButtonClicked(self):
         if self.sqlThread:
             # get user's email and reset code from line edits
-            email = self.resetPasswordEmailLineEdit.text()
-            receivedResetCode = self.resetPasswordCodeLineEdit.text()
+            email = self.ui.resetPasswordEmailLineEdit.text()
+            receivedResetCode = self.ui.resetPasswordCodeLineEdit.text()
 
             # check if reset code field is not empty
             if len(receivedResetCode) == 0:
-                UserInterfaceFunctions.ChangeErrorMessageText(self.resetPasswordCodeErrorMessageLabel, 'Please fill in reset code field before clicking the verify button.')
+                UserInterfaceFunctions.ChangeErrorMessageText(self.ui.resetPasswordCodeErrorMessageLabel, 'Please fill in reset code field before clicking the verify button.')
             # check if reset code expired, if so we show message
             elif NetworkInformation.CompareTimepstemps(self.resetPasswordValidator.get('timestamp'), NetworkInformation.GetCurrentTimestamp(), minutes=5):
                 UserInterfaceFunctions.AccountIconClicked(self)
-                UserInterfaceFunctions.ShowPopup('Reset Code Expired', 'The password reset code has expired, it was valid for 5 minutes. Try resetting password again.', 'Information')
+                UserInterfaceFunctions.ShowMessageBox('Reset Code Expired', 'The password reset code has expired, it was valid for 5 minutes. Try resetting password again.', 'Information')
                 self.resetPasswordValidator.update({'resetCode': None, 'timestamp': None, 'newPassword': None}) #reset our resetPasswordValidator
             # check if reset code does'nt match stored code
             elif receivedResetCode != self.resetPasswordValidator.get('resetCode'):
-                UserInterfaceFunctions.ChangeErrorMessageText(self.resetPasswordCodeErrorMessageLabel, 'Your given reset code is incorrect, try again.')
+                UserInterfaceFunctions.ChangeErrorMessageText(self.ui.resetPasswordCodeErrorMessageLabel, 'Your given reset code is incorrect, try again.')
             else:
                 self.sqlThread.ResetPassword(email, NetSpect.ToSHA256(self.resetPasswordValidator.get('newPassword')))
 
@@ -1277,10 +1278,10 @@ class NetSpect(QMainWindow):
         if self.sqlThread:
             # means we had detection active
             if self.isDetection:
-                UserInterfaceFunctions.ShowPopup('Error Deleting Account', 'Please stop network scan before attempting to delete account.', 'Information')
+                UserInterfaceFunctions.ShowMessageBox('Error Deleting Account', 'Please stop network scan before attempting to delete account.', 'Information')
             # else we emit signal to sql thread to delete account from database
             else:
-                result = UserInterfaceFunctions.ShowPopup('Delete Account Confirmation', 'Deleting your account will permanently remove all your data. Do you want to proceed?', 'Question')
+                result = UserInterfaceFunctions.ShowMessageBox('Delete Account Confirmation', 'Deleting your account will permanently remove all your data. Do you want to proceed?', 'Question')
                 # if true we proceed and delete user's account
                 if result:
                     self.sqlThread.DeleteAccount(self.userData.get('userId'))
@@ -1321,7 +1322,7 @@ class NetSpect(QMainWindow):
     # method for deleting all previous detected alerts of user and also updating database if user is logged in
     def DeleteAlertsButtonClicked(self):
         if self.isDetection:
-            UserInterfaceFunctions.ShowPopup('Error Deleting Alerts', 'Please stop network scan before attempting to delete alerts history.', 'Information')
+            UserInterfaceFunctions.ShowMessageBox('Error Deleting Alerts', 'Please stop network scan before attempting to delete alerts history.', 'Information')
         else:
             if self.userData:
                 # clear history and report tables and also reset alertsList and user interface counter
@@ -1330,30 +1331,30 @@ class NetSpect(QMainWindow):
                 self.userData['blackList'] = [] #clear blackList in userData
                 self.UpdateNumberOfDetectionsCounterLabel(0) #reset the number of detections counter in user interface
                 UserInterfaceFunctions.ResetChartToDefault(self) #reset our pie chart
-                self.historyTableWidget.setRowCount(0) #clear history table
-                self.reportPreviewTableModel.ClearReportTable() #clear report table
+                self.ui.historyTableWidget.setRowCount(0) #clear history table
+                self.ui.reportPreviewTableModel.ClearReportTable() #clear report table
 
                 # delete alerts from database if user is logged in
                 if self.sqlThread and self.userData.get('userId'):
                     self.sqlThread.DeleteAlerts(self.userData.get('userId'))
                 else:
-                    UserInterfaceFunctions.ShowPopup('Alerts Deletion Successful', 'Deleted all alerts history for previously detected attacks.', 'Information')
+                    UserInterfaceFunctions.ShowMessageBox('Alerts Deletion Successful', 'Deleted all alerts history for previously detected attacks.', 'Information')
 
 
     # method for adding an item to the mac address blacklist when user clicks the add button in settings page
     def AddMacAddressButtonClicked(self):
-        newMacAddress = self.macAddressLineEdit.text().lower() #convert characters to lower case for ease of use
-        if not QRegExp(r'^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$').exactMatch(newMacAddress):
-            UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, 'Please enter a valid MAC address')
+        newMacAddress = self.ui.macAddressLineEdit.text().lower() #convert characters to lower case for ease of use
+        if not QRegularExpression(r'^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$').match(newMacAddress).hasMatch(): #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            UserInterfaceFunctions.ChangeErrorMessageText(self.ui.macAddressBlacklistErrorMessageLabel, 'Please enter a valid MAC address')
         elif newMacAddress in self.userData.get('blackList'):
-            UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, 'This MAC address already exists in blacklist')
+            UserInterfaceFunctions.ChangeErrorMessageText(self.ui.macAddressBlacklistErrorMessageLabel, 'This MAC address already exists in blacklist')
         else: #means that this mac address is NOT already in the list
-            UserInterfaceFunctions.ClearErrorMessageText(self.macAddressBlacklistErrorMessageLabel)
+            UserInterfaceFunctions.ClearErrorMessageText(self.ui.macAddressBlacklistErrorMessageLabel)
             if self.sqlThread and self.userData.get('userId'):
                 self.sqlThread.AddBlacklistMac(self.userData.get('userId'), newMacAddress)
             else:
-                self.macAddressListWidget.addItem(newMacAddress)
-                self.macAddressLineEdit.clear()
+                self.ui.macAddressListWidget.addItem(newMacAddress)
+                self.ui.macAddressLineEdit.clear()
                 self.userData.setdefault('blackList', []).append(newMacAddress)
                 self.SendLogDict(f'Main_Thread: User has added a new mac address to mac blacklist successfully.', 'INFO') #log add mac event
 
@@ -1364,7 +1365,7 @@ class NetSpect(QMainWindow):
         if self.sqlThread and self.userData.get('userId'):
             self.sqlThread.DeleteBlacklistMac(self.userData.get('userId'), item.text())
         else:
-            self.macAddressListWidget.takeItem(self.macAddressListWidget.row(self.seletecItemForDelete))
+            self.ui.macAddressListWidget.takeItem(self.ui.macAddressListWidget.row(self.seletecItemForDelete))
             self.userData.setdefault('blackList', []).remove(self.seletecItemForDelete.text())
             self.SendLogDict(f'Main_Thread: User has removed mac address from mac blacklist successfully.', 'INFO') #log remove mac event
 
@@ -1373,12 +1374,12 @@ class NetSpect(QMainWindow):
     def SaveEmailButtonClicked(self):
         if self.sqlThread:
             if self.userData.get('userId') != None:
-                newEmail = self.emailLineEdit.text()
-                state, _, _ = self.emailValidator.validate(newEmail, 0)
+                newEmail = self.ui.emailLineEdit.text()
+                state = self.emailValidator.validate(newEmail, 0)[0]
                 if newEmail == self.userData.get('email'):
-                    UserInterfaceFunctions.ChangeErrorMessageText(self.saveEmailErrorMessageLabel ,'Your new email is the same as the current email, please enter a different email before clicking the save button.')
-                elif state != self.emailValidator.Acceptable:
-                    UserInterfaceFunctions.ChangeErrorMessageText(self.saveEmailErrorMessageLabel ,'Please enter a valid email address into the field before clicking the save button.')
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.ui.saveEmailErrorMessageLabel ,'Your new email is the same as the current email, please enter a different email before clicking the save button.')
+                elif state != QValidator.Acceptable:
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.ui.saveEmailErrorMessageLabel ,'Please enter a valid email address into the field before clicking the save button.')
                 else:
                     self.sqlThread.ChangeEmail(self.userData.get('userId'), newEmail)
 
@@ -1387,12 +1388,12 @@ class NetSpect(QMainWindow):
     def SaveUsernameButtonClicked(self):
         if self.sqlThread:
             if self.userData.get('userId') != None:
-                newUsername = self.usernameLineEdit.text()
-                state, _, _ = self.usernameValidator.validate(newUsername, 0)
+                newUsername = self.ui.usernameLineEdit.text()
+                state = self.usernameValidator.validate(newUsername, 0)[0]
                 if newUsername == self.userData.get('username'):
-                    UserInterfaceFunctions.ChangeErrorMessageText(self.saveUsernameErrorMessageLabel ,'Your new username is the same as the current username, please enter a different username before clicking the save button.')
-                elif state != self.usernameValidator.Acceptable:
-                    UserInterfaceFunctions.ChangeErrorMessageText(self.saveUsernameErrorMessageLabel ,'Please enter a valid username into the field before clicking the save button.')
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.ui.saveUsernameErrorMessageLabel ,'Your new username is the same as the current username, please enter a different username before clicking the save button.')
+                elif state != QValidator.Acceptable:
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.ui.saveUsernameErrorMessageLabel ,'Please enter a valid username into the field before clicking the save button.')
                 else:
                     self.sqlThread.ChangeUserName(self.userData.get('userId'), newUsername)
 
@@ -1401,24 +1402,24 @@ class NetSpect(QMainWindow):
     def SavePasswordButtonClicked(self):
         if self.sqlThread:
             if self.userData.get('userId') != None:
-                oldPassword = self.oldPasswordLineEdit.text()
-                newPassword = self.newPasswordLineEdit.text()
-                confirmPassword = self.confirmPasswordLineEdit.text()
+                oldPassword = self.ui.oldPasswordLineEdit.text()
+                newPassword = self.ui.newPasswordLineEdit.text()
+                confirmPassword = self.ui.confirmPasswordLineEdit.text()
                 if (len(oldPassword) == 0) or (len(newPassword) == 0) or (len(confirmPassword) == 0):
-                    UserInterfaceFunctions.ChangeErrorMessageText(self.savePasswordErrorMessageLabel ,'Please fill in all password fields before clicking the save button.')
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.ui.savePasswordErrorMessageLabel ,'Please fill in all password fields before clicking the save button.')
                 elif newPassword != confirmPassword:
-                    UserInterfaceFunctions.ChangeErrorMessageText(self.savePasswordErrorMessageLabel ,'Please confirm your new password, the password in the second and third fields must be the same before clicking the save button.')
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.ui.savePasswordErrorMessageLabel ,'Please confirm your new password, the password in the second and third fields must be the same before clicking the save button.')
                 else:
-                    if self.ValidatePassword(oldPassword, self.savePasswordErrorMessageLabel, 'You have entered an invalid password in the first field, please enter the correct current password before clicking the save button.'):
-                        if self.ValidatePassword(newPassword, self.savePasswordErrorMessageLabel, 'You have entered an invalid password in the second field, please enter a valid new password before clicking the save button.'):
-                            if self.ValidatePassword(confirmPassword, self.savePasswordErrorMessageLabel, 'You have entered an invalid password in the third field, please enter a valid new password before clicking the save button.'):
+                    if self.ValidatePassword(oldPassword, self.ui.savePasswordErrorMessageLabel, 'You have entered an invalid password in the first field, please enter the correct current password before clicking the save button.'):
+                        if self.ValidatePassword(newPassword, self.ui.savePasswordErrorMessageLabel, 'You have entered an invalid password in the second field, please enter a valid new password before clicking the save button.'):
+                            if self.ValidatePassword(confirmPassword, self.ui.savePasswordErrorMessageLabel, 'You have entered an invalid password in the third field, please enter a valid new password before clicking the save button.'):
                                 self.sqlThread.ChangePassword(self.userData.get('userId'), NetSpect.ToSHA256(newPassword), NetSpect.ToSHA256(oldPassword))
 
 
     # method for changing the UI color mode
     def ChangeColorMode(self):
         # send a log that the user is changing the ui color preference
-        self.SendLogDict(f'Main_Thread: {'User ' + self.userData.get('userName') if self.userData.get('userId') else 'Default user'} is changing the UI color preference to: "{self.colorModeComboBox.currentText()}".', 'INFO')
+        self.SendLogDict(f'Main_Thread: {'User ' + self.userData.get('userName') if self.userData.get('userId') else 'Default user'} is changing the UI color preference to: "{self.ui.colorModeComboBox.currentText()}".', 'INFO')
 
         # update the ui based on the users selection
         UserInterfaceFunctions.ToggleColorMode(self)
@@ -1433,12 +1434,12 @@ class NetSpect(QMainWindow):
     def DownloadReportButtonClicked(self):
         if not self.reportThread:
             # get system info and filtered alert list
-            systemInfo = NetworkInformation.systemInfo if self.machineInfoCheckBox.isChecked() else None
+            systemInfo = NetworkInformation.systemInfo if self.ui.machineInfoCheckBox.isChecked() else None
             alertList = UserInterfaceFunctions.GetFilteredAlerts(self)
 
             # if alertList is empty, we show message
             if not alertList:
-                UserInterfaceFunctions.ShowPopup('No Detection History', 'There are no detected alerts available for report generation.', 'Information')
+                UserInterfaceFunctions.ShowMessageBox('No Detection History', 'There are no detected alerts available for report generation.', 'Information')
             # else we proceed
             else:
                 # get desired path for report from file dialog
@@ -1469,225 +1470,225 @@ class NetSpect(QMainWindow):
     #----------------------------------------------SQL-RESULT-SLOTS----------------------------------------------#
 
     # method for showing login result from sql thread and process user's data
-    @pyqtSlot(dict)
+    @Slot(dict)
     def LoginResult(self, resultDict):
         # means error occured, we show error pop up
         if resultDict.get('error'):
             self.SendLogDict('Main_Thread: Error loggin into user account due to server error.', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Error In Login', 'Error loggin into user account due to server error, please try again later.', 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Error In Login', 'Error loggin into user account due to server error, please try again later.', 'Critical')
         # means failed loggin in, we show error message
         elif not resultDict.get('state'):
             self.SendLogDict(f'Main_Thread: {resultDict.get('message')}', 'ERROR') #log error event
-            UserInterfaceFunctions.ChangeErrorMessageText(self.loginErrorMessageLabel, resultDict.get('message'))
+            UserInterfaceFunctions.ChangeErrorMessageText(self.ui.loginErrorMessageLabel, resultDict.get('message'))
         # means we successfully logged in
         elif resultDict.get('state') and resultDict.get('result'):
             self.ChangeUserState(True, resultDict.get('result')) #call our method to log into account
 
     
     # method for showing register result from sql thread and process user's data
-    @pyqtSlot(dict)
+    @Slot(dict)
     def RegisterResult(self, resultDict):
         # means error occured, we show error pop up
         if resultDict.get('error'):
             self.SendLogDict('Main_Thread: Error registering new user due to server error.', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Error In Register', 'Error registering new user due to server error, please try again later.', 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Error In Register', 'Error registering new user due to server error, please try again later.', 'Critical')
         # means failed registering user, we show error message
         elif not resultDict.get('state'):
             self.SendLogDict(f'Main_Thread: {resultDict.get('message')}', 'ERROR') #log error event
-            UserInterfaceFunctions.ChangeErrorMessageText(self.registerErrorMessageLabel, resultDict.get('message'))
+            UserInterfaceFunctions.ChangeErrorMessageText(self.ui.registerErrorMessageLabel, resultDict.get('message'))
         # means we successfully registered user, we process a login request to our sql thread to log into his new account
         elif resultDict.get('state'):
-            self.SendLogDict(f'Main_Thread: Registered new user with email {self.registerUsernameLineEdit.text()}.', 'INFO') #log register event
-            self.sqlThread.Login(self.registerUsernameLineEdit.text(), NetSpect.ToSHA256(self.registerPasswordLineEdit.text())) #call login method to login new user
-            UserInterfaceFunctions.ShowPopup('Registration Successful', 'You have successfully registered. Logged into your account automatically.', 'Information')
+            self.SendLogDict(f'Main_Thread: Registered new user with email {self.ui.registerUsernameLineEdit.text()}.', 'INFO') #log register event
+            self.sqlThread.Login(self.ui.registerUsernameLineEdit.text(), NetSpect.ToSHA256(self.ui.registerPasswordLineEdit.text())) #call login method to login new user
+            UserInterfaceFunctions.ShowMessageBox('Registration Successful', 'You have successfully registered. Logged into your account automatically.', 'Information')
     
 
     # method for showing send reset password code result from sql thread
-    @pyqtSlot(dict)
+    @Slot(dict)
     def SendCodeResult(self, resultDict):
         # means error occured, we show error pop up
         if resultDict.get('error'):
             self.SendLogDict('Main_Thread: Error sending reset password code due to server error.', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Error Sending Code', 'Error sending reset password code due to server error, please try again later.', 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Error Sending Code', 'Error sending reset password code due to server error, please try again later.', 'Critical')
             self.resetPasswordValidator.update({'resetCode': None, 'timestamp': None, 'newPassword': None}) #reset our resetPasswordValidator
         # means failed sending code, we show error message
         elif not resultDict.get('state'):
             self.SendLogDict(f'Main_Thread: {resultDict.get('message')}', 'ERROR') #log error event
-            UserInterfaceFunctions.ChangeErrorMessageText(self.resetPasswordEmailErrorMessageLabel, resultDict.get('message'))
+            UserInterfaceFunctions.ChangeErrorMessageText(self.ui.resetPasswordEmailErrorMessageLabel, resultDict.get('message'))
             self.resetPasswordValidator.update({'resetCode': None, 'timestamp': None, 'newPassword': None}) #reset our resetPasswordValidator
         # means we successfully sent reset password code
         elif resultDict.get('state'):
             # change to the reset password page
-            self.SendLogDict(f'Main_Thread: Sent reset password code to user with email {self.resetPasswordEmailLineEdit.text()} successfully.', 'INFO') #log send code event
+            self.SendLogDict(f'Main_Thread: Sent reset password code to user with email {self.ui.resetPasswordEmailLineEdit.text()} successfully.', 'INFO') #log send code event
             UserInterfaceFunctions.ToggleBetweenEmailAndCodeResetPassword(self, False)
 
 
     # method for showing results to the user after resetting password
-    @pyqtSlot(dict)
+    @Slot(dict)
     def VerifyCodeResult(self, resultDict):
         # means error occured, we show error pop up
         if resultDict.get('error'):
             self.SendLogDict('Main_Thread: Error changing password due to server error.', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Error Changing Password', 'Error changing password due to server error, please try again later.', 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Error Changing Password', 'Error changing password due to server error, please try again later.', 'Critical')
         # means failed changing password, we show error message
         elif not resultDict.get('state'):
             self.SendLogDict(f'Main_Thread: {resultDict.get('message')}', 'ERROR') #log error event
-            UserInterfaceFunctions.ChangeErrorMessageText(self.resetPasswordCodeErrorMessageLabel, resultDict.get('message'))
+            UserInterfaceFunctions.ChangeErrorMessageText(self.ui.resetPasswordCodeErrorMessageLabel, resultDict.get('message'))
         # means we successfully changed password for user
         elif resultDict.get('state'):
-            self.SendLogDict(f'Main_Thread: Password for email {self.resetPasswordEmailLineEdit.text()} successfully changed.', 'INFO') #log change password event
+            self.SendLogDict(f'Main_Thread: Password for email {self.ui.resetPasswordEmailLineEdit.text()} successfully changed.', 'INFO') #log change password event
             UserInterfaceFunctions.AccountIconClicked(self)
-            UserInterfaceFunctions.ShowPopup('Changed Password Successfully', f'Your new password is: {self.resetPasswordValidator.get('newPassword')}\nUse it to log in and change it if necessary.', 'Information', isSelectable=True)
+            UserInterfaceFunctions.ShowMessageBox('Changed Password Successfully', f'Your new password is: {self.resetPasswordValidator.get('newPassword')}\nUse it to log in and change it if necessary.', 'Information', isSelectable=True)
             self.resetPasswordValidator.update({'resetCode': None, 'timestamp': None, 'newPassword': None}) #reset our resetPasswordValidator
 
 
     # method for showing delete account result from sql thread
-    @pyqtSlot(dict)
+    @Slot(dict)
     def DeleteAccountResult(self, resultDict):
         # means error occured, we show error pop up
         if resultDict.get('error'):
             self.SendLogDict('Main_Thread: Error deleting account due to server error.', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Error Deleting Account', 'Error deleting account due to server error, please try again later.', 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Error Deleting Account', 'Error deleting account due to server error, please try again later.', 'Critical')
         # means failed deleting account, we show error message
         elif not resultDict.get('state'):
             self.SendLogDict('Main_Thread: Failed deleting account due to server error.', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Failed Deleting Account', 'Failed deleting account due to server error, please try again later.', 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Failed Deleting Account', 'Failed deleting account due to server error, please try again later.', 'Critical')
         # means we successfully deleted account, we logout of previous user account
         elif resultDict.get('state'):
             self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')}\'s account has been deleted successfully.', 'INFO') #log delete user event
             self.LogoutButtonClicked() #call our method to log out of previous account
-            UserInterfaceFunctions.ShowPopup('User Account Deletion Successful', 'Your account has been deleted successfully. Sorry to see you go.', 'Information')
+            UserInterfaceFunctions.ShowMessageBox('User Account Deletion Successful', 'Your account has been deleted successfully. Sorry to see you go.', 'Information')
         
 
     # method for showing add alert result from sql thread
-    @pyqtSlot(dict)
+    @Slot(dict)
     def AddAlertResult(self, resultDict):
         # means error occured, we show error pop up
         if resultDict.get('error'):
             self.SendLogDict('Main_Thread: Error adding alert due to server error.', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Error Adding Alert', 'Error adding alert due to server error.', 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Error Adding Alert', 'Error adding alert due to server error.', 'Critical')
         # means failed adding alert, we show error message
         elif not resultDict.get('state'):
             self.SendLogDict('Main_Thread: Failed adding alert due to server error.', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Failed Adding Alert', 'Failed adding alert due to server error.', 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Failed Adding Alert', 'Failed adding alert due to server error.', 'Critical')
 
 
     # method for showing delete alerts result from sql thread
-    @pyqtSlot(dict)
+    @Slot(dict)
     def DeleteAlertsResult(self, resultDict):
         # means error occured, we show error pop up
         if resultDict.get('error'):
             self.SendLogDict('Main_Thread: Error deleting alerts history due to server error.', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Error Deleting Alerts', 'Error deleting alerts history due to server error, please try again later.', 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Error Deleting Alerts', 'Error deleting alerts history due to server error, please try again later.', 'Critical')
         # means failed deleting alerts, we show error message
         elif not resultDict.get('state'):
             self.SendLogDict('Main_Thread: Failed deleting alerts history due to server error.', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Failed Deleting Alerts', 'Failed deleting alerts history due to server error, please try again later.', 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Failed Deleting Alerts', 'Failed deleting alerts history due to server error, please try again later.', 'Critical')
         # means we successfully deleted alerts
         elif resultDict.get('state'):
             self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')}\'s alerts history has been deleted successfully.', 'INFO') #log delete alerts event
-            UserInterfaceFunctions.ShowPopup('Alerts Deletion Successful', 'Deleted all alerts history for previously detected attacks.', 'Information')
+            UserInterfaceFunctions.ShowMessageBox('Alerts Deletion Successful', 'Deleted all alerts history for previously detected attacks.', 'Information')
 
 
     # method for showing results to the user after adding a mac address to blacklist
-    @pyqtSlot(dict)
+    @Slot(dict)
     def AddMacToBlackListResult(self, resultDict):
         if resultDict.get('error'):
             self.SendLogDict('Main_Thread: Error adding an item to the blacklist due to server error.', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Error Adding To Blacklist', 'Error adding an item to the blacklist due to server error, please try again later.', 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Error Adding To Blacklist', 'Error adding an item to the blacklist due to server error, please try again later.', 'Critical')
         elif not resultDict.get('state'):
             self.SendLogDict(f'Main_Thread: {resultDict.get('message')}', 'ERROR') #log error event
-            UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, resultDict.get('message'))
+            UserInterfaceFunctions.ChangeErrorMessageText(self.ui.macAddressBlacklistErrorMessageLabel, resultDict.get('message'))
         elif resultDict.get('state'):
-            newMacAddress = self.macAddressLineEdit.text().lower() #convert characters to lower case for ease of use
-            self.macAddressListWidget.addItem(newMacAddress)
-            self.macAddressLineEdit.clear()
+            newMacAddress = self.ui.macAddressLineEdit.text().lower() #convert characters to lower case for ease of use
+            self.ui.macAddressListWidget.addItem(newMacAddress)
+            self.ui.macAddressLineEdit.clear()
             self.userData.setdefault('blackList', []).append(newMacAddress)
             self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has added a new mac address to mac blacklist successfully.', 'INFO') #log add mac event
 
 
     # method for showing results to the user after removing a mac address from blacklist 
-    @pyqtSlot(dict)
+    @Slot(dict)
     def DeleteMacFromBlackListResult(self, resultDict):
         if resultDict.get('error'):
             self.SendLogDict('Main_Thread: Error removing an item from the blacklist due to server error.', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Error Removing From Blacklist', 'Error removing an item from the blacklist due to server error, please try again later.', 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Error Removing From Blacklist', 'Error removing an item from the blacklist due to server error, please try again later.', 'Critical')
         elif not resultDict.get('state'):
             self.SendLogDict(f'Main_Thread: {resultDict.get('message')}', 'ERROR') #log error event
-            UserInterfaceFunctions.ChangeErrorMessageText(self.macAddressBlacklistErrorMessageLabel, resultDict.get('message'))
+            UserInterfaceFunctions.ChangeErrorMessageText(self.ui.macAddressBlacklistErrorMessageLabel, resultDict.get('message'))
         elif resultDict.get('state'):
-            self.macAddressListWidget.takeItem(self.macAddressListWidget.row(self.seletecItemForDelete))
+            self.ui.macAddressListWidget.takeItem(self.ui.macAddressListWidget.row(self.seletecItemForDelete))
             self.userData.setdefault('blackList', []).remove(self.seletecItemForDelete.text())
             self.seletecItemForDelete = None
             self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has removed mac address from mac blacklist successfully.', 'INFO') #log remove mac event
 
 
     # method for showing results to the user after changing email
-    @pyqtSlot(dict)
+    @Slot(dict)
     def SaveEmailResult(self, resultDict):
         if resultDict.get('error'):
             self.SendLogDict('Main_Thread: Error saving email due to server error.', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Error Saving Email', 'Error saving email due to server error, please try again later.', 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Error Saving Email', 'Error saving email due to server error, please try again later.', 'Critical')
         elif not resultDict.get('state'):
             self.SendLogDict(f'Main_Thread: {resultDict.get('message')}', 'ERROR') #log error event
-            UserInterfaceFunctions.ChangeErrorMessageText(self.saveEmailErrorMessageLabel, resultDict.get('message'))
+            UserInterfaceFunctions.ChangeErrorMessageText(self.ui.saveEmailErrorMessageLabel, resultDict.get('message'))
         elif resultDict.get('state'):
             self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has changed email successfully.', 'INFO') #log change email event
-            self.saveEmailErrorMessageLabel.clear()
-            self.userData['email'] = self.emailLineEdit.text()
-            UserInterfaceFunctions.ShowPopup('Email Changed Successfullly', 'Your email has changed successfully.', 'Information')
+            self.ui.saveEmailErrorMessageLabel.clear()
+            self.userData['email'] = self.ui.emailLineEdit.text()
+            UserInterfaceFunctions.ShowMessageBox('Email Changed Successfullly', 'Your email has changed successfully.', 'Information')
 
 
     # method for showing results to the user after changing username
-    @pyqtSlot(dict)
+    @Slot(dict)
     def SaveUsernameResult(self, resultDict):
         if resultDict.get('error'):
             self.SendLogDict('Main_Thread: Error saving username due to server error.', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Error Saving Username', 'Error saving username due to server error, please try again later.', 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Error Saving Username', 'Error saving username due to server error, please try again later.', 'Critical')
         elif not resultDict.get('state'):
             self.SendLogDict(f'Main_Thread: {resultDict.get('message')}', 'ERROR') #log error event
-            UserInterfaceFunctions.ChangeErrorMessageText(self.saveUsernameErrorMessageLabel, resultDict.get('message'))
+            UserInterfaceFunctions.ChangeErrorMessageText(self.ui.saveUsernameErrorMessageLabel, resultDict.get('message'))
         elif resultDict.get('state'):
-            self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has changed username to {self.usernameLineEdit.text()} successfully.', 'INFO') #log change username event
-            self.saveUsernameErrorMessageLabel.clear()
-            self.userData['userName'] = self.usernameLineEdit.text()
-            self.welcomeLabel.setText(f'Welcome {self.usernameLineEdit.text()}')
-            UserInterfaceFunctions.ShowPopup('Username Changed Successfullly', 'Your username has changed successfully.', 'Information')
+            self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has changed username to {self.ui.usernameLineEdit.text()} successfully.', 'INFO') #log change username event
+            self.ui.saveUsernameErrorMessageLabel.clear()
+            self.userData['userName'] = self.ui.usernameLineEdit.text()
+            self.ui.welcomeLabel.setText(f'Welcome {self.ui.usernameLineEdit.text()}')
+            UserInterfaceFunctions.ShowMessageBox('Username Changed Successfullly', 'Your username has changed successfully.', 'Information')
 
 
     # method for showing results to the user after changing password
-    @pyqtSlot(dict)
+    @Slot(dict)
     def SavePasswordResult(self, resultDict):
         if resultDict.get('error'):
             self.SendLogDict('Main_Thread: Error saving password due to server error.', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Error Saving Password', 'Error saving password due to server error, please try again later.', 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Error Saving Password', 'Error saving password due to server error, please try again later.', 'Critical')
         elif not resultDict.get('state'):
             self.SendLogDict(f'Main_Thread: {resultDict.get('message')}', 'ERROR') #log error event
-            UserInterfaceFunctions.ChangeErrorMessageText(self.savePasswordErrorMessageLabel, resultDict.get('message'))
+            UserInterfaceFunctions.ChangeErrorMessageText(self.ui.savePasswordErrorMessageLabel, resultDict.get('message'))
         elif resultDict.get('state'):
             self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has changed password successfully.', 'INFO') #log change password event
             # clear the password input fields
-            self.savePasswordErrorMessageLabel.clear()
-            self.oldPasswordLineEdit.clear()
-            self.newPasswordLineEdit.clear()
-            self.confirmPasswordLineEdit.clear()
+            self.ui.savePasswordErrorMessageLabel.clear()
+            self.ui.oldPasswordLineEdit.clear()
+            self.ui.newPasswordLineEdit.clear()
+            self.ui.confirmPasswordLineEdit.clear()
 
             # for each password input field we want to and reset the border to light gray
-            self.oldPasswordLineEdit.setStyleSheet(UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits(self, 'oldPasswordLineEdit'))
-            self.newPasswordLineEdit.setStyleSheet(UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits(self, 'newPasswordLineEdit'))
-            self.confirmPasswordLineEdit.setStyleSheet(UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits(self, 'confirmPasswordLineEdit'))
-            UserInterfaceFunctions.ShowPopup('Password Changed Successfullly', 'Your password has changed successfully.', 'Information')
+            self.ui.oldPasswordLineEdit.setStyleSheet(UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits(self, 'oldPasswordLineEdit'))
+            self.ui.newPasswordLineEdit.setStyleSheet(UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits(self, 'newPasswordLineEdit'))
+            self.ui.confirmPasswordLineEdit.setStyleSheet(UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits(self, 'confirmPasswordLineEdit'))
+            UserInterfaceFunctions.ShowMessageBox('Password Changed Successfullly', 'Your password has changed successfully.', 'Information')
 
 
     # method for showing results for update color mode after changing UI color
-    @pyqtSlot(dict)
+    @Slot(dict)
     def UpdateColorModeResult(self, resultDict):
         if resultDict.get('error'):
             self.SendLogDict(f'Main_Thread: Error saving color preference due to server error.', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowPopup('Error Saving Color Preference', 'Error saving color preference due to server error, please try again later.', 'Critical')
+            UserInterfaceFunctions.ShowMessageBox('Error Saving Color Preference', 'Error saving color preference due to server error, please try again later.', 'Critical')
         elif not resultDict.get('state'):
             self.SendLogDict(f'Main_Thread: Error Updating Color Preference. {resultDict.get('message')}', 'ERROR') #log change password event
-            UserInterfaceFunctions.ShowPopup('Error Updating Color Preference', resultDict.get('message'))
+            UserInterfaceFunctions.ShowMessageBox('Error Updating Color Preference', resultDict.get('message'))
         elif resultDict.get('state'):
             self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has changed the UI color preference successfully.', 'INFO') #log change password event
 
@@ -1699,11 +1700,11 @@ class NetSpect(QMainWindow):
 # thread for sniffing packets in real time for gathering network flows
 class Sniffing_Thread(QThread):
     # define signals for interacting with main gui thread
-    updateTimerSignal = pyqtSignal(bool)
-    updateArpListSignal = pyqtSignal(ARP_Packet)
-    updatePortScanDosDictSignal = pyqtSignal(tuple, Default_Packet)
-    updateDnsDictSignal = pyqtSignal(tuple, DNS_Packet)
-    finishSignal = pyqtSignal(dict)
+    updateTimerSignal = Signal(bool)
+    updateArpListSignal = Signal(ARP_Packet)
+    updatePortScanDosDictSignal = Signal(tuple, Default_Packet)
+    updateDnsDictSignal = Signal(tuple, DNS_Packet)
+    finishSignal = Signal(dict)
 
     # constructor of sniffing thread
     def __init__(self, parent=None, selectedInterface=None):
@@ -1715,7 +1716,7 @@ class Sniffing_Thread(QThread):
     
 
     # method for stopping sniffer thread
-    @pyqtSlot()
+    @Slot()
     def StopThread(self):
         self.stopFlag = True #set stop flag
         # we check if sniffer is still running, if so we stop it
@@ -1749,7 +1750,7 @@ class Sniffing_Thread(QThread):
             # create scapy AsyncSniffer object with desired interface and sniff network packets asynchronously
             self.sniffer = AsyncSniffer(iface=self.interface, prn=self.PacketCapture, stop_filter=self.StopScan, store=0)
             self.sniffer.start() #start our async sniffing
-            self.exec_() #execute sniffer process
+            self.exec() #execute sniffer process
         except PermissionError: #if user didn't run with administrative privileges
             stateDict.update({'state': False, 'message': 'Permission denied. Please run again with administrative privileges.'})
         except Exception as e: #we catch an exception if something happend while sniffing
@@ -1799,8 +1800,8 @@ class Sniffing_Thread(QThread):
 # thread for analyzing arp traffic and detecting arp spoofing attacks
 class Arp_Thread(QThread):
     # define signals for interacting with main gui thread
-    detectionResultSignal = pyqtSignal(dict)
-    finishSignal = pyqtSignal(dict)
+    detectionResultSignal = Signal(dict)
+    finishSignal = Signal(dict)
 
     # constructor of arp thread
     def __init__(self, parent=None):
@@ -1813,7 +1814,7 @@ class Arp_Thread(QThread):
     
 
     # method for receiving arp batch from main thread
-    @pyqtSlot(dict)
+    @Slot(dict)
     def ReceiveArpBatch(self, arpList):
         with QMutexLocker(self.mutex):
             self.arpBatch = arpList #set our arp list batch received from main thread
@@ -1821,7 +1822,7 @@ class Arp_Thread(QThread):
 
 
     # method for stopping arp thread
-    @pyqtSlot()
+    @Slot()
     def StopThread(self):
         self.stopFlag = True #set stop flag
         with QMutexLocker(self.mutex):
@@ -1868,8 +1869,8 @@ class Arp_Thread(QThread):
 # thread for analyzing tcp and udp traffic and detecting port scanning and dos attacks
 class PortScanDos_Thread(QThread):
     # define signals for interacting with main gui thread
-    detectionResultSignal = pyqtSignal(dict)
-    finishSignal = pyqtSignal(dict)
+    detectionResultSignal = Signal(dict)
+    finishSignal = Signal(dict)
 
     # constructor of portScanDos thread
     def __init__(self, parent=None):
@@ -1882,7 +1883,7 @@ class PortScanDos_Thread(QThread):
     
 
     # method for receiving portScanDos batch from main thread
-    @pyqtSlot(dict)
+    @Slot(dict)
     def ReceivePortScanDosBatch(self, portScanDosDict):
         with QMutexLocker(self.mutex):
             self.portScanDosBatch = portScanDosDict #set our portScanDos dict batch received from main thread
@@ -1890,7 +1891,7 @@ class PortScanDos_Thread(QThread):
 
 
     # method for stopping portScanDos thread
-    @pyqtSlot()
+    @Slot()
     def StopThread(self):
         self.stopFlag = True #set stop flag
         with QMutexLocker(self.mutex):
@@ -1934,8 +1935,8 @@ class PortScanDos_Thread(QThread):
 # thread for analyzing dns traffic and detecting dns tunneling attacks
 class Dns_Thread(QThread):
     # define signals for interacting with main gui thread
-    detectionResultSignal = pyqtSignal(dict)
-    finishSignal = pyqtSignal(dict)
+    detectionResultSignal = Signal(dict)
+    finishSignal = Signal(dict)
 
     # constructor of dns thread
     def __init__(self, parent=None):
@@ -1948,7 +1949,7 @@ class Dns_Thread(QThread):
     
 
     # method for receiving dns batch from main thread
-    @pyqtSlot(dict)
+    @Slot(dict)
     def ReceiveDnsBatch(self, dnsDict):
         with QMutexLocker(self.mutex):
             self.dnsBatch = dnsDict #set our dns dict batch received from main thread
@@ -1956,7 +1957,7 @@ class Dns_Thread(QThread):
 
 
     # method for stopping dns thread
-    @pyqtSlot()
+    @Slot()
     def StopThread(self):
         self.stopFlag = True #set stop flag
         with QMutexLocker(self.mutex):
@@ -2012,8 +2013,8 @@ class Report_Thread(QThread):
     tableFormat = '{:<13} {:<15} {:<40} {:<20} {:<40} {:<20} {:<10} {:<13} {}\n'
 
     # define signals for interacting with main gui thread
-    updateProgressBarSignal = pyqtSignal(int)
-    finishSignal = pyqtSignal(dict, bool)
+    updateProgressBarSignal = Signal(int)
+    finishSignal = Signal(dict, bool)
 
     # constructor of report thread
     def __init__(self, parent=None, filePath=None, alertList=None, systemInfo=None):
@@ -2028,7 +2029,7 @@ class Report_Thread(QThread):
 
     
     # method for stopping dns thread
-    @pyqtSlot()
+    @Slot()
     def StopThread(self, isClosing=False):
         self.stopFlag = True #set stop flag
         self.isClosing = isClosing #set close flag
@@ -2145,7 +2146,7 @@ class Report_Thread(QThread):
 # thread for logging alerts and application events into a log file
 class Logger_Thread(QThread):
     # define signals for interacting with main gui thread
-    finishSignal = pyqtSignal(dict)
+    finishSignal = Signal(dict)
 
     # constructor of logger thread
     def __init__(self, parent=None):
@@ -2160,7 +2161,7 @@ class Logger_Thread(QThread):
     
 
     # method for receiving log from main thread
-    @pyqtSlot(dict)
+    @Slot(dict)
     def ReceiveLog(self, logDict):
         with QMutexLocker(self.mutex):
             self.logQueue.append(logDict) #append log into log queue
@@ -2168,7 +2169,7 @@ class Logger_Thread(QThread):
 
 
     # method for stopping logger thread
-    @pyqtSlot()
+    @Slot()
     def StopThread(self):
         self.stopFlag = True #set stop flag
         with QMutexLocker(self.mutex):
@@ -2235,8 +2236,8 @@ class Logger_Thread(QThread):
 # thread for collecting benign traffic for port scan, dos and dns tunneling
 class Data_Collector_Thread(QThread):
     # define signals for interacting with main gui thread
-    collectionResultSignal = pyqtSignal(int)
-    finishSignal = pyqtSignal(dict)
+    collectionResultSignal = Signal(int)
+    finishSignal = Signal(dict)
 
     # constructor of data collector thread
     def __init__(self, parent=None, filePath='port_scan_dos_benign_dataset.csv', selectedData='PortScanDos'):
@@ -2251,7 +2252,7 @@ class Data_Collector_Thread(QThread):
     
 
     # method for receiving packet batch from main thread
-    @pyqtSlot(dict)
+    @Slot(dict)
     def ReceivePacketBatch(self, packetDict):
         with QMutexLocker(self.mutex):
             self.packetBatch = packetDict #set our packet dict batch received from main thread
@@ -2259,7 +2260,7 @@ class Data_Collector_Thread(QThread):
 
 
     # method for stopping data collector thread
-    @pyqtSlot()
+    @Slot()
     def StopThread(self):
         self.stopFlag = True #set stop flag
         with QMutexLocker(self.mutex):
@@ -2312,6 +2313,6 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     netSpect = NetSpect()
     try:
-        sys.exit(app.exec_())
+        sys.exit(app.exec())
     except:
         print('Exiting')

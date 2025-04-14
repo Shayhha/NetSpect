@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 from ipaddress import IPv4Interface, IPv6Interface, IPv4Address, IPv6Address
 from scapy.all import AsyncSniffer, srp, get_if_list, IP, IPv6, TCP, UDP, ICMP, ARP, Ether, Raw, conf
 from scapy.layers.dns import DNS
-from PyQt5.QtNetwork import QNetworkInterface
+from PySide6.QtNetwork import QNetworkInterface
 from collections import defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path

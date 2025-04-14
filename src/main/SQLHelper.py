@@ -1,5 +1,5 @@
 import sys, os, pyodbc
-from PyQt5.QtCore import QThread, pyqtSignal, pyqtSlot
+from PySide6.QtCore import Signal, Slot, QThread
 from dotenv import load_dotenv
 from smtplib import SMTP
 from email.message import EmailMessage
@@ -11,22 +11,22 @@ currentDir = Path(__file__).resolve().parent #represents the path to the current
 # thread for performing various SQL queries and receiving or updating data in database
 class SQL_Thread(QThread):
     # define signals for interacting with main gui thread
-    loginResultSignal = pyqtSignal(dict)
-    registrationResultSignal = pyqtSignal(dict)
-    changeEmailResultSignal = pyqtSignal(dict)
-    changeUsernameResultSignal = pyqtSignal(dict)
-    changePasswordResultSignal = pyqtSignal(dict)
-    resetPasswordResultSignal = pyqtSignal(dict)
-    deleteAccountResultSignal = pyqtSignal(dict)
-    addAlertResultSignal = pyqtSignal(dict)
-    deleteAlertsResultSignal = pyqtSignal(dict)
-    addBlacklistMacResultSignal = pyqtSignal(dict)
-    deleteBlacklistMacResultSignal = pyqtSignal(dict)
-    updateLightModeResultSignal = pyqtSignal(dict)
-    sendCodeResultSignal = pyqtSignal(dict)
-    connectionResultSignal = pyqtSignal(dict)
-    initEmailCredentilsResultSignal = pyqtSignal(dict)
-    finishSignal = pyqtSignal(dict)
+    loginResultSignal = Signal(dict)
+    registrationResultSignal = Signal(dict)
+    changeEmailResultSignal = Signal(dict)
+    changeUsernameResultSignal = Signal(dict)
+    changePasswordResultSignal = Signal(dict)
+    resetPasswordResultSignal = Signal(dict)
+    deleteAccountResultSignal = Signal(dict)
+    addAlertResultSignal = Signal(dict)
+    deleteAlertsResultSignal = Signal(dict)
+    addBlacklistMacResultSignal = Signal(dict)
+    deleteBlacklistMacResultSignal = Signal(dict)
+    updateLightModeResultSignal = Signal(dict)
+    sendCodeResultSignal = Signal(dict)
+    connectionResultSignal = Signal(dict)
+    initEmailCredentilsResultSignal = Signal(dict)
+    finishSignal = Signal(dict)
 
     # constructor of sql thread
     def __init__(self, parent=None):
@@ -41,7 +41,7 @@ class SQL_Thread(QThread):
 
 
     # method for stopping sql thread
-    @pyqtSlot()
+    @Slot()
     def StopThread(self):
         if self.isRunning():
             self.quit() #exit main loop and end task
@@ -125,7 +125,7 @@ class SQL_Thread(QThread):
 
             # execute thread process only if connection was established
             if stateDict.get('state'):
-                self.exec_() #execute sql thread process
+                self.exec() #execute sql thread process
         except Exception as e: #we catch an exception if error occured
             stateDict.update({'state': False, 'message': f'An error occurred: {e}.'})
         finally:
@@ -135,7 +135,7 @@ class SQL_Thread(QThread):
 
     #----------------------------------------------SQL-FUNCTIONS-------------------------------------------------#
     # method for logging into account in main app
-    @pyqtSlot(str, str)
+    @Slot(str, str)
     def Login(self, username, password):
         resultDict = {'state': False, 'message': '', 'result': None, 'error': False} #represents result dict
         try:
@@ -178,7 +178,7 @@ class SQL_Thread(QThread):
 
 
     # method for adding a new user to the Users table
-    @pyqtSlot(str, str, str)
+    @Slot(str, str, str)
     def Register(self, email, username, password):
         resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
         try:
@@ -218,7 +218,7 @@ class SQL_Thread(QThread):
 
     
     # method for changing user's email in Users table
-    @pyqtSlot(int, str)
+    @Slot(int, str)
     def ChangeEmail(self, userId, newEmail):
         resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
         try:
@@ -252,7 +252,7 @@ class SQL_Thread(QThread):
 
 
     # method to check if the email is taken in database
-    @pyqtSlot(str)
+    @Slot(str)
     def CheckEmail(self, email, isDeleted=None):
         # check if username is present in Users table
         query = '''
@@ -273,7 +273,7 @@ class SQL_Thread(QThread):
 
     
     # method for changing user's username in Users table
-    @pyqtSlot(int, str)
+    @Slot(int, str)
     def ChangeUserName(self, userId, newUsername):
         resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
         try:
@@ -307,7 +307,7 @@ class SQL_Thread(QThread):
 
 
     # method to check if the username is taken in database
-    @pyqtSlot(str)
+    @Slot(str)
     def CheckUserName(self, username, isDeleted=None):
         # check if username is present in Users table
         query = '''
@@ -328,7 +328,7 @@ class SQL_Thread(QThread):
 
 
     # method for updating passowrd of user in Users table
-    @pyqtSlot(int, str, str)
+    @Slot(int, str, str)
     def ChangePassword(self, userId, newPassword, oldPassword):
         resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
         try:
@@ -361,7 +361,7 @@ class SQL_Thread(QThread):
 
 
     # method for resetting passowrd of user with specified password in Users table
-    @pyqtSlot(int, str, str)
+    @Slot(int, str, str)
     def ResetPassword(self, email, newPassword):
         resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
         try:
@@ -390,7 +390,7 @@ class SQL_Thread(QThread):
 
 
     # method for checking if the provided password is correct for given user
-    @pyqtSlot(int, str)
+    @Slot(int, str)
     def CheckPassword(self, userId, password, isDeleted=None):
         # check if password matches user's password in Users table
         query = '''
@@ -411,7 +411,7 @@ class SQL_Thread(QThread):
     
 
     # method for deleting user account from Users table
-    @pyqtSlot(int)
+    @Slot(int)
     def DeleteAccount(self, userId):
         resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
         try:
@@ -453,7 +453,7 @@ class SQL_Thread(QThread):
 
 
     # method for getting all alerts that registered for given user in decreasing order
-    @pyqtSlot(int)
+    @Slot(int)
     def GetAlerts(self, userId):
         query = '''
             SELECT interface, attackType, sourceIp, sourceMac, 
@@ -488,7 +488,7 @@ class SQL_Thread(QThread):
     
 
     # method for getting number of attacks from each type in Alerts table for pie chart
-    @pyqtSlot(int)
+    @Slot(int)
     def GetPieChartData(self, userId):
         query = '''
             SELECT attackType, COUNT(*) as count
@@ -509,7 +509,7 @@ class SQL_Thread(QThread):
 
 
     # method for adding alert for user in Alerts table
-    @pyqtSlot(int, str, str, str, str, str, str, str, str)
+    @Slot(int, str, str, str, str, str, str, str, str)
     def AddAlert(self, userId, interface, attackType, sourceIp, sourceMac, destinationIp, destinationMac, protocol, osType, timestamp):
         resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
         try:
@@ -538,7 +538,7 @@ class SQL_Thread(QThread):
 
 
     # method for deleting all alerts for user in Alerts table
-    @pyqtSlot(int)
+    @Slot(int)
     def DeleteAlerts(self, userId):
         resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
         try:
@@ -567,7 +567,7 @@ class SQL_Thread(QThread):
     
 
     # method for getting all blacklisted mac addresses for given user
-    @pyqtSlot(int)
+    @Slot(int)
     def GetBlacklistMacs(self, userId):
         query = '''
             SELECT macAddress 
@@ -585,7 +585,7 @@ class SQL_Thread(QThread):
     
 
     # Method for adding a MAC address to the blacklist for a given user
-    @pyqtSlot(int, str)
+    @Slot(int, str)
     def AddBlacklistMac(self, userId, macAddress):
         resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
         try:
@@ -618,7 +618,7 @@ class SQL_Thread(QThread):
         
 
     # method for deleting specific mac address for user in Blacklist table
-    @pyqtSlot(int, str)
+    @Slot(int, str)
     def DeleteBlacklistMac(self, userId, macAddress):
         resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
         try:
@@ -645,7 +645,7 @@ class SQL_Thread(QThread):
     
 
     # method for updating value of light mode for given user in Users table
-    @pyqtSlot(int, int)
+    @Slot(int, int)
     def UpdateLightMode(self, userId, lightMode=0):
         resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
         try:
@@ -674,7 +674,7 @@ class SQL_Thread(QThread):
 
 
     # method for sending reset password code for a user in Users table
-    @pyqtSlot(str, str)
+    @Slot(str, str)
     def SendResetPasswordCode(self, userEmail, resetCode):
         resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
         try:
@@ -703,7 +703,7 @@ class SQL_Thread(QThread):
 
 
     # method for sending email with reset code to user's registered email
-    @pyqtSlot(str, str, str, str, str)
+    @Slot(str, str, str, str, str)
     def SendEmail(self, userEmail, resetCode, appEmail, appPassword, appEmailHost):
         try:
             # create email message with our desired format with password reset code

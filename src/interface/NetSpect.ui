@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>NetSpectMainWindow</class>
- <widget class="QMainWindow" name="NetSpectMainWindow">
+ <class>NetSpect</class>
+ <widget class="QMainWindow" name="NetSpect">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -20,7 +20,6 @@
    <font>
     <family>Cairo</family>
     <pointsize>16</pointsize>
-    <weight>50</weight>
     <bold>false</bold>
    </font>
   </property>
@@ -124,7 +123,7 @@ QToolTip {
        </font>
       </property>
       <property name="layoutDirection">
-       <enum>Qt::LeftToRight</enum>
+       <enum>Qt::LayoutDirection::LeftToRight</enum>
       </property>
       <property name="styleSheet">
        <string notr="true">#topFrame {
@@ -136,7 +135,7 @@ QToolTip {
         <number>15</number>
        </property>
        <property name="sizeConstraint">
-        <enum>QLayout::SetDefaultConstraint</enum>
+        <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
        </property>
        <property name="leftMargin">
         <number>15</number>
@@ -184,7 +183,7 @@ QToolTip {
        <item>
         <spacer name="horizontalSpacer">
          <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+          <enum>Qt::Orientation::Horizontal</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -224,7 +223,7 @@ QToolTip {
           <string>Welcome User</string>
          </property>
          <property name="alignment">
-          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
          </property>
          <property name="wordWrap">
           <bool>false</bool>
@@ -266,7 +265,7 @@ QToolTip {
           <pixmap>Icons/LogoutLight.png</pixmap>
          </property>
          <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <set>Qt::AlignmentFlag::AlignCenter</set>
          </property>
         </widget>
        </item>
@@ -302,7 +301,7 @@ QToolTip {
           <pixmap>Icons/AccountLight.png</pixmap>
          </property>
          <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <set>Qt::AlignmentFlag::AlignCenter</set>
          </property>
         </widget>
        </item>
@@ -338,7 +337,7 @@ QToolTip {
           <pixmap>Icons/SettingsLight.png</pixmap>
          </property>
          <property name="alignment">
-          <set>Qt::AlignCenter</set>
+          <set>Qt::AlignmentFlag::AlignCenter</set>
          </property>
         </widget>
        </item>
@@ -354,7 +353,7 @@ QToolTip {
        </size>
       </property>
       <property name="layoutDirection">
-       <enum>Qt::LeftToRight</enum>
+       <enum>Qt::LayoutDirection::LeftToRight</enum>
       </property>
       <property name="autoFillBackground">
        <bool>false</bool>
@@ -400,7 +399,7 @@ QToolTip {
            <number>20</number>
           </property>
           <property name="sizeConstraint">
-           <enum>QLayout::SetDefaultConstraint</enum>
+           <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
           </property>
           <property name="leftMargin">
            <number>10</number>
@@ -471,14 +470,14 @@ QToolTip {
                 <pixmap>Icons/BulletedMenuLight.png</pixmap>
                </property>
                <property name="alignment">
-                <set>Qt::AlignCenter</set>
+                <set>Qt::AlignmentFlag::AlignCenter</set>
                </property>
               </widget>
              </item>
              <item>
               <spacer name="horizontalSpacer_18">
                <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+                <enum>Qt::Orientation::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -517,7 +516,7 @@ QToolTip {
                 <pixmap>Icons/BulletedMenuLightRotated.png</pixmap>
                </property>
                <property name="alignment">
-                <set>Qt::AlignCenter</set>
+                <set>Qt::AlignmentFlag::AlignCenter</set>
                </property>
               </widget>
              </item>
@@ -583,7 +582,7 @@ QToolTip {
                 <pixmap>Icons/WorkstationLight.png</pixmap>
                </property>
                <property name="alignment">
-                <set>Qt::AlignCenter</set>
+                <set>Qt::AlignmentFlag::AlignCenter</set>
                </property>
               </widget>
              </item>
@@ -605,7 +604,6 @@ QToolTip {
                 <font>
                  <family>Cairo</family>
                  <pointsize>16</pointsize>
-                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -622,7 +620,7 @@ QToolTip {
                 <string>Home Page</string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignCenter</set>
+                <set>Qt::AlignmentFlag::AlignCenter</set>
                </property>
                <property name="margin">
                 <number>0</number>
@@ -632,7 +630,7 @@ QToolTip {
              <item>
               <spacer name="horizontalSpacer_19">
                <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+                <enum>Qt::Orientation::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -703,7 +701,7 @@ QToolTip {
                 <pixmap>Icons/DocumentLight.png</pixmap>
                </property>
                <property name="alignment">
-                <set>Qt::AlignCenter</set>
+                <set>Qt::AlignmentFlag::AlignCenter</set>
                </property>
               </widget>
              </item>
@@ -725,7 +723,6 @@ QToolTip {
                 <font>
                  <family>Cairo</family>
                  <pointsize>16</pointsize>
-                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -743,7 +740,7 @@ QToolTip {
                 <string>Reports</string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignCenter</set>
+                <set>Qt::AlignmentFlag::AlignCenter</set>
                </property>
                <property name="margin">
                 <number>0</number>
@@ -753,7 +750,7 @@ QToolTip {
              <item>
               <spacer name="horizontalSpacer_20">
                <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+                <enum>Qt::Orientation::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -813,7 +810,7 @@ QToolTip {
                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Information Page&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="layoutDirection">
-                <enum>Qt::LeftToRight</enum>
+                <enum>Qt::LayoutDirection::LeftToRight</enum>
                </property>
                <property name="styleSheet">
                 <string notr="true">#infoIcon {
@@ -827,7 +824,7 @@ QToolTip {
                 <pixmap>Icons/InfoLight.png</pixmap>
                </property>
                <property name="alignment">
-                <set>Qt::AlignCenter</set>
+                <set>Qt::AlignmentFlag::AlignCenter</set>
                </property>
               </widget>
              </item>
@@ -849,7 +846,6 @@ QToolTip {
                 <font>
                  <family>Cairo</family>
                  <pointsize>16</pointsize>
-                 <weight>75</weight>
                  <bold>true</bold>
                 </font>
                </property>
@@ -867,7 +863,7 @@ QToolTip {
                 <string>Information</string>
                </property>
                <property name="alignment">
-                <set>Qt::AlignCenter</set>
+                <set>Qt::AlignmentFlag::AlignCenter</set>
                </property>
                <property name="margin">
                 <number>0</number>
@@ -877,7 +873,7 @@ QToolTip {
              <item>
               <spacer name="horizontalSpacer_21">
                <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+                <enum>Qt::Orientation::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -893,7 +889,7 @@ QToolTip {
           <item>
            <spacer name="verticalSpacer_2">
             <property name="orientation">
-             <enum>Qt::Vertical</enum>
+             <enum>Qt::Orientation::Vertical</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
@@ -1050,7 +1046,6 @@ QToolTip {
                        <font>
                         <family>Cairo</family>
                         <pointsize>18</pointsize>
-                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -1066,7 +1061,7 @@ QToolTip {
                        <string>Initiate Detection</string>
                       </property>
                       <property name="alignment">
-                       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                       </property>
                       <property name="wordWrap">
                        <bool>false</bool>
@@ -1097,7 +1092,7 @@ QToolTip {
                        <item>
                         <spacer name="horizontalSpacer_16">
                          <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
+                          <enum>Qt::Orientation::Horizontal</enum>
                          </property>
                          <property name="sizeHint" stdset="0">
                           <size>
@@ -1131,7 +1126,6 @@ QToolTip {
                           <font>
                            <family>Cairo</family>
                            <pointsize>14</pointsize>
-                           <weight>75</weight>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -1190,7 +1184,7 @@ QToolTip {
                           <item>
                            <spacer name="verticalSpacer">
                             <property name="orientation">
-                             <enum>Qt::Vertical</enum>
+                             <enum>Qt::Orientation::Vertical</enum>
                             </property>
                             <property name="sizeHint" stdset="0">
                              <size>
@@ -1215,7 +1209,7 @@ QToolTip {
                              </size>
                             </property>
                             <property name="layoutDirection">
-                             <enum>Qt::LeftToRight</enum>
+                             <enum>Qt::LayoutDirection::LeftToRight</enum>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#networlInterfaceHorizontalFrame {
@@ -1257,7 +1251,6 @@ QToolTip {
                                 <font>
                                  <family>Cairo</family>
                                  <pointsize>14</pointsize>
-                                 <weight>50</weight>
                                  <bold>false</bold>
                                 </font>
                                </property>
@@ -1271,13 +1264,13 @@ QToolTip {
                                 <string>Network Interface:</string>
                                </property>
                                <property name="alignment">
-                                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                                <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                                </property>
                                <property name="wordWrap">
                                 <bool>false</bool>
                                </property>
                                <property name="textInteractionFlags">
-                                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                                <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                                </property>
                               </widget>
                              </item>
@@ -1312,10 +1305,10 @@ QToolTip {
 }</string>
                                </property>
                                <property name="frameShape">
-                                <enum>QFrame::StyledPanel</enum>
+                                <enum>QFrame::Shape::StyledPanel</enum>
                                </property>
                                <property name="frameShadow">
-                                <enum>QFrame::Raised</enum>
+                                <enum>QFrame::Shadow::Raised</enum>
                                </property>
                                <widget class="QFrame" name="networkInterfaceComboBoxFrameArrow">
                                 <property name="geometry">
@@ -1354,10 +1347,10 @@ QToolTip {
 }</string>
                                 </property>
                                 <property name="frameShape">
-                                 <enum>QFrame::StyledPanel</enum>
+                                 <enum>QFrame::Shape::StyledPanel</enum>
                                 </property>
                                 <property name="frameShadow">
-                                 <enum>QFrame::Raised</enum>
+                                 <enum>QFrame::Shadow::Raised</enum>
                                 </property>
                                </widget>
                                <widget class="QComboBox" name="networkInterfaceComboBox">
@@ -1446,7 +1439,7 @@ QToolTip {
                              <item>
                               <spacer name="horizontalSpacer_13">
                                <property name="orientation">
-                                <enum>Qt::Horizontal</enum>
+                                <enum>Qt::Orientation::Horizontal</enum>
                                </property>
                                <property name="sizeHint" stdset="0">
                                 <size>
@@ -1474,7 +1467,7 @@ QToolTip {
                              </size>
                             </property>
                             <property name="layoutDirection">
-                             <enum>Qt::LeftToRight</enum>
+                             <enum>Qt::LayoutDirection::LeftToRight</enum>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#runningTimeHorizontalFrame {
@@ -1516,7 +1509,6 @@ QToolTip {
                                 <font>
                                  <family>Cairo</family>
                                  <pointsize>14</pointsize>
-                                 <weight>50</weight>
                                  <bold>false</bold>
                                 </font>
                                </property>
@@ -1530,13 +1522,13 @@ QToolTip {
                                 <string>Running Time:</string>
                                </property>
                                <property name="alignment">
-                                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                                <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                                </property>
                                <property name="wordWrap">
                                 <bool>false</bool>
                                </property>
                                <property name="textInteractionFlags">
-                                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                                <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                                </property>
                               </widget>
                              </item>
@@ -1558,7 +1550,6 @@ QToolTip {
                                 <font>
                                  <family>Cairo</family>
                                  <pointsize>14</pointsize>
-                                 <weight>50</weight>
                                  <bold>false</bold>
                                 </font>
                                </property>
@@ -1575,20 +1566,20 @@ QToolTip {
                                 <string>0:00:00</string>
                                </property>
                                <property name="alignment">
-                                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                                <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                                </property>
                                <property name="wordWrap">
                                 <bool>false</bool>
                                </property>
                                <property name="textInteractionFlags">
-                                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                                <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                                </property>
                               </widget>
                              </item>
                              <item>
                               <spacer name="horizontalSpacer_2">
                                <property name="orientation">
-                                <enum>Qt::Horizontal</enum>
+                                <enum>Qt::Orientation::Horizontal</enum>
                                </property>
                                <property name="sizeHint" stdset="0">
                                 <size>
@@ -1655,7 +1646,6 @@ QToolTip {
                                 <font>
                                  <family>Cairo</family>
                                  <pointsize>14</pointsize>
-                                 <weight>50</weight>
                                  <bold>false</bold>
                                 </font>
                                </property>
@@ -1669,13 +1659,13 @@ QToolTip {
                                 <string>Number of Detections:</string>
                                </property>
                                <property name="alignment">
-                                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                                <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                                </property>
                                <property name="wordWrap">
                                 <bool>false</bool>
                                </property>
                                <property name="textInteractionFlags">
-                                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                                <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                                </property>
                               </widget>
                              </item>
@@ -1697,7 +1687,6 @@ QToolTip {
                                 <font>
                                  <family>Cairo</family>
                                  <pointsize>14</pointsize>
-                                 <weight>50</weight>
                                  <bold>false</bold>
                                 </font>
                                </property>
@@ -1714,20 +1703,20 @@ QToolTip {
                                 <string>0</string>
                                </property>
                                <property name="alignment">
-                                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                                <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                                </property>
                                <property name="wordWrap">
                                 <bool>false</bool>
                                </property>
                                <property name="textInteractionFlags">
-                                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                                <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                                </property>
                               </widget>
                              </item>
                              <item>
                               <spacer name="horizontalSpacer_3">
                                <property name="orientation">
-                                <enum>Qt::Horizontal</enum>
+                                <enum>Qt::Orientation::Horizontal</enum>
                                </property>
                                <property name="sizeHint" stdset="0">
                                 <size>
@@ -1743,7 +1732,7 @@ QToolTip {
                           <item>
                            <spacer name="verticalSpacer_3">
                             <property name="orientation">
-                             <enum>Qt::Vertical</enum>
+                             <enum>Qt::Orientation::Vertical</enum>
                             </property>
                             <property name="sizeHint" stdset="0">
                              <size>
@@ -1759,7 +1748,7 @@ QToolTip {
                        <item>
                         <spacer name="horizontalSpacer_17">
                          <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
+                          <enum>Qt::Orientation::Horizontal</enum>
                          </property>
                          <property name="sizeHint" stdset="0">
                           <size>
@@ -1790,10 +1779,10 @@ QToolTip {
 </string>
                    </property>
                    <property name="frameShape">
-                    <enum>QFrame::StyledPanel</enum>
+                    <enum>QFrame::Shape::StyledPanel</enum>
                    </property>
                    <property name="frameShadow">
-                    <enum>QFrame::Raised</enum>
+                    <enum>QFrame::Shadow::Raised</enum>
                    </property>
                   </widget>
                  </item>
@@ -1829,7 +1818,7 @@ QToolTip {
                   <number>20</number>
                  </property>
                  <property name="sizeConstraint">
-                  <enum>QLayout::SetNoConstraint</enum>
+                  <enum>QLayout::SizeConstraint::SetNoConstraint</enum>
                  </property>
                  <property name="leftMargin">
                   <number>1</number>
@@ -1861,7 +1850,6 @@ QToolTip {
                     <font>
                      <family>Cairo</family>
                      <pointsize>18</pointsize>
-                     <weight>75</weight>
                      <bold>true</bold>
                     </font>
                    </property>
@@ -1877,7 +1865,7 @@ QToolTip {
                     <string>Alert History</string>
                    </property>
                    <property name="alignment">
-                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                    <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                    </property>
                    <property name="wordWrap">
                     <bool>false</bool>
@@ -1964,13 +1952,13 @@ QTableWidget {
     }</string>
                    </property>
                    <property name="verticalScrollBarPolicy">
-                    <enum>Qt::ScrollBarAsNeeded</enum>
+                    <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
                    </property>
                    <property name="horizontalScrollBarPolicy">
-                    <enum>Qt::ScrollBarAlwaysOff</enum>
+                    <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                    </property>
                    <property name="editTriggers">
-                    <set>QAbstractItemView::NoEditTriggers</set>
+                    <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
                    </property>
                    <property name="tabKeyNavigation">
                     <bool>false</bool>
@@ -1985,10 +1973,10 @@ QTableWidget {
                     <bool>false</bool>
                    </property>
                    <property name="selectionBehavior">
-                    <enum>QAbstractItemView::SelectRows</enum>
+                    <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
                    </property>
                    <property name="textElideMode">
-                    <enum>Qt::ElideLeft</enum>
+                    <enum>Qt::TextElideMode::ElideLeft</enum>
                    </property>
                    <attribute name="horizontalHeaderCascadingSectionResizes">
                     <bool>false</bool>
@@ -2080,7 +2068,7 @@ QTableWidget {
             <number>0</number>
            </property>
            <item row="0" column="0">
-            <widget class="QFrame" name="horizontalFrame">
+            <widget class="QFrame" name="reportPreviewHorizontalFrame">
              <property name="minimumSize">
               <size>
                <width>0</width>
@@ -2145,7 +2133,6 @@ QTableWidget {
                     <font>
                      <family>Cairo</family>
                      <pointsize>18</pointsize>
-                     <weight>75</weight>
                      <bold>true</bold>
                     </font>
                    </property>
@@ -2159,7 +2146,7 @@ QTableWidget {
                     <string>Report Selection</string>
                    </property>
                    <property name="alignment">
-                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                    <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                    </property>
                    <property name="wordWrap">
                     <bool>false</bool>
@@ -2223,10 +2210,10 @@ QTableWidget {
 }</string>
                       </property>
                       <property name="frameShape">
-                       <enum>QFrame::StyledPanel</enum>
+                       <enum>QFrame::Shape::StyledPanel</enum>
                       </property>
                       <property name="frameShadow">
-                       <enum>QFrame::Raised</enum>
+                       <enum>QFrame::Shadow::Raised</enum>
                       </property>
                       <widget class="QFrame" name="reportDurationComboBoxArrow">
                        <property name="geometry">
@@ -2265,10 +2252,10 @@ QTableWidget {
 }</string>
                        </property>
                        <property name="frameShape">
-                        <enum>QFrame::StyledPanel</enum>
+                        <enum>QFrame::Shape::StyledPanel</enum>
                        </property>
                        <property name="frameShadow">
-                        <enum>QFrame::Raised</enum>
+                        <enum>QFrame::Shadow::Raised</enum>
                        </property>
                       </widget>
                       <widget class="QComboBox" name="reportDurationComboBox">
@@ -2374,13 +2361,13 @@ QTableWidget {
 }</string>
                       </property>
                       <property name="frameShadow">
-                       <enum>QFrame::Plain</enum>
+                       <enum>QFrame::Shadow::Plain</enum>
                       </property>
                       <property name="lineWidth">
                        <number>2</number>
                       </property>
                       <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
+                       <enum>Qt::Orientation::Horizontal</enum>
                       </property>
                      </widget>
                     </item>
@@ -2610,13 +2597,13 @@ QCheckBox::indicator:hover {
 }</string>
                       </property>
                       <property name="frameShadow">
-                       <enum>QFrame::Plain</enum>
+                       <enum>QFrame::Shadow::Plain</enum>
                       </property>
                       <property name="lineWidth">
                        <number>2</number>
                       </property>
                       <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
+                       <enum>Qt::Orientation::Horizontal</enum>
                       </property>
                      </widget>
                     </item>
@@ -2679,14 +2666,14 @@ QCheckBox::indicator:hover {
                        </size>
                       </property>
                       <property name="layoutDirection">
-                       <enum>Qt::LeftToRight</enum>
+                       <enum>Qt::LayoutDirection::LeftToRight</enum>
                       </property>
                       <layout class="QVBoxLayout" name="verticalLayout_26">
                        <property name="spacing">
                         <number>10</number>
                        </property>
                        <property name="sizeConstraint">
-                        <enum>QLayout::SetDefaultConstraint</enum>
+                        <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
                        </property>
                        <property name="leftMargin">
                         <number>25</number>
@@ -2712,7 +2699,6 @@ QCheckBox::indicator:hover {
                           <font>
                            <family>Cairo</family>
                            <pointsize>11</pointsize>
-                           <weight>75</weight>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -2758,7 +2744,6 @@ QCheckBox::indicator:hover {
                           <font>
                            <family>Cairo</family>
                            <pointsize>11</pointsize>
-                           <weight>75</weight>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -2808,7 +2793,6 @@ QCheckBox::indicator:hover {
                           <font>
                            <family>Cairo</family>
                            <pointsize>11</pointsize>
-                           <weight>75</weight>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -2842,7 +2826,7 @@ QCheckBox::indicator:hover {
                     <item>
                      <spacer name="ReportVerticalSpacer">
                       <property name="orientation">
-                       <enum>Qt::Vertical</enum>
+                       <enum>Qt::Orientation::Vertical</enum>
                       </property>
                       <property name="sizeHint" stdset="0">
                        <size>
@@ -2894,7 +2878,6 @@ QCheckBox::indicator:hover {
                     <font>
                      <family>Cairo</family>
                      <pointsize>18</pointsize>
-                     <weight>75</weight>
                      <bold>true</bold>
                     </font>
                    </property>
@@ -2908,7 +2891,7 @@ QCheckBox::indicator:hover {
                     <string>Preview</string>
                    </property>
                    <property name="alignment">
-                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                    <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                    </property>
                    <property name="wordWrap">
                     <bool>false</bool>
@@ -3007,13 +2990,13 @@ QTableView QScrollBar::handle:vertical {
 </string>
                       </property>
                       <property name="verticalScrollBarPolicy">
-                       <enum>Qt::ScrollBarAsNeeded</enum>
+                       <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
                       </property>
                       <property name="horizontalScrollBarPolicy">
-                       <enum>Qt::ScrollBarAlwaysOff</enum>
+                       <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                       </property>
                       <property name="textElideMode">
-                       <enum>Qt::ElideLeft</enum>
+                       <enum>Qt::TextElideMode::ElideLeft</enum>
                       </property>
                       <attribute name="horizontalHeaderMinimumSectionSize">
                        <number>110</number>
@@ -3138,7 +3121,6 @@ QTableView QScrollBar::handle:vertical {
                     <font>
                      <family>Cairo</family>
                      <pointsize>18</pointsize>
-                     <weight>75</weight>
                      <bold>true</bold>
                     </font>
                    </property>
@@ -3152,7 +3134,7 @@ QTableView QScrollBar::handle:vertical {
                     <string>Machine Information:</string>
                    </property>
                    <property name="alignment">
-                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                    <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                    </property>
                    <property name="wordWrap">
                     <bool>false</bool>
@@ -3240,13 +3222,13 @@ QTableView QScrollBar::handle:vertical {
                           <string>OS Type:</string>
                          </property>
                          <property name="alignment">
-                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                          </property>
                          <property name="wordWrap">
                           <bool>false</bool>
                          </property>
                          <property name="textInteractionFlags">
-                          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                          <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                          </property>
                         </widget>
                        </item>
@@ -3286,20 +3268,20 @@ QTableView QScrollBar::handle:vertical {
                           <string>Windows</string>
                          </property>
                          <property name="alignment">
-                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                          </property>
                          <property name="wordWrap">
                           <bool>false</bool>
                          </property>
                          <property name="textInteractionFlags">
-                          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                          <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                          </property>
                         </widget>
                        </item>
                        <item>
                         <spacer name="horizontalSpacer_7">
                          <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
+                          <enum>Qt::Orientation::Horizontal</enum>
                          </property>
                          <property name="sizeHint" stdset="0">
                           <size>
@@ -3375,13 +3357,13 @@ QTableView QScrollBar::handle:vertical {
                           <string>OS Version:</string>
                          </property>
                          <property name="alignment">
-                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                          </property>
                          <property name="wordWrap">
                           <bool>false</bool>
                          </property>
                          <property name="textInteractionFlags">
-                          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                          <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                          </property>
                         </widget>
                        </item>
@@ -3421,20 +3403,20 @@ QTableView QScrollBar::handle:vertical {
                           <string>24H2</string>
                          </property>
                          <property name="alignment">
-                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                          </property>
                          <property name="wordWrap">
                           <bool>false</bool>
                          </property>
                          <property name="textInteractionFlags">
-                          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                          <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                          </property>
                         </widget>
                        </item>
                        <item>
                         <spacer name="horizontalSpacer_5">
                          <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
+                          <enum>Qt::Orientation::Horizontal</enum>
                          </property>
                          <property name="sizeHint" stdset="0">
                           <size>
@@ -3510,13 +3492,13 @@ QTableView QScrollBar::handle:vertical {
                           <string>Architecture:</string>
                          </property>
                          <property name="alignment">
-                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                          </property>
                          <property name="wordWrap">
                           <bool>false</bool>
                          </property>
                          <property name="textInteractionFlags">
-                          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                          <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                          </property>
                         </widget>
                        </item>
@@ -3556,20 +3538,20 @@ QTableView QScrollBar::handle:vertical {
                           <string>64bit</string>
                          </property>
                          <property name="alignment">
-                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                          </property>
                          <property name="wordWrap">
                           <bool>false</bool>
                          </property>
                          <property name="textInteractionFlags">
-                          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                          <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                          </property>
                         </widget>
                        </item>
                        <item>
                         <spacer name="horizontalSpacer_10">
                          <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
+                          <enum>Qt::Orientation::Horizontal</enum>
                          </property>
                          <property name="sizeHint" stdset="0">
                           <size>
@@ -3645,13 +3627,13 @@ QTableView QScrollBar::handle:vertical {
                           <string>Host Name:</string>
                          </property>
                          <property name="alignment">
-                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                          </property>
                          <property name="wordWrap">
                           <bool>false</bool>
                          </property>
                          <property name="textInteractionFlags">
-                          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                          <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                          </property>
                         </widget>
                        </item>
@@ -3691,20 +3673,20 @@ QTableView QScrollBar::handle:vertical {
                           <string>User's PC</string>
                          </property>
                          <property name="alignment">
-                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                          </property>
                          <property name="wordWrap">
                           <bool>false</bool>
                          </property>
                          <property name="textInteractionFlags">
-                          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                          <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                          </property>
                         </widget>
                        </item>
                        <item>
                         <spacer name="horizontalSpacer_6">
                          <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
+                          <enum>Qt::Orientation::Horizontal</enum>
                          </property>
                          <property name="sizeHint" stdset="0">
                           <size>
@@ -3720,7 +3702,7 @@ QTableView QScrollBar::handle:vertical {
                     <item>
                      <spacer name="verticalSpacer_12">
                       <property name="orientation">
-                       <enum>Qt::Vertical</enum>
+                       <enum>Qt::Orientation::Vertical</enum>
                       </property>
                       <property name="sizeHint" stdset="0">
                        <size>
@@ -3751,7 +3733,6 @@ QTableView QScrollBar::handle:vertical {
                     <font>
                      <family>Cairo</family>
                      <pointsize>18</pointsize>
-                     <weight>75</weight>
                      <bold>true</bold>
                     </font>
                    </property>
@@ -3765,7 +3746,7 @@ QTableView QScrollBar::handle:vertical {
                     <string>Program Information:</string>
                    </property>
                    <property name="alignment">
-                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                    <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                    </property>
                    <property name="wordWrap">
                     <bool>false</bool>
@@ -3773,7 +3754,7 @@ QTableView QScrollBar::handle:vertical {
                   </widget>
                  </item>
                  <item>
-                  <widget class="QFrame" name="verticalFrame">
+                  <widget class="QFrame" name="programInformationVerticalFrame">
                    <layout class="QVBoxLayout" name="verticalLayout_9">
                     <property name="leftMargin">
                      <number>30</number>
@@ -3850,13 +3831,13 @@ QTableView QScrollBar::handle:vertical {
                           <string>NetSpect Version:</string>
                          </property>
                          <property name="alignment">
-                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                          </property>
                          <property name="wordWrap">
                           <bool>false</bool>
                          </property>
                          <property name="textInteractionFlags">
-                          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                          <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                          </property>
                         </widget>
                        </item>
@@ -3896,20 +3877,20 @@ QTableView QScrollBar::handle:vertical {
                           <string>v1.0.0</string>
                          </property>
                          <property name="alignment">
-                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                          </property>
                          <property name="wordWrap">
                           <bool>false</bool>
                          </property>
                          <property name="textInteractionFlags">
-                          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                          <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                          </property>
                         </widget>
                        </item>
                        <item>
                         <spacer name="horizontalSpacer_9">
                          <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
+                          <enum>Qt::Orientation::Horizontal</enum>
                          </property>
                          <property name="sizeHint" stdset="0">
                           <size>
@@ -3984,7 +3965,7 @@ QTableView QScrollBar::handle:vertical {
                           <string>Github:</string>
                          </property>
                          <property name="alignment">
-                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                          </property>
                          <property name="wordWrap">
                           <bool>false</bool>
@@ -4028,7 +4009,7 @@ QTableView QScrollBar::handle:vertical {
                           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/Shayhha/NetSpect&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#f3f3f3;&quot;&gt;Visit NetSpect Page&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                          <property name="alignment">
-                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                          </property>
                          <property name="wordWrap">
                           <bool>false</bool>
@@ -4041,7 +4022,7 @@ QTableView QScrollBar::handle:vertical {
                        <item>
                         <spacer name="horizontalSpacer_12">
                          <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
+                          <enum>Qt::Orientation::Horizontal</enum>
                          </property>
                          <property name="sizeHint" stdset="0">
                           <size>
@@ -4057,7 +4038,7 @@ QTableView QScrollBar::handle:vertical {
                     <item>
                      <spacer name="verticalSpacer_14">
                       <property name="orientation">
-                       <enum>Qt::Vertical</enum>
+                       <enum>Qt::Orientation::Vertical</enum>
                       </property>
                       <property name="sizeHint" stdset="0">
                        <size>
@@ -4073,7 +4054,7 @@ QTableView QScrollBar::handle:vertical {
                  <item>
                   <spacer name="verticalSpacer_10">
                    <property name="orientation">
-                    <enum>Qt::Vertical</enum>
+                    <enum>Qt::Orientation::Vertical</enum>
                    </property>
                    <property name="sizeHint" stdset="0">
                     <size>
@@ -4140,7 +4121,6 @@ QTableView QScrollBar::handle:vertical {
                        <font>
                         <family>Cairo</family>
                         <pointsize>18</pointsize>
-                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -4154,7 +4134,7 @@ QTableView QScrollBar::handle:vertical {
                        <string>Network Interface Information:</string>
                       </property>
                       <property name="alignment">
-                       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                       </property>
                       <property name="wordWrap">
                        <bool>false</bool>
@@ -4242,13 +4222,13 @@ QTableView QScrollBar::handle:vertical {
                              <string>Connected Interface:</string>
                             </property>
                             <property name="alignment">
-                             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                             <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                             </property>
                             <property name="wordWrap">
                              <bool>false</bool>
                             </property>
                             <property name="textInteractionFlags">
-                             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                             <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                             </property>
                            </widget>
                           </item>
@@ -4288,20 +4268,20 @@ QTableView QScrollBar::handle:vertical {
                              <string>Ethernet</string>
                             </property>
                             <property name="alignment">
-                             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                             <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                             </property>
                             <property name="wordWrap">
                              <bool>false</bool>
                             </property>
                             <property name="textInteractionFlags">
-                             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                             <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                             </property>
                            </widget>
                           </item>
                           <item>
                            <spacer name="horizontalSpacer_8">
                             <property name="orientation">
-                             <enum>Qt::Horizontal</enum>
+                             <enum>Qt::Orientation::Horizontal</enum>
                             </property>
                             <property name="sizeHint" stdset="0">
                              <size>
@@ -4377,13 +4357,13 @@ QTableView QScrollBar::handle:vertical {
                              <string>MAC Address:</string>
                             </property>
                             <property name="alignment">
-                             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                             <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                             </property>
                             <property name="wordWrap">
                              <bool>false</bool>
                             </property>
                             <property name="textInteractionFlags">
-                             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                             <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                             </property>
                            </widget>
                           </item>
@@ -4423,20 +4403,20 @@ QTableView QScrollBar::handle:vertical {
                              <string>b6:a8:b6:b5:fd:11</string>
                             </property>
                             <property name="alignment">
-                             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                             <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                             </property>
                             <property name="wordWrap">
                              <bool>false</bool>
                             </property>
                             <property name="textInteractionFlags">
-                             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                             <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                             </property>
                            </widget>
                           </item>
                           <item>
                            <spacer name="horizontalSpacer_27">
                             <property name="orientation">
-                             <enum>Qt::Horizontal</enum>
+                             <enum>Qt::Orientation::Horizontal</enum>
                             </property>
                             <property name="sizeHint" stdset="0">
                              <size>
@@ -4512,13 +4492,13 @@ QTableView QScrollBar::handle:vertical {
                              <string>Description:</string>
                             </property>
                             <property name="alignment">
-                             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                             <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                             </property>
                             <property name="wordWrap">
                              <bool>false</bool>
                             </property>
                             <property name="textInteractionFlags">
-                             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                             <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                             </property>
                            </widget>
                           </item>
@@ -4558,20 +4538,20 @@ QTableView QScrollBar::handle:vertical {
                              <string>Some Description</string>
                             </property>
                             <property name="alignment">
-                             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                             <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                             </property>
                             <property name="wordWrap">
                              <bool>false</bool>
                             </property>
                             <property name="textInteractionFlags">
-                             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                             <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                             </property>
                            </widget>
                           </item>
                           <item>
                            <spacer name="horizontalSpacer_24">
                             <property name="orientation">
-                             <enum>Qt::Horizontal</enum>
+                             <enum>Qt::Orientation::Horizontal</enum>
                             </property>
                             <property name="sizeHint" stdset="0">
                              <size>
@@ -4647,13 +4627,13 @@ QTableView QScrollBar::handle:vertical {
                              <string>Max Transmition Unit:</string>
                             </property>
                             <property name="alignment">
-                             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                             <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                             </property>
                             <property name="wordWrap">
                              <bool>false</bool>
                             </property>
                             <property name="textInteractionFlags">
-                             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                             <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                             </property>
                            </widget>
                           </item>
@@ -4693,20 +4673,20 @@ QTableView QScrollBar::handle:vertical {
                              <string>1000</string>
                             </property>
                             <property name="alignment">
-                             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                             <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                             </property>
                             <property name="wordWrap">
                              <bool>false</bool>
                             </property>
                             <property name="textInteractionFlags">
-                             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                             <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                             </property>
                            </widget>
                           </item>
                           <item>
                            <spacer name="horizontalSpacer_26">
                             <property name="orientation">
-                             <enum>Qt::Horizontal</enum>
+                             <enum>Qt::Orientation::Horizontal</enum>
                             </property>
                             <property name="sizeHint" stdset="0">
                              <size>
@@ -4722,7 +4702,7 @@ QTableView QScrollBar::handle:vertical {
                        <item>
                         <spacer name="verticalSpacer_9">
                          <property name="orientation">
-                          <enum>Qt::Vertical</enum>
+                          <enum>Qt::Orientation::Vertical</enum>
                          </property>
                          <property name="sizeHint" stdset="0">
                           <size>
@@ -4753,7 +4733,6 @@ QTableView QScrollBar::handle:vertical {
                        <font>
                         <family>Cairo</family>
                         <pointsize>18</pointsize>
-                        <weight>75</weight>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -4767,7 +4746,7 @@ QTableView QScrollBar::handle:vertical {
                        <string>My IP Addresses:</string>
                       </property>
                       <property name="alignment">
-                       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
                       </property>
                       <property name="wordWrap">
                        <bool>false</bool>
@@ -4882,20 +4861,20 @@ QTableView QScrollBar::handle:vertical {
 #ipAddressesListWidget::item { color: black; }</string>
                             </property>
                             <property name="verticalScrollBarPolicy">
-                             <enum>Qt::ScrollBarAsNeeded</enum>
+                             <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
                             </property>
                             <property name="horizontalScrollBarPolicy">
-                             <enum>Qt::ScrollBarAlwaysOff</enum>
+                             <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                             </property>
                             <property name="selectionMode">
-                             <enum>QAbstractItemView::NoSelection</enum>
+                             <enum>QAbstractItemView::SelectionMode::NoSelection</enum>
                             </property>
                            </widget>
                           </item>
                           <item>
                            <spacer name="horizontalSpacer_11">
                             <property name="orientation">
-                             <enum>Qt::Horizontal</enum>
+                             <enum>Qt::Orientation::Horizontal</enum>
                             </property>
                             <property name="sizeHint" stdset="0">
                              <size>
@@ -4911,7 +4890,7 @@ QTableView QScrollBar::handle:vertical {
                        <item>
                         <spacer name="verticalSpacer_8">
                          <property name="orientation">
-                          <enum>Qt::Vertical</enum>
+                          <enum>Qt::Orientation::Vertical</enum>
                          </property>
                          <property name="sizeHint" stdset="0">
                           <size>
@@ -4927,7 +4906,7 @@ QTableView QScrollBar::handle:vertical {
                     <item>
                      <spacer name="verticalSpacer_15">
                       <property name="orientation">
-                       <enum>Qt::Vertical</enum>
+                       <enum>Qt::Orientation::Vertical</enum>
                       </property>
                       <property name="sizeHint" stdset="0">
                        <size>
@@ -4946,7 +4925,7 @@ QTableView QScrollBar::handle:vertical {
               <item>
                <spacer name="horizontalSpacer_15">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Orientation::Horizontal</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -5044,7 +5023,6 @@ QTableView QScrollBar::handle:vertical {
                     <font>
                      <family>Cairo</family>
                      <pointsize>18</pointsize>
-                     <weight>75</weight>
                      <bold>true</bold>
                     </font>
                    </property>
@@ -5062,7 +5040,7 @@ color: #f3f3f3;
                   </widget>
                  </item>
                  <item>
-                  <widget class="QFrame" name="horizontalFrame">
+                  <widget class="QFrame" name="settingsLeftHorizontalFrame">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                      <horstretch>0</horstretch>
@@ -5142,7 +5120,6 @@ color: #f3f3f3;
                              <font>
                               <family>Cairo</family>
                               <pointsize>14</pointsize>
-                              <weight>75</weight>
                               <bold>true</bold>
                              </font>
                             </property>
@@ -5168,7 +5145,6 @@ color: #f3f3f3
                              <font>
                               <family>Cairo</family>
                               <pointsize>11</pointsize>
-                              <weight>50</weight>
                               <bold>false</bold>
                              </font>
                             </property>
@@ -5216,7 +5192,6 @@ color: #f3f3f3
                              <font>
                               <family>Cairo</family>
                               <pointsize>10</pointsize>
-                              <weight>75</weight>
                               <bold>true</bold>
                               <strikeout>false</strikeout>
                               <kerning>true</kerning>
@@ -5239,13 +5214,13 @@ color: #f3f3f3
                              <string>&lt;p style='line-height: 0.7;'&gt;Show error message here&lt;/p&gt;</string>
                             </property>
                             <property name="textFormat">
-                             <enum>Qt::RichText</enum>
+                             <enum>Qt::TextFormat::RichText</enum>
                             </property>
                             <property name="scaledContents">
                              <bool>true</bool>
                             </property>
                             <property name="alignment">
-                             <set>Qt::AlignCenter</set>
+                             <set>Qt::AlignmentFlag::AlignCenter</set>
                             </property>
                             <property name="wordWrap">
                              <bool>true</bool>
@@ -5257,12 +5232,12 @@ color: #f3f3f3
                              <number>-1</number>
                             </property>
                             <property name="textInteractionFlags">
-                             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                             <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                             </property>
                            </widget>
                           </item>
                           <item>
-                           <widget class="QFrame" name="frame">
+                           <widget class="QFrame" name="emailPushButtonFrame">
                             <property name="maximumSize">
                              <size>
                               <width>500</width>
@@ -5291,7 +5266,6 @@ color: #f3f3f3
                                 <font>
                                  <family>Cairo</family>
                                  <pointsize>12</pointsize>
-                                 <weight>75</weight>
                                  <bold>true</bold>
                                 </font>
                                </property>
@@ -5332,7 +5306,7 @@ color: #f3f3f3
                           <item>
                            <spacer name="verticalSpacer_16">
                             <property name="orientation">
-                             <enum>Qt::Vertical</enum>
+                             <enum>Qt::Orientation::Vertical</enum>
                             </property>
                             <property name="sizeHint" stdset="0">
                              <size>
@@ -5354,7 +5328,6 @@ color: #f3f3f3
                              <font>
                               <family>Cairo</family>
                               <pointsize>14</pointsize>
-                              <weight>75</weight>
                               <bold>true</bold>
                              </font>
                             </property>
@@ -5427,7 +5400,6 @@ color: #f3f3f3
                              <font>
                               <family>Cairo</family>
                               <pointsize>10</pointsize>
-                              <weight>75</weight>
                               <bold>true</bold>
                              </font>
                             </property>
@@ -5441,18 +5413,18 @@ color: #f3f3f3
                              <string>&lt;p style='line-height: 0.7;'&gt;Show error message here&lt;/p&gt;</string>
                             </property>
                             <property name="alignment">
-                             <set>Qt::AlignCenter</set>
+                             <set>Qt::AlignmentFlag::AlignCenter</set>
                             </property>
                             <property name="wordWrap">
                              <bool>true</bool>
                             </property>
                             <property name="textInteractionFlags">
-                             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                             <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                             </property>
                            </widget>
                           </item>
                           <item>
-                           <widget class="QFrame" name="frame">
+                           <widget class="QFrame" name="usernamePushButtonFrame">
                             <property name="maximumSize">
                              <size>
                               <width>500</width>
@@ -5478,7 +5450,6 @@ color: #f3f3f3
                                 <font>
                                  <family>Cairo</family>
                                  <pointsize>12</pointsize>
-                                 <weight>75</weight>
                                  <bold>true</bold>
                                 </font>
                                </property>
@@ -5518,7 +5489,7 @@ color: #f3f3f3
                           <item>
                            <spacer name="verticalSpacer_17">
                             <property name="orientation">
-                             <enum>Qt::Vertical</enum>
+                             <enum>Qt::Orientation::Vertical</enum>
                             </property>
                             <property name="sizeHint" stdset="0">
                              <size>
@@ -5540,7 +5511,6 @@ color: #f3f3f3
                              <font>
                               <family>Cairo</family>
                               <pointsize>14</pointsize>
-                              <weight>75</weight>
                               <bold>true</bold>
                              </font>
                             </property>
@@ -5555,7 +5525,7 @@ color: #f3f3f3
                            </widget>
                           </item>
                           <item>
-                           <widget class="QFrame" name="verticalFrame">
+                           <widget class="QFrame" name="PasswordVerticalFrame">
                             <layout class="QVBoxLayout" name="changePasswordVerticalFrame">
                              <property name="spacing">
                               <number>15</number>
@@ -5602,7 +5572,7 @@ color: #f3f3f3
                                 <string/>
                                </property>
                                <property name="echoMode">
-                                <enum>QLineEdit::Password</enum>
+                                <enum>QLineEdit::EchoMode::Password</enum>
                                </property>
                                <property name="placeholderText">
                                 <string>Old Password</string>
@@ -5639,7 +5609,7 @@ color: #f3f3f3
                                 <string/>
                                </property>
                                <property name="echoMode">
-                                <enum>QLineEdit::Password</enum>
+                                <enum>QLineEdit::EchoMode::Password</enum>
                                </property>
                                <property name="placeholderText">
                                 <string>New Password</string>
@@ -5676,7 +5646,7 @@ color: #f3f3f3
                                 <string/>
                                </property>
                                <property name="echoMode">
-                                <enum>QLineEdit::Password</enum>
+                                <enum>QLineEdit::EchoMode::Password</enum>
                                </property>
                                <property name="placeholderText">
                                 <string>Confirm Password</string>
@@ -5710,7 +5680,6 @@ color: #f3f3f3
                              <font>
                               <family>Cairo</family>
                               <pointsize>10</pointsize>
-                              <weight>75</weight>
                               <bold>true</bold>
                              </font>
                             </property>
@@ -5725,18 +5694,18 @@ color: #f3f3f3
                              <string>&lt;p style='line-height: 0.7;'&gt;Show error message here&lt;/p&gt;</string>
                             </property>
                             <property name="alignment">
-                             <set>Qt::AlignCenter</set>
+                             <set>Qt::AlignmentFlag::AlignCenter</set>
                             </property>
                             <property name="wordWrap">
                              <bool>true</bool>
                             </property>
                             <property name="textInteractionFlags">
-                             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                             <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                             </property>
                            </widget>
                           </item>
                           <item>
-                           <widget class="QFrame" name="frame">
+                           <widget class="QFrame" name="passwordPushButtonFrame">
                             <property name="maximumSize">
                              <size>
                               <width>500</width>
@@ -5762,7 +5731,6 @@ color: #f3f3f3
                                 <font>
                                  <family>Cairo</family>
                                  <pointsize>12</pointsize>
-                                 <weight>75</weight>
                                  <bold>true</bold>
                                 </font>
                                </property>
@@ -5805,7 +5773,7 @@ color: #f3f3f3
                        <item>
                         <spacer name="verticalSpacer_11">
                          <property name="orientation">
-                          <enum>Qt::Vertical</enum>
+                          <enum>Qt::Orientation::Vertical</enum>
                          </property>
                          <property name="sizeHint" stdset="0">
                           <size>
@@ -5893,7 +5861,6 @@ color: #f3f3f3
                                 <font>
                                  <family>Cairo</family>
                                  <pointsize>14</pointsize>
-                                 <weight>75</weight>
                                  <bold>true</bold>
                                 </font>
                                </property>
@@ -5937,10 +5904,10 @@ color: #f3f3f3
 }</string>
                                </property>
                                <property name="frameShape">
-                                <enum>QFrame::StyledPanel</enum>
+                                <enum>QFrame::Shape::StyledPanel</enum>
                                </property>
                                <property name="frameShadow">
-                                <enum>QFrame::Raised</enum>
+                                <enum>QFrame::Shadow::Raised</enum>
                                </property>
                                <widget class="QFrame" name="colorModeComboBoxArrow">
                                 <property name="geometry">
@@ -5979,10 +5946,10 @@ color: #f3f3f3
 }</string>
                                 </property>
                                 <property name="frameShape">
-                                 <enum>QFrame::StyledPanel</enum>
+                                 <enum>QFrame::Shape::StyledPanel</enum>
                                 </property>
                                 <property name="frameShadow">
-                                 <enum>QFrame::Raised</enum>
+                                 <enum>QFrame::Shadow::Raised</enum>
                                 </property>
                                </widget>
                                <widget class="QComboBox" name="colorModeComboBox">
@@ -6067,7 +6034,7 @@ color: #f3f3f3
                           <item>
                            <spacer name="horizontalSpacer_23">
                             <property name="orientation">
-                             <enum>Qt::Horizontal</enum>
+                             <enum>Qt::Orientation::Horizontal</enum>
                             </property>
                             <property name="sizeHint" stdset="0">
                              <size>
@@ -6128,7 +6095,6 @@ color: #f3f3f3
                                 <font>
                                  <family>Cairo</family>
                                  <pointsize>14</pointsize>
-                                 <weight>75</weight>
                                  <bold>true</bold>
                                 </font>
                                </property>
@@ -6172,10 +6138,10 @@ color: #f3f3f3
 }</string>
                                </property>
                                <property name="frameShape">
-                                <enum>QFrame::StyledPanel</enum>
+                                <enum>QFrame::Shape::StyledPanel</enum>
                                </property>
                                <property name="frameShadow">
-                                <enum>QFrame::Raised</enum>
+                                <enum>QFrame::Shadow::Raised</enum>
                                </property>
                                <widget class="QFrame" name="operationModeComboBoxArrow">
                                 <property name="geometry">
@@ -6214,10 +6180,10 @@ color: #f3f3f3
 }</string>
                                 </property>
                                 <property name="frameShape">
-                                 <enum>QFrame::StyledPanel</enum>
+                                 <enum>QFrame::Shape::StyledPanel</enum>
                                 </property>
                                 <property name="frameShadow">
-                                 <enum>QFrame::Raised</enum>
+                                 <enum>QFrame::Shadow::Raised</enum>
                                 </property>
                                </widget>
                                <widget class="QComboBox" name="operationModeComboBox">
@@ -6304,7 +6270,7 @@ color: #f3f3f3
                           <item>
                            <spacer name="horizontalSpacer_28">
                             <property name="orientation">
-                             <enum>Qt::Horizontal</enum>
+                             <enum>Qt::Orientation::Horizontal</enum>
                             </property>
                             <property name="sizeHint" stdset="0">
                              <size>
@@ -6386,7 +6352,6 @@ color: #f3f3f3
                                 <font>
                                  <family>Cairo</family>
                                  <pointsize>14</pointsize>
-                                 <weight>75</weight>
                                  <bold>true</bold>
                                 </font>
                                </property>
@@ -6446,16 +6411,16 @@ color: #f3f3f3
 }</string>
                                </property>
                                <property name="verticalScrollBarPolicy">
-                                <enum>Qt::ScrollBarAsNeeded</enum>
+                                <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
                                </property>
                                <property name="horizontalScrollBarPolicy">
-                                <enum>Qt::ScrollBarAlwaysOff</enum>
+                                <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
                                </property>
                                <property name="editTriggers">
-                                <set>QAbstractItemView::DoubleClicked</set>
+                                <set>QAbstractItemView::EditTrigger::DoubleClicked</set>
                                </property>
                                <property name="selectionMode">
-                                <enum>QAbstractItemView::SingleSelection</enum>
+                                <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
                                </property>
                               </widget>
                              </item>
@@ -6538,7 +6503,6 @@ color: #f3f3f3
                                    <font>
                                     <family>Cairo</family>
                                     <pointsize>12</pointsize>
-                                    <weight>75</weight>
                                     <bold>true</bold>
                                    </font>
                                   </property>
@@ -6597,7 +6561,6 @@ color: #f3f3f3
                                 <font>
                                  <family>Cairo</family>
                                  <pointsize>10</pointsize>
-                                 <weight>75</weight>
                                  <bold>true</bold>
                                 </font>
                                </property>
@@ -6611,13 +6574,13 @@ color: #f3f3f3
                                 <string>&lt;p style='line-height: 0.7;'&gt;Show error message here&lt;/p&gt;</string>
                                </property>
                                <property name="alignment">
-                                <set>Qt::AlignCenter</set>
+                                <set>Qt::AlignmentFlag::AlignCenter</set>
                                </property>
                                <property name="wordWrap">
                                 <bool>true</bool>
                                </property>
                                <property name="textInteractionFlags">
-                                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                                <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                                </property>
                               </widget>
                              </item>
@@ -6627,7 +6590,7 @@ color: #f3f3f3
                           <item>
                            <spacer name="horizontalSpacer_14">
                             <property name="orientation">
-                             <enum>Qt::Horizontal</enum>
+                             <enum>Qt::Orientation::Horizontal</enum>
                             </property>
                             <property name="sizeHint" stdset="0">
                              <size>
@@ -6643,7 +6606,7 @@ color: #f3f3f3
                        <item>
                         <spacer name="verticalSpacer_7">
                          <property name="orientation">
-                          <enum>Qt::Vertical</enum>
+                          <enum>Qt::Orientation::Vertical</enum>
                          </property>
                          <property name="sizeHint" stdset="0">
                           <size>
@@ -6674,7 +6637,7 @@ color: #f3f3f3
                           <item>
                            <spacer name="horizontalSpacer_22">
                             <property name="orientation">
-                             <enum>Qt::Horizontal</enum>
+                             <enum>Qt::Orientation::Horizontal</enum>
                             </property>
                             <property name="sizeHint" stdset="0">
                              <size>
@@ -6702,7 +6665,6 @@ color: #f3f3f3
                              <font>
                               <family>Cairo</family>
                               <pointsize>12</pointsize>
-                              <weight>75</weight>
                               <bold>true</bold>
                              </font>
                             </property>
@@ -6752,7 +6714,6 @@ color: #f3f3f3
                              <font>
                               <family>Cairo</family>
                               <pointsize>12</pointsize>
-                              <weight>75</weight>
                               <bold>true</bold>
                              </font>
                             </property>
@@ -6857,10 +6818,10 @@ color: #f3f3f3
 }</string>
             </property>
             <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
+             <enum>QFrame::Shape::StyledPanel</enum>
             </property>
             <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
+             <enum>QFrame::Shadow::Raised</enum>
             </property>
             <layout class="QGridLayout" name="gridLayout_6">
              <property name="leftMargin">
@@ -6944,7 +6905,6 @@ color: #f3f3f3
                    <font>
                     <family>Cairo</family>
                     <pointsize>20</pointsize>
-                    <weight>75</weight>
                     <bold>true</bold>
                    </font>
                   </property>
@@ -6959,7 +6919,7 @@ color: #f3f3f3
                    <string>Login</string>
                   </property>
                   <property name="alignment">
-                   <set>Qt::AlignCenter</set>
+                   <set>Qt::AlignmentFlag::AlignCenter</set>
                   </property>
                   <property name="margin">
                    <number>0</number>
@@ -7037,7 +6997,6 @@ color: #f3f3f3
                    <font>
                     <family>Cairo</family>
                     <pointsize>12</pointsize>
-                    <weight>50</weight>
                     <bold>false</bold>
                    </font>
                   </property>
@@ -7060,7 +7019,7 @@ color: #f3f3f3
                    <string/>
                   </property>
                   <property name="echoMode">
-                   <enum>QLineEdit::Password</enum>
+                   <enum>QLineEdit::EchoMode::Password</enum>
                   </property>
                   <property name="placeholderText">
                    <string>Password</string>
@@ -7091,7 +7050,6 @@ color: #f3f3f3
                    <font>
                     <family>Cairo</family>
                     <pointsize>10</pointsize>
-                    <weight>75</weight>
                     <bold>true</bold>
                    </font>
                   </property>
@@ -7105,10 +7063,10 @@ color: #f3f3f3
                    <string>&lt;p style='line-height: 0.7;'&gt;Username or password is incorrect!&lt;/p&gt;</string>
                   </property>
                   <property name="alignment">
-                   <set>Qt::AlignCenter</set>
+                   <set>Qt::AlignmentFlag::AlignCenter</set>
                   </property>
                   <property name="textInteractionFlags">
-                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                   <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                   </property>
                  </widget>
                 </item>
@@ -7153,7 +7111,6 @@ color: #f3f3f3
                       <font>
                        <family>Cairo</family>
                        <pointsize>12</pointsize>
-                       <weight>75</weight>
                        <bold>true</bold>
                       </font>
                      </property>
@@ -7211,7 +7168,6 @@ color: #f3f3f3
                    <font>
                     <family>Cairo</family>
                     <pointsize>12</pointsize>
-                    <weight>50</weight>
                     <bold>false</bold>
                    </font>
                   </property>
@@ -7233,7 +7189,7 @@ color: #f3f3f3
                    <string>Don't have an account?</string>
                   </property>
                   <property name="alignment">
-                   <set>Qt::AlignCenter</set>
+                   <set>Qt::AlignmentFlag::AlignCenter</set>
                   </property>
                  </widget>
                 </item>
@@ -7261,7 +7217,6 @@ color: #f3f3f3
                    <font>
                     <family>Cairo</family>
                     <pointsize>12</pointsize>
-                    <weight>50</weight>
                     <bold>false</bold>
                    </font>
                   </property>
@@ -7283,7 +7238,7 @@ color: #f3f3f3
                    <string>Forgot password?</string>
                   </property>
                   <property name="alignment">
-                   <set>Qt::AlignCenter</set>
+                   <set>Qt::AlignmentFlag::AlignCenter</set>
                   </property>
                  </widget>
                 </item>
@@ -7317,10 +7272,10 @@ color: #f3f3f3
 }</string>
             </property>
             <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
+             <enum>QFrame::Shape::StyledPanel</enum>
             </property>
             <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
+             <enum>QFrame::Shadow::Raised</enum>
             </property>
             <layout class="QGridLayout" name="gridLayout_7">
              <property name="leftMargin">
@@ -7392,7 +7347,6 @@ color: #f3f3f3
                    <font>
                     <family>Cairo</family>
                     <pointsize>20</pointsize>
-                    <weight>75</weight>
                     <bold>true</bold>
                    </font>
                   </property>
@@ -7407,7 +7361,7 @@ color: #f3f3f3
                    <string>Register</string>
                   </property>
                   <property name="alignment">
-                   <set>Qt::AlignCenter</set>
+                   <set>Qt::AlignmentFlag::AlignCenter</set>
                   </property>
                   <property name="margin">
                    <number>0</number>
@@ -7574,7 +7528,7 @@ color: #f3f3f3
                    <string/>
                   </property>
                   <property name="echoMode">
-                   <enum>QLineEdit::Password</enum>
+                   <enum>QLineEdit::EchoMode::Password</enum>
                   </property>
                   <property name="placeholderText">
                    <string>Password</string>
@@ -7605,7 +7559,6 @@ color: #f3f3f3
                    <font>
                     <family>Cairo</family>
                     <pointsize>10</pointsize>
-                    <weight>75</weight>
                     <bold>true</bold>
                    </font>
                   </property>
@@ -7620,13 +7573,13 @@ color: #f3f3f3
                    <string>&lt;p style='line-height: 0.7;'&gt;Username must to have atleast one capital letter and atleast on digit&lt;/p&gt;</string>
                   </property>
                   <property name="alignment">
-                   <set>Qt::AlignCenter</set>
+                   <set>Qt::AlignmentFlag::AlignCenter</set>
                   </property>
                   <property name="wordWrap">
                    <bool>true</bool>
                   </property>
                   <property name="textInteractionFlags">
-                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                   <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                   </property>
                  </widget>
                 </item>
@@ -7671,7 +7624,6 @@ color: #f3f3f3
                       <font>
                        <family>Cairo</family>
                        <pointsize>12</pointsize>
-                       <weight>75</weight>
                        <bold>true</bold>
                       </font>
                      </property>
@@ -7729,7 +7681,6 @@ color: #f3f3f3
                    <font>
                     <family>Cairo</family>
                     <pointsize>12</pointsize>
-                    <weight>50</weight>
                     <bold>false</bold>
                    </font>
                   </property>
@@ -7751,7 +7702,7 @@ color: #f3f3f3
                    <string>Already have an account?</string>
                   </property>
                   <property name="alignment">
-                   <set>Qt::AlignCenter</set>
+                   <set>Qt::AlignmentFlag::AlignCenter</set>
                   </property>
                  </widget>
                 </item>
@@ -7857,7 +7808,6 @@ color: #f3f3f3
                    <font>
                     <family>Cairo</family>
                     <pointsize>20</pointsize>
-                    <weight>75</weight>
                     <bold>true</bold>
                    </font>
                   </property>
@@ -7872,7 +7822,7 @@ color: #f3f3f3
                    <string>Reset Password</string>
                   </property>
                   <property name="alignment">
-                   <set>Qt::AlignCenter</set>
+                   <set>Qt::AlignmentFlag::AlignCenter</set>
                   </property>
                   <property name="margin">
                    <number>0</number>
@@ -7950,7 +7900,6 @@ color: #f3f3f3
                    <font>
                     <family>Cairo</family>
                     <pointsize>10</pointsize>
-                    <weight>75</weight>
                     <bold>true</bold>
                    </font>
                   </property>
@@ -7964,13 +7913,13 @@ color: #f3f3f3
                    <string>&lt;p style='line-height: 0.7;'&gt;Username or password is incorrect!&lt;/p&gt;</string>
                   </property>
                   <property name="alignment">
-                   <set>Qt::AlignCenter</set>
+                   <set>Qt::AlignmentFlag::AlignCenter</set>
                   </property>
                   <property name="wordWrap">
                    <bool>true</bool>
                   </property>
                   <property name="textInteractionFlags">
-                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                   <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                   </property>
                  </widget>
                 </item>
@@ -8015,7 +7964,6 @@ color: #f3f3f3
                       <font>
                        <family>Cairo</family>
                        <pointsize>12</pointsize>
-                       <weight>75</weight>
                        <bold>true</bold>
                       </font>
                      </property>
@@ -8073,7 +8021,6 @@ color: #f3f3f3
                    <font>
                     <family>Cairo</family>
                     <pointsize>12</pointsize>
-                    <weight>50</weight>
                     <bold>false</bold>
                    </font>
                   </property>
@@ -8096,7 +8043,7 @@ color: #f3f3f3
                    <string/>
                   </property>
                   <property name="echoMode">
-                   <enum>QLineEdit::Normal</enum>
+                   <enum>QLineEdit::EchoMode::Normal</enum>
                   </property>
                   <property name="placeholderText">
                    <string>Received Code</string>
@@ -8127,7 +8074,6 @@ color: #f3f3f3
                    <font>
                     <family>Cairo</family>
                     <pointsize>10</pointsize>
-                    <weight>75</weight>
                     <bold>true</bold>
                    </font>
                   </property>
@@ -8141,13 +8087,13 @@ color: #f3f3f3
                    <string>&lt;p style='line-height: 0.7;'&gt;Username or password is incorrect!&lt;/p&gt;</string>
                   </property>
                   <property name="alignment">
-                   <set>Qt::AlignCenter</set>
+                   <set>Qt::AlignmentFlag::AlignCenter</set>
                   </property>
                   <property name="wordWrap">
                    <bool>true</bool>
                   </property>
                   <property name="textInteractionFlags">
-                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                   <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
                   </property>
                  </widget>
                 </item>
@@ -8192,7 +8138,6 @@ color: #f3f3f3
                       <font>
                        <family>Cairo</family>
                        <pointsize>12</pointsize>
-                       <weight>75</weight>
                        <bold>true</bold>
                       </font>
                      </property>
@@ -8250,7 +8195,6 @@ color: #f3f3f3
                    <font>
                     <family>Cairo</family>
                     <pointsize>12</pointsize>
-                    <weight>50</weight>
                     <bold>false</bold>
                    </font>
                   </property>
@@ -8272,7 +8216,7 @@ color: #f3f3f3
                    <string>Cancel reset password process</string>
                   </property>
                   <property name="alignment">
-                   <set>Qt::AlignCenter</set>
+                   <set>Qt::AlignmentFlag::AlignCenter</set>
                   </property>
                  </widget>
                 </item>
@@ -8285,10 +8229,10 @@ color: #f3f3f3
           <item>
            <spacer name="verticalSpacer_13">
             <property name="orientation">
-             <enum>Qt::Vertical</enum>
+             <enum>Qt::Orientation::Vertical</enum>
             </property>
             <property name="sizeType">
-             <enum>QSizePolicy::Expanding</enum>
+             <enum>QSizePolicy::Policy::Expanding</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>

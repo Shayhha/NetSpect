@@ -20,10 +20,14 @@
 
 /*---------------------------------Default-Styles---------------------------------*/
 
+/* Widget */
+
 QWidget {
     background-color: #fbfcfd;
     outline: none;
 }
+
+/* Tool Tip */
 
 QToolTip { 
    color: #151519;
@@ -32,8 +36,11 @@ QToolTip {
    padding: 4px;
 }
 
+/* Scroll Bar */
+
 QScrollBar:vertical, QScrollBar:horizontal {
     background-color: #fbfcfd;
+    border: 1px solid rgb(102,102,102);
     width: 10px;
     height: 10px; 
     margin: 0px 0px 0px 0px;
@@ -41,23 +48,25 @@ QScrollBar:vertical, QScrollBar:horizontal {
 }
 
 QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
+    background-color: black;
     min-height: 100px;
     border: 0px solid black;
     border-radius: 4px;
 }
 
 QScrollBar::add-line:vertical, QScrollBar::add-line:horizontal {
+    background-color: #fbfcfd;
     height: 0px;
     subcontrol-position: bottom;
     subcontrol-origin: margin;
-    background-color: #fbfcfd;
+    border-radius: 4px;
 }
 
 QScrollBar::sub-line:vertical, QScrollBar::sub-line:horizontal {
+    background-color: #fbfcfd;
     height: 0px;
     subcontrol-position: top;
     subcontrol-origin: margin;
-    background-color: #fbfcfd;
     border-radius: 4px;
 }
 
@@ -66,28 +75,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
     border-radius: 4px;
 }
 
-
-
-QListView::item:hover { 
-    background-color: #fbfcfd;
-    color: #151519;
-    border: 1px solid #93adcd;
-}
-
-QListView::item:selected { 
-    background-color: #fbfcfd;
-    color: #151519;
-    border: 1px solid #93adcd;
-}
-
-
-QTableWidget {
-        border-radius: 8px;
-        background-color: transparent;
-        gridline-color: black;
-        border: none; 
-        color: #151519;
-    }
+/* Header View */
 
 QHeaderView::section {
     background-color: #c1d0ef;
@@ -98,6 +86,44 @@ QHeaderView::section {
     border-top: none;
     border-left: none;
     border-bottom: 2px solid black;
+}
+
+QHeaderView::section:vertical {
+    background-color: #c1d0ef;
+    color: #151519;
+    font-size: 14px;
+    font-weight: bold;
+	gridline-color: black;
+}
+
+/* List Widget */
+
+QListWidget {
+   background-color: rgba(198, 198, 198, 0.6);
+   border-radius: 15px;
+   border-style: outset;
+   border-width: 2px;
+   border-color: black;
+   padding: 4px;
+}
+
+QListWidget::corner {
+    background-color: #EBEFF7;
+    border-top-left-radius: 8px;
+}
+
+QListWidget::item {
+    color: black;
+}
+
+/* Table Widget */
+
+QTableWidget {
+    border-radius: 8px;
+    background-color: transparent;
+    color: #151519;
+    gridline-color: black;
+    border: none;
 }
 
 QTableWidget::item {
@@ -114,36 +140,18 @@ QTableWidget::focus {
     outline: none;  
 }
 
-QTableWidget QScrollBar:vertical {
-    width: 4px;
-    margin: 0px;
-    border: none;
-    background: black;
-}
-
-QTableWidget QScrollBar::handle:vertical {
-    background: black;
-}
-
 QTableWidget::corner {
-    background-color: #3498db;
+    background-color: #EBEFF7;
     border-top-left-radius: 8px;
 }
 
+/* Table View */
 
 QTableView {
     border-radius: 8px;
     background-color: transparent;
+    color: #151519;
     gridline-color: black;
-    color: #151519;
-}
-
-QTableView QHeaderView::section:vertical {
-    background-color: #c1d0ef;
-    color: #151519;
-    font-size: 14px;
-    font-weight: bold;
-	gridline-color: black;
 }
 
 QTableView::item {
@@ -151,22 +159,11 @@ QTableView::item {
 }
 
 QTableView::corner {
-    background-color: #3498db;
+    background-color: #EBEFF7;
     border-top-left-radius: 8px;
 }
 
-QTableView QScrollBar:vertical {
-    width: 4px;
-    margin: 0px;
-	border: none;
- 	background: black;
-
-}
-
-QTableView QScrollBar::handle:vertical {
-    background: black;
-}
-
+/* Check Box */
 
 QCheckBox::indicator {
     width: 16px; 
@@ -190,10 +187,7 @@ QCheckBox::indicator:hover {
 QCheckBox {
     spacing: 10px; 
     color: #151519; 
-} 
-
-
-
+}
 
 /*-------------------------------Default-Styles-End-------------------------------*/
 
@@ -542,22 +536,6 @@ QCheckBox {
 	border-color:#93adcd;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*-------------------------------General-Styles-End-------------------------------*/
 
 /*----------------------------------Main-Window-----------------------------------*/
@@ -668,6 +646,19 @@ QCheckBox {
     padding-left: 5px;
     padding-right: 5px;
     border: 1px solid black;
+}
+
+#networkInterfaceComboBox QAbstractItemView::item:hover {
+    background-color: rgba(137, 159, 206, 0.2);
+    color: #151519;
+    border-radius: 6px;
+    padding-left: 8px;
+}
+
+#networkInterfaceComboBox QAbstractItemView::item:selected {
+    color: #151519;
+    border: none;
+    outline: none;
 }
 
 #networkInterfaceComboBox QListView{
@@ -782,9 +773,6 @@ QCheckBox {
     border: 1px solid black;
 }
 
-
-
-
 /*--------------------------------Main-Window-End---------------------------------*/
 
 /*---------------------------------Report-Window----------------------------------*/
@@ -830,6 +818,19 @@ QCheckBox {
     padding-left: 5px;
     padding-right: 5px;
     border: 1px solid black;
+}
+
+#reportDurationComboBox QAbstractItemView::item:hover { 
+    background-color: rgba(137, 159, 206, 0.2);
+    color: #151519;
+    border-radius: 6px;
+    padding-left: 8px;
+}
+
+#reportDurationComboBox QAbstractItemView::item:selected { 
+    color: #151519;
+    border: none;
+    outline: none;
 }
 
 #reportDurationComboBox QListView{
@@ -925,8 +926,6 @@ QCheckBox {
    border-width: 2px;
    border-color: black;	
 }
-
-
 
 /*-------------------------------Report-Window-End--------------------------------*/
 
@@ -1115,27 +1114,20 @@ QCheckBox {
     padding: 4px;
 }
 
+#ipAddressesListWidget::item:hover {
+    background: transparent;
+    outline: none;
+    border: none;
+}
+
 #ipAddressesListWidget::corner {
-    background-color: #3498db;
+    background-color: #EBEFF7;
     border-top-left-radius: 8px;
-}
-
-#ipAddressesListWidget QScrollBar:vertical {
-    width: 6px;
-    margin: 0px;
-	border: none;
- 	background: #EBEFF7;
-}
-
-#ipAddressesListWidget QScrollBar::handle:vertical {
-    background: black;
-	border-radius: 2px;
 }
 
 #ipAddressesListWidget::item { 
     color: #151519; 
 }
-
 
 /*-----------------------------Information-Window-End------------------------------*/
 
@@ -1308,6 +1300,19 @@ QCheckBox {
     border: 1px solid black;
 }
 
+#colorModeComboBox QAbstractItemView::item:hover { 
+    background-color: rgba(137, 159, 206, 0.2);
+    color: #151519;
+    border-radius: 6px;
+    padding-left: 8px;
+}
+
+#colorModeComboBox QAbstractItemView::item:selected { 
+    color: #151519;
+    border: none;
+    outline: none;
+}
+
 #colorModeComboBox QListView{
     outline: 0px;
 }
@@ -1322,6 +1327,12 @@ QCheckBox {
    border: 2px solid #899fce;
    padding: 5px;
    color: #151519;
+}
+
+#macAddressListWidget::item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    color: black;
 }
 
 #macAddressListWidget::corner {
@@ -1441,6 +1452,19 @@ QCheckBox {
     padding-left: 5px;
     padding-right: 5px;
     border: 1px solid black;
+}
+
+#operationModeComboBox QAbstractItemView::item:hover { 
+    background-color: rgba(137, 159, 206, 0.2);
+    color: #151519;
+    border-radius: 6px;
+    padding-left: 8px;
+}
+
+#operationModeComboBox QAbstractItemView::item:selected { 
+    color: #151519;
+    border: none;
+    outline: none;
 }
 
 #operationModeComboBox QListView{

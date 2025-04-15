@@ -28,11 +28,11 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QWidget {
-    background-color:#3C3D4A
+    background-color: #3c3d4a;
 }
 
 QScrollBar:vertical, QScrollBar:horizontal {
-    background-color: rgba(247, 247, 247, 150);
+    background-color: rgb(250, 250, 250);
     border: 1px solid rgb(153, 153, 153);
     width: 10px;
     height: 10px; 
@@ -59,31 +59,52 @@ QScrollBar::sub-line:vertical, QScrollBar::sub-line:horizontal {
     subcontrol-origin: margin;
 }
 
-QListView::item:hover { 
-    background-color: rgb(173, 174, 184); 
-    color: black;
-    border: 1px solid black;
-}
-
-QListView::item:selected { 
-    background-color: rgb(187, 188, 196);
-    color: black;
-    border: 1px solid black;
-}
-
 QToolTip { 
    color: rgb(245,245,245);
    background-color: rgba(46, 47, 56, 0.8);
    border: 1px solid rgb(102,102,102);
+   padding: 4px;
 }</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
+  <widget class="QWidget" name="centralWidget">
    <property name="styleSheet">
-    <string notr="true">QToolTip { 
-   color: rgb(245,245,245);
-   background-color: rgba(46, 47, 56, 0.8);
-   border: 1px solid rgb(102,102,102);
-   padding: 4px;
+    <string notr="true">#centralWidget {
+    background-color: rgb(60, 61, 74);
+}
+
+#centralWidget QScrollBar:vertical, #centralWidget QScrollBar:horizontal {
+    background-color: rgb(250, 250, 250);
+    border: 1px solid rgb(153, 153, 153);
+    width: 10px;
+    height: 10px;
+    margin: 0px 0px 0px 0px;
+    border-radius: 4px;
+}
+
+#centralWidget QScrollBar::handle:vertical, #centralWidget QScrollBar::handle:horizontal {
+    background-color: black;
+    min-height: 100px;
+    border: 0px solid black;
+    border-radius: 4px;
+}
+
+#centralWidget QScrollBar::add-line:vertical, #centralWidget QScrollBar::add-line:horizontal {
+    height: 0px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+#centralWidget QScrollBar::sub-line:vertical, #centralWidget QScrollBar::sub-line:horizontal {
+    height: 0px;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
+
+#centralWidget QToolTip {
+    color: rgb(245,245,245);
+    background-color: rgba(46, 47, 56, 0.8);
+    border: 1px solid rgb(102,102,102);
+    padding: 4px;
 }</string>
    </property>
    <layout class="QGridLayout" name="gridLayout">
@@ -357,6 +378,9 @@ QToolTip {
       </property>
       <property name="autoFillBackground">
        <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
       </property>
       <layout class="QHBoxLayout" name="mainHorizontalFrame">
        <property name="spacing">
@@ -1387,7 +1411,7 @@ QToolTip {
                                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose your network interface&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                 </property>
                                 <property name="styleSheet">
-                                 <string notr="true">#networkInterfaceComboBox {
+                                 <string notr="true">#networkInterfaceComboBox  {
     background-color: transparent;
     border-radius: 10px;
     border-style: outset;
@@ -1403,10 +1427,21 @@ QToolTip {
     selection-background-color: rgb(95, 97, 109);
     color: rgb(0, 0, 0);    
     padding: 10px;
-    /*background-radius: 10px;
-    border-radius: 10px;*/
     padding-left: 5px;
     padding-right: 5px;
+}
+
+#networkInterfaceComboBox QAbstractItemView::item:hover {
+    background-color: rgba(0, 0, 0, 0.07);
+    color: black;
+    border-radius: 6px;
+    padding-left: 8px;
+}
+
+#networkInterfaceComboBox QAbstractItemView::item:selected {
+    color: black;
+    border: none;
+    outline: none;
 }
 
 #networkInterfaceComboBox QListView{
@@ -1902,54 +1937,71 @@ QToolTip {
                     <number>-1</number>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">
-QTableWidget {
-        border-radius: 8px;
-        background-color: transparent;
-        gridline-color: black;
-        border: none;  /* Remove any border */
-    }
+                    <string notr="true">#historyTableWidget {
+    border-radius: 8px;
+    background-color: transparent;
+    color: black;
+    gridline-color: black;
+    border: none;
+}
 
-    QHeaderView::section {
-        background-color: rgba(204, 204, 204, 0.6);
-        color: black;
-        font-size: 14px;
-        font-weight: bold;
-        border-right: 1px solid black;
-        border-top: none;
-        border-left: none;
-        border-bottom: 2px solid black;
-    }
+#historyTableWidget QHeaderView::section {
+    background-color: rgba(204, 204, 204, 0.6);
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    border-right: 1px solid black;
+    border-top: none;
+    border-left: none;
+    border-bottom: 2px solid black;
+}
 
-    QTableWidget::item {
-        padding: 6px;
-        border: none;  /* Remove borders around individual cells */
-    }
+#historyTableWidget::item {
+    padding: 6px;
+    border: none;
+}
 
-    QTableWidget::item:selected {
-        background: transparent;  /* Remove selected background */
-        border: none;  /* Remove border on selected items */
-    }
+#historyTableWidget::item:selected {
+    background: transparent;
+    border: none;
+}
 
-    QTableWidget::focus {
-        outline: none;  /* Remove focus outline */
-    }
+#historyTableWidget::focus {
+    outline: none;
+}
 
-    QTableWidget QScrollBar:vertical {
-        width: 4px;
-        margin: 0px;
-        border: none;
-        background: #f3f3f3;
-    }
+#historyTableWidget::corner {
+    background-color: #f3f3f3;
+    border-top-left-radius: 8px;
+}
 
-    QTableWidget QScrollBar::handle:vertical {
-        background: black;
-    }
+#historyTableWidget QScrollBar:vertical, #historyTableWidget QScrollBar:horizontal {
+    background-color: rgb(250, 250, 250);
+    border: 1px solid rgb(153, 153, 153);
+    width: 10px;
+    height: 10px; 
+    margin: 0px 0px 0px 0px;
+    border-radius: 4px;
+}
 
-    QTableWidget::corner {
-        background-color: #3498db;
-        border-top-left-radius: 8px;
-    }</string>
+#historyTableWidget QScrollBar::handle:vertical,  #historyTableWidget QScrollBar::handle:horizontal {
+    background-color: black;
+    min-height: 100px;
+    border: 0px solid black;
+    border-radius: 4px;
+}
+
+#historyTableWidget QScrollBar::add-line:vertical, #historyTableWidget QScrollBar::add-line:horizontal {
+    height: 0px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+#historyTableWidget QScrollBar::sub-line:vertical, #historyTableWidget QScrollBar::sub-line:horizontal {
+    height: 0px;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}</string>
                    </property>
                    <property name="verticalScrollBarPolicy">
                     <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
@@ -2311,10 +2363,21 @@ QTableWidget {
     selection-background-color: rgb(95, 97, 109);
     color: rgb(0, 0, 0);    
     padding: 10px;
-    /*background-radius: 10px;
-    border-radius: 10px;*/
     padding-left: 5px;
     padding-right: 5px;
+}
+
+#reportDurationComboBox QAbstractItemView::item:hover { 
+    background-color: rgba(0, 0, 0, 0.07);
+    color: black;
+    border-radius: 6px;
+    padding-left: 8px;
+}
+
+#reportDurationComboBox QAbstractItemView::item:selected { 
+    color: black;
+    border: none;
+    outline: none;
 }
 
 #reportDurationComboBox QListView{
@@ -2941,53 +3004,68 @@ QCheckBox::indicator:hover {
                        </font>
                       </property>
                       <property name="styleSheet">
-                       <string notr="true">QTableView {
+                       <string notr="true">#reportPreviewTableView {
     border-radius: 8px;
     background-color: transparent;
+    color: black;
     gridline-color: black;
 }
 
-QHeaderView::section {
+#reportPreviewTableView QHeaderView::section {
     background-color: rgba(204, 204, 204, 0.6);
     color: black;
     font-size: 14px;
     font-weight: bold;
-	border-right: 1px solid black;
-	border-top: none;
-	border-left: none;
-	border-bottom:2px solid black;
+    border-right: 1px solid black;
+    border-top: none;
+    border-left: none;
+    border-bottom: 2px solid black;
 }
 
-QTableView QHeaderView::section:vertical {
+#reportPreviewTableView QHeaderView::section:vertical {
     background-color: rgba(204, 204, 204, 0.6);
     color: black;
     font-size: 14px;
     font-weight: bold;
-	gridline-color: black;
+    gridline-color: black;
 }
 
-QTableView::item {
+#reportPreviewTableView::item {
     padding: 6px;
 }
 
-QTableView::corner {
-    background-color: #3498db;
+#reportPreviewTableView::corner {
+    background-color: #f3f3f3;
     border-top-left-radius: 8px;
 }
 
-QTableView QScrollBar:vertical {
-    width: 4px;
-    margin: 0px;
-	border: none;
- 	background: #f3f3f3;
-
+#reportPreviewTableView QScrollBar:vertical, #reportPreviewTableView QScrollBar:horizontal {
+    background-color: rgb(250, 250, 250);
+    border: 1px solid rgb(153, 153, 153);
+    width: 10px;
+    height: 10px; 
+    margin: 0px 0px 0px 0px;
+    border-radius: 4px;
 }
 
-QTableView QScrollBar::handle:vertical {
-    background: black;
+#reportPreviewTableView QScrollBar::handle:vertical,  #reportPreviewTableView QScrollBar::handle:horizontal {
+    background-color: black;
+    min-height: 100px;
+    border: 0px solid black;
+    border-radius: 4px;
 }
 
-</string>
+#reportPreviewTableView QScrollBar::add-line:vertical, #reportPreviewTableView QScrollBar::add-line:horizontal {
+    height: 0px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+#reportPreviewTableView QScrollBar::sub-line:vertical, #reportPreviewTableView QScrollBar::sub-line:horizontal {
+    height: 0px;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}</string>
                       </property>
                       <property name="verticalScrollBarPolicy">
                        <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
@@ -4837,28 +4915,48 @@ QTableView QScrollBar::handle:vertical {
   padding: 4px;
 }
 
-
+#ipAddressesListWidget::item:hover {
+    background: transparent;
+    outline: none;
+    border: none;
+}
 
 #ipAddressesListWidget::corner {
-    background-color: #3498db;
+    background-color:  #f3f3f3;
     border-top-left-radius: 8px;
 }
 
-#ipAddressesListWidget QScrollBar:vertical {
-    width: 6px;
-    margin: 0px;
-	border: none;
- 	background: #f3f3f3;
-
+#ipAddressesListWidget::item {
+    color: black;
 }
 
-#ipAddressesListWidget QScrollBar::handle:vertical {
-    background: black;
-	border-radius: 2px;
-
+#ipAddressesListWidget QScrollBar:vertical, #ipAddressesListWidget QScrollBar:horizontal {
+    background-color: rgb(250, 250, 250);
+    border: 1px solid rgb(153, 153, 153);
+    width: 10px;
+    height: 10px; 
+    margin: 0px 0px 0px 0px;
+    border-radius: 4px;
 }
 
-#ipAddressesListWidget::item { color: black; }</string>
+#ipAddressesListWidget QScrollBar::handle:vertical,  #ipAddressesListWidget QScrollBar::handle:horizontal {
+    background-color: black;
+    min-height: 100px;
+    border: 0px solid black;
+    border-radius: 4px;
+}
+
+#ipAddressesListWidget QScrollBar::add-line:vertical, #ipAddressesListWidget QScrollBar::add-line:horizontal {
+    height: 0px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+#ipAddressesListWidget QScrollBar::sub-line:vertical, #ipAddressesListWidget QScrollBar::sub-line:horizontal {
+    height: 0px;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}</string>
                             </property>
                             <property name="verticalScrollBarPolicy">
                              <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
@@ -6005,10 +6103,21 @@ color: #f3f3f3
     selection-background-color: rgb(95, 97, 109);
     color: rgb(0, 0, 0);    
     padding: 10px;
-   /* background-radius: 10px;
-    border-radius: 10px;*/
     padding-left: 5px;
     padding-right: 5px;
+}
+
+#colorModeComboBox QAbstractItemView::item:hover { 
+    background-color: rgba(0, 0, 0, 0.07);
+    color: black;
+    border-radius: 6px;
+    padding-left: 8px;
+}
+
+#colorModeComboBox QAbstractItemView::item:selected { 
+    color: black;
+    border: none;
+    outline: none;
 }
 
 #colorModeComboBox QListView{
@@ -6225,6 +6334,7 @@ color: #f3f3f3
                                 <property name="styleSheet">
                                  <string notr="true">#operationModeComboBox {
     background-color: transparent;
+	color: black;
     border-radius: 10px;
     border-style: outset;
     border-width: 2px;
@@ -6240,6 +6350,19 @@ color: #f3f3f3
     padding: 10px;
     padding-left: 5px;
     padding-right: 5px;
+}
+
+#operationModeComboBox QAbstractItemView::item:hover { 
+    background-color: rgba(0, 0, 0, 0.07);
+    color: black;
+    border-radius: 6px;
+    padding-left: 8px;
+}
+
+#operationModeComboBox QAbstractItemView::item:selected { 
+    color: black;
+    border: none;
+    outline: none;
 }
 
 #operationModeComboBox QListView{
@@ -6385,6 +6508,7 @@ color: #f3f3f3
                                <property name="styleSheet">
                                 <string notr="true">#macAddressListWidget {
    background-color: #f3f3f3;
+   color: black;
    border-radius: 15px;
    border-style: outset;
    border-width: 2px;
@@ -6392,22 +6516,43 @@ color: #f3f3f3
    padding: 5px;
 }
 
+#macAddressListWidget::item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    color: black;
+}
+
 #macAddressListWidget::corner {
     background-color: #f3f3f3;
     border-top-left-radius: 8px;
 }
 
-#macAddressListWidget QScrollBar:vertical {
-    width: 6px;
-    margin: 0px;
-	border: none;
- 	background: #f3f3f3;
+#macAddressListWidget QScrollBar:vertical, #macAddressListWidget QScrollBar:horizontal {
+    background-color: rgb(250, 250, 250);
+    border: 1px solid rgb(153, 153, 153);
+    width: 10px;
+    height: 10px; 
+    margin: 0px 0px 0px 0px;
+    border-radius: 4px;
 }
 
-#macAddressListWidget QScrollBar::handle:vertical {
-    background: black;
-	border-radius: 2px;
+#macAddressListWidget QScrollBar::handle:vertical,  #macAddressListWidget QScrollBar::handle:horizontal {
+    background-color: black;
+    min-height: 100px;
+    border: 0px solid black;
+    border-radius: 4px;
+}
 
+#macAddressListWidget QScrollBar::add-line:vertical, #macAddressListWidget QScrollBar::add-line:horizontal {
+    height: 0px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+#macAddressListWidget QScrollBar::sub-line:vertical, #macAddressListWidget QScrollBar::sub-line:horizontal {
+    height: 0px;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
 }</string>
                                </property>
                                <property name="verticalScrollBarPolicy">

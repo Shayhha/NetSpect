@@ -6,10 +6,14 @@
 
 /*---------------------------------Default-Styles---------------------------------*/
 
+/* Widget */
+
 QWidget {
-    background-color:#3C3D4A;
+    background-color:#3c3d4a;
     outline: none;
 }
+
+/* Tool Tip */
 
 QToolTip { 
    color: rgb(245,245,245);
@@ -21,7 +25,7 @@ QToolTip {
 /* Scroll Bar */
 
 QScrollBar:vertical, QScrollBar:horizontal {
-    background-color: rgba(247, 247, 247, 150);
+    background-color: rgb(250, 250, 250);
     border: 1px solid rgb(153, 153, 153);
     width: 10px;
     height: 10px; 
@@ -40,35 +44,22 @@ QScrollBar::add-line:vertical, QScrollBar::add-line:horizontal {
     height: 0px;
     subcontrol-position: bottom;
     subcontrol-origin: margin;
+    border-radius: 4px;
 }
 
 QScrollBar::sub-line:vertical, QScrollBar::sub-line:horizontal {
     height: 0px;
     subcontrol-position: top;
     subcontrol-origin: margin;
+    border-radius: 4px;
 }
 
-
-/* List View */
-
-QListView::item:hover { 
-    background-color: rgb(173, 174, 184); 
-    color: black;
-    border: 1px solid black;
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: white;
+    border-radius: 4px;
 }
 
-QListView::item:selected { 
-    background-color: rgb(187, 188, 196);
-    color: black;
-    border: 1px solid black;
-}
-
-QTableWidget {
-        border-radius: 8px;
-        background-color: transparent;
-        gridline-color: black;
-        border: none; 
-    }
+/* Header View */
 
 QHeaderView::section {
     background-color: rgba(204, 204, 204, 0.6);
@@ -81,48 +72,70 @@ QHeaderView::section {
     border-bottom: 2px solid black;
 }
 
-QTableWidget::item {
-    padding: 6px;
-    border: none;  
-}
-
-QTableWidget::item:selected {
-    background: transparent;  
-    border: none;  
-}
-
-QTableWidget::focus {
-    outline: none;  
-}
-
-QTableWidget QScrollBar:vertical {
-    width: 4px;
-    margin: 0px;
-    border: none;
-    background: #f3f3f3;
-}
-
-QTableWidget QScrollBar::handle:vertical {
-    background: black;
-}
-
-QTableWidget::corner {
-    background-color: #3498db;
-    border-top-left-radius: 8px;
-}
-
-QTableView {
-    border-radius: 8px;
-    background-color: transparent;
-    gridline-color: black;
-}
-
-QTableView QHeaderView::section:vertical {
+QHeaderView::section:vertical {
     background-color: rgba(204, 204, 204, 0.6);
     color: black;
     font-size: 14px;
     font-weight: bold;
-	gridline-color: black;
+    gridline-color: black;
+}
+
+/* List Widget */
+
+QListWidget {
+   background-color: rgba(198, 198, 198, 0.6);
+   border-radius: 15px;
+   border-style: outset;
+   border-width: 2px;
+   border-color: black;
+   padding: 4px;
+}
+
+QListWidget::corner {
+    background-color: #f3f3f3;
+    border-top-left-radius: 8px;
+}
+
+QListWidget::item {
+    color: black;
+}
+
+/* Table Widget */
+
+QTableWidget {
+    border-radius: 8px;
+    background-color: transparent;
+    color: black;
+    gridline-color: black;
+    border: none;
+}
+
+QTableWidget::item {
+    padding: 6px;
+    border: none;
+}
+
+QTableWidget::item:selected {
+    background: transparent;
+    border: none;
+}
+
+QTableWidget::focus {
+    outline: none;
+}
+
+QTableWidget::corner {
+    background-color: #f3f3f3;
+    border-top-left-radius: 8px;
+}
+
+/* Table View */
+
+QTableView {
+    border-radius: 8px;
+    background-color: transparent;
+    color: black;
+    gridline-color: black;
 }
 
 QTableView::item {
@@ -130,21 +143,11 @@ QTableView::item {
 }
 
 QTableView::corner {
-    background-color: #3498db;
+    background-color: #f3f3f3;
     border-top-left-radius: 8px;
 }
 
-QTableView QScrollBar:vertical {
-    width: 4px;
-    margin: 0px;
-	border: none;
- 	background: #f3f3f3;
-
-}
-
-QTableView QScrollBar::handle:vertical {
-    background: black;
-}
+/* Check Box */
 
 QCheckBox::indicator {
     width: 16px; 
@@ -620,6 +623,19 @@ QCheckBox {
     padding-right: 5px;
 }
 
+#networkInterfaceComboBox QAbstractItemView::item:hover {
+    background-color: rgba(0, 0, 0, 0.07);
+    color: black;
+    border-radius: 6px;
+    padding-left: 8px;
+}
+
+#networkInterfaceComboBox QAbstractItemView::item:selected {
+    color: black;
+    border: none;
+    outline: none;
+}
+
 #networkInterfaceComboBox QListView{
     outline: 0px;
 }
@@ -772,6 +788,19 @@ QCheckBox {
     padding: 10px;
     padding-left: 5px;
     padding-right: 5px;
+}
+
+#reportDurationComboBox QAbstractItemView::item:hover { 
+    background-color: rgba(0, 0, 0, 0.07);
+    color: black;
+    border-radius: 6px;
+    padding-left: 8px;
+}
+
+#reportDurationComboBox QAbstractItemView::item:selected { 
+    color: black;
+    border: none;
+    outline: none;
 }
 
 #reportDurationComboBox QListView{
@@ -1055,8 +1084,14 @@ QCheckBox {
   padding: 4px;
 }
 
+#ipAddressesListWidget::item:hover {
+    background: transparent;
+    outline: none;
+    border: none;
+}
+
 #ipAddressesListWidget::corner {
-    background-color: #3498db;
+    background-color: #f3f3f3;
     border-top-left-radius: 8px;
 }
 
@@ -1247,6 +1282,19 @@ QCheckBox {
     padding-right: 5px;
 }
 
+#colorModeComboBox QAbstractItemView::item:hover { 
+    background-color: rgba(0, 0, 0, 0.07);
+    color: black;
+    border-radius: 6px;
+    padding-left: 8px;
+}
+
+#colorModeComboBox QAbstractItemView::item:selected { 
+    color: black;
+    border: none;
+    outline: none;
+}
+
 #colorModeComboBox QListView{
     outline: 0px;
 }
@@ -1262,6 +1310,12 @@ QCheckBox {
    border-width: 2px;
    border-color: lightgray;
    padding: 5px;
+}
+
+#macAddressListWidget::item:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    color: black;
 }
 
 #macAddressListWidget::corner {
@@ -1380,6 +1434,19 @@ QCheckBox {
     padding: 10px;
     padding-left: 5px;
     padding-right: 5px;
+}
+
+#operationModeComboBox QAbstractItemView::item:hover { 
+    background-color: rgba(0, 0, 0, 0.07);
+    color: black;
+    border-radius: 6px;
+    padding-left: 8px;
+}
+
+#operationModeComboBox QAbstractItemView::item:selected { 
+    color: black;
+    border: none;
+    outline: none;
 }
 
 #operationModeComboBox QListView{

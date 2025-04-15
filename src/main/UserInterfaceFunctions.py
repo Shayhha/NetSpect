@@ -530,7 +530,7 @@ def GetDefaultStyleSheetRegisterLineEdits(self, lineEditName):
 class CustomMessageBox(QDialog):
     isMessageBox = False #represents flag for indicating if messagebox already exists
 
-    # constructor that gets the title, message and icon type (will be shown inside) of the message box window
+    # constructor of custom message box class
     def __init__(self, title, message, iconType, isSelectable=False):
         super().__init__()
 
@@ -539,15 +539,15 @@ class CustomMessageBox(QDialog):
         self.setWindowIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'NetSpectIconTransparent.png')))
         # self.setFont(QFont('Cairo', 13))
 
-        # create the main layout (vertical)
+        # create the main vertical layout
         layout = QVBoxLayout()
 
         # create a horizontal layout for the icon and message
         horizontalLayout = QHBoxLayout()
 
-        # get the built-in icon using QMessageBox
+        # create icon label and get message box icon with our method
         iconLabel = QLabel()
-        icon = self.GetBuiltInIcon(iconType) #use the method to get the icon
+        icon = self.GetMessageBoxIcon(iconType) #use the method to get the icon
         
         # create pixmap for icon and set size and margin
         pixmap = icon.pixmap(48, 48)
@@ -675,8 +675,8 @@ class CustomMessageBox(QDialog):
         super().reject()
     
 
-    # method for mapping the iconType to the appropriate built-in StandardPixmap
-    def GetBuiltInIcon(self, iconType):
+    # helper method for mapping the iconType to the appropriate StandardPixmap icon
+    def GetMessageBoxIcon(self, iconType):
         if iconType == 'Warning':
             QApplication.style().standardIcon(QStyle.StandardPixmap.SP_MessageBoxWarning)
         elif iconType == 'Critical':
@@ -1062,7 +1062,7 @@ def ReportDurationComboboxChanged(self):
 
 # helper function for getting flitered alert list from proxy model
 def GetFilteredAlerts(self):
-    filteredAlertList = []
+    filteredAlertList = [] #represents our filtered alerts
     
     # iterate over each filtered row from the proxy model
     for row in range(self.ui.proxyReportPreviewTableModel.rowCount()):

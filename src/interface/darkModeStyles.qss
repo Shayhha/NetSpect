@@ -221,77 +221,77 @@ QCheckBox {
 }
 
 #sideFrame {
-    background-color: #2D2E36
+    background-color: #2d2e36;
 }
 
 #menuIconHorizontalFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }
 
 #menuIcon {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }
 
 #closeMenuIcon {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }
 
 #homePageIconHorizontalFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }
 
 #homePageIcon {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }
 
 #homePageLabel {
 	color: #f3f3f3;
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }
 
 #reportIconHorizontalFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }
 
 #reportIcon {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }
 
 #reportLabel {
 	color: #f3f3f3;
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }
 
 #infoIconHorizontalFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }
 
 #infoIcon {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }
 
 #infoLabel {
 	color: #f3f3f3;
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }
 
 #loginRegisterVerticalFrame {
-    background-color: #2D2E36;
+    background-color: #2d2e36;
 }
 
 #loginFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
     border: none;
 }
 
 #loginVerticalFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 	border: none;
 }
 
 #loginLabel {
 	color: #f3f3f3;
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }
 
 #loginUsernameLineEdit {
@@ -313,17 +313,17 @@ QCheckBox {
 }
 
 #loginErrorMessageLabel {
-	color: #D84F4F;
-	background-color: #2D2E36;
+	color: #d84f4f;
+	background-color: #2d2e36;
 }
 
 #loginButtonFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }
 
 #loginPushButton  {
-    background-color: #4E4F5A; 
-    border: 2px solid lightgray;  
+    background-color: #4e4f5a;
+    border: 2px solid lightgray;
     border-radius: 10px;         
     padding: 5px;                      
     color: #f3f3f3;       
@@ -331,36 +331,36 @@ QCheckBox {
 
 #loginPushButton:hover {
     background-color: #464751; 
-	border-color: #D7D7D7;
+	border-color: #d7d7d7;
 }
 
 #loginPushButton:pressed {
     background-color: #383840; 
-	border-color:#D7D7D7;
+	border-color:#d7d7d7;
 }
 
 #moveToRegisterLabel {
-	color: #6BA6FD;
-	background-color: #2D2E36;
+	color: #6ba6fd;
+	background-color: #2d2e36;
 }
 
 #moveToRegisterLabel:hover {
-	color: #6095E3;
+	color: #6095e3;
 }
 
 #registerFrame {
-    background-color: #2D2E36;
+    background-color: #2d2e36;
     border: none;
 }
 
 #registerVerticalFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 	border: none;
 }
 
 #registerLabel {
 	color: #f3f3f3;
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }
 
 #registerEmailLineEdit {
@@ -393,15 +393,15 @@ QCheckBox {
 #registerErrorMessageLabel {
 	color: #D84F4F;
 	padding-bottom: 5px;
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }
 
 #registerButtonFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }
 
 #registerPushButton  {
-    background-color: #4E4F5A; 
+    background-color: #4e4f5a; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
     padding: 5px;                     
@@ -410,49 +410,49 @@ QCheckBox {
 
 #registerPushButton:hover {
     background-color: #464751; 
-	border-color: #D7D7D7;
+	border-color: #d7d7d7;
 }
 
 #registerPushButton:pressed {
     background-color: #383840; 
-	border-color:#D7D7D7;
+	border-color:#d7d7d7;
 }
 
 #moveToLoginLabel {
-	color: #6BA6FD;
-	background-color: #2D2E36;
+	color: #6ba6fd;
+	background-color: #2d2e36;
 }
 
 #moveToLoginLabel:hover {
-	color: #6095E3;
+	color: #6095e3;
 }
 
 #moveToForgotPasswordLabel {
-	color: #6BA6FD;
-	background-color: #2D2E36;
+	color: #6ba6fd;
+	background-color: #2d2e36;
 }
 
 #moveToForgotPasswordLabel:hover {
-	color: #6095E3;
+	color: #6095e3;
 }
 
 #resetPasswordVerticalFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 	border: none;
 }
 
 #cancelResetPasswordProcessLabel {
-	color: #6BA6FD;
-	background-color: #2D2E36;
+	color: #6ba6fd;
+	background-color: #2d2e36;
 }
 
 #cancelResetPasswordProcessLabel:hover {
-	color: #6095E3;
+	color: #6095e3;
 }
 
 #resetPasswordCodeErrorMessageLabel {
-	color: #D84F4F;
-	background-color: #2D2E36;
+	color: #d84f4f;
+	background-color: #2d2e36;
 }
 
 #resetPasswordCodeLineEdit {
@@ -465,8 +465,8 @@ QCheckBox {
 }
 
 #resetPasswordEmailErrorMessageLabel {
-	color: #D84F4F;
-	background-color: #2D2E36;
+	color: #d84f4f;
+	background-color: #2d2e36;
 }
 
 #resetPasswordEmailLineEdit {
@@ -480,16 +480,16 @@ QCheckBox {
 
 #resetPasswordLabel {
 	color: #f3f3f3;
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 	margin: 10px 0 10px 0;
 }
 
 #sendCodeButtonFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }
 
 #sendCodePushButton  {
-    background-color: #4E4F5A; 
+    background-color: #4e4f5a; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
     padding: 5px;                      
@@ -498,20 +498,20 @@ QCheckBox {
 
 #sendCodePushButton:hover {
     background-color: #464751; 
-	border-color: #D7D7D7;
+	border-color: #d7d7d7;
 }
 
 #sendCodePushButton:pressed {
     background-color: #383840; 
-	border-color:#D7D7D7;
+	border-color:#d7d7d7;
 }
 
 #verifyCodeButtonFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }
 
 #verifyCodePushButton  {
-    background-color: #4E4F5A; 
+    background-color: #4e4f5a; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
     padding: 5px;                      
@@ -520,12 +520,12 @@ QCheckBox {
 
 #verifyCodePushButton:hover {
     background-color: #464751; 
-	border-color: #D7D7D7;
+	border-color: #d7d7d7;
 }
 
 #verifyCodePushButton:pressed {
     background-color: #383840; 
-	border-color:#D7D7D7;
+	border-color:#d7d7d7;
 }
 
 /*-------------------------------General-Styles-End-------------------------------*/
@@ -556,7 +556,7 @@ QCheckBox {
 
 #startStopPushButton[text='START'] {
     border-radius: 60px;
-    background-color: #3A8E32;
+    background-color: #3a8e32;
     border: 1px solid black;
     color: black;
     font-weight: bold;
@@ -564,16 +564,16 @@ QCheckBox {
 }
 
 #startStopPushButton[text='START']:hover {
-    background-color: #4D9946;
+    background-color: #4d9946;
 }
 
 #startStopPushButton[text='START']:pressed {
-    background-color: #2E7128;
+    background-color: #2e7128;
 }
 
 #startStopPushButton[text='STOP'] {
     border-radius: 60px;
-    background-color: #D84F4F;
+    background-color: #d84f4f;
     border: 1px solid black;
     color: black;
     font-weight: bold;
@@ -581,11 +581,11 @@ QCheckBox {
 }
 
 #startStopPushButton[text='STOP']:hover {
-    background-color: #DB6060;
+    background-color: #db6060;
 }
 
 #startStopPushButton[text='STOP']:pressed {
-    background-color: #AC3f3F;
+    background-color: #ac3f3f;
 }
 
 #startInfoVerticalFrame {
@@ -849,7 +849,7 @@ QCheckBox {
 }
 
 #downloadReportPushButton  {
-    background-color: #4E4F5A; 
+    background-color: #4e4f5a; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
     padding: 5px;                  
@@ -858,16 +858,16 @@ QCheckBox {
 
 #downloadReportPushButton:hover {
     background-color: #464751; 
-	border-color: #D7D7D7;
+	border-color: #d7d7d7;
 }
 
 #downloadReportPushButton:pressed {
     background-color: #383840; 
-	border-color:#D7D7D7;
+	border-color:#d7d7d7;
 }
 
 #cancelReportPushButton  {
-    background-color: #D84F4F; 
+    background-color: #d84f4f;
     border: 1px solid black;  
     border-radius: 10px;         
     padding: 5px;                       
@@ -875,11 +875,11 @@ QCheckBox {
 }
 
 #cancelReportPushButton:hover {
-     background-color: #DB6060;
+     background-color: #db6060;
 }
 
 #cancelReportPushButton:pressed {
-    background-color: #AC3f3F;
+    background-color: #ac3f3f;
 }
 
 #reportProgressBar {
@@ -1140,7 +1140,7 @@ QCheckBox {
 }
 
 #emailPushButton  {
-    background-color: #4E4F5A; 
+    background-color: #4e4f5a; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
     padding: 5px;                      
@@ -1149,12 +1149,12 @@ QCheckBox {
 
 #emailPushButton:hover {
     background-color: #464751; 
-	border-color: #D7D7D7;
+	border-color: #d7d7d7;
 }
 
 #emailPushButton:pressed {
     background-color: #383840; 
-	border-color:#D7D7D7;
+	border-color:#d7d7d7;
 }
 
 #changeUsernameLabel {
@@ -1175,7 +1175,7 @@ QCheckBox {
 }
 
 #usernamePushButton  {
-    background-color: #4E4F5A; 
+    background-color: #4e4f5a; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
     padding: 5px;                     
@@ -1184,12 +1184,12 @@ QCheckBox {
 
 #usernamePushButton:hover {
     background-color: #464751; 
-	border-color: #D7D7D7;
+	border-color: #d7d7d7;
 }
 
 #usernamePushButton:pressed {
     background-color: #383840; 
-	border-color:#D7D7D7;
+	border-color:#d7d7d7;
 }
 
 #changePasswordLabel {
@@ -1227,7 +1227,7 @@ QCheckBox {
 }
 
 #passwordPushButton  {
-    background-color: #4E4F5A; 
+    background-color: #4e4f5a; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
     padding: 5px;                   
@@ -1236,12 +1236,12 @@ QCheckBox {
 
 #passwordPushButton:hover {
     background-color: #464751; 
-	border-color: #D7D7D7;
+	border-color: #d7d7d7;
 }
 
 #passwordPushButton:pressed {
     background-color: #383840; 
-	border-color:#D7D7D7;
+	border-color:#d7d7d7;
 }
 
 #interfaceSettingsLabel {
@@ -1349,20 +1349,20 @@ QCheckBox {
 }
 
 #addMacAddressPushButton:hover {
-     background-color: #4D9946;
+     background-color: #4d9946;
  }
 
 #addMacAddressPushButton:pressed {
-    background-color: #2E7128;
+    background-color: #2e7128;
 }
 
 #macAddressBlacklistErrorMessageLabel {
-	color: #D84F4F;
-	background-color: #3C3D4A;
+	color: #d84f4f;
+	background-color: #3c3d4a;
 }
 
 #clearHistoryPushButton  {
-    background-color: #D84F4F; 
+    background-color: #d84f4f; 
     border: 1px solid black;  
     border-radius: 10px;         
     padding: 5px;                      
@@ -1374,11 +1374,11 @@ QCheckBox {
 }
 
 #clearHistoryPushButton:pressed {
-    background-color: #AC3f3F;
+    background-color: #ac3f3f;
 }
 
 #deleteAccoutPushButton  {
-    background-color: #D84F4F; 
+    background-color: #d84f4f; 
     border: 1px solid black;  
     border-radius: 10px;         
     padding: 5px;                      
@@ -1386,11 +1386,11 @@ QCheckBox {
 }
 
 #deleteAccoutPushButton:hover {
-    background-color: #DB6060;
+    background-color: #db6060;
 }
 
 #deleteAccoutPushButton:pressed {
-    background-color: #AC3f3F;
+    background-color: #ac3f3f;
 }
 
 #operationModeLabel {

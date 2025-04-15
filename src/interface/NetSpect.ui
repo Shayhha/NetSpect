@@ -1200,18 +1200,18 @@ QToolTip {
                          <property name="styleSheet">
                           <string notr="true">#startStopPushButton {
     border-radius: 60px;
-    background-color: #3A8E32;
+    background-color: #3a8e32;
     border: 1px solid black;
     color: black;
     font-weight: bold;
 }
 
 #startStopPushButton:hover {
-     background-color: #4D9946;
+     background-color: #4d9946;
 }
 
 #startStopPushButton:pressed {
-     background-color: #2E7128;
+     background-color: #2e7128;
 }</string>
                          </property>
                          <property name="text">

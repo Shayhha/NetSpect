@@ -284,7 +284,7 @@ class NetSpect(QMainWindow):
     def NotifyInvalidLineEdit(self, lineEditWidget, lineEditName, errorMessageLabel=None):
         currentStylesheet = f''' 
             #{lineEditName} {{
-                {f'background-color: #f3f3f3;' if self.userData.get('lightMode') == 0 else f'background-color: {'#fbfcfd' if any(prefix in lineEditName for prefix in ['login', 'register', 'reset']) else '#EBEFF7'};'}
+                {f'background-color: #f3f3f3;' if self.userData.get('lightMode') == 0 else f'background-color: {'#fbfcfd' if any(prefix in lineEditName for prefix in ['login', 'register', 'reset']) else '#ebeff7'};'}
                 {'border: 2px solid lightgray;' if self.userData.get('lightMode') == 0 else 'border: 2px solid #899fce;'}
                 border-radius: 10px;
                 padding: 5px;
@@ -302,9 +302,9 @@ class NetSpect(QMainWindow):
         # check if the input matches the regex, if not update the border style to red (invalid input)
         if not lineEditWidget.hasAcceptableInput():
             if self.userData.get('lightMode') == 0:
-                lineEditWidget.setStyleSheet(currentStylesheet.replace('border: 2px solid lightgray;', 'border: 2px solid #D84F4F;'))
+                lineEditWidget.setStyleSheet(currentStylesheet.replace('border: 2px solid lightgray;', 'border: 2px solid #d84f4f;'))
             else:
-                lineEditWidget.setStyleSheet(currentStylesheet.replace('border: 2px solid #899fce;', 'border: 2px solid #D84F4F;'))
+                lineEditWidget.setStyleSheet(currentStylesheet.replace('border: 2px solid #899fce;', 'border: 2px solid #d84f4f;'))
 
 
     # method for changing the styles of a line edit when it does not match the regex
@@ -322,9 +322,9 @@ class NetSpect(QMainWindow):
         # check if the input matches the regex, if not update the border style to red (invalid input)
         if not lineEditWidget.hasAcceptableInput():
             if self.userData.get('lightMode') == 0:
-                lineEditWidget.setStyleSheet(defaultStylesheet.replace('border: 2px solid lightgray;', 'border: 2px solid #D84F4F;'))
+                lineEditWidget.setStyleSheet(defaultStylesheet.replace('border: 2px solid lightgray;', 'border: 2px solid #d84f4f;'))
             else:
-                lineEditWidget.setStyleSheet(defaultStylesheet.replace('border: 2px solid #899fce;', 'border: 2px solid #D84F4F;'))
+                lineEditWidget.setStyleSheet(defaultStylesheet.replace('border: 2px solid #899fce;', 'border: 2px solid #d84f4f;'))
 
 
     # method that validates that a given password matches the password validator regex
@@ -992,7 +992,7 @@ class NetSpect(QMainWindow):
                     self.SendLogDict(f'Main_Thread: New DNS Tunneling attack detected from IP {flow[0]}: srcIp: {flow[0]}, srcMac: {flow[1]}, dstIp: {flow[2]}, dstMac: {flow[3]}, protocol: {flow[4]}', 'ALERT') #log alert event
 
 
-    # method for stopping detection and closing threads
+    # method for stopping detection or collection and closing threads
     def StopDetection(self):
         if self.isDetection:
             # we check each thread and close it if running
@@ -1008,29 +1008,25 @@ class NetSpect(QMainWindow):
                 self.dataCollectorThread.StopThread()
             
             # enable interface combobox and reset our data structures and counters
-            self.SendLogDict(f'Main_Thread: Stopping detection. Remaining packets - TCP/UDP: {self.tcpUdpCounter}, ARP: {self.arpCounter}, DNS: {self.dnsCounter}', 'INFO') #log stop event
-            self.ui.trayIcon.toggleDetectionAction.setText('Start Detection') if self.ui.operationModeComboBox.currentIndex() == 0 else self.ui.trayIcon.toggleDetectionAction.setText('Start Collection') #set tray lable
-            self.ui.networkInterfaceComboBox.setEnabled(True) #enable interface changes
-            self.ui.operationModeComboBox.setEnabled(True) #enable operation mode changes
+            self.SendLogDict(f'Main_Thread: Stopping detection. Remaining packets - TCP/UDP: {self.tcpUdpCounter}, DNS: {self.dnsCounter}, ARP: {self.arpCounter}', 'INFO') #log stop event
+            UserInterfaceFunctions.ToggleStartStopState(self, False) #change startStop button back to green
+            self.ui.networkInterfaceComboBox.setEnabled(True) #enable interfaces combobox
+            self.ui.operationModeComboBox.setEnabled(True) #enable operation mode combobox
             self.arpCounter, self.tcpUdpCounter, self.dnsCounter = 0, 0, 0 #reset our counters
             self.arpList, self.portScanDosDict, self.dnsDict = [], {}, {} #reset our packet data structures
             self.arpAttackDict, self.portScanDosAttackDict, self.dnsAttackDict = {'ipToMac': {}, 'macToIp': {}}, {}, {} #reset known attacks
-            return True #indication of successful operation
-        return False #indication of failed operation
 
 
-    # method for starting our threads and detect network cyber attacks in real time
+    # method for starting our threads and detect network cyber attacks in real time or collect datasets for training models, depends on user's choice
     def StartDetection(self):
         if not self.snifferThread and not self.arpThread and not self.portScanDosThread and not self.dnsThread and not self.dataCollectorThread:
             # means we start threads for detecting attacks in real time
             if self.ui.operationModeComboBox.currentIndex() == 0:
                 # set isDetection flag and disable interface and operation mode comboboxes
-                self.isDetection = True
-                self.ui.networkInterfaceComboBox.setEnabled(False)
-                self.ui.operationModeComboBox.setEnabled(False)
-
-                # set detection tray icon
-                self.ui.trayIcon.toggleDetectionAction.setText('Stop Detection')
+                self.isDetection = True #set detection flag
+                UserInterfaceFunctions.ToggleStartStopState(self, True) #change startStop button to red for detection
+                self.ui.networkInterfaceComboBox.setEnabled(False) #disable interfaces combobox
+                self.ui.operationModeComboBox.setEnabled(False) #disable operation mode combobox
 
                 # initialize sniffer thread for real time packet gathering
                 self.snifferThread = Sniffing_Thread(self, NetworkInformation.selectedInterface)
@@ -1070,7 +1066,6 @@ class NetSpect(QMainWindow):
                 self.SendLogDict('Arp_Thread: Starting Arp thread.', 'INFO') #log arp start event
                 self.SendLogDict('PortScanDos_Thread: Starting portScanDos thread.', 'INFO') #log portScanDos start event
                 self.SendLogDict('Dns_Thread: Starting Dns thread.', 'INFO') #log dns start event
-                return True #indication of successful operation
 
             # else it means we start threads for data collection
             else:
@@ -1087,12 +1082,10 @@ class NetSpect(QMainWindow):
                 # if user chose a path we generate csv dataset with our thread
                 if filePath:
                     # set isDetection flag and disable interface and operation mode comboboxes
-                    self.isDetection = True
-                    self.ui.networkInterfaceComboBox.setEnabled(False)
-                    self.ui.operationModeComboBox.setEnabled(False)
-
-                    # set collection tray icon
-                    self.ui.trayIcon.toggleDetectionAction.setText('Stop Collection')
+                    self.isDetection = True #set detection flag
+                    UserInterfaceFunctions.ToggleStartStopState(self, True) #change startStop button to red for collection
+                    self.ui.networkInterfaceComboBox.setEnabled(False) #disable interfaces combobox
+                    self.ui.operationModeComboBox.setEnabled(False) #disable operation mode combobox
 
                     # initialize sniffer thread for real time packet gathering
                     self.snifferThread = Sniffing_Thread(self, NetworkInformation.selectedInterface)
@@ -1116,45 +1109,20 @@ class NetSpect(QMainWindow):
                     # log initializing of threads
                     self.SendLogDict('Sniffer_Thread: Starting Network Scan.', 'INFO') #log sniffer start event
                     self.SendLogDict('Data_Collector_Thread: Starting data collector thread.', 'INFO') #log data collector start event
-                    return True #indication of successful operation
 
         else:
             UserInterfaceFunctions.ShowMessageBox('Error Starting Scan', 'One of the threads is still in process, cannot start new scan.', 'Warning')
             self.SendLogDict('Main_Thread: One of the threads is still in process, cannot start new scan.', 'INFO') #log event
-        return False #indication of failed operation
 
 
-    # method for startStop button for starting or stopping detection
+    # method for startStop button for starting or stopping detection or collection
     def StartStopButtonClicked(self):
-        # get the correct styles based on the start/stop button text
-        currentStyleSheet = f'''
-            #startStopPushButton {{
-                border-radius: 60px;
-                {'background-color: #3A8E32;' if self.ui.startStopPushButton.text() == 'STOP' else 'background-color: #D84F4F;'}
-                border: 1px solid black;
-                color: black;
-                font-weight: bold;
-                outline: none;
-            }}
-
-            #startStopPushButton:hover {{
-                {'background-color: #4D9946;' if self.ui.startStopPushButton.text() == 'STOP' else 'background-color: #DB6060;'}
-            }}
-
-            #startStopPushButton:pressed {{
-                {'background-color: #2E7128;' if self.ui.startStopPushButton.text() == 'STOP' else 'background-color: #AC3f3F;'}
-            }}
-        '''
-
-        # start and stop the sniffer and change the button stylesheet correctly
-        if self.ui.startStopPushButton.text() == 'START':
-            if self.StartDetection():
-                self.ui.startStopPushButton.setText('STOP')
-                self.ui.startStopPushButton.setStyleSheet(currentStyleSheet)
+        # if isDetection is not set it means we start a new detection or collection
+        if not self.isDetection:
+            self.StartDetection() #call method to start detection or collecction
+        # else we had a detection or collection running, we stop current process
         else:
-            if self.StopDetection():
-                self.ui.startStopPushButton.setText('START')
-                self.ui.startStopPushButton.setStyleSheet(currentStyleSheet)
+            self.StopDetection() #call method to stop detection or collecction
 
     #-----------------------------------------------CLICKED-METHODS----------------------------------------------#
 

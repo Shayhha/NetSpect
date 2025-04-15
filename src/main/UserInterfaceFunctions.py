@@ -177,20 +177,20 @@ def ReopenResetPasswordFrame(self, showResetPassword):
 
 #---------------------------------------------CLICK-FUNCTIONS------------------------------------------------#
 
-# helper function for hiding some labels
+# function for hiding some labels
 def HideSideBarLabels(self):
     self.ui.homePageLabel.hide()
     self.ui.reportLabel.hide()
     self.ui.infoLabel.hide()
 
 
-# helper function for showing some icons
+# function for showing some icons
 def ShowSideBarMenuIcon(self):
     self.ui.menuIcon.show()
     self.ui.closeMenuIcon.hide()
 
 
-# helper function for changing between enter email and enter code screens in reset password
+# function for changing between enter email and enter code screens in reset password
 def ToggleBetweenEmailAndCodeResetPassword(self, isEmail=True):
     if isEmail:
         # show email section
@@ -214,7 +214,7 @@ def ToggleBetweenEmailAndCodeResetPassword(self, isEmail=True):
         self.ui.verifyCodeButtonFrame.show()
 
 
-# helper function for showing and hiding user interface
+# function for showing and hiding user interface
 def ToggleUserInterface(self, state):
     # if true we need to show user logged in labels
     if state:
@@ -276,7 +276,7 @@ def ToggleUserInterface(self, state):
     ToggleColorMode(self) #reset the styles to match the selected index in the color mode checkbox
 
 
-# helper function for showing and hiding report interface
+# function for showing and hiding report interface
 def ToggleReportInterface(self, state):
     # if true we need to show report interface
     if state:
@@ -292,7 +292,7 @@ def ToggleReportInterface(self, state):
         self.ui.downloadReportPushButton.show()
 
 
-# helper function for toggling between detection and collection interfaces
+# function for toggling between detection and collection interfaces
 def OperationModeComboboxChanged(self):
     # means we need to change to detection interface
     if self.ui.operationModeComboBox.currentIndex() == 0:
@@ -304,7 +304,7 @@ def OperationModeComboboxChanged(self):
         self.ui.trayIcon.toggleDetectionAction.setText('Start Collection')
 
 
-# helper function for chaning the current page index on the stack widget
+# function for chaning the current page index on the stack widget
 def ChangePageIndex(self, index):
     # clear focus from all line edits
     self.ui.emailLineEdit.clearFocus()
@@ -324,6 +324,48 @@ def TogglePasswordVisibility(lineEditWidget, eyeIcon):
     else:
         lineEditWidget.setEchoMode(QLineEdit.Password) #hide the password
         eyeIcon.setIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'EyeOpen.png'))) #change to closed eye icon
+
+
+# function for toggling between detection or collection states and setting startStop button stylesheet accordingly
+def ToggleStartStopState(self, state):
+    # get the correct styles based on given state
+    currentStyleSheet = f'''
+        #startStopPushButton {{
+            border-radius: 60px;
+            {'background-color: #d84f4f;' if state else 'background-color: #3a8e32;'}
+            border: 1px solid black;
+            color: black;
+            font-weight: bold;
+            outline: none;
+        }}
+
+        #startStopPushButton:hover {{
+            {'background-color: #db6060;' if state else 'background-color: #4d9946;'}
+        }}
+
+        #startStopPushButton:pressed {{
+            {'background-color: #ac3f3f;' if state else 'background-color: #2e7128;'}
+        }}
+    '''
+
+    # if true means we need to change state of startStop button to "Stop Detection" stylesheet
+    if state:
+        self.ui.startStopPushButton.setText('STOP') #set button text
+        # we check operation mode state and change tray icon toggle detection action text accordingly
+        if self.ui.operationModeComboBox.currentIndex() == 0:
+            self.ui.trayIcon.toggleDetectionAction.setText('Stop Detection')
+        else:
+            self.ui.trayIcon.toggleDetectionAction.setText('Stop Collection')
+    # else means we need to change state of startStop button to "Start Detection" stylesheet
+    else:
+        self.ui.startStopPushButton.setText('START') #set button text
+        # we check operation mode state and change tray icon toggle detection action text accordingly
+        if self.ui.operationModeComboBox.currentIndex() == 0:
+            self.ui.trayIcon.toggleDetectionAction.setText('Start Detection')
+        else:
+            self.ui.trayIcon.toggleDetectionAction.setText('Start Collection')
+    # finally set the stylesheet of startStop button based on calculated stylesheet
+    self.ui.startStopPushButton.setStyleSheet(currentStyleSheet)
 
 
 # function for toggling between light and dark mode by the user (also used when logging in and out of an account)
@@ -455,7 +497,7 @@ def CenterSpecificTableRowText(tableObject): #historyTableWidget or reportPrevie
             item.setToolTip(tooltipText)
 
 
-# helper function for setting the items in the list of ip addresses to not interactable, it removes the hover and click effects
+# function for setting the items in the list of ip addresses to not interactable, it removes the hover and click effects
 def DisableSelectionIpListWidget(self):
     # disable selection on ip address list widget
     for row in range(self.ui.ipAddressesListWidget.count()):
@@ -463,15 +505,13 @@ def DisableSelectionIpListWidget(self):
         item.setFlags(item.flags() & ~Qt.ItemIsSelectable & ~Qt.ItemIsEnabled)
 
 
-# helper function for setting the text of an error message like login/register/change email/ etc.
+# function for setting the text of an error message like login/register/change email/ etc.
 def ChangeErrorMessageText(errorMessageObject, message):
-    errorMessagePrefix = '<p style="line-height: 0.7;">'
-    errorMessageSuffix = '</p>'
-    errorMessageObject.setText(errorMessagePrefix + message + errorMessageSuffix)
+    errorMessageObject.setText('<p style="line-height: 0.7;">' + message + '</p>')
     errorMessageObject.show()
 
 
-# helper fucntion for clearing error message of error message label
+# fucntion for clearing error message of error message label
 def ClearErrorMessageText(errorMessageObject):
     errorMessageObject.setText('')
     errorMessageObject.hide()
@@ -493,11 +533,11 @@ def ShowSettingsInputFields(self):
     self.ui.settingsInterfaceMacButtonsVerticalFrame.setContentsMargins(0, 10, 0, 0) #returning the default values
 
 
-# helper function for returning the default style sheet of the line edits in the settings page
+# function for returning the default style sheet of the line edits in the settings page
 def GetDefaultStyleSheetSettingsLineEdits(self, lineEditName):
     defaultStylesheet = f''' 
         #{lineEditName} {{
-            {'background-color: #f3f3f3;' if self.userData.get('lightMode') == 0 else 'background-color: #EBEFF7;'}
+            {'background-color: #f3f3f3;' if self.userData.get('lightMode') == 0 else 'background-color: #ebeff7;'}
             {'border: 2px solid lightgray;' if self.userData.get('lightMode') == 0 else 'border: 2px solid #899fce;'}
             border-radius: 10px;
             padding: 5px;
@@ -508,11 +548,11 @@ def GetDefaultStyleSheetSettingsLineEdits(self, lineEditName):
     return defaultStylesheet
 
 
-# helper function for returning the default style sheet of the line edits in register
+# function for returning the default style sheet of the line edits in register
 def GetDefaultStyleSheetRegisterLineEdits(self, lineEditName):
     defaultStylesheet = f''' 
         #{lineEditName} {{
-            {f'background-color: #f3f3f3;' if self.userData.get('lightMode') == 0 else f'background-color: {'#fbfcfd' if any(prefix in lineEditName for prefix in ['login', 'register', 'reset']) else '#EBEFF7'};'}
+            {f'background-color: #f3f3f3;' if self.userData.get('lightMode') == 0 else f'background-color: {'#fbfcfd' if any(prefix in lineEditName for prefix in ['login', 'register', 'reset']) else '#ebeff7'};'}
             {'border: 2px solid lightgray;' if self.userData.get('lightMode') == 0 else 'border: 2px solid #899fce;'}
             border-radius: 10px;
             padding: 5px;
@@ -675,7 +715,7 @@ class CustomMessageBox(QDialog):
         super().reject()
     
 
-    # helper method for mapping the iconType to the appropriate StandardPixmap icon
+    # method for mapping the iconType to the appropriate StandardPixmap icon
     def GetMessageBoxIcon(self, iconType):
         if iconType == 'Warning':
             QApplication.style().standardIcon(QStyle.StandardPixmap.SP_MessageBoxWarning)
@@ -829,7 +869,7 @@ def UpdateChartAfterAttack(self, attackName):
         ShowMessageBox('Error Updating Pie Chart', 'Error occurred while updating pie chart, try again later.', 'Critical')
 
     
-# helper function for updating the text of the pie chart legends and slice labels
+#  function for updating the text of the pie chart legends and slice labels
 def UpdateChartLegendsAndSlices(self):
     try:
         series = self.ui.piChart.series()[0] #get the pie chart object
@@ -958,7 +998,7 @@ class CustomTableModel(QAbstractTableModel):
         return False
 
 
-    # helper function to add rows to the table at the top of the table every time
+    # function to add rows to the table at the top of the table every time
     def AddRowToReportTable(self): 
         self.beginInsertRows(QModelIndex(), 0, 0) #correctly notify start of insert
         self.alertListData.insert(0, [None] * self.columnCount()) #add new row at the start
@@ -966,14 +1006,14 @@ class CustomTableModel(QAbstractTableModel):
         return 0
 
 
-    # helper function to add items to a given row by index
+    # function to add items to a given row by index
     def SetRowItemReportTable(self, row, column, value):
         # set data at specific row and column
         index = self.index(row, column)
         self.setData(index, value)
 
 
-    # helper function to clear out the data from the table
+    # function to clear out the data from the table
     def ClearReportTable(self):
         self.beginResetModel()
         self.alertListData.clear() #clear the data list
@@ -1037,7 +1077,7 @@ class CustomFilterProxyModel(QSortFilterProxyModel):
         return True #show current row if it passed all filters
 
 
-# helper function that will be called when the user clicks on one of the attack checkboxes in the report page (ARP, Port, DoS, DNS)
+# function that will be called when the user clicks on one of the attack checkboxes in the report page (ARP, Port, DoS, DNS)
 def ReportCheckboxToggled(self):
     selectedAttacks = set() #represents a set of all selected attack checkboxes at this point in time
 
@@ -1055,12 +1095,12 @@ def ReportCheckboxToggled(self):
     self.ui.proxyReportPreviewTableModel.SetSelectedAttacks(selectedAttacks)
 
 
-# helper function that will be called when the user selects a different time fillter option in the report page (combobox)
+# function that will be called when the user selects a different time fillter option in the report page (combobox)
 def ReportDurationComboboxChanged(self):
     self.ui.proxyReportPreviewTableModel.SetTimeFilter(self.ui.reportDurationComboBox.currentText())
 
 
-# helper function for getting flitered alert list from proxy model
+# function for getting flitered alert list from proxy model
 def GetFilteredAlerts(self):
     filteredAlertList = [] #represents our filtered alerts
     
@@ -1078,7 +1118,7 @@ def GetFilteredAlerts(self):
     return filteredAlertList
 
 
-# helper function for initializing the table view in the report page when the application loads up
+# function for initializing the table view in the report page when the application loads up
 def InitReportTableView(self):
     # initialize the Table View and custom table filter
     self.ui.reportPreviewTableModel = CustomTableModel(self.userData.get('alertList'))
@@ -1158,7 +1198,7 @@ class SystemTrayIcon():
             self.ui.trayIcon.setContextMenu(trayMenu)
 
 
-    # helper fucntion to map the iconType to the appropriate QSystemTrayIcon
+    # fucntion to map the iconType to the appropriate QSystemTrayIcon
     def GetTrayIcon(self, iconType):
         if iconType == 'Warning':
             return QSystemTrayIcon.Warning
@@ -1167,7 +1207,7 @@ class SystemTrayIcon():
         return QSystemTrayIcon.Information
 
 
-    # helper fucntion for showing queued tray messages
+    # function for showing queued tray messages
     def ShowNextTrayMessage(self):
         # check if tray message queue is not empty
         if SystemTrayIcon.trayMessageQueue:

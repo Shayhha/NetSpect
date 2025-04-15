@@ -569,18 +569,18 @@ class Ui_NetSpect(object):
         self.startStopPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.startStopPushButton.setStyleSheet(u"#startStopPushButton {\n"
 "    border-radius: 60px;\n"
-"    background-color: #3A8E32;\n"
+"    background-color: #3a8e32;\n"
 "    border: 1px solid black;\n"
 "    color: black;\n"
 "    font-weight: bold;\n"
 "}\n"
 "\n"
 "#startStopPushButton:hover {\n"
-"     background-color: #4D9946;\n"
+"     background-color: #4d9946;\n"
 "}\n"
 "\n"
 "#startStopPushButton:pressed {\n"
-"     background-color: #2E7128;\n"
+"     background-color: #2e7128;\n"
 "}")
 
         self.horizontalLayout_3.addWidget(self.startStopPushButton)

@@ -3068,10 +3068,6 @@ QCheckBox::indicator:hover {
     gridline-color: black;
 }
 
-#reportPreviewTableView::item {
-    padding: 6px;
-}
-
 #reportPreviewTableView::corner {
     background-color: #f3f3f3;
     border-top-left-radius: 8px;

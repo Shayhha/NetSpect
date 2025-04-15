@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 currentDir = Path(__file__).resolve().parent #represents the path to the current working direcotry where this file is located
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))) #ensures that when the main.py file is ran it will run from the src folder in the terminal (this allows the import of ui class from interface folder)
 
 #----------------------------------------------Default_Packet------------------------------------------------#
 # abstarct class for default packet

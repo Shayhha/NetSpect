@@ -556,10 +556,10 @@ class CustomMessageBox(QDialog):
         iconLabel.setAlignment(Qt.AlignCenter) #center the icon vertically
 
         # set the message
-        messageLabel = QLabel(message)
+        messageLabel = QLabel('<p style="line-height: 0.8;">' + message + '</p>')
         messageLabel.setWordWrap(True) #ensure long messages wrap properly
         messageLabel.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter) #vertically center the text
-        messageLabel.setContentsMargins(0, 0, 0, 0)
+        messageLabel.setContentsMargins(0, 0, 0, 10)
         messageLabel.setMinimumWidth(250)
 
         # makes the text selectable by the user only when we show the new password after reset password ended successfully

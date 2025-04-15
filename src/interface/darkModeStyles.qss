@@ -159,10 +159,6 @@ QTableView {
     gridline-color: black;
 }
 
-QTableView::item {
-    padding: 6px;
-}
-
 QTableView::corner {
     background-color: #f3f3f3;
     border-top-left-radius: 8px;
@@ -1102,7 +1098,7 @@ QCheckBox {
    border-style: outset;
    border-width: 2px;
    border-color: black;
-  padding: 4px;
+   padding: 4px;
 }
 
 #ipAddressesListWidget::item:hover {
@@ -1117,6 +1113,7 @@ QCheckBox {
 }
 
 #ipAddressesListWidget::item { 
+    background: transparent;
     color: black; 
 }
 

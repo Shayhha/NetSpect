@@ -1,13 +1,13 @@
 import UserInterfaceFunctions
-from ui_NetSpect import Ui_NetSpect
+from MainFunctions import *
+from SQLHelper import *
+from interface.ui_NetSpect import Ui_NetSpect
 from PySide6.QtCore import Signal, Slot, QTimer, QRegularExpression, QThread, QMutex, QMutexLocker, QWaitCondition
 from PySide6.QtGui import QGuiApplication, QValidator, QRegularExpressionValidator
 from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QFileDialog
 from hashlib import sha256
 from secrets import choice, token_hex
 from string import digits, ascii_letters, ascii_uppercase
-from MainFunctions import *
-from SQLHelper import *
 
 #--------------------------------------------------------NetSpect-CLASS---------------------------------------------------------#
 # class that represents main app of NetSpect

@@ -75,6 +75,27 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
     border-radius: 4px;
 }
 
+/* Right Click Menu */
+
+QMenu {
+    background-color: #f3f3f3;
+    color: black;
+    border: 1px solid gray;
+    padding: 5px;
+    border-radius: 6px;
+}
+
+QMenu::item {
+    padding: 5px 20px;
+    background-color: transparent;
+}
+
+QMenu::item:selected {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: black;
+    border-radius: 4px;
+}
+
 /* Header View */
 
 QHeaderView::section {
@@ -1330,27 +1351,21 @@ QCheckBox {
 }
 
 #macAddressListWidget::item:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: rgba(137, 159, 206, 0.2);
     border-radius: 10px;
     color: black;
+}
+
+#macAddressListWidget::item:selected {
+	background-color: transparent;
+    color: black;
+    outline: none;
+    border: none;
 }
 
 #macAddressListWidget::corner {
     background-color: #EBEFF7;
     border-top-left-radius: 8px;
-}
-
-#macAddressListWidget QScrollBar:vertical {
-    width: 6px;
-    margin: 0px;
-	border: none;
- 	background: #EBEFF7;
-}
-
-#macAddressListWidget QScrollBar::handle:vertical {
-    background: black;
-	border-radius: 2px;
-
 }
 
 #macAddressLineEdit {

@@ -370,7 +370,7 @@ class NetSpect(QMainWindow):
         filePath, _ = QFileDialog.getSaveFileName(
             parent=None, #represents parent window
             caption=title, #represents dialog title
-            directory=fileName, #represents default filename
+            dir=fileName, #represents default filename
             filter=extensions, #represents supported extensions
             options=options
         )

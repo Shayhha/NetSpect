@@ -59,6 +59,25 @@ QScrollBar::sub-line:vertical, QScrollBar::sub-line:horizontal {
     subcontrol-origin: margin;
 }
 
+QMenu {
+    background-color: #2d2d2d;
+    color: #f0f0f0;
+    border: 1px solid #555;
+    padding: 5px;
+    border-radius: 6px;
+}
+
+QMenu::item {
+    padding: 6px 20px;
+    background-color: transparent;
+}
+
+QMenu::item:selected {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-radius: 4px;
+}
+
 QToolTip { 
    color: rgb(245,245,245);
    background-color: rgba(46, 47, 56, 0.8);
@@ -98,6 +117,25 @@ QToolTip {
     height: 0px;
     subcontrol-position: top;
     subcontrol-origin: margin;
+}
+
+#centralWidget QMenu {
+    background-color: #2d2d2d;
+    color: #f0f0f0;
+    border: 1px solid #555;
+    padding: 5px;
+    border-radius: 6px;
+}
+
+#centralWidget QMenu::item {
+    padding: 6px 20px;
+    background-color: transparent;
+}
+
+#centralWidget QMenu::item:selected {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-radius: 4px;
 }
 
 #centralWidget QToolTip {
@@ -4907,12 +4945,12 @@ QCheckBox::indicator:hover {
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#ipAddressesListWidget {
-   background-color: rgba(198, 198, 198, 0.6);
-   border-radius: 15px;
-   border-style: outset;
-   border-width: 2px;
-   border-color: black;
-  padding: 4px;
+    background-color: rgba(198, 198, 198, 0.6);
+    border-radius: 15px;
+    border-style: outset;
+    border-width: 2px;
+    border-color: black;
+    padding: 4px;
 }
 
 #ipAddressesListWidget::item:hover {
@@ -4922,7 +4960,7 @@ QCheckBox::indicator:hover {
 }
 
 #ipAddressesListWidget::corner {
-    background-color:  #f3f3f3;
+    background-color: rgba(198, 198, 198, 0.6);
     border-top-left-radius: 8px;
 }
 
@@ -6522,6 +6560,13 @@ color: #f3f3f3
     color: black;
 }
 
+#macAddressListWidget::item:selected {
+	background-color: transparent;
+    color: black;
+    outline: none;
+    border: none;
+}
+
 #macAddressListWidget::corner {
     background-color: #f3f3f3;
     border-top-left-radius: 8px;
@@ -6626,7 +6671,7 @@ color: #f3f3f3
                                    <number>17</number>
                                   </property>
                                   <property name="placeholderText">
-                                   <string>Enter mac address</string>
+                                   <string>Enter MAC Address</string>
                                   </property>
                                  </widget>
                                 </item>

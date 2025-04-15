@@ -59,6 +59,27 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
     border-radius: 4px;
 }
 
+/* Right Click Menu */
+
+QMenu {
+    background-color: #2d2d2d;
+    color: #f0f0f0;
+    border: 1px solid #555;
+    padding: 5px;
+    border-radius: 6px;
+}
+
+QMenu::item {
+    padding: 6px 20px;
+    background-color: transparent;
+}
+
+QMenu::item:selected {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-radius: 4px;
+}
+
 /* Header View */
 
 QHeaderView::section {
@@ -1091,20 +1112,8 @@ QCheckBox {
 }
 
 #ipAddressesListWidget::corner {
-    background-color: #f3f3f3;
+    background-color: rgba(198, 198, 198, 0.6);
     border-top-left-radius: 8px;
-}
-
-#ipAddressesListWidget QScrollBar:vertical {
-    width: 6px;
-    margin: 0px;
-	border: none;
- 	background: #f3f3f3;
-}
-
-#ipAddressesListWidget QScrollBar::handle:vertical {
-    background: black;
-	border-radius: 2px;
 }
 
 #ipAddressesListWidget::item { 
@@ -1318,22 +1327,16 @@ QCheckBox {
     color: black;
 }
 
+#macAddressListWidget::item:selected {
+	background-color: transparent;
+    color: black;
+    outline: none;
+    border: none;
+}
+
 #macAddressListWidget::corner {
     background-color: #f3f3f3;
     border-top-left-radius: 8px;
-}
-
-#macAddressListWidget QScrollBar:vertical {
-    width: 6px;
-    margin: 0px;
-	border: none;
- 	background: #f3f3f3;
-}
-
-#macAddressListWidget QScrollBar::handle:vertical {
-    background: black;
-	border-radius: 2px;
-
 }
 
 #macAddressLineEdit {

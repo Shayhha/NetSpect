@@ -1344,7 +1344,7 @@ class NetSpect(QMainWindow):
     # method for adding an item to the mac address blacklist when user clicks the add button in settings page
     def AddMacAddressButtonClicked(self):
         newMacAddress = self.ui.macAddressLineEdit.text().lower() #convert characters to lower case for ease of use
-        if not QRegularExpression(r'^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$').match(newMacAddress).hasMatch(): #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        if not QRegularExpression(r'^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$').match(newMacAddress).hasMatch():
             UserInterfaceFunctions.ChangeErrorMessageText(self.ui.macAddressBlacklistErrorMessageLabel, 'Please enter a valid MAC address')
         elif newMacAddress in self.userData.get('blackList'):
             UserInterfaceFunctions.ChangeErrorMessageText(self.ui.macAddressBlacklistErrorMessageLabel, 'This MAC address already exists in blacklist')
@@ -1699,6 +1699,8 @@ class NetSpect(QMainWindow):
 #-------------------------------------------------------SNIFFING-THREAD---------------------------------------------------------#
 # thread for sniffing packets in real time for gathering network flows
 class Sniffing_Thread(QThread):
+    captureDictionary = None #represents the dictionary with packet types and their init methods
+
     # define signals for interacting with main gui thread
     updateTimerSignal = Signal(bool)
     updateArpListSignal = Signal(ARP_Packet)
@@ -1710,18 +1712,25 @@ class Sniffing_Thread(QThread):
     def __init__(self, parent=None, selectedInterface=None):
         super().__init__(parent)
         self.parent = parent #represents the main thread
+        # initalize capture dictionary with packet types and their init methods
+        self.captureDictionary = {TCP: self.InitTCP, UDP: self.InitUDP, DNS: self.InitDNS, ARP: self.InitARP}
         self.interface = selectedInterface #initialize the interface with selectedInterface
         self.sniffer = None #represents our sniffer scapy object for sniffing packets
         self.stopFlag = False #represents stop flag for indicating when to stop the sniffer
-    
+
 
     # method for stopping sniffer thread
     @Slot()
     def StopThread(self):
-        self.stopFlag = True #set stop flag
-        # we check if sniffer is still running, if so we stop it
-        if self.sniffer and self.sniffer.running:
-            self.sniffer.stop() #stop async sniffer
+        try:
+            self.stopFlag = True #set stop flag
+            # we check if sniffer is still running, if so we stop it
+            if self.sniffer and self.sniffer.running:
+                self.sniffer.stop() #stop async sniffer
+        except Exception as e:
+            # emit finish signal to GUI with failed status due to permission errors
+            self.finishSignal.emit({'state': False, 'message': 'Permission denied. Please run again with administrative privileges.'})
+        finally:
             self.quit() #exit main loop and end task
             self.wait() #we wait to ensure thread cleanup
 
@@ -1733,18 +1742,17 @@ class Sniffing_Thread(QThread):
 
     # method for capturing specific packets for later analysis
     def PacketCapture(self, packet):
-        captureDict = {TCP: self.handleTCP, UDP: self.handleUDP, DNS: self.handleDNS, ARP: self.handleARP} #represents dict with packet type and handler func
-        # iterate over capture dict and find coresponding handler function for each packet
-        for packetType, handler in captureDict.items():
-            if packet.haslayer(packetType): #if we found matching packet we call its handle method
-                handler(packet) #call handler method of each packet
+        # iterate over capture dictionary and find coresponding InitPacket method for each packet
+        for packetType, InitPacket in self.captureDictionary.items():
+            if packet.haslayer(packetType): #if we found matching packet we call its initPacket method
+                InitPacket(packet) #call initPacket method of each packet
 
 
     # run method for initialing a packet scan on desired network interface
     def run(self):
         stateDict = {'state': True, 'message': ''} #represents state of thread when finishes
         try:
-            #starting timer to determin when to initiate each attack defence
+            # emit signal to start timer to determin when to initiate each attack defence
             self.updateTimerSignal.emit(True)
 
             # create scapy AsyncSniffer object with desired interface and sniff network packets asynchronously
@@ -1756,43 +1764,38 @@ class Sniffing_Thread(QThread):
         except Exception as e: #we catch an exception if something happend while sniffing
             stateDict.update({'state': False, 'message': f'An error occurred: {e}.'})
         finally:
-            self.updateTimerSignal.emit(False)
-            self.finishSignal.emit(stateDict) #send finish signal to main thread
+            self.updateTimerSignal.emit(False) #emit signal to stop timer for defance
+            self.finishSignal.emit(stateDict) #emit finish signal to main thread
 
 
-    #--------------------------------------------HANDLE-FUNCTIONS------------------------------------------------#
+    #------------------------------------------INIT-PACKET-METHODS-----------------------------------------------#
 
-    # method that handles ARP packets
-    def handleARP(self, packet):
-        ARP_Object = ARP_Packet(packet) #create a new object for packet
-        self.updateArpListSignal.emit(ARP_Object) #emit signal to update our arpList
-
-
-    # method that handles TCP packets
-    def handleTCP(self, packet):
-        if packet.haslayer(DNS): #if we found a dns packet we also call dns handler
-            self.handleDNS(packet) #call our handleDNS func
+    # method that initialize TCP packets
+    def InitTCP(self, packet):
         TCP_Object = TCP_Packet(packet) #create a new object for packet
         flowTuple = TCP_Object.GetFlowTuple() #get flow representation of packet
         self.updatePortScanDosDictSignal.emit(flowTuple, TCP_Object) #emit signal to update our portScanDosDict
 
 
-    # method that handles UDP packets
-    def handleUDP(self, packet):
-        if packet.haslayer(DNS): #if we found a dns packet we also call dns handler
-            self.handleDNS(packet) #call our handleDNS func
+    # method that initialize UDP packets
+    def InitUDP(self, packet):
         UDP_Object = UDP_Packet(packet) #create a new object for packet
         flowTuple = UDP_Object.GetFlowTuple() #get flow representation of packet
         self.updatePortScanDosDictSignal.emit(flowTuple, UDP_Object) #emit signal to update our portScanDosDict
 
 
-    # method that handles DNS packets
-    def handleDNS(self, packet):
+    # method that initialize DNS packets
+    def InitDNS(self, packet):
         DNS_Object = DNS_Packet(packet) #create a new object for packet
         flowTuple = DNS_Object.GetFlowTuple() #get flow representation of packet
         self.updateDnsDictSignal.emit(flowTuple, DNS_Object) #emit signal to update our dnsDict
+    
+    # method that initialize ARP packets
+    def InitARP(self, packet):
+        ARP_Object = ARP_Packet(packet) #create a new object for packet
+        self.updateArpListSignal.emit(ARP_Object) #emit signal to update our arpList
 
-    #------------------------------------------HANDLE-FUNCTIONS-END----------------------------------------------#
+    #-----------------------------------------INIT-PACKET-METHODS-END--------------------------------------------#
 
 #-----------------------------------------------------SNIFFING-THREAD-END-------------------------------------------------------#
 
@@ -2316,3 +2319,5 @@ if __name__ == '__main__':
         sys.exit(app.exec())
     except:
         print('Exiting')
+
+#----------------------------------------------------------MAIN-END-------------------------------------------------------------#

@@ -366,8 +366,6 @@ QCheckBox {
 	color: #3e5b98;
 }
 
-
-
 #registerFrame {
     background-color: #9ab5ee;
     border: none;
@@ -447,8 +445,6 @@ QCheckBox {
 	color: #3e5b98;
 }
 
-
-
 #moveToForgotPasswordLabel {
 	color: #314879;
 	background-color: #9ab5ee;
@@ -457,9 +453,6 @@ QCheckBox {
 #moveToForgotPasswordLabel:hover {
 	color: #3e5b98;
 }
-
-
-
 
 #resetPasswordVerticalFrame {
 	background-color: #9ab5ee;
@@ -742,9 +735,6 @@ QCheckBox {
     padding-top: 5px;
     padding-left: 5px;
 }
- 
-
-
 
 #legendWidget {
     background-color: transparent;

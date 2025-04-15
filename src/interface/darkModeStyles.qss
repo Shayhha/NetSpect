@@ -713,10 +713,6 @@ QCheckBox {
     padding-left: 5px;
 }
 
-
-
-
-
 #legendWidget {
     background-color: transparent;
     color: black;

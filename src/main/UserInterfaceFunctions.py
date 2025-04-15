@@ -428,7 +428,7 @@ def ShowContextMenu(self, position):
         copyAction = QAction('Copy')
         copyAction.triggered.connect(lambda: CopyToClipboard(item.text()))
         deleteAction = QAction('Delete')
-        deleteAction.triggered.connect(lambda: self.ui.DeleteMacAddressButtonClicked(item))
+        deleteAction.triggered.connect(lambda: self.DeleteMacAddressButtonClicked(item))
         menu.addAction(copyAction)
         menu.addAction(deleteAction)
         menu.exec(self.ui.macAddressListWidget.viewport().mapToGlobal(position))

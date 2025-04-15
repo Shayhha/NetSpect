@@ -687,10 +687,10 @@ class CustomMessageBox(QDialog):
 
 
 # function for showing message box window
-def ShowMessageBox(title, message, iconType='Information'):
+def ShowMessageBox(title, message, iconType='Information', isSelectable=False):
     # iconType options can be Information, Warning, Critical, Question, NoIcon
     if not CustomMessageBox.isMessageBox:
-        messageBox = CustomMessageBox(title, message, iconType)
+        messageBox = CustomMessageBox(title, message, iconType, isSelectable)
 
         # set isMessageBox and show messag ebox
         CustomMessageBox.isMessageBox = True

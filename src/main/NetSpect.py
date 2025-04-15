@@ -331,7 +331,7 @@ class NetSpect(QMainWindow):
     def ValidatePassword(self, password, errorLabelObject=None, errorMessage=None):
         simpleValidatorState= self.passwordValidator.validate(password, 0)[0]
         complexValidatorState = self.finalPasswordValidator.validate(password, 0)[0]
-        if (simpleValidatorState != self.passwordValidator.Acceptable) or (complexValidatorState != self.finalPasswordValidator.Acceptable):
+        if (simpleValidatorState != QValidator.Acceptable) or (complexValidatorState != QValidator.Acceptable):
             if errorLabelObject and errorMessage:
                 UserInterfaceFunctions.ChangeErrorMessageText(errorLabelObject, errorMessage)
             return False

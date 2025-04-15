@@ -1744,8 +1744,8 @@ class Sniffing_Thread(QThread):
     def PacketCapture(self, packet):
         # iterate over capture dictionary and find coresponding InitPacket method for each packet
         for packetType, InitPacket in self.captureDictionary.items():
-            if packet.haslayer(packetType): #if we found matching packet we call its initPacket method
-                InitPacket(packet) #call initPacket method of each packet
+            if packet.haslayer(packetType): #if we found matching packet we call its InitPacket method
+                InitPacket(packet) #call InitPacket method of each packet
 
 
     # run method for initialing a packet scan on desired network interface
@@ -1756,7 +1756,7 @@ class Sniffing_Thread(QThread):
             self.updateTimerSignal.emit(True)
 
             # create scapy AsyncSniffer object with desired interface and sniff network packets asynchronously
-            self.sniffer = AsyncSniffer(iface=self.interface, prn=self.PacketCapture, stop_filter=self.StopScan, store=0)
+            self.sniffer = AsyncSniffer(iface=self.interface, prn=self.PacketCapture, stop_filter=self.StopScan, store=False)
             self.sniffer.start() #start our async sniffing
             self.exec() #execute sniffer process
         except PermissionError: #if user didn't run with administrative privileges

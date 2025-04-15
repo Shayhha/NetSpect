@@ -602,11 +602,6 @@ class CustomMessageBox(QDialog):
         layout.addLayout(buttonLayout)
         self.setLayout(layout)
 
-        # set dialog properties (non-resizable but sized to content)
-        self.setMinimumSize(350, 150) #set a reasonable minimum size
-        self.adjustSize() #adjust the size based on content
-        self.setFixedSize(self.size()) #lock the size to prevent resizing
-
         # set custom stylesheet
         self.setStyleSheet('''
             QDialog {
@@ -662,6 +657,11 @@ class CustomMessageBox(QDialog):
             }
         ''')
     
+        # set dialog properties non-resizable but sized to content
+        self.setMinimumSize(350, 150) #set a reasonable minimum size
+        self.adjustSize() #adjust the size based on content
+        self.setFixedSize(self.size()) #lock the size to prevent resizing
+
 
     # method for overriting the original accept function and setting isMessageBox flag
     def accept(self):

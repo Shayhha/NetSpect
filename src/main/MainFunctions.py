@@ -237,7 +237,7 @@ class NetworkInformation(ABC):
 
     # function to print all available interfaces
     @staticmethod
-    def GetAvailableInterfaces():
+    def PrintAvailableInterfaces():
         # get a list of all available network interfaces
         interfaces = get_if_list() #call get_if_list method to retrieve the available interfaces
         if interfaces: #if there are interfaces we print them
@@ -274,7 +274,7 @@ class NetworkInformation(ABC):
         interfaces = get_if_list() #get a list of the network interfaces
         if sys.platform.startswith('win32'): #if current os is Windows we convert the guid number to interface name
             interfaces = [NetworkInformation.GuidToStr(interface) for interface in interfaces] #get a new list of network interfaces with correct names instead of guid numbers
-        matchedInterfaces = [interface for interface in interfaces if any(interface.startswith(name) for name in NetworkInformation.supportedInterfaces)] #we filter the list to retrieving ethernet and wifi interfaces
+        matchedInterfaces = [interface for interface in interfaces if any(interface.startswith(name) for name in NetworkInformation.supportedInterfaces)] #we filter the list to retrieving interfaces
         return matchedInterfaces #return the matched interfaces as list
 
 
@@ -826,10 +826,10 @@ class PortScanDoS(ABC):
                 )
 
             # print the dataframe and other data to the terminal
-            print('#=================================================================================================================================================#')
+            print('#' + '=' * 145 + '#')
             print(f'\n |>> No Port Scanning / DoS attacks where detected <<|\n |>> Number of flows in current cycle: {len(flowDataframe)} <<|')
             print(f'\n |>> Currect Cycle Dataframe: <<|\n\n{flowDataframe[keyColumns + ['Result', 'timestamp']]}')
-            print('#=================================================================================================================================================#')
+            print('#' + '=' * 145 + '#')
 
             result['state'] = True #indication for no attacks
 
@@ -1020,10 +1020,10 @@ class DNSTunneling(ABC):
                 )
             
             # print the dataframe and other data to the terminal
-            print('#=================================================================================================================================================#')
+            print('#' + '=' * 145 + '#')
             print(f'\n |>> No DNS Tunneling attacks where detected <<|\n |>> Number of flows in current cycle: {len(flowDataframe)} <<|')
             print(f'\n |>> Currect Cycle Dataframe: <<|\n\n{flowDataframe[keyColumns + ['Result', 'timestamp']]}')
-            print('#=================================================================================================================================================#')
+            print('#' + '=' * 145 + '#')
 
             result['state'] = True #indication for no attacks
 

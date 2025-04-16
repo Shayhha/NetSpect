@@ -1052,26 +1052,18 @@ class SaveData(ABC):
             # create a dataframe from the collected data
             values = list(flows.values())
 
-            #reorder the values in the same order that the models were trained on
-            ordered_values = [[valueDict[col] for col in selectedColumns] for valueDict in values]
-            valuesDataframe = pd.DataFrame(ordered_values, columns=selectedColumns)
+            # reorder the values in the same order that the models were trained on
+            orderedValues = [[valueDict[col] for col in selectedColumns] for valueDict in values]
+            valuesDataframe = pd.DataFrame(orderedValues, columns=selectedColumns)
             
-            # create new csv file for data collection in desired path
-            if not os.path.isfile(filePath):
-                valuesDataframe.to_csv(filePath, index=False) #save the new data if needed
-                collectedRows = valuesDataframe.shape[0] #save number of collected rows
-
-            # else open an existing file and merge the collected data to it
-            else:
-                readBenignCsv = pd.read_csv(filePath)
-                mergedDataframe = pd.concat([readBenignCsv , valuesDataframe], axis=0)
-                mergedDataframe.to_csv(filePath, index=False)
-                collectedRows = valuesDataframe.shape[0] #save number of collected rows
+            # write dataframe values to csv file or append to an existing csv file
+            valuesDataframe.to_csv(filePath, mode='a', header=not Path(filePath).exists(), index=False)
+            collectedRows = valuesDataframe.shape[0] #save number of rows written
 
             return collectedRows
         
         # if file is open in another program we avoid exeption and return 0 to indicate no collected rows
-        except PermissionError:
+        except Exception:
             return collectedRows
 
 
@@ -1080,10 +1072,12 @@ class SaveData(ABC):
     def SaveFlowsInFile(flows, filePath='detected_flows.txt'):
         # write result of flows captured in txt file
         with open(filePath, 'w', encoding='utf-8') as file:
+            # iterate ove reach flow in flows dictionary
             for flow, features in flows.items():
-                file.write(f'Flow: {flow}\n')
+                file.write(f'Flow: {flow}\n') #write flow info
+                # iterate over each feature of flow
                 for feature, value in features.items():
-                    file.write(f' {feature}: {value}\n')
-                file.write('=' * 64 + '\n')
+                    file.write(f' {feature}: {value}\n') #write flow's feature
+                file.write('=' * 64 + '\n') #add seperator
 
 #------------------------------------------SAVING-COLLECTED-DATA-END-----------------------------------------#

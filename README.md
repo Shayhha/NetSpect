@@ -9,9 +9,9 @@
     </ul>
   </div>
 
-[![Python](https://img.shields.io/badge/Python-3.12-3572A5?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/downloads/release/python-3120/) 
+[![Python](https://img.shields.io/badge/Python-3.12-3572A5?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/downloads/release/python-3120/)
+[![PySide6](https://img.shields.io/badge/PySide6-6.9.0-2C3E50?style=for-the-badge&logo=qt&logoColor=white)](https://doc.qt.io/qtforpython/)
 [![Scapy](https://img.shields.io/badge/Scapy-2.5.0-2C3E50?style=for-the-badge&logo=github&logoColor=white)](https://github.com/secdev/scapy)
-[![PyQt5](https://img.shields.io/badge/PyQt5-5.15.11-2C3E50?style=for-the-badge&logo=github&logoColor=white)](https://www.riverbankcomputing.com/software/pyqt/)
 [![SQL Server](https://img.shields.io/badge/SQL%20Server-2022-blue?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)](https://www.microsoft.com/en-us/sql-server/sql-server-2022)
 [![Npcap](https://img.shields.io/badge/Npcap-1.79-59118e?style=for-the-badge&logo=Caffeine&logoColor=white)](https://npcap.com/)
 ![Platforms](https://img.shields.io/badge/Platforms-Windows%20%7C%20macOS%20%7C%20Linux-2C3E50?style=for-the-badge&logo=apple&logoColor=white)
@@ -100,8 +100,8 @@ NetSpect cleverly employs a **multi-threaded architecture** to distribute tasks 
 | Technology | Purpose |
 |------------|---------|
 | **[Python 3.12](https://www.python.org/downloads/release/python-3120/)** | Core programming language for development and scripting. |
+| **[PySide6](https://doc.qt.io/qtforpython/)** | A framework for building the graphical user interface (GUI). |
 | **[Scapy](https://github.com/secdev/scapy)** | A powerful packet manipulation library used for network traffic analysis. |
-| **[PyQt5](https://www.riverbankcomputing.com/software/pyqt/)** | A framework for building the graphical user interface (GUI). |
 | **[SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-2022)** | Database management system for storing and retrieving user data. |
 | **[Joblib](https://joblib.readthedocs.io/)** | Library utilized for saving and loading machine learning models efficiently. |
 | **[Scikit-learn](https://scikit-learn.org/)** | Machine learning library leveraged for model training and prediction. |
@@ -179,7 +179,7 @@ Our application relies of the following requirements in order to work properly:
 - joblib
 - numpy
 - pandas
-- PyQt5
+- PySide6
 - python-dotenv
 - pyodbc
 - scapy

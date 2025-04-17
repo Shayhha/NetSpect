@@ -13,7 +13,7 @@ from string import digits, ascii_letters, ascii_uppercase
 # class that represents main app of NetSpect
 class NetSpect(QMainWindow):
     ui = None #represents main ui object of GUI with all our objects
-    userData = {'userId': None, 'email': None, 'userName': None, 'numberOfDetections': 0, 'lightMode': 0, 'alertList': [], 'pieChartData': {}, 'blackList': []} #represents user data in interface
+    userData = {'userId': None, 'email': None, 'userName': None, 'lightMode': 0, 'operationMode': 0, 'numberOfDetections': 0, 'alertList': [], 'pieChartData': {}, 'blackList': []} #represents user data in interface
     isDetection = False #represents flag for indicating if detection is active
     resetPasswordValidator = {'resetCode': None, 'timestamp': None, 'newPassword': None} #represents reset password validator dictionary
     usernameValidator, passwordValidator, finalPasswordPattern, emailValidator = None, None, None, None #represents the validators that hold regexes for various input fields in the program
@@ -83,11 +83,11 @@ class NetSpect(QMainWindow):
         self.ui.denialOfServiceCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
         self.ui.dnsTunnelingCheckBox.stateChanged.connect(lambda: UserInterfaceFunctions.ReportCheckboxToggled(self))
         self.ui.reportDurationComboBox.currentIndexChanged.connect(lambda: UserInterfaceFunctions.ReportDurationComboboxChanged(self))
-        self.ui.operationModeComboBox.currentIndexChanged.connect(lambda: UserInterfaceFunctions.OperationModeComboboxChanged(self))
         self.ui.networkInterfaceComboBox.clear() #clear interfaces combobox
         self.ui.networkInterfaceComboBox.addItems(NetworkInformation.InitNetworkInfo()) #intialize our interfaces combobox with host network info
         self.ui.networkInterfaceComboBox.currentIndexChanged.connect(self.ChangeNetworkInterface) #connect interfaces combobox to its method
         self.ui.colorModeComboBox.currentIndexChanged.connect(self.ChangeColorMode) #connecct color mode combobox to its method
+        self.ui.operationModeComboBox.currentIndexChanged.connect(self.ChangeOperationMode) #connect operation mode combobox to its method
         self.ChangeNetworkInterface() #set default network interface from combobox
 
         # initialize other interface components and show interface
@@ -224,11 +224,12 @@ class NetSpect(QMainWindow):
         self.sqlThread.deleteAlertsResultSignal.connect(self.DeleteAlertsResult)
         self.sqlThread.addBlacklistMacResultSignal.connect(self.AddMacToBlackListResult)
         self.sqlThread.deleteBlacklistMacResultSignal.connect(self.DeleteMacFromBlackListResult)
+        self.sqlThread.updateLightModeResultSignal.connect(self.UpdateColorModeResult)
+        self.sqlThread.updateOperationtModeResultSignal.connect(self.UpdateOperationModeResult)
         self.sqlThread.sendCodeResultSignal.connect(self.SendCodeResult)
         self.sqlThread.connectionResultSignal.connect(self.ConnectionResult)
         self.sqlThread.initEmailCredentilsResultSignal.connect(self.InitEmailCredentilsResult)
         self.sqlThread.finishSignal.connect(self.CloseSQLThread)
-        self.sqlThread.updateLightModeResultSignal.connect(self.UpdateColorModeResult)
         # start sql thread
         self.sqlThread.start()
         # log initializing sql thread
@@ -444,7 +445,8 @@ class NetSpect(QMainWindow):
             if state and userData:
                 self.userData = userData #save user data dictionary for logged in user
                 UserInterfaceFunctions.AccountIconClicked(self) #close login popup
-                self.ui.colorModeComboBox.setCurrentIndex(self.userData.get('lightMode')) #set the combobox to the value received from database
+                self.ui.colorModeComboBox.setCurrentIndex(self.userData.get('lightMode')) #set color mode combobox to the value received from database
+                self.ui.operationModeComboBox.setCurrentIndex(self.userData.get('operationMode')) #set operation mode combobox to the value received from database
                 UserInterfaceFunctions.ToggleUserInterface(self, True) #toggle user interface
                 self.ui.welcomeLabel.setText(f'Welcome {self.userData.get('userName')}')
                 self.UpdateNumberOfDetectionsCounterLabel(self.userData.get('numberOfDetections')) #set num of detections counter
@@ -461,8 +463,8 @@ class NetSpect(QMainWindow):
             # means we set user interface for logged out user
             else:
                 self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has logged out.', 'INFO') #log logout event
-                self.userData = {'userId': None, 'email': None, 'userName': None, 'numberOfDetections': 0,
-                                  'lightMode': 0, 'alertList': [], 'pieChartData': {}, 'blackList': []} #reset our user data dictionary
+                self.userData = {'userId': None, 'email': None, 'userName': None, 'lightMode': 0, 'operationMode': 0, 
+                                 'numberOfDetections': 0, 'alertList': [], 'pieChartData': {}, 'blackList': []} #reset our user data dictionary
                 UserInterfaceFunctions.ToggleUserInterface(self, False) #reset our user interface
 
 
@@ -1398,6 +1400,20 @@ class NetSpect(QMainWindow):
                 self.sqlThread.UpdateLightMode(self.userData.get('userId'), self.userData.get('lightMode'))
 
 
+    # method for changing the operation mode of application, detection or collection
+    def ChangeOperationMode(self):
+        # send a log that the user is changing the operation mode preference
+        self.SendLogDict(f'Main_Thread: {'User ' + self.userData.get('userName') if self.userData.get('userId') else 'Default user'} is changing the operation mode preference to: "{self.ui.operationModeComboBox.currentText()}".', 'INFO')
+
+        # update the ui based on the users selection
+        UserInterfaceFunctions.ToggleOperationMode(self)
+
+        # change the value of operationMode in the database for the current user
+        if self.sqlThread:
+            if self.userData.get('userId'):
+                self.sqlThread.UpdateOperationMode(self.userData.get('userId'), self.userData.get('operationMode'))
+
+
     # method for creating alerts report for user in desired format, txt or csv
     def DownloadReportButtonClicked(self):
         if not self.reportThread:
@@ -1655,10 +1671,23 @@ class NetSpect(QMainWindow):
             self.SendLogDict(f'Main_Thread: Error saving color preference due to server error.', 'ERROR') #log error event
             UserInterfaceFunctions.ShowMessageBox('Error Saving Color Preference', 'Error saving color preference due to server error, please try again later.', 'Critical')
         elif not resultDict.get('state'):
-            self.SendLogDict(f'Main_Thread: Error Updating Color Preference. {resultDict.get('message')}', 'ERROR') #log change password event
+            self.SendLogDict(f'Main_Thread: Error Updating Color Preference. {resultDict.get('message')}', 'ERROR') #log change color mode event
             UserInterfaceFunctions.ShowMessageBox('Error Updating Color Preference', resultDict.get('message'))
         elif resultDict.get('state'):
-            self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has changed the UI color preference successfully.', 'INFO') #log change password event
+            self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has changed the UI color preference successfully.', 'INFO') #log change color mode event
+    
+
+    # method for showing results for update operation mode after changing operation mode in GUI
+    @Slot(dict)
+    def UpdateOperationModeResult(self, resultDict):
+        if resultDict.get('error'):
+            self.SendLogDict(f'Main_Thread: Error saving operation mode preference due to server error.', 'ERROR') #log error event
+            UserInterfaceFunctions.ShowMessageBox('Error Saving Operation Mode Preference', 'Error saving coperation mode preference due to server error, please try again later.', 'Critical')
+        elif not resultDict.get('state'):
+            self.SendLogDict(f'Main_Thread: Error Updating Operation Mode Preference. {resultDict.get('message')}', 'ERROR') #log change operation mode event
+            UserInterfaceFunctions.ShowMessageBox('Error Updating Operation Mode Preference', resultDict.get('message'))
+        elif resultDict.get('state'):
+            self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has changed operation mode preference successfully.', 'INFO') #log change operation mode event
 
     #--------------------------------------------SQL-RESULT-SLOTS-END--------------------------------------------#
 

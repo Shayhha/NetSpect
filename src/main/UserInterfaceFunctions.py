@@ -232,7 +232,8 @@ def ToggleUserInterface(self, state):
         self.ui.reportDurationComboBox.setEnabled(False)
         self.ui.welcomeLabel.clear()
         self.ui.accountIcon.show()
-        self.ui.colorModeComboBox.setCurrentIndex(0) #only reset the color checkbox if the user has logged out
+        self.ui.colorModeComboBox.setCurrentIndex(0) #reset the color combobox if the user has logged out
+        self.ui.operationModeComboBox.setCurrentIndex(0) #reset the operation mode combobox if the user has logged out
 
     #clear history and report tables and blacklist and pie chart
     self.ui.historyTableWidget.setRowCount(0)
@@ -242,12 +243,14 @@ def ToggleUserInterface(self, state):
 
     #set combobox and checkboxes default state
     self.ui.reportDurationComboBox.setCurrentIndex(3)
-    self.ui.operationModeComboBox.setCurrentIndex(0)
     self.ui.arpSpoofingCheckBox.setChecked(True)
     self.ui.portScanningCheckBox.setChecked(True)
     self.ui.denialOfServiceCheckBox.setChecked(True)
     self.ui.dnsTunnelingCheckBox.setChecked(True)
     self.ui.machineInfoCheckBox.setChecked(False)
+    ToggleReportInterface(self, False) #reset the styles of report interface back to default state
+    ToggleColorMode(self) #reset the styles to match the selected index in the color mode combobox
+    ToggleOperationMode(self) #reset the styles to match the selected index in the operation mode combobox
 
     #clear settings, login and register line edits and reset number of detections
     self.ui.numberOfDetectionsCounter.setText('0')
@@ -266,14 +269,12 @@ def ToggleUserInterface(self, state):
     self.ui.saveUsernameErrorMessageLabel.clear()
     self.ui.savePasswordErrorMessageLabel.clear()
     self.ui.macAddressBlacklistErrorMessageLabel.clear()
-    ToggleReportInterface(self, False)
     self.ui.registerEmailLineEdit.setStyleSheet(GetDefaultStyleSheetRegisterLineEdits(self, 'registerEmailLineEdit'))
     self.ui.registerUsernameLineEdit.setStyleSheet(GetDefaultStyleSheetRegisterLineEdits(self, 'registerUsernameLineEdit'))
     self.ui.registerPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetRegisterLineEdits(self, 'registerPasswordLineEdit'))
     self.ui.oldPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetSettingsLineEdits(self, 'oldPasswordLineEdit'))
     self.ui.newPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetSettingsLineEdits(self, 'newPasswordLineEdit'))
     self.ui.confirmPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetSettingsLineEdits(self, 'confirmPasswordLineEdit'))
-    ToggleColorMode(self) #reset the styles to match the selected index in the color mode checkbox
 
 
 # function for showing and hiding report interface
@@ -293,13 +294,15 @@ def ToggleReportInterface(self, state):
 
 
 # function for toggling between detection and collection interfaces
-def OperationModeComboboxChanged(self):
+def ToggleOperationMode(self):
     # means we need to change to detection interface
     if self.ui.operationModeComboBox.currentIndex() == 0:
+        self.userData['operationMode'] = 0
         self.ui.initiateDefenceLabel.setText('Initiate Detection')
         self.ui.trayIcon.toggleDetectionAction.setText('Start Detection')
     # else means we need to change to data collection interface
     else:
+        self.userData['operationMode'] = 1 if self.ui.operationModeComboBox.currentIndex() == 1 else 2
         self.ui.initiateDefenceLabel.setText('Initiate Collection')
         self.ui.trayIcon.toggleDetectionAction.setText('Start Collection')
 

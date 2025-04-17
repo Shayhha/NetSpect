@@ -23,6 +23,7 @@ class SQL_Thread(QThread):
     addBlacklistMacResultSignal = Signal(dict)
     deleteBlacklistMacResultSignal = Signal(dict)
     updateLightModeResultSignal = Signal(dict)
+    updateOperationtModeResultSignal = Signal(dict)
     sendCodeResultSignal = Signal(dict)
     connectionResultSignal = Signal(dict)
     initEmailCredentilsResultSignal = Signal(dict)
@@ -141,7 +142,7 @@ class SQL_Thread(QThread):
         try:
             # query to fetch user details
             query = '''
-                SELECT userId, email, userName, lightMode 
+                SELECT userId, email, userName, lightMode, operationMode
                 FROM Users 
                 WHERE userName = ? AND password = ? AND isDeleted = 0
                 '''
@@ -154,7 +155,8 @@ class SQL_Thread(QThread):
                     'userId': result[0],
                     'email': result[1],
                     'userName': result[2],
-                    'lightMode': result[3]
+                    'lightMode': result[3],
+                    'operationMode': result[4]
                 }
                 
                 # retrieve alert list, pie chart data, black list and num of detections with helper functions
@@ -671,6 +673,35 @@ class SQL_Thread(QThread):
         finally:
             # emit update light mode signal to main thread
             self.updateLightModeResultSignal.emit(resultDict)
+
+    
+    # method for updating value of operation mode for given user in Users table
+    @Slot(int, int)
+    def UpdateOperationMode(self, userId, operationMode=0):
+        resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
+        try:
+            # update operationMode for user in Users table
+            query = '''
+                UPDATE Users 
+                SET operationMode = ? 
+                WHERE userId = ?
+                '''
+            self.cursor.execute(query, (operationMode, userId))
+            
+            if self.cursor.rowcount > 0:
+                self.connection.commit()
+                resultDict['message'] = 'Updated operation mode status.'
+                resultDict['state'] = True
+            else:
+                resultDict['message'] = 'Failed updating operation mode status.'
+
+        except Exception as e:
+            self.connection.rollback() #rollback on error
+            resultDict['message'] = f'Error updating operation mode: {e}.'
+            resultDict['error'] = True
+        finally:
+            # emit update operation mode signal to main thread
+            self.updateOperationtModeResultSignal.emit(resultDict)
 
 
     # method for sending reset password code for a user in Users table

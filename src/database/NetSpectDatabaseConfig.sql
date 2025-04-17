@@ -19,10 +19,12 @@ CREATE TABLE Users (
 	userName VARCHAR(255) UNIQUE NOT NULL,
 	password VARCHAR(255) NOT NULL,
 	lightMode INT NOT NULL DEFAULT 0, --represents the color mode of app, 1 means lightmode, else darkmode
+	operationMode INT NOT NULL DEFAULT 0, --represents the operation mode of application, 0 means detection, 1 means TCP/UDP collection, 2 means DNS collection
 	isDeleted INT NOT NULL DEFAULT 0, --represents state of account, if 1 its deleted, else not
 	CHECK (email LIKE '_%@_%._%'),
 	CHECK (LEN(userName) BETWEEN 4 AND 16),
 	CHECK (lightMode BETWEEN 0 AND 1),
+	CHECK (operationMode BETWEEN 0 AND 2),
 	CHECK (isDeleted BETWEEN 0 AND 1),
 	PRIMARY KEY(userId)
 );

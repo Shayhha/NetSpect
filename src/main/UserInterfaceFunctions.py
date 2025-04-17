@@ -491,7 +491,7 @@ def RemoveItem(self, item):
 
 
 # function for centering a specific row in the tabels:
-def CenterSpecificTableRowText(tableObject): #historyTableWidget or reportPreviewTableWidget
+def CenterSpecificTableRowText(tableObject):
     for col in range(tableObject.columnCount()):
         if item := tableObject.item(0, col): #check if item exists
             item.setTextAlignment(Qt.AlignCenter)
@@ -979,8 +979,13 @@ class CustomTableModel(QAbstractTableModel):
             return str(self.alertListData[index.row()][index.column()]) #ensure data is a string
 
         # this will center-align the text
-        if role == Qt.TextAlignmentRole:
-            return Qt.AlignCenter 
+        elif role == Qt.TextAlignmentRole:
+            return Qt.AlignCenter #ensure data is centered
+        
+        # this will show tooltip with column data
+        elif role == Qt.ToolTipRole:
+            return str(self.alertListData[index.row()][index.column()]) #ensure data is a string
+        
         return None
 
 

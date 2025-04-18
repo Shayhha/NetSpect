@@ -864,7 +864,7 @@ def UpdateChartAfterAttack(self, attackName):
             newSlice.setLabelColor(QColor(1, 1, 1, 255)) if self.userData.get('lightMode') == 1 else newSlice.setLabelColor(QColor(45, 46, 54, 255))
             newSlice.setColor(QColor(AttackPieChart.defaultPieChartSliceColors.get(attackName)))
 
-        # set the title to be empty (hide the title) if there is atleast one attack detection in history
+        # set the title to be empty (hide the title) if there is at least one attack detection in history
         if series.count() > 0:
             self.ui.piChart.setTitle('')
         
@@ -899,30 +899,30 @@ def UpdateChartLegendsAndSlices(self):
 # function for updating the pie chart after user login with data from database
 def UpdateChartAfterLogin(self, pieChartData):
     try:
-        # remove the current series
-        series = self.ui.piChart.series()[0]
-        self.ui.piChart.removeSeries(series)
+        # check if there's at least one attack in pieChartData dictionary
+        if any(attackCount > 0 for attackCount in pieChartData.values()):
+            # remove the current series
+            series = self.ui.piChart.series()[0]
+            self.ui.piChart.removeSeries(series)
 
-        # create a new series with database data
-        newSeries = QPieSeries()
-        for attackName, attackCount in pieChartData.items():
-            newSeries.append(attackName, attackCount)
+            # create a new series with database data
+            newSeries = QPieSeries()
+            for attackName, attackCount in pieChartData.items():
+                newSeries.append(attackName, attackCount)
 
-        # add the new series to the chart and update the GUI
-        self.ui.piChart.addSeries(newSeries)
-        self.ui.piChart.setTitle('') #remove the default title if exists
-        if all(attackCount == 0 for attackCount in pieChartData.values()):
-            self.ui.piChart.setTitle('No Data To Display...') #leave the default title if there is no data to display
-        UpdateChartLegendsAndSlices(self)
+            # add the new series to the chart and update the GUI
+            self.ui.piChart.addSeries(newSeries)
+            self.ui.piChart.setTitle('') #remove the default title if exists
+            UpdateChartLegendsAndSlices(self)
 
-        # update the css of the slice labels because we created new ones right here
-        for slice, attackName in zip(self.ui.piChart.series()[0].slices(), pieChartData.keys()):
-            sliceFont = QFont('Cairo', 11, QFont.Bold, False)
-            slice.setLabelFont(sliceFont)
-            slice.setLabelVisible(True)
-            slice.setLabelArmLengthFactor(0.075)
-            slice.setLabelColor(QColor(1, 1, 1, 255)) if self.userData.get('lightMode') == 1 else slice.setLabelColor(QColor(45, 46, 54, 255))
-            slice.setColor(QColor(AttackPieChart.defaultPieChartSliceColors.get(attackName)))
+            # update the css of the slice labels because we created new ones right here
+            for slice, attackName in zip(self.ui.piChart.series()[0].slices(), pieChartData.keys()):
+                sliceFont = QFont('Cairo', 11, QFont.Bold, False)
+                slice.setLabelFont(sliceFont)
+                slice.setLabelVisible(True)
+                slice.setLabelArmLengthFactor(0.075)
+                slice.setLabelColor(QColor(1, 1, 1, 255)) if self.userData.get('lightMode') == 1 else slice.setLabelColor(QColor(45, 46, 54, 255))
+                slice.setColor(QColor(AttackPieChart.defaultPieChartSliceColors.get(attackName)))
 
     except Exception as e:
         ShowMessageBox('Error Updating Pie Chart', 'Error occurred while updating pie chart, try again later.', 'Critical')

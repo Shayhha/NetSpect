@@ -493,19 +493,26 @@ class SQL_Thread(QThread):
     @Slot(int)
     def GetPieChartData(self, userId):
         query = '''
-            SELECT attackType, COUNT(*) as count
+            SELECT attackType, COUNT(*) AS attackCount
             FROM Alerts
             WHERE userId = ? AND isDeleted = 0
             GROUP BY attackType
             '''
         self.cursor.execute(query, (userId,))
         result = self.cursor.fetchall()
-        pieChartData = {} #represents dict of attacks count
+        pieChartData = {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0} #represents dict of attacks count
 
         # check if we received result from query
         if result:
-            # convert result into a dictionary
-            pieChartData = {row[0]: row[1] for row in result}
+            # iterate over each row and update our pieChartData dictionary
+            for row in result:
+                # initialize parameters based on row values
+                attackType, attackCount = row[0], row[1]
+
+                # check if attack type is present in our pieChartData dictionary
+                if pieChartData.get(attackType) != None:
+                    # set corrent attack type with its attack counter from database
+                    pieChartData[attackType] = attackCount
         
         return pieChartData
 
@@ -577,13 +584,16 @@ class SQL_Thread(QThread):
             WHERE userId = ?
             '''
         self.cursor.execute(query, (userId,))
-        blacklistResults = self.cursor.fetchall()
+        blacklistMacsResult = self.cursor.fetchall()
+        blacklistMacs = [] #represents our blacklist of mac addresses
 
-        # convert fetched tuples into a list of mac addresses
-        blacklist = [row[0] for row in blacklistResults]
+        # check if we received blacklist mac addresses from query
+        if blacklistMacsResult:
+            # create list of blacklist mac addresses with given result
+            blacklistMacs = [row[0] for row in blacklistMacsResult]
 
         # return blacklist macs for user
-        return blacklist
+        return blacklistMacs
     
 
     # Method for adding a MAC address to the blacklist for a given user
@@ -592,10 +602,10 @@ class SQL_Thread(QThread):
         resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
         try:
             # first, get the existing blacklist for the given user
-            existingBlacklist = self.GetBlacklistMacs(userId)
+            existingBlacklistMacs = self.GetBlacklistMacs(userId)
             
             # check if the MAC address already exists in the blacklist
-            if macAddress in existingBlacklist:
+            if macAddress in existingBlacklistMacs:
                 resultDict['message'] = 'MAC address is already blacklisted for this user.'
             else:
                 query = '''

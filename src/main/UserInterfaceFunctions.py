@@ -789,6 +789,7 @@ def InitPieChart(self):
         # setup the base chart widget
         chart.legend().setVisible(False)
         chart.layout().setContentsMargins(0, 0, 0, 0)
+        chart.setAnimationOptions(QChart.AllAnimations)
         chart.setBackgroundRoundness(0)
         chart.setBackgroundBrush(QColor(204, 204, 204, 153)) if self.userData.get('lightMode') == 1 else chart.setBackgroundBrush(QColor(193, 208, 239))
         chart.setTitle('No Data To Display...')

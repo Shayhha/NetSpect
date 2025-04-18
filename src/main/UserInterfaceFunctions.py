@@ -744,104 +744,105 @@ def ShowMessageBox(title, message, iconType='Information', isSelectable=False):
 
 #------------------------------------------CUSTOM-MESSAGEBOX-END---------------------------------------------#
 
-#------------------------------------------------PIE-CHART---------------------------------------------------#
+#---------------------------------------------ATTACK-PIE-CHART-----------------------------------------------#
+# attack pie chart class for showing attacks distribution over time via a pie chart in GUI
+class AttackPieChart():
+    # dictionary for mapping attack names, key is the slice label text and the value is the legend text
+    pieChartLabelDict = {
+        'ARP': 'ARP Spoofing',
+        'Port Scan': 'Port Scanning',
+        'DoS': 'Denial of Service',
+        'DNS': 'DNS Tunneling'
+    }
 
-# dictionary for mapping attack names, key is the slice label text and the value is the legend text
-pieChartLabelDict = {
-    'ARP': 'ARP Spoofing',
-    'Port Scan': 'Port Scanning',
-    'DoS': 'Denial of Service',
-    'DNS': 'DNS Tunneling'
-}
+    # inverted dictionary for mapping attack names, key is the attack name as seen by database and the value is attack names as written in pie chart legends
+    invertedPieChartLabelDict = {
+        'ARP Spoofing': 'ARP',
+        'Port Scan': 'Port Scan',
+        'DoS': 'DoS',
+        'DNS Tunneling': 'DNS'
+    }
 
-# inverted dictionary for mapping attack names, key is the attack name as seen by database and the value is attack names as written in pie chart legends
-invertedPieChartLabelDict = {
-    'ARP Spoofing': 'ARP',
-    'Port Scan': 'Port Scan',
-    'DoS': 'DoS',
-    'DNS Tunneling': 'DNS'
-}
+    # dictionary with default blue colors for the pie chart slices for each attack by name
+    defaultPieChartSliceColors = {
+        'ARP Spoofing': '#90cfef',
+        'Port Scan': '#209fdf',
+        'DoS': '#15668f',
+        'DNS Tunneling': '#092d40'
+    }
 
-# dictionary with default blue colors for the pie chart slices for each attack by name
-defaultPieChartSliceColors = {
-    'ARP Spoofing': '#90cfef',
-    'Port Scan': '#209fdf',
-    'DoS': '#15668f',
-    'DNS Tunneling': '#092d40'
-}
+    # method for creating and initializing an empty attack pie chart
+    def InitAttackPieChart(self):
+        try:
+            # create pie chart
+            series = QPieSeries()
+            chart = QChart()
+            chart.addSeries(series)
 
-# function for creating and initializing an empty pie chart
-def InitPieChart(self):
-    try:
-        # create pie chart
-        series = QPieSeries()
-        chart = QChart()
-        chart.addSeries(series)
+            # create font for title
+            titleFont = QFont('Cairo', 16, QFont.Bold, False) 
 
-        # create font for title
-        titleFont = QFont('Cairo', 16, QFont.Bold, False) 
+            # create a legend widget
+            legendWidget = QWidget()
+            self.ui.legendLayout = QGridLayout(legendWidget)
+            legendWidget.setObjectName('legendWidget')
 
-        # create a legend widget
-        legendWidget = QWidget()
-        self.ui.legendLayout = QGridLayout(legendWidget)
-        legendWidget.setObjectName('legendWidget')
+            # setup the base chart widget
+            chart.legend().setVisible(False)
+            chart.layout().setContentsMargins(0, 0, 0, 0)
+            chart.setAnimationOptions(QChart.AllAnimations)
+            chart.setBackgroundRoundness(0)
+            chart.setBackgroundBrush(QColor(204, 204, 204, 153)) if self.userData.get('lightMode') == 1 else chart.setBackgroundBrush(QColor(193, 208, 239))
+            chart.setTitle('No Data To Display...')
+            chart.setTitleFont(titleFont)
+            
+            # create chart view and vbox layout
+            chartView = QChartView(chart)
+            chartView.setRenderHint(QPainter.Antialiasing)
+            chartView.setMinimumSize(440, 260)
 
-        # setup the base chart widget
-        chart.legend().setVisible(False)
-        chart.layout().setContentsMargins(0, 0, 0, 0)
-        chart.setAnimationOptions(QChart.AllAnimations)
-        chart.setBackgroundRoundness(0)
-        chart.setBackgroundBrush(QColor(204, 204, 204, 153)) if self.userData.get('lightMode') == 1 else chart.setBackgroundBrush(QColor(193, 208, 239))
-        chart.setTitle('No Data To Display...')
-        chart.setTitleFont(titleFont)
-        
-        # create chart view and vbox layout
-        chartView = QChartView(chart)
-        chartView.setRenderHint(QPainter.Antialiasing)
-        chartView.setMinimumSize(440, 260)
+            VBoxLayout = QVBoxLayout()
+            VBoxLayout.setSpacing(0)
+            VBoxLayout.setContentsMargins(0, 0, 0, 0)
 
-        VBoxLayout = QVBoxLayout()
-        VBoxLayout.setSpacing(0)
-        VBoxLayout.setContentsMargins(0, 0, 0, 0)
+            # add stles to the title
+            titleLabel = QLabel('Attacks Distribution')
+            titleLabel.setObjectName('pieChartTitleLabel') 
 
-        # add stles to the title
-        titleLabel = QLabel('Attacks Distribution')
-        titleLabel.setObjectName('pieChartTitleLabel') 
+            # setup the pie chart legends in advance
+            for i, (attackName, sliceColor) in enumerate(zip(AttackPieChart.pieChartLabelDict.values(), AttackPieChart.defaultPieChartSliceColors.values())):
+                legendFont = QFont('Cairo', 12, QFont.Bold, False) # font settings for legend (defined once)
+                legendLabel = QLabel(f'{attackName} 0%')
+                legendLabel.setFont(legendFont)
+                legendLabel.setObjectName(f'{attackName.replace(' ', '')}LegendLabel') #for example: ARPSpoofingLegendLabel
 
-        # setup the pie chart legends in advance
-        for i, (attackName, sliceColor) in enumerate(zip(pieChartLabelDict.values(), defaultPieChartSliceColors.values())):
-            legendFont = QFont('Cairo', 12, QFont.Bold, False) # font settings for legend (defined once)
-            legendLabel = QLabel(f'{attackName} 0%')
-            legendLabel.setFont(legendFont)
-            legendLabel.setObjectName(f'{attackName.replace(' ', '')}LegendLabel') #for example: ARPSpoofingLegendLabel
+                colorLabel = QLabel()
+                colorLabel.setObjectName(f'{attackName.replace(' ', '')}LegendColorLabel') 
+                colorLabel.setFixedSize(20, 20)
 
-            colorLabel = QLabel()
-            colorLabel.setObjectName(f'{attackName.replace(' ', '')}LegendColorLabel') 
-            colorLabel.setFixedSize(20, 20)
+                row = i // 2
+                col = (i % 2) * 2
+                self.ui.legendLayout.addWidget(colorLabel, row, col)
+                self.ui.legendLayout.addWidget(legendLabel, row, col + 1)
 
-            row = i // 2
-            col = (i % 2) * 2
-            self.ui.legendLayout.addWidget(colorLabel, row, col)
-            self.ui.legendLayout.addWidget(legendLabel, row, col + 1)
+            # add items to the chart VBox
+            VBoxLayout.addWidget(titleLabel)
+            VBoxLayout.addWidget(chartView)
+            VBoxLayout.addWidget(legendWidget)
 
-        # add items to the chart VBox
-        VBoxLayout.addWidget(titleLabel)
-        VBoxLayout.addWidget(chartView)
-        VBoxLayout.addWidget(legendWidget)
+            # save the chart object in self.ui (NetSpect object) for later use
+            self.ui.chartVerticalFrame.setLayout(VBoxLayout)
+            self.ui.chartVerticalFrame.update()
+            self.ui.piChart = chart
 
-        # save the chart object in self.ui (NetSpect object) for later use
-        self.ui.chartVerticalFrame.setLayout(VBoxLayout)
-        self.ui.chartVerticalFrame.update()
-        self.ui.piChart = chart
-
-    except Exception as e:
-        ShowMessageBox('Error In Pie Chart Initialization', 'Error occurred in pie chart initialization, try again later.', 'Critical')
+        except Exception as e:
+            ShowMessageBox('Error In Pie Chart Initialization', 'Error occurred in pie chart initialization, try again later.', 'Critical')
 
 
 # function for updating the pie chart after an attack was detected, expects an attack name like: ARP, DNS, Port Scan, DoS
 def UpdateChartAfterAttack(self, attackName):
     try:
-        correctAttackName = invertedPieChartLabelDict.get(attackName)
+        correctAttackName = AttackPieChart.invertedPieChartLabelDict.get(attackName)
         series = self.ui.piChart.series()[0]
 
         # increment the value of the attack slice based on given attack name
@@ -861,7 +862,7 @@ def UpdateChartAfterAttack(self, attackName):
             newSlice.setLabelArmLengthFactor(0.075)
             newSlice.setLabel(f'{correctAttackName} {newSlice.percentage()*100:.1f}%')
             newSlice.setLabelColor(QColor(1, 1, 1, 255)) if self.userData.get('lightMode') == 1 else newSlice.setLabelColor(QColor(45, 46, 54, 255))
-            newSlice.setColor(QColor(defaultPieChartSliceColors.get(attackName)))
+            newSlice.setColor(QColor(AttackPieChart.defaultPieChartSliceColors.get(attackName)))
 
         # set the title to be empty (hide the title) if there is atleast one attack detection in history
         if series.count() > 0:
@@ -886,8 +887,8 @@ def UpdateChartLegendsAndSlices(self):
             slice.setLabel(f'{sliceAttackName} {slice.percentage()*100:.1f}%')
 
             # update the legend text to match current slice
-            legendLabelText = f'{pieChartLabelDict.get(sliceAttackName)} {slice.percentage()*100:.1f}%'
-            legendLabelName = f'{pieChartLabelDict.get(sliceAttackName).replace(' ', '')}LegendLabel' 
+            legendLabelText = f'{AttackPieChart.pieChartLabelDict.get(sliceAttackName)} {slice.percentage()*100:.1f}%'
+            legendLabelName = f'{AttackPieChart.pieChartLabelDict.get(sliceAttackName).replace(' ', '')}LegendLabel' 
             legendLabelObject = self.findChild(QLabel, legendLabelName)
             legendLabelObject.setText(legendLabelText)
 
@@ -921,7 +922,7 @@ def UpdateChartAfterLogin(self, pieChartData):
             slice.setLabelVisible(True)
             slice.setLabelArmLengthFactor(0.075)
             slice.setLabelColor(QColor(1, 1, 1, 255)) if self.userData.get('lightMode') == 1 else slice.setLabelColor(QColor(45, 46, 54, 255))
-            slice.setColor(QColor(defaultPieChartSliceColors.get(attackName)))
+            slice.setColor(QColor(AttackPieChart.defaultPieChartSliceColors.get(attackName)))
 
     except Exception as e:
         ShowMessageBox('Error Updating Pie Chart', 'Error occurred while updating pie chart, try again later.', 'Critical')
@@ -935,17 +936,16 @@ def ResetChartToDefault(self):
         self.ui.piChart.setTitle('No Data To Display...')
 
         # update the legend text and set it to the default values of 0%
-        for attackName in pieChartLabelDict.keys():
-            legendLabelText = f'{pieChartLabelDict.get(attackName)} 0%'
-            legendLabelName = f'{pieChartLabelDict.get(attackName).replace(' ', '')}LegendLabel' 
+        for attackName in AttackPieChart.pieChartLabelDict.keys():
+            legendLabelText = f'{AttackPieChart.pieChartLabelDict.get(attackName)} 0%'
+            legendLabelName = f'{AttackPieChart.pieChartLabelDict.get(attackName).replace(' ', '')}LegendLabel' 
             legendLabelObject = self.findChild(QLabel, legendLabelName)
             legendLabelObject.setText(legendLabelText)
 
     except Exception as e:
-        print(e)
         ShowMessageBox('Error Clearing Pie Chart', 'Error occurred while clearing pie chart, try again later.', 'Critical')
 
-#----------------------------------------------PIE-CHART-END-------------------------------------------------#
+#------------------------------------------ATTACK-PIE-CHART-END----------------------------------------------#
 
 #--------------------------------------------TABLE-VIEW-FILTER-----------------------------------------------#
 
@@ -1265,8 +1265,8 @@ def InitAnimationsUI(self):
     #initialize system tray icon
     SystemTrayIcon.InitTrayIcon(self)
 
-    # initilize pie chart on screen
-    InitPieChart(self)
+    # initilize attack pie chart in GUI
+    AttackPieChart.InitAttackPieChart(self)
 
     # initilize report preview table view and initialize selected attacks and time filter
     InitReportTableView(self)

@@ -249,7 +249,7 @@ def ToggleUserInterface(self, state):
     self.ui.dnsTunnelingCheckBox.setChecked(True)
     self.ui.machineInfoCheckBox.setChecked(False)
     ToggleReportInterface(self, False) #reset the styles of report interface back to default state
-    ToggleColorMode(self) #reset the styles to match the selected index in the color mode combobox
+    #ToggleColorMode(self) #reset the styles to match the selected index in the color mode combobox
     ToggleOperationMode(self) #reset the styles to match the selected index in the operation mode combobox
 
     #clear settings, login and register line edits and reset number of detections
@@ -792,7 +792,7 @@ class AttackPieChart():
             chart.layout().setContentsMargins(0, 0, 0, 0)
             chart.setAnimationOptions(QChart.AllAnimations)
             chart.setBackgroundRoundness(0)
-            chart.setBackgroundBrush(QColor(204, 204, 204, 153)) if self.userData.get('lightMode') == 1 else chart.setBackgroundBrush(QColor(193, 208, 239))
+            chart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor(193, 208, 239))
             chart.setTitle('No Data To Display...')
             chart.setTitleFont(titleFont)
             
@@ -817,7 +817,8 @@ class AttackPieChart():
                 legendLabel.setObjectName(f'{attackName.replace(' ', '')}LegendLabel') #for example: ARPSpoofingLegendLabel
 
                 colorLabel = QLabel()
-                colorLabel.setObjectName(f'{attackName.replace(' ', '')}LegendColorLabel') 
+                colorLabel.setObjectName(f'{attackName.replace(' ', '')}LegendColorLabel')
+                colorLabel.setStyleSheet(f'background-color: {sliceColor}; border: 1px solid black;')
                 colorLabel.setFixedSize(20, 20)
 
                 row = i // 2
@@ -861,7 +862,7 @@ def UpdateChartAfterAttack(self, attackName):
             newSlice.setLabelVisible(True)
             newSlice.setLabelArmLengthFactor(0.075)
             newSlice.setLabel(f'{correctAttackName} {newSlice.percentage()*100:.1f}%')
-            newSlice.setLabelColor(QColor(1, 1, 1, 255)) if self.userData.get('lightMode') == 1 else newSlice.setLabelColor(QColor(45, 46, 54, 255))
+            newSlice.setLabelColor(QColor(45, 46, 54, 255) if self.userData.get('lightMode') == 0 else QColor(1, 1, 1, 255))
             newSlice.setColor(QColor(AttackPieChart.defaultPieChartSliceColors.get(attackName)))
 
         # set the title to be empty (hide the title) if there is at least one attack detection in history
@@ -901,28 +902,28 @@ def UpdateChartAfterLogin(self, pieChartData):
     try:
         # check if there's at least one attack in pieChartData dictionary
         if any(attackCount > 0 for attackCount in pieChartData.values()):
-            # remove the current series
-            series = self.ui.piChart.series()[0]
-            self.ui.piChart.removeSeries(series)
+            # remove current series from pie chart if exists
+            if self.ui.piChart.series():
+                self.ui.piChart.removeSeries(self.ui.piChart.series()[0])
 
-            # create a new series with database data
+            # create a new series for pie chart with database data
             newSeries = QPieSeries()
             for attackName, attackCount in pieChartData.items():
-                newSeries.append(attackName, attackCount)
+                # check if attack count is greater then zero
+                if attackCount > 0:
+                    # add new slice for attack and update the css of the slice label
+                    sliceFont = QFont('Cairo', 11, QFont.Bold, False)
+                    newSlice = newSeries.append(attackName, attackCount)
+                    newSlice.setLabelFont(sliceFont)
+                    newSlice.setLabelVisible(True)
+                    newSlice.setLabelArmLengthFactor(0.075)
+                    newSlice.setLabelColor(QColor(45, 46, 54, 255) if self.userData.get('lightMode') == 0 else QColor(1, 1, 1, 255))
+                    newSlice.setColor(QColor(AttackPieChart.defaultPieChartSliceColors.get(attackName)))
 
             # add the new series to the chart and update the GUI
             self.ui.piChart.addSeries(newSeries)
             self.ui.piChart.setTitle('') #remove the default title if exists
             UpdateChartLegendsAndSlices(self)
-
-            # update the css of the slice labels because we created new ones right here
-            for slice, attackName in zip(self.ui.piChart.series()[0].slices(), pieChartData.keys()):
-                sliceFont = QFont('Cairo', 11, QFont.Bold, False)
-                slice.setLabelFont(sliceFont)
-                slice.setLabelVisible(True)
-                slice.setLabelArmLengthFactor(0.075)
-                slice.setLabelColor(QColor(1, 1, 1, 255)) if self.userData.get('lightMode') == 1 else slice.setLabelColor(QColor(45, 46, 54, 255))
-                slice.setColor(QColor(AttackPieChart.defaultPieChartSliceColors.get(attackName)))
 
     except Exception as e:
         ShowMessageBox('Error Updating Pie Chart', 'Error occurred while updating pie chart, try again later.', 'Critical')
@@ -931,7 +932,7 @@ def UpdateChartAfterLogin(self, pieChartData):
 # function for clearing the pie chart and resetting to default empty pie chart
 def ResetChartToDefault(self):
     try:
-        # clear the pie chart data and show the default title
+        # clear the pie chart data and set the default title
         self.ui.piChart.series()[0].clear()
         self.ui.piChart.setTitle('No Data To Display...')
 

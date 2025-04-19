@@ -159,10 +159,11 @@ class SQL_Thread(QThread):
                     'operationMode': result[4]
                 }
                 
-                # retrieve alert list, pie chart data, black list and num of detections with helper functions
-                userData['alertList'] = self.GetAlerts(userData['userId'])
-                userData['pieChartData'] = self.GetPieChartData(userData['userId'])
-                userData['blackList'] = self.GetBlacklistMacs(userData['userId'])
+                # retrieve alert list, pie chart data, line chart data, black list and num of detections with helper functions
+                userData['alertList'] = self.GetAlerts(userData.get('userId'))
+                userData['pieChartData'] = self.GetPieChartData(userData.get('userId'))
+                userData['lineChartData'] = self.GetLineChartData(userData.get('userId'))
+                userData['blackList'] = self.GetBlacklistMacs(userData.get('userId'))
                 userData['numberOfDetections'] = len(userData.get('alertList'))
 
                 # set state and result with successful login attempt with user data
@@ -516,6 +517,42 @@ class SQL_Thread(QThread):
         
         return pieChartData
 
+
+    # method for getting number of attacks in each month of each year in Alerts table for line chart
+    @Slot(int)
+    def GetLineChartData(self, userId):
+        query = '''
+            SELECT YEAR(attackTable.date) AS year, MONTH(attackTable.date) AS month, attackTable.attackType, COUNT(*) AS attackCount
+            FROM (
+                SELECT CONVERT(datetime, SUBSTRING(timestamp, 10, 8) + ' ' + SUBSTRING(timestamp, 1, 8), 3) AS date, attackType
+                FROM Alerts
+                WHERE userId = ? AND isDeleted = 0
+            ) AS attackTable
+            GROUP BY YEAR(attackTable.date), MONTH(attackTable.date), attackType
+            ORDER BY YEAR(attackTable.date), MONTH(attackTable.date), attackType ASC
+            '''
+        self.cursor.execute(query, (userId,))
+        result = self.cursor.fetchall()
+        lineChartData = {} #represents dictionary of years, each year has dictionary of months, where each month has dictionary of attack types with their attack counter
+
+        # check if we received result from query
+        if result:
+            # iterate over each row and update our lineChartData dictionary
+            for row in result:
+                # initialize parameters based on row values
+                year, month, attackType, attackCount = row[0], row[1], row[2], row[3]
+
+                # check if year is initialized, if not we intialzie the year dictionary with months and attack type counters
+                if not lineChartData.get(year):
+                    lineChartData[year] = {attackMonth: {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0} for attackMonth in range(1, 13)}
+
+                # check if attack type is present in our lineChartData dictionary
+                if lineChartData[year][month].get(attackType) != None:
+                    # set corrent attack type with its attack counter in correct month of the year from database
+                    lineChartData[year][month][attackType] = attackCount
+        
+        return lineChartData
+    
 
     # method for adding alert for user in Alerts table
     @Slot(int, str, str, str, str, str, str, str, str)

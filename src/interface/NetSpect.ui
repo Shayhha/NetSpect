@@ -479,7 +479,7 @@ QToolTip {
            <widget class="QFrame" name="menuIconHorizontalFrame">
             <property name="styleSheet">
              <string notr="true">#menuIconHorizontalFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }
 
 </string>
@@ -522,7 +522,7 @@ QToolTip {
                </property>
                <property name="styleSheet">
                 <string notr="true">#menuIcon {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }</string>
                </property>
                <property name="text">
@@ -568,7 +568,7 @@ QToolTip {
                </property>
                <property name="styleSheet">
                 <string notr="true">#closeMenuIcon {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }</string>
                </property>
                <property name="text">
@@ -592,7 +592,7 @@ QToolTip {
             </property>
             <property name="styleSheet">
              <string notr="true">#homePageIconHorizontalFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }</string>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_20">
@@ -633,7 +633,7 @@ QToolTip {
                </property>
                <property name="styleSheet">
                 <string notr="true">#homePageIcon {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 
 }</string>
                </property>
@@ -675,7 +675,7 @@ QToolTip {
                <property name="styleSheet">
                 <string notr="true">#homePageLabel {
 	color: #f3f3f3;
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }</string>
                </property>
                <property name="text">
@@ -706,13 +706,130 @@ QToolTip {
            </widget>
           </item>
           <item>
+           <widget class="QFrame" name="analyticsIconHorizontalFrame">
+            <property name="styleSheet">
+             <string notr="true">#analyticsIconHorizontalFrame {
+	background-color: #2d2e36;
+}</string>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_35">
+             <property name="spacing">
+              <number>32</number>
+             </property>
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="analyticsIcon">
+               <property name="minimumSize">
+                <size>
+                 <width>50</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>50</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
+               </property>
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Analytics Page&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">#analyticsIcon {
+	background-color: #2d2e36;
+
+}</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="pixmap">
+                <pixmap>Icons/AnalyticsLight.png</pixmap>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignmentFlag::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="analyticsLabel">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Cairo</family>
+                 <pointsize>16</pointsize>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="cursor">
+                <cursorShape>PointingHandCursor</cursorShape>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">#analyticsLabel {
+	color: #f3f3f3;
+	background-color: #2d2e36;
+}</string>
+               </property>
+               <property name="text">
+                <string>Analytics</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignmentFlag::AlignCenter</set>
+               </property>
+               <property name="margin">
+                <number>0</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_25">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
            <widget class="QFrame" name="reportIconHorizontalFrame">
             <property name="cursor">
              <cursorShape>PointingHandCursor</cursorShape>
             </property>
             <property name="styleSheet">
              <string notr="true">#reportIconHorizontalFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }</string>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_21">
@@ -753,7 +870,7 @@ QToolTip {
                </property>
                <property name="styleSheet">
                 <string notr="true">#reportIcon {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }</string>
                </property>
                <property name="text">
@@ -794,7 +911,7 @@ QToolTip {
                <property name="styleSheet">
                 <string notr="true">#reportLabel {
 	color: #f3f3f3;
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 
 }</string>
                </property>
@@ -832,7 +949,7 @@ QToolTip {
             </property>
             <property name="styleSheet">
              <string notr="true">#infoIconHorizontalFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }</string>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_22">
@@ -876,7 +993,7 @@ QToolTip {
                </property>
                <property name="styleSheet">
                 <string notr="true">#infoIcon {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }</string>
                </property>
                <property name="text">
@@ -917,7 +1034,7 @@ QToolTip {
                <property name="styleSheet">
                 <string notr="true">#infoLabel {
 	color: #f3f3f3;
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 
 }</string>
                </property>
@@ -2139,6 +2256,111 @@ QToolTip {
             </widget>
            </item>
           </layout>
+         </widget>
+         <widget class="QWidget" name="analyticsPage">
+          <widget class="QFrame" name="analyticsHorizontalFrame">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>930</width>
+             <height>660</height>
+            </rect>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>660</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <family>Cairo</family>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_15">
+            <property name="spacing">
+             <number>10</number>
+            </property>
+            <property name="leftMargin">
+             <number>20</number>
+            </property>
+            <property name="topMargin">
+             <number>20</number>
+            </property>
+            <property name="rightMargin">
+             <number>20</number>
+            </property>
+            <property name="bottomMargin">
+             <number>20</number>
+            </property>
+            <item>
+             <widget class="QFrame" name="lineChartVerticalFrame">
+              <layout class="QVBoxLayout" name="verticalLayout_29">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QFrame" name="chartsVerticalFrame">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_32">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>10</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QFrame" name="barChartverticalFrame">
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_31"/>
+                </widget>
+               </item>
+               <item>
+                <widget class="QFrame" name="cardsHorizontalFrame">
+                 <layout class="QHBoxLayout" name="horizontalLayout_29"/>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </widget>
          <widget class="QWidget" name="reportPage">
           <layout class="QGridLayout" name="gridLayout_3">

@@ -265,6 +265,19 @@ QCheckBox {
 	background-color: #9ab5ee;
 }
 
+#analyticsIconHorizontalFrame {
+	background-color: #9ab5ee;
+}
+
+#analyticsIcon {
+	background-color: #9ab5ee;
+}
+
+#analyticsLabel {
+	color: #151519;
+	background-color: #9ab5ee;
+}
+
 #reportIconHorizontalFrame {
 	background-color: #9ab5ee;
 }

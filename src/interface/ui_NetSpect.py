@@ -281,7 +281,7 @@ class Ui_NetSpect(object):
         self.menuIconHorizontalFrame = QFrame(self.sideFrame)
         self.menuIconHorizontalFrame.setObjectName(u"menuIconHorizontalFrame")
         self.menuIconHorizontalFrame.setStyleSheet(u"#menuIconHorizontalFrame {\n"
-"	background-color: #2D2E36;\n"
+"	background-color: #2d2e36;\n"
 "}\n"
 "\n"
 "")
@@ -295,7 +295,7 @@ class Ui_NetSpect(object):
         self.menuIcon.setMaximumSize(QSize(50, 50))
         self.menuIcon.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.menuIcon.setStyleSheet(u"#menuIcon {\n"
-"	background-color: #2D2E36;\n"
+"	background-color: #2d2e36;\n"
 "}")
         self.menuIcon.setPixmap(QPixmap(u"Icons/BulletedMenuLight.png"))
         self.menuIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -312,7 +312,7 @@ class Ui_NetSpect(object):
         self.closeMenuIcon.setMaximumSize(QSize(50, 50))
         self.closeMenuIcon.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.closeMenuIcon.setStyleSheet(u"#closeMenuIcon {\n"
-"	background-color: #2D2E36;\n"
+"	background-color: #2d2e36;\n"
 "}")
         self.closeMenuIcon.setPixmap(QPixmap(u"Icons/BulletedMenuLightRotated.png"))
         self.closeMenuIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -326,7 +326,7 @@ class Ui_NetSpect(object):
         self.homePageIconHorizontalFrame.setObjectName(u"homePageIconHorizontalFrame")
         self.homePageIconHorizontalFrame.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.homePageIconHorizontalFrame.setStyleSheet(u"#homePageIconHorizontalFrame {\n"
-"	background-color: #2D2E36;\n"
+"	background-color: #2d2e36;\n"
 "}")
         self.horizontalLayout_20 = QHBoxLayout(self.homePageIconHorizontalFrame)
         self.horizontalLayout_20.setSpacing(22)
@@ -338,7 +338,7 @@ class Ui_NetSpect(object):
         self.homePageIcon.setMaximumSize(QSize(50, 50))
         self.homePageIcon.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.homePageIcon.setStyleSheet(u"#homePageIcon {\n"
-"	background-color: #2D2E36;\n"
+"	background-color: #2d2e36;\n"
 "\n"
 "}")
         self.homePageIcon.setPixmap(QPixmap(u"Icons/WorkstationLight.png"))
@@ -358,7 +358,7 @@ class Ui_NetSpect(object):
         self.homePageLabel.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.homePageLabel.setStyleSheet(u"#homePageLabel {\n"
 "	color: #f3f3f3;\n"
-"	background-color: #2D2E36;\n"
+"	background-color: #2d2e36;\n"
 "}")
         self.homePageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.homePageLabel.setMargin(0)
@@ -372,11 +372,56 @@ class Ui_NetSpect(object):
 
         self.verticalLayout.addWidget(self.homePageIconHorizontalFrame)
 
+        self.analyticsIconHorizontalFrame = QFrame(self.sideFrame)
+        self.analyticsIconHorizontalFrame.setObjectName(u"analyticsIconHorizontalFrame")
+        self.analyticsIconHorizontalFrame.setStyleSheet(u"#analyticsIconHorizontalFrame {\n"
+"	background-color: #2d2e36;\n"
+"}")
+        self.horizontalLayout_35 = QHBoxLayout(self.analyticsIconHorizontalFrame)
+        self.horizontalLayout_35.setSpacing(32)
+        self.horizontalLayout_35.setObjectName(u"horizontalLayout_35")
+        self.horizontalLayout_35.setContentsMargins(0, 0, 0, 0)
+        self.analyticsIcon = QLabel(self.analyticsIconHorizontalFrame)
+        self.analyticsIcon.setObjectName(u"analyticsIcon")
+        self.analyticsIcon.setMinimumSize(QSize(50, 50))
+        self.analyticsIcon.setMaximumSize(QSize(50, 50))
+        self.analyticsIcon.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.analyticsIcon.setStyleSheet(u"#analyticsIcon {\n"
+"	background-color: #2d2e36;\n"
+"\n"
+"}")
+        self.analyticsIcon.setPixmap(QPixmap(u"Icons/AnalyticsLight.png"))
+        self.analyticsIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.horizontalLayout_35.addWidget(self.analyticsIcon)
+
+        self.analyticsLabel = QLabel(self.analyticsIconHorizontalFrame)
+        self.analyticsLabel.setObjectName(u"analyticsLabel")
+        self.analyticsLabel.setMinimumSize(QSize(0, 50))
+        self.analyticsLabel.setMaximumSize(QSize(16777215, 50))
+        self.analyticsLabel.setFont(font4)
+        self.analyticsLabel.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.analyticsLabel.setStyleSheet(u"#analyticsLabel {\n"
+"	color: #f3f3f3;\n"
+"	background-color: #2d2e36;\n"
+"}")
+        self.analyticsLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.analyticsLabel.setMargin(0)
+
+        self.horizontalLayout_35.addWidget(self.analyticsLabel)
+
+        self.horizontalSpacer_25 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_35.addItem(self.horizontalSpacer_25)
+
+
+        self.verticalLayout.addWidget(self.analyticsIconHorizontalFrame)
+
         self.reportIconHorizontalFrame = QFrame(self.sideFrame)
         self.reportIconHorizontalFrame.setObjectName(u"reportIconHorizontalFrame")
         self.reportIconHorizontalFrame.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.reportIconHorizontalFrame.setStyleSheet(u"#reportIconHorizontalFrame {\n"
-"	background-color: #2D2E36;\n"
+"	background-color: #2d2e36;\n"
 "}")
         self.horizontalLayout_21 = QHBoxLayout(self.reportIconHorizontalFrame)
         self.horizontalLayout_21.setSpacing(38)
@@ -388,7 +433,7 @@ class Ui_NetSpect(object):
         self.reportIcon.setMaximumSize(QSize(50, 50))
         self.reportIcon.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.reportIcon.setStyleSheet(u"#reportIcon {\n"
-"	background-color: #2D2E36;\n"
+"	background-color: #2d2e36;\n"
 "}")
         self.reportIcon.setPixmap(QPixmap(u"Icons/DocumentLight.png"))
         self.reportIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -403,7 +448,7 @@ class Ui_NetSpect(object):
         self.reportLabel.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.reportLabel.setStyleSheet(u"#reportLabel {\n"
 "	color: #f3f3f3;\n"
-"	background-color: #2D2E36;\n"
+"	background-color: #2d2e36;\n"
 "\n"
 "}")
         self.reportLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -422,7 +467,7 @@ class Ui_NetSpect(object):
         self.infoIconHorizontalFrame.setObjectName(u"infoIconHorizontalFrame")
         self.infoIconHorizontalFrame.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.infoIconHorizontalFrame.setStyleSheet(u"#infoIconHorizontalFrame {\n"
-"	background-color: #2D2E36;\n"
+"	background-color: #2d2e36;\n"
 "}")
         self.horizontalLayout_22 = QHBoxLayout(self.infoIconHorizontalFrame)
         self.horizontalLayout_22.setSpacing(22)
@@ -435,7 +480,7 @@ class Ui_NetSpect(object):
         self.infoIcon.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.infoIcon.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
         self.infoIcon.setStyleSheet(u"#infoIcon {\n"
-"	background-color: #2D2E36;\n"
+"	background-color: #2d2e36;\n"
 "}")
         self.infoIcon.setPixmap(QPixmap(u"Icons/InfoLight.png"))
         self.infoIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -450,7 +495,7 @@ class Ui_NetSpect(object):
         self.infoLabel.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.infoLabel.setStyleSheet(u"#infoLabel {\n"
 "	color: #f3f3f3;\n"
-"	background-color: #2D2E36;\n"
+"	background-color: #2d2e36;\n"
 "\n"
 "}")
         self.infoLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -1017,6 +1062,52 @@ class Ui_NetSpect(object):
         self.gridLayout_2.addWidget(self.homepageFrame, 0, 0, 1, 1)
 
         self.stackedWidget.addWidget(self.homePage)
+        self.analyticsPage = QWidget()
+        self.analyticsPage.setObjectName(u"analyticsPage")
+        self.analyticsHorizontalFrame = QFrame(self.analyticsPage)
+        self.analyticsHorizontalFrame.setObjectName(u"analyticsHorizontalFrame")
+        self.analyticsHorizontalFrame.setGeometry(QRect(0, 0, 930, 660))
+        self.analyticsHorizontalFrame.setMinimumSize(QSize(0, 660))
+        self.analyticsHorizontalFrame.setFont(font8)
+        self.horizontalLayout_15 = QHBoxLayout(self.analyticsHorizontalFrame)
+        self.horizontalLayout_15.setSpacing(10)
+        self.horizontalLayout_15.setObjectName(u"horizontalLayout_15")
+        self.horizontalLayout_15.setContentsMargins(20, 20, 20, 20)
+        self.lineChartVerticalFrame = QFrame(self.analyticsHorizontalFrame)
+        self.lineChartVerticalFrame.setObjectName(u"lineChartVerticalFrame")
+        self.verticalLayout_29 = QVBoxLayout(self.lineChartVerticalFrame)
+        self.verticalLayout_29.setSpacing(0)
+        self.verticalLayout_29.setObjectName(u"verticalLayout_29")
+        self.verticalLayout_29.setContentsMargins(0, 0, 0, 0)
+
+        self.horizontalLayout_15.addWidget(self.lineChartVerticalFrame)
+
+        self.chartsVerticalFrame = QFrame(self.analyticsHorizontalFrame)
+        self.chartsVerticalFrame.setObjectName(u"chartsVerticalFrame")
+        self.chartsVerticalFrame.setMaximumSize(QSize(16777215, 16777215))
+        self.verticalLayout_32 = QVBoxLayout(self.chartsVerticalFrame)
+        self.verticalLayout_32.setSpacing(0)
+        self.verticalLayout_32.setObjectName(u"verticalLayout_32")
+        self.verticalLayout_32.setContentsMargins(0, 0, 10, 0)
+        self.barChartverticalFrame = QFrame(self.chartsVerticalFrame)
+        self.barChartverticalFrame.setObjectName(u"barChartverticalFrame")
+        self.barChartverticalFrame.setMaximumSize(QSize(16777215, 16777215))
+        self.verticalLayout_31 = QVBoxLayout(self.barChartverticalFrame)
+        self.verticalLayout_31.setObjectName(u"verticalLayout_31")
+
+        self.verticalLayout_32.addWidget(self.barChartverticalFrame)
+
+        self.cardsHorizontalFrame = QFrame(self.chartsVerticalFrame)
+        self.cardsHorizontalFrame.setObjectName(u"cardsHorizontalFrame")
+        self.horizontalLayout_29 = QHBoxLayout(self.cardsHorizontalFrame)
+        self.horizontalLayout_29.setObjectName(u"horizontalLayout_29")
+
+        self.verticalLayout_32.addWidget(self.cardsHorizontalFrame)
+
+
+        self.horizontalLayout_15.addWidget(self.chartsVerticalFrame)
+
+        self.stackedWidget.addWidget(self.analyticsPage)
         self.reportPage = QWidget()
         self.reportPage.setObjectName(u"reportPage")
         self.gridLayout_3 = QGridLayout(self.reportPage)
@@ -3823,6 +3914,11 @@ class Ui_NetSpect(object):
 #endif // QT_CONFIG(tooltip)
         self.homePageIcon.setText("")
         self.homePageLabel.setText(QCoreApplication.translate("NetSpect", u"Home Page", None))
+#if QT_CONFIG(tooltip)
+        self.analyticsIcon.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Analytics Page</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
+        self.analyticsIcon.setText("")
+        self.analyticsLabel.setText(QCoreApplication.translate("NetSpect", u"Analytics", None))
 #if QT_CONFIG(tooltip)
         self.reportIcon.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Report Page</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)

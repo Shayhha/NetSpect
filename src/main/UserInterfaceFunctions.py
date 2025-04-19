@@ -25,6 +25,7 @@ def OpenSideFrame(self):
     self.ui.menuIcon.hide()
     self.ui.closeMenuIcon.show()
     self.ui.homePageLabel.show()
+    self.ui.analyticsLabel.show()
     self.ui.reportLabel.show()
     self.ui.infoLabel.show()
 
@@ -180,6 +181,7 @@ def ReopenResetPasswordFrame(self, showResetPassword):
 # function for hiding some labels
 def HideSideBarLabels(self):
     self.ui.homePageLabel.hide()
+    self.ui.analyticsLabel.hide()
     self.ui.reportLabel.hide()
     self.ui.infoLabel.hide()
 
@@ -249,7 +251,7 @@ def ToggleUserInterface(self, state):
     self.ui.dnsTunnelingCheckBox.setChecked(True)
     self.ui.machineInfoCheckBox.setChecked(False)
     ToggleReportInterface(self, False) #reset the styles of report interface back to default state
-    #ToggleColorMode(self) #reset the styles to match the selected index in the color mode combobox
+    ToggleColorMode(self) #reset the styles to match the selected index in the color mode combobox
     ToggleOperationMode(self) #reset the styles to match the selected index in the operation mode combobox
 
     #clear settings, login and register line edits and reset number of detections
@@ -387,6 +389,7 @@ def ToggleColorMode(self):
         self.ui.menuIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'BulletedMenuLight.png')))
         self.ui.closeMenuIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'BulletedMenuLightRotated.png')))
         self.ui.homePageIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'WorkStationLight.png')))
+        self.ui.analyticsIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'AnalyticsLight.png')))
         self.ui.reportIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'DocumentLight.png')))
         self.ui.infoIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'InfoLight.png')))
         self.ui.githubInfoLabel.setText('''
@@ -412,6 +415,7 @@ def ToggleColorMode(self):
         self.ui.menuIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'BulletedMenuDark.png')))
         self.ui.closeMenuIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'BulletedMenuDarkRotated.png')))
         self.ui.homePageIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'WorkStationDark.png')))
+        self.ui.analyticsIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'AnalyticsDark.png')))
         self.ui.reportIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'DocumentDark.png')))
         self.ui.infoIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'InfoDark.png')))
         self.ui.githubInfoLabel.setText('''
@@ -1183,19 +1187,24 @@ class SystemTrayIcon():
             self.ui.trayIcon.openHomepageAction.triggered.connect(lambda event: ChangePageIndex(self, 0))
             trayMenu.addAction(self.ui.trayIcon.openHomepageAction)
 
+            # open analytics page
+            self.ui.trayIcon.openAnalyticsAction = QAction('Analytics', self)
+            self.ui.trayIcon.openAnalyticsAction.triggered.connect(lambda event: ChangePageIndex(self, 1))
+            trayMenu.addAction(self.ui.trayIcon.openAnalyticsAction)
+
             # open report preview page
             self.ui.trayIcon.openReportPreviewAction = QAction('Report Preview', self)
-            self.ui.trayIcon.openReportPreviewAction.triggered.connect(lambda event: ChangePageIndex(self, 1))
+            self.ui.trayIcon.openReportPreviewAction.triggered.connect(lambda event: ChangePageIndex(self, 2))
             trayMenu.addAction(self.ui.trayIcon.openReportPreviewAction)
 
             # open information page
             self.ui.trayIcon.openInformationAction = QAction('Information', self)
-            self.ui.trayIcon.openInformationAction.triggered.connect(lambda event: ChangePageIndex(self, 2))
+            self.ui.trayIcon.openInformationAction.triggered.connect(lambda event: ChangePageIndex(self, 3))
             trayMenu.addAction(self.ui.trayIcon.openInformationAction)
 
             # open settings page
             self.ui.trayIcon.openSettingsAction = QAction('Settings', self)
-            self.ui.trayIcon.openSettingsAction.triggered.connect(lambda event: ChangePageIndex(self, 3))
+            self.ui.trayIcon.openSettingsAction.triggered.connect(lambda event: ChangePageIndex(self, 4))
             trayMenu.addAction(self.ui.trayIcon.openSettingsAction)
             trayMenu.addSeparator()
 

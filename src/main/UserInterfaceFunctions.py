@@ -751,28 +751,12 @@ def ShowMessageBox(title, message, iconType='Information', isSelectable=False):
 #---------------------------------------------ATTACK-PIE-CHART-----------------------------------------------#
 # attack pie chart class for showing attacks distribution over time via a pie chart in GUI
 class AttackPieChart():
-    # dictionary for mapping attack names, key is the slice label text and the value is the legend text
+    # dictionary for mapping attack names, key is the database name text and the value is a tuple with slice label, legend name, color
     pieChartLabelDict = {
-        'ARP': 'ARP Spoofing',
-        'Port Scan': 'Port Scanning',
-        'DoS': 'Denial of Service',
-        'DNS': 'DNS Tunneling'
-    }
-
-    # inverted dictionary for mapping attack names, key is the attack name as seen by database and the value is attack names as written in pie chart legends
-    invertedPieChartLabelDict = {
-        'ARP Spoofing': 'ARP',
-        'Port Scan': 'Port Scan',
-        'DoS': 'DoS',
-        'DNS Tunneling': 'DNS'
-    }
-
-    # dictionary with default blue colors for the pie chart slices for each attack by name
-    defaultPieChartSliceColors = {
-        'ARP Spoofing': '#90cfef',
-        'Port Scan': '#209fdf',
-        'DoS': '#15668f',
-        'DNS Tunneling': '#092d40'
+        'ARP Spoofing': ('ARP', 'ARP Spoofing', '#90cfef'),
+        'Port Scan': ('Port Scan', 'Port Scanning', '#209fdf'),
+        'DoS': ('DoS', 'Denial of Service', '#15668f'),
+        'DNS Tunneling': ('DNS', 'DNS Tunneling', '#092d40')
     }
 
     # method for creating and initializing an empty attack pie chart
@@ -814,14 +798,14 @@ class AttackPieChart():
             titleLabel.setObjectName('pieChartTitleLabel') 
 
             # setup the pie chart legends in advance
-            for i, (attackName, sliceColor) in enumerate(zip(AttackPieChart.pieChartLabelDict.values(), AttackPieChart.defaultPieChartSliceColors.values())):
+            for i, (sliceName, legendName, sliceColor) in enumerate(AttackPieChart.pieChartLabelDict.values()):
                 legendFont = QFont('Cairo', 12, QFont.Bold, False) # font settings for legend (defined once)
-                legendLabel = QLabel(f'{attackName} 0%')
+                legendLabel = QLabel(f'{legendName} 0%')
                 legendLabel.setFont(legendFont)
-                legendLabel.setObjectName(f'{attackName.replace(' ', '')}LegendLabel') #for example: ARPSpoofingLegendLabel
+                legendLabel.setObjectName(f'{legendName.replace(' ', '')}LegendLabel') #for example: ARPSpoofingLegendLabel
 
                 colorLabel = QLabel()
-                colorLabel.setObjectName(f'{attackName.replace(' ', '')}LegendColorLabel')
+                colorLabel.setObjectName(f'{legendName.replace(' ', '')}LegendColorLabel')
                 colorLabel.setStyleSheet(f'background-color: {sliceColor}; border: 1px solid black;')
                 colorLabel.setFixedSize(20, 20)
 
@@ -847,13 +831,13 @@ class AttackPieChart():
 # function for updating the pie chart after an attack was detected, expects an attack name like: ARP, DNS, Port Scan, DoS
 def UpdateChartAfterAttack(self, attackName):
     try:
-        correctAttackName = AttackPieChart.invertedPieChartLabelDict.get(attackName)
+        sliceLable = AttackPieChart.pieChartLabelDict.get(attackName)[0]
         series = self.ui.piChart.series()[0]
 
         # increment the value of the attack slice based on given attack name
         found = False
         for slice in series.slices():
-            if correctAttackName in slice.label():  
+            if sliceLable in slice.label():  
                 slice.setValue(slice.value() + 1)
                 found = True
                 break
@@ -861,13 +845,13 @@ def UpdateChartAfterAttack(self, attackName):
         # if slice does not exist, then create a new slice and add it to the pie chart
         if not found:
             sliceFont = QFont('Cairo', 11, QFont.Bold, False)
-            newSlice = series.append(correctAttackName, 1)
+            newSlice = series.append(sliceLable, 1)
             newSlice.setLabelFont(sliceFont)
             newSlice.setLabelVisible(True)
             newSlice.setLabelArmLengthFactor(0.075)
-            newSlice.setLabel(f'{correctAttackName} {newSlice.percentage()*100:.1f}%')
+            newSlice.setLabel(f'{sliceLable} {newSlice.percentage()*100:.1f}%')
             newSlice.setLabelColor(QColor(45, 46, 54, 255) if self.userData.get('lightMode') == 0 else QColor(1, 1, 1, 255))
-            newSlice.setColor(QColor(AttackPieChart.defaultPieChartSliceColors.get(attackName)))
+            newSlice.setColor(QColor(AttackPieChart.pieChartLabelDict.get(attackName)[2]))
 
         # set the title to be empty (hide the title) if there is at least one attack detection in history
         if series.count() > 0:
@@ -882,6 +866,8 @@ def UpdateChartAfterAttack(self, attackName):
 #  function for updating the text of the pie chart legends and slice labels
 def UpdateChartLegendsAndSlices(self):
     try:
+        # creating a new dict with legend names like: sliceName: legendName
+        pieChartNames = {pieChartValues[0] : pieChartValues[1] for pieChartValues in AttackPieChart.pieChartLabelDict.values()} 
         series = self.ui.piChart.series()[0] #get the pie chart object
         
         # update the legend and slice text for all slices
@@ -892,8 +878,8 @@ def UpdateChartLegendsAndSlices(self):
             slice.setLabel(f'{sliceAttackName} {slice.percentage()*100:.1f}%')
 
             # update the legend text to match current slice
-            legendLabelText = f'{AttackPieChart.pieChartLabelDict.get(sliceAttackName)} {slice.percentage()*100:.1f}%'
-            legendLabelName = f'{AttackPieChart.pieChartLabelDict.get(sliceAttackName).replace(' ', '')}LegendLabel' 
+            legendLabelText = f'{pieChartNames.get(sliceAttackName)} {slice.percentage()*100:.1f}%'
+            legendLabelName = f'{pieChartNames.get(sliceAttackName).replace(' ', '')}LegendLabel' 
             legendLabelObject = self.findChild(QLabel, legendLabelName)
             legendLabelObject.setText(legendLabelText)
 
@@ -917,12 +903,12 @@ def UpdateChartAfterLogin(self, pieChartData):
                 if attackCount > 0:
                     # add new slice for attack and update the css of the slice label
                     sliceFont = QFont('Cairo', 11, QFont.Bold, False)
-                    newSlice = newSeries.append(attackName, attackCount)
+                    newSlice = newSeries.append(AttackPieChart.pieChartLabelDict.get(attackName)[0], attackCount)
                     newSlice.setLabelFont(sliceFont)
                     newSlice.setLabelVisible(True)
                     newSlice.setLabelArmLengthFactor(0.075)
                     newSlice.setLabelColor(QColor(45, 46, 54, 255) if self.userData.get('lightMode') == 0 else QColor(1, 1, 1, 255))
-                    newSlice.setColor(QColor(AttackPieChart.defaultPieChartSliceColors.get(attackName)))
+                    newSlice.setColor(QColor(AttackPieChart.pieChartLabelDict.get(attackName)[2]))
 
             # add the new series to the chart and update the GUI
             self.ui.piChart.addSeries(newSeries)
@@ -941,9 +927,9 @@ def ResetChartToDefault(self):
         self.ui.piChart.setTitle('No Data To Display...')
 
         # update the legend text and set it to the default values of 0%
-        for attackName in AttackPieChart.pieChartLabelDict.keys():
-            legendLabelText = f'{AttackPieChart.pieChartLabelDict.get(attackName)} 0%'
-            legendLabelName = f'{AttackPieChart.pieChartLabelDict.get(attackName).replace(' ', '')}LegendLabel' 
+        for legendName in AttackPieChart.pieChartLabelDict.values():
+            legendLabelText = f'{legendName[1]} 0%'
+            legendLabelName = f'{legendName[1].replace(' ', '')}LegendLabel' 
             legendLabelObject = self.findChild(QLabel, legendLabelName)
             legendLabelObject.setText(legendLabelText)
 

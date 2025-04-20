@@ -2,7 +2,7 @@ import UserInterfaceFunctions
 from MainFunctions import *
 from SQLHelper import *
 from interface.ui_NetSpect import Ui_NetSpect
-from PySide6.QtCore import Signal, Slot, QTimer, QRegularExpression, QThread, QMutex, QMutexLocker, QWaitCondition
+from PySide6.QtCore import Qt, Signal, Slot, QTimer, QRegularExpression, QThread, QMutex, QMutexLocker, QWaitCondition
 from PySide6.QtGui import QGuiApplication, QValidator, QRegularExpressionValidator
 from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QFileDialog
 from hashlib import sha256
@@ -363,7 +363,6 @@ class NetSpect(QMainWindow):
         self.ui.maxTransmitionUnitInfoLabel.setText(selectedInterface.get('maxTransmitionUnit'))
         self.ui.ipAddressesListWidget.clear()
         self.ui.ipAddressesListWidget.addItems(selectedInterface.get('ipv4Addrs') + selectedInterface.get('ipv6Addrs'))
-        UserInterfaceFunctions.DisableSelectionIpListWidget(self)
 
 
     # method for showing file dialog for user to choose his desired path and file name
@@ -377,7 +376,7 @@ class NetSpect(QMainWindow):
             options=options
         )
         return filePath
-    
+
 
     # method for initializing mac addresses blacklist in gui
     def InitMacAddresses(self, macBlacklist):
@@ -385,57 +384,48 @@ class NetSpect(QMainWindow):
         self.ui.macAddressListWidget.addItems(macBlacklist) #add all mac addresses to our blacklist
 
 
-    # method for initializing history table widget in gui
+    # method for initializing history table in gui
     def InitHistoryTable(self, alertList):
         self.ui.historyTableWidget.setRowCount(0) #clear history table
 
-        #iterate over each alert in list and add it to our table
+        # iterate over each alert in list and add it to our table
         for alert in alertList:
             self.AddRowToHistoryTable(alert.get('srcIp'), alert.get('srcMac'), alert.get('dstIp'),
                                        alert.get('dstMac'), alert.get('attackType'), alert.get('timestamp'))
-            
 
-    # method for initializing report table widget in gui
+
+    # method for initializing report table in gui
     def InitReportTable(self, alertList):
-        self.ui.reportPreviewTableModel.ClearReportTable() #clear report table
+        self.ui.reportPreviewTableModel.ClearRows() #clear report table
 
-        #iterate over each alert in list and add it to our table
+        # iterate over each alert in list and add it to our table
         for alert in alertList:
             self.AddRowToReportTable(alert.get('interface'), alert.get('attackType'), alert.get('srcIp'), alert.get('srcMac'), alert.get('dstIp'), 
                                        alert.get('dstMac'), alert.get('protocol'), alert.get('osType'), alert.get('timestamp'))
-    
 
-    # method for adding row to history table widget in gui
+
+    # method for adding row to history table at the first index in gui
     def AddRowToHistoryTable(self, srcIp, srcMac, dstIp, dstMac, attackType, timestamp):
+        # check that all given parameters are valid and initialized
         if srcIp and srcMac and dstIp and dstMac and attackType and timestamp:
-            currentRow = 0 #add new row in the beginning of table
-            # add our items into row for showing detected attack
-            self.ui.historyTableWidget.insertRow(currentRow)
-            self.ui.historyTableWidget.setItem(currentRow, 0, QTableWidgetItem(srcIp))
-            self.ui.historyTableWidget.setItem(currentRow, 1, QTableWidgetItem(srcMac))
-            self.ui.historyTableWidget.setItem(currentRow, 2, QTableWidgetItem(dstIp))
-            self.ui.historyTableWidget.setItem(currentRow, 3, QTableWidgetItem(dstMac))
-            self.ui.historyTableWidget.setItem(currentRow, 4, QTableWidgetItem(attackType))
-            self.ui.historyTableWidget.setItem(currentRow, 5, QTableWidgetItem(timestamp))
-            # center the text of the last row after adding it
-            UserInterfaceFunctions.CenterSpecificTableRowText(self.ui.historyTableWidget)
-    
+            # create new row to insert into history table at the first index in top row
+            row = [srcIp, srcMac, dstIp, dstMac, attackType, timestamp]
+            self.ui.historyTableWidget.insertRow(0) #create row at top index
 
-    # method for adding row to report preview table widget in gui
+            # iterate over each item in row and add it into history table
+            for col, value in enumerate(row):
+                item = QTableWidgetItem(str(value)) #create item to insert
+                item.setToolTip(item.text()) #set tooltip for specific item
+                item.setTextAlignment(Qt.AlignCenter) #center the text
+                self.ui.historyTableWidget.setItem(0, col, item) #insert item
+
+
+    # method for adding row to report preview table at the first index in gui
     def AddRowToReportTable(self, interface, attackType, srcIp, srcMac, dstIp, dstMac, protocol, osType, timestamp):
-        if interface and attackType and srcIp and srcMac and dstIp and dstMac and protocol and timestamp:
-            newRow = self.ui.reportPreviewTableModel.AddRowToReportTable() #create a new row add all the values into it by index
-            self.ui.reportPreviewTableModel.SetRowItemReportTable(newRow, 0, interface)
-            self.ui.reportPreviewTableModel.SetRowItemReportTable(newRow, 1, attackType)
-            self.ui.reportPreviewTableModel.SetRowItemReportTable(newRow, 2, srcIp)
-            self.ui.reportPreviewTableModel.SetRowItemReportTable(newRow, 3, srcMac)
-            self.ui.reportPreviewTableModel.SetRowItemReportTable(newRow, 4, dstIp)
-            self.ui.reportPreviewTableModel.SetRowItemReportTable(newRow, 5, dstMac)
-            self.ui.reportPreviewTableModel.SetRowItemReportTable(newRow, 6, protocol)
-            self.ui.reportPreviewTableModel.SetRowItemReportTable(newRow, 7, timestamp)
-            self.ui.reportPreviewTableModel.SetRowItemReportTable(newRow, 8, osType)
-            UserInterfaceFunctions.ReportDurationComboboxChanged(self) #trigger default sort for duration combobox
-            UserInterfaceFunctions.ReportCheckboxToggled(self) #trigger default sort for checkboxes
+        # check that all given parameters are valid and initialized
+        if interface and attackType and srcIp and srcMac and dstIp and dstMac and protocol and osType and timestamp:
+            # call out custom AddRow method for adding given parameters as a row in report preview table
+            self.ui.reportPreviewTableModel.AddRow(interface, attackType, srcIp, srcMac, dstIp, dstMac, protocol, osType, timestamp)
 
 
     # method for setting user interface to logged in or logged out state 
@@ -456,8 +446,6 @@ class NetSpect(QMainWindow):
                 self.InitHistoryTable(self.userData.get('alertList')) #initialize our history table
                 self.InitReportTable(self.userData.get('alertList')) #initialize our report table
                 self.InitMacAddresses(self.userData.get('blackList')) #intialize our mac address black list
-                UserInterfaceFunctions.ReportDurationComboboxChanged(self) #trigger default sort for duration combobox
-                UserInterfaceFunctions.ReportCheckboxToggled(self) #trigger default sort for checkboxes
                 UserInterfaceFunctions.UpdateChartAfterLogin(self, self.userData.get('pieChartData')) #initialize pie chart
                 self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has logged in.', 'INFO') #log login event
 

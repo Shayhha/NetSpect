@@ -239,7 +239,7 @@ def ToggleUserInterface(self, state):
 
     #clear history and report tables and blacklist and pie chart
     self.ui.historyTableWidget.setRowCount(0)
-    self.ui.reportPreviewTableModel.ClearReportTable()
+    self.ui.reportPreviewTableModel.ClearRows()
     self.ui.macAddressListWidget.clear()
     ResetChartToDefault(self) #reset our pie chart
 
@@ -487,29 +487,15 @@ def ShowContextMenu(self, position):
 def CopyToClipboard(text):
     clipboard = QApplication.clipboard()  
     clipboard.setText(text)
-    
-
-# function the removes an item 
-def RemoveItem(self, item):
-    self.ui.macAddressListWidget.takeItem(self.ui.macAddressListWidget.row(item))
 
 
-# function for centering a specific row in the tabels:
-def CenterSpecificTableRowText(tableObject):
-    for col in range(tableObject.columnCount()):
-        if item := tableObject.item(0, col): #check if item exists
-            item.setTextAlignment(Qt.AlignCenter)
-            cellText = item.text()
-            tooltipText = cellText if cellText else 'Empty cell'
-            item.setToolTip(tooltipText)
-
-
-# function for setting the items in the list of ip addresses to not interactable, it removes the hover and click effects
-def DisableSelectionIpListWidget(self):
-    # disable selection on ip address list widget
-    for row in range(self.ui.ipAddressesListWidget.count()):
-        item = self.ui.ipAddressesListWidget.item(row)
-        item.setFlags(item.flags() & ~Qt.ItemIsSelectable & ~Qt.ItemIsEnabled)
+# function for disabling selecion and editing on history table widget and enable some other features
+def DisableSelectionHistoryTableWidget(self):
+    # disable selection and editing on history table
+    self.ui.historyTableWidget.setSelectionMode(QTableWidget.NoSelection) #disable selection
+    self.ui.historyTableWidget.setEditTriggers(QTableWidget.NoEditTriggers) #disable editing
+    self.ui.historyTableWidget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch) #distribute column widths equally
+    self.ui.historyTableWidget.setTextElideMode(Qt.ElideMiddle) #set elide in middle
 
 
 # function for setting the text of an error message like login/register/change email/ etc.
@@ -994,30 +980,32 @@ class CustomTableModel(QAbstractTableModel):
         if role == Qt.EditRole:
             if index.isValid() and 0 <= index.row() < self.rowCount() and 0 <= index.column() < self.columnCount():
                 self.alertListData[index.row()][index.column()] = value
+                self.dataChanged.emit(index, index, [Qt.DisplayRole])
                 return True
         return False
 
 
-    # function to add rows to the table at the top of the table every time
-    def AddRowToReportTable(self): 
-        self.beginInsertRows(QModelIndex(), 0, 0) #correctly notify start of insert
-        self.alertListData.insert(0, [None] * self.columnCount()) #add new row at the start
-        self.endInsertRows()
-        return 0
+    # function to add row to report preview table at the first index in top row
+    def AddRow(self, interface, attackType, srcIp, srcMac, dstIp, dstMac, protocol, osType, timestamp):
+        # create new row to insert into report preview table at the first index in top row
+        row = [interface, attackType, srcIp, srcMac, dstIp, dstMac, protocol, timestamp, osType]
+        self.beginInsertRows(QModelIndex(), 0, 0) #begin insertion at top
+        self.alertListData.insert(0, row)
+        self.endInsertRows() #end insertion
 
 
-    # function to add items to a given row by index
-    def SetRowItemReportTable(self, row, column, value):
+    # function to add items to a given row by index to report preview table
+    def SetRowItem(self, row, column, value):
         # set data at specific row and column
         index = self.index(row, column)
         self.setData(index, value)
 
 
-    # function to clear out the data from the table
-    def ClearReportTable(self):
-        self.beginResetModel()
+    # function to clear out the data from the report preview table
+    def ClearRows(self):
+        self.beginResetModel() #begin reset model
         self.alertListData.clear() #clear the data list
-        self.endResetModel()
+        self.endResetModel() #end reset model
 
 
 # Custom Proxy Model for filtering the TableView that is in the report page, this class will hold the filtering logic and functions
@@ -1025,38 +1013,35 @@ class CustomFilterProxyModel(QSortFilterProxyModel):
     # represents our  alertList columns of our table
     alertListColumns = [('interface', 0), ('attackType', 1), ('srcIp', 2), ('srcMac', 3), ('dstIp', 4),
                         ('dstMac', 5), ('protocol', 6), ('osType', 8), ('timestamp', 7)]
-    selectedAttacks = set() #stores selected attacks by checkboxes
+    selectedAttacks = set() #represents selected attacks by checkboxes
     timeFilter = None #represents time combobox filther option
 
-    # constructor of filter proxy class
+    # constructor of filter proxy model class
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.selectedAttacks = {'ARP Spoofing', 'Port Scan', 'DoS', 'DNS Tunneling'} #set to all attack types by default
         self.timeFilter = 'All Available Data' #set to all available data by default
 
 
-    # update selected classes and refresh filter (for checkboxes)
+    # function to update selected classes and refresh filter (for checkboxes)
     def SetSelectedAttacks(self, selectedAttacks):
         self.selectedAttacks = set(selectedAttacks)
         self.invalidateFilter() #triggers re-filtering
 
 
-    # update time filter and refresh the table (for combobox)
+    # function to update time filter and refresh the table (for combobox)
     def SetTimeFilter(self, timeFilter):
         self.timeFilter = timeFilter
-        self.invalidateFilter()
+        self.invalidateFilter() #triggers re-filtering
 
 
-    # determines if a row should be shown based on filter conditions
+    # overwrite inherited function that determines if a row should be shown based on filter conditions
     def filterAcceptsRow(self, sourceRow, sourceParent):
         model = self.sourceModel()
 
         # get timestamp and attack type row data
-        timestampValue = model.data(model.index(sourceRow, 7), Qt.DisplayRole) #column 7 = Timestamp
-        attackTypeValue = model.data(model.index(sourceRow, 1), Qt.DisplayRole) #column 1 = Attack Type
-        
-        # validate that the data the this method gets is valid before continuing with the filter
-        if timestampValue == 'None' or attackTypeValue == 'None':
-            return False
+        timestampValue = model.data(model.index(sourceRow, 7), Qt.DisplayRole) #column 7 is Timestamp
+        attackTypeValue = model.data(model.index(sourceRow, 1), Qt.DisplayRole) #column 1 is Attack Type
 
         # convert timestamp string to datetime object and get current time to check the filter
         rowTimestamp = datetime.strptime(timestampValue, '%H:%M:%S %d/%m/%y')
@@ -1258,7 +1243,7 @@ def InitAnimationsUI(self):
     # hide the verify code in reset password side frame
     ToggleBetweenEmailAndCodeResetPassword(self, True)
 
-    #initialize system tray icon
+    # initialize system tray icon
     SystemTrayIcon.InitTrayIcon(self)
 
     # initilize attack pie chart in GUI
@@ -1266,10 +1251,11 @@ def InitAnimationsUI(self):
 
     # initilize report preview table view and initialize selected attacks and time filter
     InitReportTableView(self)
-    ReportDurationComboboxChanged(self)
-    ReportCheckboxToggled(self)
 
-    # hide some labels and icons
+    # disable selection on history table
+    DisableSelectionHistoryTableWidget(self)
+
+    # hide side bar labels and icons and toggle user interface
     HideSideBarLabels(self)
     ShowSideBarMenuIcon(self)
     ToggleUserInterface(self, False)
@@ -1277,18 +1263,9 @@ def InitAnimationsUI(self):
     # apply shadow to the left side bar
     ApplyShadowSidebar(self)
 
-    # disable selection on ip address list widget
-    DisableSelectionIpListWidget(self)
-
     # add a context menu to items that are in the mac address list widget on Settings Page
     self.ui.macAddressListWidget.setContextMenuPolicy(Qt.CustomContextMenu)
     self.ui.macAddressListWidget.customContextMenuRequested.connect(lambda position : ShowContextMenu(self, position))
-
-    # disable selection on both history table and report preview table
-    self.ui.historyTableWidget.setSelectionMode(QTableWidget.NoSelection) #disable selection
-    self.ui.historyTableWidget.setEditTriggers(QTableWidget.NoEditTriggers)
-    self.ui.historyTableWidget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch) #distribute column widths equally
-    self.ui.historyTableWidget.setTextElideMode(Qt.ElideMiddle)
 
     # set the toggle password visability icon in the login and register
     icon = QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'EyeOpen.png'))

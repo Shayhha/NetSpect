@@ -509,7 +509,7 @@ class SQL_Thread(QThread):
                 attackType, attackCount = row[0], row[1]
 
                 # check if attack type is present in our pieChartData dictionary
-                if pieChartData.get(attackType) != None:
+                if attackType in pieChartData:
                     # set corrent attack type with its attack counter from database
                     pieChartData[attackType] = attackCount
         
@@ -543,24 +543,38 @@ class SQL_Thread(QThread):
             '''
         self.cursor.execute(query, (userId, userId))
         result = self.cursor.fetchall()
-        analyticsChartData = {} #represents dictionary of years, each year has dictionary of months, where each month has dictionary of attack types with their attack counter
+
+        # chartData represents dictionary of years, each year has dictionary of months, where each month has dictionary of attack types with their attack counter
+        # yearData represents dictionary of years, each year has dictionary of attack types with their attack counter related to this year
+        analyticsChartData = {'chartData': {}, 'yearData': {}}
 
         # check if we received result from query
         if result:
             # iterate over each row and update our analyticsChartData dictionary
             for row in result:
                 # initialize parameters based on row values
-                year, month, attackType, attackCount = str(row[0]), str(row[1]), row[2], row[3]
+                year, month, attackType, attackCount = str(row[0]), row[1], row[2], row[3]
 
-                # check if year is initialized, if not we intialzie the year dictionary with months and attack type counters
-                if not analyticsChartData.get(year):
-                    analyticsChartData[year] = {str(attackMonth): {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0} for attackMonth in range(0, 13)}
+                # initialize chartData for the year if not present in our dict
+                if year not in analyticsChartData['chartData']:
+                    analyticsChartData['chartData'][year] = {attackMonth: {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0} for attackMonth in range(1, 13)}
 
-                # check if attack type is present in our analyticsChartData dictionary
-                if analyticsChartData[year][month].get(attackType) != None:
-                    # set corrent attack type with its attack counter in correct month of the year from database
-                    analyticsChartData[year][month][attackType] = attackCount
-        
+                # initialize yearData for the year if not present in our dict
+                if year not in analyticsChartData['yearData']:
+                    analyticsChartData['yearData'][year] = {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0}
+
+                # check if month is not zero, if so it means its monthly attack type data
+                if month != 0:
+                    # check if attack type is present in our chartData dictionary
+                    if attackType in analyticsChartData['chartData'][year][month]:
+                        analyticsChartData['chartData'][year][month][attackType] = attackCount
+
+                # else it means its yearly attack type data
+                else:
+                    # check if attack type is present in our yearData dictionary
+                    if attackType in analyticsChartData['yearData'][year]:
+                        analyticsChartData['yearData'][year][attackType] = attackCount
+
         return analyticsChartData
     
 

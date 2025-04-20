@@ -556,23 +556,23 @@ class SQL_Thread(QThread):
                 year, month, attackType, attackCount = str(row[0]), row[1], row[2], row[3]
 
                 # initialize chartData for the year if not present in our dict
-                if year not in analyticsChartData['chartData']:
+                if year not in analyticsChartData.get('chartData'):
                     analyticsChartData['chartData'][year] = {attackMonth: {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0} for attackMonth in range(1, 13)}
 
                 # initialize yearData for the year if not present in our dict
-                if year not in analyticsChartData['yearData']:
+                if year not in analyticsChartData.get('yearData'):
                     analyticsChartData['yearData'][year] = {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0}
 
                 # check if month is not zero, if so it means its monthly attack type data
                 if month != 0:
                     # check if attack type is present in our chartData dictionary
-                    if attackType in analyticsChartData['chartData'][year][month]:
+                    if attackType in analyticsChartData.get('chartData').get(year).get(month):
                         analyticsChartData['chartData'][year][month][attackType] = attackCount
 
                 # else it means its yearly attack type data
                 else:
                     # check if attack type is present in our yearData dictionary
-                    if attackType in analyticsChartData['yearData'][year]:
+                    if attackType in analyticsChartData.get('yearData').get(year):
                         analyticsChartData['yearData'][year][attackType] = attackCount
 
         return analyticsChartData

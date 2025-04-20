@@ -519,7 +519,7 @@ class SQL_Thread(QThread):
     # method for getting number of attacks in each year and also in each month of each year in Alerts table for analytics charts
     @Slot(int)
     def GetAnalyticsChartData(self, userId):
-        # we get the yearly attack types that occured (index 0) and also the monthly attack types that occured (index 1-12)
+        # we get the yearly attack types that occured (month index 0) and also the monthly attack types that occured (month index 1-12)
         query = '''
             SELECT YEAR(attackTable.date) AS year, 0 AS month, attackTable.attackType, COUNT(*) AS attackCount
             FROM (

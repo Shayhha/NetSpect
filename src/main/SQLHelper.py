@@ -159,10 +159,10 @@ class SQL_Thread(QThread):
                     'operationMode': result[4]
                 }
                 
-                # retrieve alert list, pie chart data, line chart data, black list and num of detections with helper functions
+                # retrieve alert list, pie chart data, analytics chart data, black list and num of detections with helper functions
                 userData['alertList'] = self.GetAlerts(userData.get('userId'))
                 userData['pieChartData'] = self.GetPieChartData(userData.get('userId'))
-                userData['lineChartData'] = self.GetLineChartData(userData.get('userId'))
+                userData['analyticsChartData'] = self.GetAnalyticsChartData(userData.get('userId'))
                 userData['blackList'] = self.GetBlacklistMacs(userData.get('userId'))
                 userData['numberOfDetections'] = len(userData.get('alertList'))
 
@@ -421,21 +421,19 @@ class SQL_Thread(QThread):
             # set autocommit to false for executing both queires together
             self.connection.autocommit = False
 
-            # delete all alerts for user in Alerts table
-            alertsQuery = '''
-                UPDATE Alerts 
-                SET isDeleted = 1 
-                WHERE userId = ?
-                '''
-            self.cursor.execute(alertsQuery, (userId,))
+            # delete all alerts for user in Alerts table and delete user in Users table
+            query = '''
+                BEGIN
+                    UPDATE Alerts 
+                    SET isDeleted = 1 
+                    WHERE userId = ?
 
-            # delete given user from Users table by userId
-            usersQuery = '''
-                UPDATE Users SET 
-                isDeleted = 1 
-                WHERE userId = ?
+                    UPDATE Users 
+                    SET isDeleted = 1 
+                    WHERE userId = ?
+                END
                 '''
-            self.cursor.execute(usersQuery, (userId,))
+            self.cursor.execute(query, (userId, userId))
             
             if self.cursor.rowcount > 0:
                 self.connection.commit() #commit the transaction for the update
@@ -518,10 +516,21 @@ class SQL_Thread(QThread):
         return pieChartData
 
 
-    # method for getting number of attacks in each month of each year in Alerts table for line chart
+    # method for getting number of attacks in each year and also in each month of each year in Alerts table for analytics charts
     @Slot(int)
-    def GetLineChartData(self, userId):
+    def GetAnalyticsChartData(self, userId):
+        # we get the yearly attack types that occured (index 0) and also the monthly attack types that occured (index 1-12)
         query = '''
+            SELECT YEAR(attackTable.date) AS year, 0 AS month, attackTable.attackType, COUNT(*) AS attackCount
+            FROM (
+                SELECT CONVERT(datetime, SUBSTRING(timestamp, 10, 8) + ' ' + SUBSTRING(timestamp, 1, 8), 3) AS date, attackType
+                FROM Alerts
+                WHERE userId = ? AND isDeleted = 0
+            ) AS attackTable
+            GROUP BY YEAR(attackTable.date), attackType
+
+            UNION ALL
+
             SELECT YEAR(attackTable.date) AS year, MONTH(attackTable.date) AS month, attackTable.attackType, COUNT(*) AS attackCount
             FROM (
                 SELECT CONVERT(datetime, SUBSTRING(timestamp, 10, 8) + ' ' + SUBSTRING(timestamp, 1, 8), 3) AS date, attackType
@@ -529,29 +538,30 @@ class SQL_Thread(QThread):
                 WHERE userId = ? AND isDeleted = 0
             ) AS attackTable
             GROUP BY YEAR(attackTable.date), MONTH(attackTable.date), attackType
-            ORDER BY YEAR(attackTable.date), MONTH(attackTable.date), attackType ASC
+
+            ORDER BY year, month, attackType ASC
             '''
-        self.cursor.execute(query, (userId,))
+        self.cursor.execute(query, (userId, userId))
         result = self.cursor.fetchall()
-        lineChartData = {} #represents dictionary of years, each year has dictionary of months, where each month has dictionary of attack types with their attack counter
+        analyticsChartData = {} #represents dictionary of years, each year has dictionary of months, where each month has dictionary of attack types with their attack counter
 
         # check if we received result from query
         if result:
-            # iterate over each row and update our lineChartData dictionary
+            # iterate over each row and update our analyticsChartData dictionary
             for row in result:
                 # initialize parameters based on row values
-                year, month, attackType, attackCount = row[0], row[1], row[2], row[3]
+                year, month, attackType, attackCount = str(row[0]), str(row[1]), row[2], row[3]
 
                 # check if year is initialized, if not we intialzie the year dictionary with months and attack type counters
-                if not lineChartData.get(year):
-                    lineChartData[year] = {attackMonth: {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0} for attackMonth in range(1, 13)}
+                if not analyticsChartData.get(year):
+                    analyticsChartData[year] = {attackMonth: {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0} for attackMonth in range(0, 13)}
 
-                # check if attack type is present in our lineChartData dictionary
-                if lineChartData[year][month].get(attackType) != None:
+                # check if attack type is present in our analyticsChartData dictionary
+                if analyticsChartData[year][month].get(attackType) != None:
                     # set corrent attack type with its attack counter in correct month of the year from database
-                    lineChartData[year][month][attackType] = attackCount
+                    analyticsChartData[year][month][attackType] = attackCount
         
-        return lineChartData
+        return analyticsChartData
     
 
     # method for adding alert for user in Alerts table

@@ -13,7 +13,7 @@ from string import digits, ascii_letters, ascii_uppercase
 # class that represents main app of NetSpect
 class NetSpect(QMainWindow):
     ui = None #represents main ui object of GUI with all our objects
-    userData = {'userId': None, 'email': None, 'userName': None, 'lightMode': 0, 'operationMode': 0, 'numberOfDetections': 0, 'alertList': [], 'pieChartData': {}, 'lineChartData': {}, 'blackList': []} #represents user data in interface
+    userData = {'userId': None, 'email': None, 'userName': None, 'lightMode': 0, 'operationMode': 0, 'numberOfDetections': 0, 'alertList': [], 'pieChartData': {}, 'analyticsChartData': {}, 'blackList': []} #represents user data in interface
     isDetection = False #represents flag for indicating if detection is active
     resetPasswordValidator = {'resetCode': None, 'timestamp': None, 'newPassword': None} #represents reset password validator dictionary
     usernameValidator, passwordValidator, finalPasswordPattern, emailValidator = None, None, None, None #represents the validators that hold regexes for various input fields in the program
@@ -465,7 +465,7 @@ class NetSpect(QMainWindow):
             else:
                 self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has logged out.', 'INFO') #log logout event
                 self.userData = {'userId': None, 'email': None, 'userName': None, 'lightMode': 0, 'operationMode': 0, 
-                                 'numberOfDetections': 0, 'alertList': [], 'pieChartData': {}, 'lineChartData': {}, 'blackList': []} #reset our user data dictionary
+                                 'numberOfDetections': 0, 'alertList': [], 'pieChartData': {}, 'analyticsChartData': {}, 'blackList': []} #reset our user data dictionary
                 UserInterfaceFunctions.ToggleUserInterface(self, False) #reset our user interface
 
 

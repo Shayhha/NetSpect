@@ -554,7 +554,7 @@ class SQL_Thread(QThread):
 
                 # check if year is initialized, if not we intialzie the year dictionary with months and attack type counters
                 if not analyticsChartData.get(year):
-                    analyticsChartData[year] = {attackMonth: {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0} for attackMonth in range(0, 13)}
+                    analyticsChartData[year] = {str(attackMonth): {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0} for attackMonth in range(0, 13)}
 
                 # check if attack type is present in our analyticsChartData dictionary
                 if analyticsChartData[year][month].get(attackType) != None:

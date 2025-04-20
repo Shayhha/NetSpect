@@ -1050,9 +1050,9 @@ class CustomFilterProxyModel(QSortFilterProxyModel):
         # time filtering logic, if the combobox is selected with 'All Available Data' then it will skip the time filter
         if self.timeFilter == 'Last 24 Hours' and rowTimestamp < currentTime - timedelta(days=1):
             return False
-        if self.timeFilter == 'Last 7 Days' and rowTimestamp < currentTime - timedelta(days=7):
+        elif self.timeFilter == 'Last 7 Days' and rowTimestamp < currentTime - timedelta(days=7):
             return False
-        if self.timeFilter == 'Last 30 Days' and rowTimestamp < currentTime - timedelta(days=30):
+        elif self.timeFilter == 'Last 30 Days' and rowTimestamp < currentTime - timedelta(days=30):
             return False
 
         # attack filtering logic by attack checkboxes

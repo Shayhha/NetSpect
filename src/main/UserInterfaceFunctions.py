@@ -570,7 +570,7 @@ class CustomMessageBox(QDialog):
         # set the message box window title and icon
         self.setWindowTitle(title)
         self.setWindowIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'NetSpectIconTransparent.png')))
-        # self.setFont(QFont('Cairo', 13))
+        self.setFont(QFont('Cairo', 13)) #set font size for messagebox
 
         # create the main vertical layout
         layout = QVBoxLayout()
@@ -644,7 +644,6 @@ class CustomMessageBox(QDialog):
             QLabel {
                 color: black;
                 font-family: 'Cairo';
-                font-size: 18px;
             }
 
             QLabel[alignment='Qt::AlignVCenter|Qt::AlignLeft'] {

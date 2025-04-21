@@ -421,19 +421,21 @@ class SQL_Thread(QThread):
             # set autocommit to false for executing both queires together
             self.connection.autocommit = False
 
-            # delete all alerts for user in Alerts table and delete user in Users table
-            query = '''
-                BEGIN
-                    UPDATE Alerts 
-                    SET isDeleted = 1 
-                    WHERE userId = ?
-
-                    UPDATE Users 
-                    SET isDeleted = 1 
-                    WHERE userId = ?
-                END
+            # delete all alerts for user in Alerts table
+            alertsQuery = '''
+                UPDATE Alerts 
+                SET isDeleted = 1 
+                WHERE userId = ?
                 '''
-            self.cursor.execute(query, (userId, userId))
+            self.cursor.execute(alertsQuery, (userId,))
+
+            # delete given user from Users table by userId
+            usersQuery = '''
+                UPDATE Users SET 
+                isDeleted = 1 
+                WHERE userId = ?
+                '''
+            self.cursor.execute(usersQuery, (userId,))
             
             if self.cursor.rowcount > 0:
                 self.connection.commit() #commit the transaction for the update
@@ -619,13 +621,13 @@ class SQL_Thread(QThread):
                 WHERE userId = ?
                 '''
             self.cursor.execute(query, (userId,))
-            
+            self.connection.commit()
+
             if self.cursor.rowcount > 0:
-                self.connection.commit()
                 resultDict['message'] = 'All alerts deleted successfully.'
-                resultDict['state'] = True
             else:
                 resultDict['message'] = 'No alerts were found to delete.'
+            resultDict['state'] = True
 
         except Exception as e:
             self.connection.rollback() #rollback on error
@@ -634,7 +636,7 @@ class SQL_Thread(QThread):
         finally:
             # emit delete alerts signal to main thread
             self.deleteAlertsResultSignal.emit(resultDict)
-    
+
 
     # method for getting all blacklisted mac addresses for given user
     @Slot(int)

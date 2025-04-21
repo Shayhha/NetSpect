@@ -1284,20 +1284,23 @@ class NetSpect(QMainWindow):
             UserInterfaceFunctions.ShowMessageBox('Error Deleting Alerts', 'Please stop network scan before attempting to delete alerts history.', 'Information')
         else:
             if self.userData:
-                # clear history and report tables and also reset alertsList and user interface counter
-                self.userData['alertList'] = [] #clear alertsList in userData
-                self.userData['pieChartData'] = {} #clear pieChartData in userData
-                self.userData['blackList'] = [] #clear blackList in userData
-                self.UpdateNumberOfDetectionsCounterLabel(0) #reset the number of detections counter in user interface
-                UserInterfaceFunctions.ResetChartToDefault(self) #reset our pie chart
-                self.ui.historyTableWidget.setRowCount(0) #clear history table
-                self.ui.reportPreviewTableModel.ClearReportTable() #clear report table
+                # check that alert list has alerts and not empty
+                if self.userData.get('alertList'):
+                    # clear history and report tables and also reset alertsList and user interface counter
+                    self.userData['alertList'] = [] #clear alertsList in userData
+                    self.userData['pieChartData'] = {} #clear pieChartData in userData
+                    self.UpdateNumberOfDetectionsCounterLabel(0) #reset the number of detections counter in user interface
+                    UserInterfaceFunctions.ResetChartToDefault(self) #reset our pie chart
+                    self.ui.historyTableWidget.setRowCount(0) #clear history table
+                    self.ui.reportPreviewTableModel.ClearRows() #clear report table
 
-                # delete alerts from database if user is logged in
-                if self.sqlThread and self.userData.get('userId'):
-                    self.sqlThread.DeleteAlerts(self.userData.get('userId'))
+                    # delete alerts from database if user is logged in
+                    if self.sqlThread and self.userData.get('userId'):
+                        self.sqlThread.DeleteAlerts(self.userData.get('userId'))
+                    else:
+                        UserInterfaceFunctions.ShowMessageBox('Alerts Deletion Successful', 'Deleted all alerts history for previously detected attacks.', 'Information')
                 else:
-                    UserInterfaceFunctions.ShowMessageBox('Alerts Deletion Successful', 'Deleted all alerts history for previously detected attacks.', 'Information')
+                    UserInterfaceFunctions.ShowMessageBox('No Alerts Found', 'Your alert history is empty. There are no alerts to delete at this time.', 'Information')
 
 
     # method for adding an item to the mac address blacklist when user clicks the add button in settings page

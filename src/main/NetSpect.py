@@ -243,12 +243,13 @@ class NetSpect(QMainWindow):
     def InitUserData(self):
         # initialize user data dictionary to default state
         self.userData = {'userId': None, 'email': None, 'userName': None, 'lightMode': 0, 'operationMode': 0, 
-                    'numberOfDetections': 0, 'alertList': [], 'pieChartData': {}, 'analyticsChartData': {}, 'blackList': []}
-        
+                            'numberOfDetections': 0, 'alertList': [], 'pieChartData': {}, 'analyticsChartData': {}, 'blackList': []}
+
         # initialize pie chart, histogram chart and bar chart dictionaries to default state
         self.userData.setdefault('pieChartData', {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0})
-        self.userData.setdefault('analyticsChartData', {}).setdefault('chartData', {}).setdefault(str(datetime.now().year), {}).setdefault(datetime.now().month, {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0})
-        self.userData['analyticsChartData'].setdefault('yearData', {}).setdefault(str(datetime.now().year), {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0})
+        self.userData.setdefault('analyticsChartData', {}).setdefault('yearData', {}).setdefault(str(datetime.now().year), {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0})
+        self.userData.setdefault('analyticsChartData', {}).setdefault('chartData', {}).setdefault(str(datetime.now().year), 
+                                    {month: {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0} for month in range(1, 13)})
 
 
     # method for setting input validators on line edits in gui

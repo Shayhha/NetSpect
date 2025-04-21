@@ -466,21 +466,51 @@ def ApplyShadowSidebar(self):
     self.ui.sideFrame.setGraphicsEffect(shadow)
 
 
-# function that shows right-click menu for copying and deleting items in mac
+# function that shows right-click menu for copying and deleting items in mac address list widget
 def ShowContextMenu(self, position):
-    if self.ui.macAddressListWidget.count() == 0:
-        return #do nothing if there are no items
+    currentStyleSheet = f'''
+        #macListContextMenu {{
+            {'background-color: #2d2d2d;' if self.userData.get('lightMode') == 0 else 'background-color: #f3f3f3;'}
+            {'color: #f0f0f0;' if self.userData.get('lightMode') == 0 else 'color: black;'}
+            {'border: 1px solid #555;' if self.userData.get('lightMode') == 0 else 'border: 1px solid gray;'}
+            padding: 5px;
+            border-radius: 6px;
+        }}
 
+        #macListContextMenu::item {{
+            padding: 5px 20px;
+            background-color: transparent;
+        }}
+
+        #macListContextMenu::item:selected {{
+            {'background-color: rgba(255, 255, 255, 0.1);' if self.userData.get('lightMode') == 0 else 'background-color: rgba(0, 0, 0, 0.1);'}
+            {'color: #ffffff;'if self.userData.get('lightMode') == 0 else 'color: black;'}
+            border-radius: 4px;
+        }}
+    '''
+ 
+    # get current item that is selected
     item = self.ui.macAddressListWidget.itemAt(position)
-    if item:
-        menu = QMenu()
-        copyAction = QAction('Copy')
-        copyAction.triggered.connect(lambda: CopyToClipboard(item.text()))
-        deleteAction = QAction('Delete')
-        deleteAction.triggered.connect(lambda: self.DeleteMacAddressButtonClicked(item))
-        menu.addAction(copyAction)
-        menu.addAction(deleteAction)
-        menu.exec(self.ui.macAddressListWidget.viewport().mapToGlobal(position))
+
+    # check that item is valid and mac address list widget
+    if item and self.ui.macAddressListWidget.count() > 0:
+        # create context menu for mac address list widget
+        self.ui.macListContextMenu = QMenu()
+        self.ui.macListContextMenu.setObjectName('macListContextMenu')
+
+        # create copy action for context menu
+        self.ui.macAddressListWidget.copyAction = QAction('Copy')
+        self.ui.macAddressListWidget.copyAction.triggered.connect(lambda: CopyToClipboard(item.text()))
+        self.ui.macListContextMenu.addAction(self.ui.macAddressListWidget.copyAction)
+
+        # create delete action for context menu
+        self.ui.macAddressListWidget.deleteAction = QAction('Delete')
+        self.ui.macAddressListWidget.deleteAction.triggered.connect(lambda: self.DeleteMacAddressButtonClicked(item))
+        self.ui.macListContextMenu.addAction(self.ui.macAddressListWidget.deleteAction)
+
+        # set stylesheet for context menu and show the context menu
+        self.ui.macListContextMenu.setStyleSheet(currentStyleSheet)
+        self.ui.macListContextMenu.exec(self.ui.macAddressListWidget.viewport().mapToGlobal(position))
 
 
 # function that copies the item text to the clipborad
@@ -1143,48 +1173,49 @@ class SystemTrayIcon():
             # set hover tooltip for the tray icon
             self.ui.trayIcon.setToolTip('NetSpect™ IDS')
 
-            # initialize context menu for the tray icon
-            trayMenu = QMenu()
+            # initialize menu for the tray icon
+            self.ui.trayIconMenu = QMenu()
+            self.ui.trayIconMenu.setObjectName('trayIconMenu')
 
             # start/stop detection
             self.ui.trayIcon.toggleDetectionAction = QAction('Start Detection', self)
             self.ui.trayIcon.toggleDetectionAction.triggered.connect(lambda event: self.StartStopButtonClicked())
-            trayMenu.addAction(self.ui.trayIcon.toggleDetectionAction)
-            trayMenu.addSeparator()
+            self.ui.trayIconMenu.addAction(self.ui.trayIcon.toggleDetectionAction)
+            self.ui.trayIconMenu.addSeparator()
 
             # open homepage page
             self.ui.trayIcon.openHomepageAction = QAction('Homepage', self)
             self.ui.trayIcon.openHomepageAction.triggered.connect(lambda event: ChangePageIndex(self, 0))
-            trayMenu.addAction(self.ui.trayIcon.openHomepageAction)
+            self.ui.trayIconMenu.addAction(self.ui.trayIcon.openHomepageAction)
 
             # open analytics page
             self.ui.trayIcon.openAnalyticsAction = QAction('Analytics', self)
             self.ui.trayIcon.openAnalyticsAction.triggered.connect(lambda event: ChangePageIndex(self, 1))
-            trayMenu.addAction(self.ui.trayIcon.openAnalyticsAction)
+            self.ui.trayIconMenu.addAction(self.ui.trayIcon.openAnalyticsAction)
 
             # open report preview page
             self.ui.trayIcon.openReportPreviewAction = QAction('Report Preview', self)
             self.ui.trayIcon.openReportPreviewAction.triggered.connect(lambda event: ChangePageIndex(self, 2))
-            trayMenu.addAction(self.ui.trayIcon.openReportPreviewAction)
+            self.ui.trayIconMenu.addAction(self.ui.trayIcon.openReportPreviewAction)
 
             # open information page
             self.ui.trayIcon.openInformationAction = QAction('Information', self)
             self.ui.trayIcon.openInformationAction.triggered.connect(lambda event: ChangePageIndex(self, 3))
-            trayMenu.addAction(self.ui.trayIcon.openInformationAction)
+            self.ui.trayIconMenu.addAction(self.ui.trayIcon.openInformationAction)
 
             # open settings page
             self.ui.trayIcon.openSettingsAction = QAction('Settings', self)
             self.ui.trayIcon.openSettingsAction.triggered.connect(lambda event: ChangePageIndex(self, 4))
-            trayMenu.addAction(self.ui.trayIcon.openSettingsAction)
-            trayMenu.addSeparator()
+            self.ui.trayIconMenu.addAction(self.ui.trayIcon.openSettingsAction)
+            self.ui.trayIconMenu.addSeparator()
 
             # exit application
             self.ui.trayIcon.exitAction = QAction('Exit', self)
             self.ui.trayIcon.exitAction.triggered.connect(lambda event: self.close())
-            trayMenu.addAction(self.ui.trayIcon.exitAction)
+            self.ui.trayIconMenu.addAction(self.ui.trayIcon.exitAction)
 
             # attach context menu to the tray icon
-            self.ui.trayIcon.setContextMenu(trayMenu)
+            self.ui.trayIcon.setContextMenu(self.ui.trayIconMenu)
 
 
     # fucntion to map the iconType to the appropriate QSystemTrayIcon

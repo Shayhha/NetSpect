@@ -1206,6 +1206,13 @@ class Ui_NetSpect(object):
         self.barChartVerticalFrame.setObjectName(u"barChartVerticalFrame")
         self.barChartVerticalFrame.setMinimumSize(QSize(0, 307))
         self.barChartVerticalFrame.setMaximumSize(QSize(16777215, 16777215))
+        self.barChartVerticalFrame.setStyleSheet(u"#barChartVerticalFrame { \n"
+"    background-color: #f3f3f3;\n"
+"    border: 2px solid black; \n"
+"    border-radius: 20px;\n"
+"    margin: 0px 15px 10px 15px;\n"
+"    color: black;\n"
+"}")
         self.verticalLayout_31 = QVBoxLayout(self.barChartVerticalFrame)
         self.verticalLayout_31.setSpacing(0)
         self.verticalLayout_31.setObjectName(u"verticalLayout_31")
@@ -1216,11 +1223,18 @@ class Ui_NetSpect(object):
 
         self.verticalLayout_30.addWidget(self.chartsVerticalFrame)
 
-        self.lineChartVerticalFrame = QFrame(self.analyticsHorizontalFrame)
-        self.lineChartVerticalFrame.setObjectName(u"lineChartVerticalFrame")
-        self.lineChartVerticalFrame.setMinimumSize(QSize(0, 0))
+        self.histogramChartVerticalFrame = QFrame(self.analyticsHorizontalFrame)
+        self.histogramChartVerticalFrame.setObjectName(u"histogramChartVerticalFrame")
+        self.histogramChartVerticalFrame.setMinimumSize(QSize(0, 0))
+        self.histogramChartVerticalFrame.setStyleSheet(u"#histogramChartVerticalFrame { \n"
+"    background-color: #f3f3f3;\n"
+"    border: 2px solid black; \n"
+"    border-radius: 20px;\n"
+"    margin: 0px 15px 10px 15px;\n"
+"    color: black;\n"
+"}")
 
-        self.verticalLayout_30.addWidget(self.lineChartVerticalFrame)
+        self.verticalLayout_30.addWidget(self.histogramChartVerticalFrame)
 
 
         self.gridLayout_9.addWidget(self.analyticsHorizontalFrame, 0, 0, 1, 1)

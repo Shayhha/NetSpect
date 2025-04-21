@@ -2623,6 +2623,15 @@ QToolTip {
                      <height>16777215</height>
                     </size>
                    </property>
+                   <property name="styleSheet">
+                    <string notr="true">#barChartVerticalFrame { 
+    background-color: #f3f3f3;
+    border: 2px solid black; 
+    border-radius: 20px;
+    margin: 0px 15px 10px 15px;
+    color: black;
+}</string>
+                   </property>
                    <layout class="QVBoxLayout" name="verticalLayout_31">
                     <property name="spacing">
                      <number>0</number>
@@ -2646,12 +2655,21 @@ QToolTip {
                </widget>
               </item>
               <item>
-               <widget class="QFrame" name="lineChartVerticalFrame">
+               <widget class="QFrame" name="histogramChartVerticalFrame">
                 <property name="minimumSize">
                  <size>
                   <width>0</width>
                   <height>0</height>
                  </size>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">#histogramChartVerticalFrame { 
+    background-color: #f3f3f3;
+    border: 2px solid black; 
+    border-radius: 20px;
+    margin: 0px 15px 10px 15px;
+    color: black;
+}</string>
                 </property>
                </widget>
               </item>

@@ -855,7 +855,7 @@ QCheckBox {
 	color: #151519;
 }
 
-#lineChartVerticalFrame { 
+#histogramChartVerticalFrame { 
     background-color: #ebeff7;
     border: 2px solid black; 
     border-radius: 20px;
@@ -869,6 +869,13 @@ QCheckBox {
     color: #151519;
 }
 
+#barChartVerticalFrame { 
+    background-color: #ebeff7;
+    border: 2px solid black;
+    border-radius: 20px;
+    margin: 0px 15px 10px 15px;
+    color: #151519;
+}
 
 /*-----------------------------Analytics-Window-End-------------------------------*/
 

@@ -1018,8 +1018,8 @@ class AnalyticsHistogramChart():
         VBoxLayout.addWidget(chartView) #adding histogram chart
         
         # add the VBoxLayout to the ui frame and save references to chart related objects
-        self.ui.lineChartVerticalFrame.setLayout(VBoxLayout)
-        self.ui.lineChartVerticalFrame.update()
+        self.ui.histogramChartVerticalFrame.setLayout(VBoxLayout)
+        self.ui.histogramChartVerticalFrame.update()
         self.ui.histogramChart = histogramChart
         self.ui.histogramChartView = chartView
         self.ui.histogramChartTitleLabel = titleLabel
@@ -1042,9 +1042,25 @@ class AnalyticsHistogramChart():
 # function for initializing the analytics combobox with year values based on if the user is logged-in or not
 def InitAnalyticsYearCombobox(self):
     if self.userData.get('analyticsChartData').get('chartData'):
-        self.ui.analyticsYearComboBox.addItems(list(self.userData.get('analyticsChartData').get('chartData').keys()))
+        self.ui.analyticsYearComboBox.addItems(list(reversed(self.userData.get('analyticsChartData').get('chartData'))))
     else:
         self.ui.analyticsYearComboBox.addItems([str(datetime.now().year)]) 
+
+
+# helper function for updating the grid lines and ticks based on the given maximum value
+def UpdateHistogramChartLines(axisY, newValue):
+    # determine the number of grid lines based on whether max_data is even or odd
+    desiredLines = 4 if newValue % 2 == 0 else 5
+    intervals = desiredLines - 1 #there are desiredLines–1 intervals
+
+    # use ceiling division to get the smallest step that will cover newValue
+    step = (newValue + intervals - 1) // intervals
+    adjustedMax = step * intervals
+
+    # set the tick interval
+    axisY.setRange(0, adjustedMax)
+    axisY.setTickInterval(step)
+    axisY.setTickCount(desiredLines)
 
 
 # helper function for creating the chart data, axies and bars using the diven data dict, if data dict is None then create an empty chart
@@ -1087,11 +1103,7 @@ def CreateHistogramChartData(self, histogramChartData=None):
         barSeries = QBarSeries()
         for barSet in barSets:
             barSeries.append(barSet)
-
-        # add references of chart objects to self.ui
         self.ui.histogramChart.addSeries(barSeries)
-        self.ui.histogramBarSeries = barSeries
-        self.ui.histogramBarSets = barSets
 
         # create X-axis months
         axisX = QBarCategoryAxis()
@@ -1113,19 +1125,28 @@ def CreateHistogramChartData(self, histogramChartData=None):
         axisY.setLinePen(QPen(QColor('#73758b'), 1))
         axisY.setTickInterval(1)
         axisY.setLabelFormat('%d') #integer labels
-        self.ui.lineChartVerticalFrame.update()
+        self.ui.histogramChart.addAxis(axisY, Qt.AlignLeft)
+        barSeries.attachAxis(axisY)
+
+        # add references of chart objects to self.ui
         self.ui.histogramAxisY = axisY
+        self.ui.histogramBarSeries = barSeries
+        self.ui.histogramBarSets = barSets
 
         # adjust the Y-axis range of values to be at least from 0 to 4 including, this ensures that there are no wierd values in the Y-axis
-        maxValue = axisY.max()
-        if maxValue < 4:
-            axisY.setRange(0, 4)
-            self.ui.histogramChart.addAxis(axisY, Qt.AlignLeft)
-            barSeries.attachAxis(axisY)
-            self.ui.lineChartVerticalFrame.update()
+        maxValue = self.ui.histogramAxisY.max()
+        if maxValue <= 4:
+            self.ui.histogramAxisY.setRange(0, 4)
         else:
-            self.ui.histogramChart.addAxis(axisY, Qt.AlignLeft)
-            barSeries.attachAxis(axisY)
+            UpdateHistogramChartLines(self.ui.histogramAxisY, maxValue)
+
+        # remove the old axis from chart and add the adjusted axies to the chart
+        if self.ui.histogramAxisY:
+            self.ui.histogramBarSeries.detachAxis(self.ui.histogramAxisY)
+            self.ui.histogramChart.removeAxis(self.ui.histogramAxisY)
+        self.ui.histogramChart.addAxis(axisY, Qt.AlignLeft)
+        barSeries.attachAxis(axisY)
+        self.ui.histogramChartVerticalFrame.update()
 
     except Exception as e:
         ShowMessageBox('Error Creating Histogram Chart', 'Error occurred while creating histogram chart with given data, try again later.', 'Critical')
@@ -1166,19 +1187,7 @@ def UpdateHistogramChartAfterAttack(self, attackName):
 
                 # set the range from 0 to new value
                 axisY.setRange(0, newValue)
-
-                # determine the number of grid lines based on whether max_data is even or odd
-                desiredLines = 4 if newValue % 2 == 0 else 5 #ensure that there will always be 4 lines on the screen
-                tickInterval = int((newValue / (desiredLines - 1)) + 0.999) #calculate the tick interval to achieve the desired number of lines
-
-                # adjust max_data slightly if needed to make ticks align perfectly
-                adjustedMax = tickInterval * (desiredLines - 1)
-                if adjustedMax > newValue:
-                    axisY.setRange(0, adjustedMax)
-
-                # set the tick interval
-                axisY.setTickInterval(tickInterval)
-                axisY.setTickCount(desiredLines)
+                UpdateHistogramChartLines(axisY, newValue)
 
                 # attach the new axis and series back to the chart
                 self.ui.histogramChart.addAxis(axisY, Qt.AlignLeft)
@@ -1188,7 +1197,7 @@ def UpdateHistogramChartAfterAttack(self, attackName):
                 self.ui.histogramBarSeries.attachAxis(axisY)
                 self.ui.histogramAxisY = axisY #update the reference to the new Y-axis
 
-            self.ui.lineChartVerticalFrame.update() #ensure the chart updates
+            self.ui.histogramChartVerticalFrame.update() #ensure the chart updates
 
         # update the userdata object #? check if its relevant
         # self.userData.get('analyticsChartData').get('chartData').get(self.ui.analyticsYearComboBox.currentText()).get(datetime.now().month).setdefault(attackName, 0)

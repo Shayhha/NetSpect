@@ -1,8 +1,8 @@
 from PySide6 import QtWidgets
-from PySide6.QtCore import Qt, QTimer, QPropertyAnimation, QEasingCurve, QEasingCurve, QSortFilterProxyModel, QAbstractTableModel, QModelIndex
-from PySide6.QtWidgets import QApplication, QMenu, QTableWidget, QWidget, QDialog, QLabel, QLineEdit, QStyle, QPushButton, QGridLayout, QHeaderView, QSystemTrayIcon, QVBoxLayout, QHBoxLayout, QGraphicsDropShadowEffect
-from PySide6.QtGui import QAction, QColor, QIcon, QPixmap, QFont, QCursor, QPainter
-from PySide6.QtCharts import QChart, QChartView, QPieSeries
+from PySide6.QtCore import Qt, QTimer, QPropertyAnimation, QEasingCurve, QEasingCurve, QSortFilterProxyModel, QAbstractTableModel, QModelIndex, QMargins
+from PySide6.QtWidgets import QApplication, QMenu, QTableWidget, QWidget, QDialog, QLabel, QLineEdit, QStyle, QSizePolicy, QPushButton, QGridLayout, QHeaderView, QSystemTrayIcon, QVBoxLayout, QHBoxLayout, QGraphicsDropShadowEffect, QToolTip
+from PySide6.QtGui import QAction, QColor, QIcon, QPixmap, QFont, QCursor, QPainter, QPen
+from PySide6.QtCharts import QChart, QChartView, QPieSeries, QBarSeries, QBarSet, QBarCategoryAxis, QValueAxis
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -241,7 +241,14 @@ def ToggleUserInterface(self, state):
     self.ui.historyTableWidget.setRowCount(0)
     self.ui.reportPreviewTableModel.ClearRows()
     self.ui.macAddressListWidget.clear()
-    ResetChartToDefault(self) #reset our pie chart
+    ResetPieChartToDefault(self) #reset our pie chart
+
+    # reset analytics combobox, set new values
+    self.ui.analyticsYearComboBox.clear()
+    InitAnalyticsYearCombobox(self)
+
+    # reset all the analytics charts
+    ResetHistogramChartToDefault(self) #reset our histogram chart
 
     #set combobox and checkboxes default state
     self.ui.reportDurationComboBox.setCurrentIndex(3)
@@ -405,6 +412,7 @@ def ToggleColorMode(self):
             </html>
         ''')
         self.ui.piChart.setBackgroundBrush(QColor(204, 204, 204, 153))
+        self.ui.histogramChart.setBackgroundBrush(QColor('#f3f3f3'))
         with open(currentDir.parent / 'interface' / 'darkModeStyles.qss', 'r') as stylesFile: #load styles from file
             self.setStyleSheet(stylesFile.read())
     else:
@@ -430,7 +438,8 @@ def ToggleColorMode(self):
                 </body>
             </html>
         ''')
-        self.ui.piChart.setBackgroundBrush(QColor(193, 208, 239))
+        self.ui.piChart.setBackgroundBrush(QColor('#c1d0ef'))
+        self.ui.histogramChart.setBackgroundBrush(QColor('#ebeff7'))
         with open(currentDir.parent / 'interface' / 'lightModeStyles.qss', 'r') as stylesFile: #load styles from file
             self.setStyleSheet(stylesFile.read())
 
@@ -600,7 +609,7 @@ class CustomMessageBox(QDialog):
         # set the message box window title and icon
         self.setWindowTitle(title)
         self.setWindowIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'NetSpectIconTransparent.png')))
-        self.setFont(QFont('Cairo', 13)) #set font size for messagebox
+        #self.setFont(QFont('Cairo', 13)) #set font size for messagebox
 
         # create the main vertical layout
         layout = QVBoxLayout()
@@ -674,6 +683,7 @@ class CustomMessageBox(QDialog):
             QLabel {
                 color: black;
                 font-family: 'Cairo';
+                font-size: 18px;
             }
 
             QLabel[alignment='Qt::AlignVCenter|Qt::AlignLeft'] {
@@ -768,10 +778,10 @@ def ShowMessageBox(title, message, iconType='Information', isSelectable=False):
 class AttackPieChart():
     # dictionary for mapping attack names, key is the database name text and the value is a tuple with slice label, legend name, color
     pieChartLabelDict = {
-        'ARP Spoofing': ('ARP', 'ARP Spoofing', '#90cfef'),
-        'Port Scan': ('Port Scan', 'Port Scanning', '#209fdf'),
-        'DoS': ('DoS', 'Denial of Service', '#15668f'),
-        'DNS Tunneling': ('DNS', 'DNS Tunneling', '#092d40')
+        'ARP Spoofing': ('ARP', 'ARP Spoofing', QColor('#90cfef')),
+        'Port Scan': ('Port Scan', 'Port Scanning', QColor('#209fdf')),
+        'DoS': ('DoS', 'Denial of Service', QColor('#15668f')),
+        'DNS Tunneling': ('DNS', 'DNS Tunneling', QColor('#092d40'))
     }
 
     # method for creating and initializing an empty attack pie chart
@@ -795,7 +805,7 @@ class AttackPieChart():
             chart.layout().setContentsMargins(0, 0, 0, 0)
             chart.setAnimationOptions(QChart.AllAnimations)
             chart.setBackgroundRoundness(0)
-            chart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor(193, 208, 239))
+            chart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#c1d0ef'))
             chart.setTitle('No Data To Display...')
             chart.setTitleFont(titleFont)
             
@@ -821,7 +831,7 @@ class AttackPieChart():
 
                 colorLabel = QLabel()
                 colorLabel.setObjectName(f'{legendName.replace(' ', '')}LegendColorLabel')
-                colorLabel.setStyleSheet(f'background-color: {sliceColor}; border: 1px solid black;')
+                colorLabel.setStyleSheet(f'background-color: {sliceColor.name()}; border: 1px solid black;')
                 colorLabel.setFixedSize(20, 20)
 
                 row = i // 2
@@ -844,7 +854,7 @@ class AttackPieChart():
 
 
 # function for updating the pie chart after an attack was detected, expects an attack name like: ARP, DNS, Port Scan, DoS
-def UpdateChartAfterAttack(self, attackName):
+def UpdatePieChartAfterAttack(self, attackName):
     try:
         sliceLable = AttackPieChart.pieChartLabelDict.get(attackName)[0]
         series = self.ui.piChart.series()[0]
@@ -866,20 +876,24 @@ def UpdateChartAfterAttack(self, attackName):
             newSlice.setLabelArmLengthFactor(0.075)
             newSlice.setLabel(f'{sliceLable} {newSlice.percentage()*100:.1f}%')
             newSlice.setLabelColor(QColor(45, 46, 54, 255) if self.userData.get('lightMode') == 0 else QColor(1, 1, 1, 255))
-            newSlice.setColor(QColor(AttackPieChart.pieChartLabelDict.get(attackName)[2]))
+            newSlice.setColor(AttackPieChart.pieChartLabelDict.get(attackName)[2])
 
         # set the title to be empty (hide the title) if there is at least one attack detection in history
         if series.count() > 0:
             self.ui.piChart.setTitle('')
         
-        UpdateChartLegendsAndSlices(self) #update the text data of legends and slice labels
+        UpdatePieChartLegendsAndSlices(self) #update the text data of legends and slice labels
+        
+        # update the userdata object
+        self.userData.get('pieChartData').setdefault(attackName, 0)
+        self.userData['pieChartData'][attackName] += 1
 
     except Exception as e:
         ShowMessageBox('Error Updating Pie Chart', 'Error occurred while updating pie chart, try again later.', 'Critical')
 
     
 #  function for updating the text of the pie chart legends and slice labels
-def UpdateChartLegendsAndSlices(self):
+def UpdatePieChartLegendsAndSlices(self):
     try:
         # creating a new dict with legend names like: sliceName: legendName
         pieChartNames = {pieChartValues[0] : pieChartValues[1] for pieChartValues in AttackPieChart.pieChartLabelDict.values()} 
@@ -903,7 +917,7 @@ def UpdateChartLegendsAndSlices(self):
 
 
 # function for updating the pie chart after user login with data from database
-def UpdateChartAfterLogin(self, pieChartData):
+def UpdatePieChartAfterLogin(self, pieChartData):
     try:
         # check if there's at least one attack in pieChartData dictionary
         if any(attackCount > 0 for attackCount in pieChartData.values()):
@@ -923,19 +937,19 @@ def UpdateChartAfterLogin(self, pieChartData):
                     newSlice.setLabelVisible(True)
                     newSlice.setLabelArmLengthFactor(0.075)
                     newSlice.setLabelColor(QColor(45, 46, 54, 255) if self.userData.get('lightMode') == 0 else QColor(1, 1, 1, 255))
-                    newSlice.setColor(QColor(AttackPieChart.pieChartLabelDict.get(attackName)[2]))
+                    newSlice.setColor(AttackPieChart.pieChartLabelDict.get(attackName)[2])
 
             # add the new series to the chart and update the GUI
             self.ui.piChart.addSeries(newSeries)
             self.ui.piChart.setTitle('') #remove the default title if exists
-            UpdateChartLegendsAndSlices(self)
+            UpdatePieChartLegendsAndSlices(self)
 
     except Exception as e:
         ShowMessageBox('Error Updating Pie Chart', 'Error occurred while updating pie chart, try again later.', 'Critical')
 
 
 # function for clearing the pie chart and resetting to default empty pie chart
-def ResetChartToDefault(self):
+def ResetPieChartToDefault(self):
     try:
         # clear the pie chart data and set the default title
         self.ui.piChart.series()[0].clear()
@@ -952,6 +966,277 @@ def ResetChartToDefault(self):
         ShowMessageBox('Error Clearing Pie Chart', 'Error occurred while clearing pie chart, try again later.', 'Critical')
 
 #------------------------------------------ATTACK-PIE-CHART-END----------------------------------------------#
+
+#---------------------------------------------HISTOGRAM-CHART------------------------------------------------#
+
+# class for initializing the Histogram on the Analytics page
+class AnalyticsHistogramChart():
+
+    # define our attack classes and their colors and the months of the year to show in the chart
+    histogramClasses = AttackPieChart.pieChartLabelDict.keys()
+    histogramColors = [color[2] for color in AttackPieChart.pieChartLabelDict.values()]
+    histogramMonths = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ]
+    
+    # method for initializing the histogram chart
+    def InitAnalyticsHistogramChart(self):
+        # create the chart object and set fonts and colors
+        histogramChart = QChart()
+        histogramChart.legend().setVisible(True)
+        histogramChart.legend().setFont(QFont('Cairo', 9, QFont.Bold))
+        histogramChart.legend().setContentsMargins(0, 0, 0, 0)
+        histogramChart.legend().layout().setContentsMargins(0, 0, 0, 0)
+        histogramChart.legend().setBackgroundVisible(False)
+        histogramChart.legend().setAlignment(Qt.AlignTop)
+        histogramChart.layout().setContentsMargins(0, 0, 0, 0)
+        histogramChart.setMargins(QMargins(0, 0, 0, 0))
+        histogramChart.setBackgroundRoundness(0)
+        histogramChart.setBackgroundBrush(QColor('#f3f3f3') if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
+        histogramChart.setTitle(f'No data to display...')
+        histogramChart.setTitleFont(QFont('Cairo', 18, QFont.Bold, False))
+        histogramChart.setAnimationOptions(QChart.SeriesAnimations)
+
+        # create a separate QLabel for the title (will be visible when there is no data to display)
+        titleLabel = QLabel('No data to display...')
+        titleLabel.setAlignment(Qt.AlignCenter)
+        titleLabel.setFont(QFont('Cairo', 18, QFont.Bold))
+        titleLabel.setObjectName('histogramChartTitleLabel')
+        titleLabel.setAlignment(Qt.AlignHCenter)  # Start centered
+        titleLabel.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+
+        # create the chartView object
+        chartView = QChartView(histogramChart)
+        chartView.setRenderHint(QPainter.Antialiasing)
+
+        # create a VBoxLayout that the histogram chart and title will sit in
+        VBoxLayout = QVBoxLayout()
+        VBoxLayout.setSpacing(0)
+        VBoxLayout.setContentsMargins(6, 6, 6, 6)
+        VBoxLayout.addWidget(titleLabel) #adding title
+        VBoxLayout.addWidget(chartView) #adding histogram chart
+        
+        # add the VBoxLayout to the ui frame and save references to chart related objects
+        self.ui.lineChartVerticalFrame.setLayout(VBoxLayout)
+        self.ui.lineChartVerticalFrame.update()
+        self.ui.histogramChart = histogramChart
+        self.ui.histogramChartView = chartView
+        self.ui.histogramChartTitleLabel = titleLabel
+
+        # hide the chart and show the title
+        self.ui.histogramChartTitleLabel.show()
+        self.ui.histogramChartView.hide()
+
+
+    # simple method for showing a tooltip on each bar of the histogram chart when the user hovers it with the mouse
+    def ShowTooltip(self, state, index, barSet):
+        if state:
+            # get class name, value and month and show tooltip text
+            className = barSet.label()
+            value = barSet.at(index) 
+            month = AnalyticsHistogramChart.histogramMonths[index] 
+            QToolTip.showText(QCursor.pos(), f'Attack: {className}\nCount: {int(value)}\nMonth: {month}', self)
+
+
+# function for initializing the analytics combobox with year values based on if the user is logged-in or not
+def InitAnalyticsYearCombobox(self):
+    if self.userData.get('analyticsChartData').get('chartData'):
+        self.ui.analyticsYearComboBox.addItems(list(self.userData.get('analyticsChartData').get('chartData').keys()))
+    else:
+        self.ui.analyticsYearComboBox.addItems([str(datetime.now().year)]) 
+
+
+# helper function for creating the chart data, axies and bars using the diven data dict, if data dict is None then create an empty chart
+def CreateHistogramChartData(self, histogramChartData=None):
+    try:
+        # find valid months based on the current month and selected year in the combobox
+        yearComboboxSelection = self.ui.analyticsYearComboBox.currentText()
+        validMonths = AnalyticsHistogramChart.histogramMonths 
+        if int(yearComboboxSelection) == datetime.now().year:
+            currentMonth = datetime.now().month
+            validMonths = AnalyticsHistogramChart.histogramMonths[:currentMonth] #get all the valid months from January untill current month
+
+        # hide the title and show the chart
+        self.ui.histogramChart.setTitle(f'Monthly Network Attacks For Year {yearComboboxSelection}')
+        self.ui.histogramChartTitleLabel.hide()
+        self.ui.histogramChartView.show()
+        self.ui.histogramChart.setBackgroundBrush(QColor('#f3f3f3') if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
+
+        # create bar sets for each class
+        barSets = []
+        for i, className in enumerate(AnalyticsHistogramChart.histogramClasses): 
+            barSet = QBarSet(className)
+            barSet.setColor(AnalyticsHistogramChart.histogramColors[i]) #set predefined color
+            
+            # connect hovered signal to custom slot
+            barSet.hovered.connect(lambda state, index, barSet=barSet: AnalyticsHistogramChart.ShowTooltip(self, state, index, barSet))
+            
+            # append data for this class from dictionary
+            if histogramChartData: #check if there is data to add to the chart, if not then the chart will be empty
+                for month in histogramChartData.get(yearComboboxSelection).keys(): #iterate over all months in the list (skipping the first index because it not a month)
+                    barSet.append(histogramChartData.get(yearComboboxSelection).get(month).get(className)) #get value for this class
+                barSets.append(barSet)
+            else:
+                # insert zero data into the chart for a default and empty histogram chart
+                for _ in AnalyticsHistogramChart.histogramMonths:
+                    barSet.append(0)
+                barSets.append(barSet)
+
+        # create bar series and add bar sets
+        barSeries = QBarSeries()
+        for barSet in barSets:
+            barSeries.append(barSet)
+
+        # add references of chart objects to self.ui
+        self.ui.histogramChart.addSeries(barSeries)
+        self.ui.histogramBarSeries = barSeries
+        self.ui.histogramBarSets = barSets
+
+        # create X-axis months
+        axisX = QBarCategoryAxis()
+        axisX.append(validMonths)
+        axisX.setTitleText('Month')
+        axisX.setLabelsFont(QFont('Cairo', 9, QFont.Bold, True))
+        axisX.setTitleFont(QFont('Cairo', 12, QFont.Bold, False))
+        axisX.setGridLineColor(QColor('#73758b')) 
+        axisX.setLinePen(QPen(QColor('#73758b'), 1))
+        self.ui.histogramChart.addAxis(axisX, Qt.AlignBottom)
+        barSeries.attachAxis(axisX)
+
+        # create Y-axis values
+        axisY = QValueAxis()
+        axisY.setTitleText('Number of Attacks')
+        axisY.setLabelsFont(QFont('Cairo', 9, QFont.Bold, False))
+        axisY.setTitleFont(QFont('Cairo', 11, QFont.Bold, False))
+        axisY.setGridLineColor(QColor('#73758b'))
+        axisY.setLinePen(QPen(QColor('#73758b'), 1))
+        axisY.setTickInterval(1)
+        axisY.setLabelFormat('%d') #integer labels
+        self.ui.lineChartVerticalFrame.update()
+        self.ui.histogramAxisY = axisY
+
+        # adjust the Y-axis range of values to be at least from 0 to 4 including, this ensures that there are no wierd values in the Y-axis
+        maxValue = axisY.max()
+        if maxValue < 4:
+            axisY.setRange(0, 4)
+            self.ui.histogramChart.addAxis(axisY, Qt.AlignLeft)
+            barSeries.attachAxis(axisY)
+            self.ui.lineChartVerticalFrame.update()
+        else:
+            self.ui.histogramChart.addAxis(axisY, Qt.AlignLeft)
+            barSeries.attachAxis(axisY)
+
+    except Exception as e:
+        ShowMessageBox('Error Creating Histogram Chart', 'Error occurred while creating histogram chart with given data, try again later.', 'Critical')
+
+
+# function for updating the histogram chart after an attack was detected, expects an attack name like in database: 'ARP Spoofing', 'Port Scan', etc.
+def UpdateHistogramChartAfterAttack(self, attackName):
+    try:
+        # only updating the histogram chart if the user year selection is the current year, otherwise it will update when a user changes the combobox value
+        yearComboboxSelection = self.ui.analyticsYearComboBox.currentText()
+        if int(yearComboboxSelection) == datetime.now().year:
+            # checking in there is any histogram chart data already or not, if not then we need to create the data
+            if not self.ui.histogramChart.series(): #need to create chart data
+                CreateHistogramChartData(self)
+
+            # updating the histogram data for the given attack type in the current month
+            barSet = self.ui.histogramBarSets[list(AnalyticsHistogramChart.histogramClasses).index(attackName)]
+            monthIndex = AnalyticsHistogramChart.histogramMonths.index(datetime.now().strftime('%B'))
+            newValue = barSet.at(monthIndex) + 1
+            barSet.replace(monthIndex, newValue)
+
+            # check if we need to update the Y-axis range, need to update if the new value is larger than the max value
+            if newValue > self.ui.histogramChart.axes(Qt.Vertical)[0].max(): 
+                # detach the series from the chart and axes
+                self.ui.histogramBarSeries.detachAxis(self.ui.histogramAxisY)
+                self.ui.histogramBarSeries.detachAxis(self.ui.histogramChart.axes(Qt.Horizontal)[0])
+                self.ui.histogramChart.removeSeries(self.ui.histogramBarSeries)
+                self.ui.histogramChart.removeAxis(self.ui.histogramAxisY)
+
+                # create a new Y-axis
+                axisY = QValueAxis()
+                axisY.setTitleText('Number of Attacks')
+                axisY.setLabelsFont(QFont('Cairo', 9, QFont.Bold, False))
+                axisY.setTitleFont(QFont('Cairo', 11, QFont.Bold, False))
+                axisY.setGridLineColor(QColor('#73758b'))
+                axisY.setLinePen(QPen(QColor('#73758b'), 1))
+                axisY.setLabelFormat('%d') #integer labels
+
+                # set the range from 0 to new value
+                axisY.setRange(0, newValue)
+
+                # determine the number of grid lines based on whether max_data is even or odd
+                desiredLines = 4 if newValue % 2 == 0 else 5 #ensure that there will always be 4 lines on the screen
+                tickInterval = int((newValue / (desiredLines - 1)) + 0.999) #calculate the tick interval to achieve the desired number of lines
+
+                # adjust max_data slightly if needed to make ticks align perfectly
+                adjustedMax = tickInterval * (desiredLines - 1)
+                if adjustedMax > newValue:
+                    axisY.setRange(0, adjustedMax)
+
+                # set the tick interval
+                axisY.setTickInterval(tickInterval)
+                axisY.setTickCount(desiredLines)
+
+                # attach the new axis and series back to the chart
+                self.ui.histogramChart.addAxis(axisY, Qt.AlignLeft)
+                axisX = self.ui.histogramChart.axes(Qt.Horizontal)[0]
+                self.ui.histogramChart.addSeries(self.ui.histogramBarSeries)
+                self.ui.histogramBarSeries.attachAxis(axisX)
+                self.ui.histogramBarSeries.attachAxis(axisY)
+                self.ui.histogramAxisY = axisY #update the reference to the new Y-axis
+
+            self.ui.lineChartVerticalFrame.update() #ensure the chart updates
+
+        # update the userdata object #? check if its relevant
+        # self.userData.get('analyticsChartData').get('chartData').get(self.ui.analyticsYearComboBox.currentText()).get(datetime.now().month).setdefault(attackName, 0)
+        # self.userData['analyticsChartData']['chartData'][self.ui.analyticsYearComboBox.currentText()][datetime.now().month][attackName] += 1
+
+    except Exception as e:
+        ShowMessageBox('Error Updating Histogram Chart', 'Error occurred while updating histogram chart after an attack, try again later.', 'Critical')
+
+
+# function for updating the histogram chart after user login with data from database
+def UpdateHistogramChartAfterLogin(self, histogramChartData):
+    try:
+        # check if there's at least one attack in histogramChartData dictionary
+        if len(histogramChartData) > 0:
+            CreateHistogramChartData(self, histogramChartData)
+        else:
+            ResetHistogramChartToDefault()
+        
+    except Exception as e:
+        ShowMessageBox('Error Updating Histogram Chart', 'Error occurred while updating histogram chart, try again later.', 'Critical')
+
+
+# function for clearing the histogram chart and resetting to default empty histogram chart. the 'hideChart' parameter is used when we dont want to hide the chart object after clearing the data in it
+def ResetHistogramChartToDefault(self, hideChart=True):
+    try:
+        # clear the histogram chart data and set the default title
+        for series in self.ui.histogramChart.series():
+            self.ui.histogramChart.removeSeries(series)
+
+        # clear all axes and grid lines and reset the title
+        for axis in self.ui.histogramChart.axes():
+            self.ui.histogramChart.removeAxis(axis)
+
+        # hide the chart and show the title
+        if hideChart:
+            self.ui.histogramChartTitleLabel.setText('No data to display...')
+            self.ui.histogramChartTitleLabel.show()
+            self.ui.histogramChartView.hide()
+
+        #? add a clear to the userdata dict if 'analyticsChartData' , need to check that user has logged out
+
+        # validate that the background color matches the current users preference
+        self.ui.histogramChart.setBackgroundBrush(QColor('#f3f3f3') if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
+
+    except Exception as e:
+        ShowMessageBox('Error Clearing Histogram Chart', 'Error occurred while clearing histogram chart, try again later.', 'Critical')
+
+#-------------------------------------------HISTOGRAM-CHART-END----------------------------------------------#
 
 #--------------------------------------------TABLE-VIEW-FILTER-----------------------------------------------#
 
@@ -1276,8 +1561,9 @@ def InitAnimationsUI(self):
     # initialize system tray icon
     SystemTrayIcon.InitTrayIcon(self)
 
-    # initilize attack pie chart in GUI
+    # initilize charts in GUI
     AttackPieChart.InitAttackPieChart(self)
+    AnalyticsHistogramChart.InitAnalyticsHistogramChart(self)
 
     # initilize report preview table view and initialize selected attacks and time filter
     InitReportTableView(self)

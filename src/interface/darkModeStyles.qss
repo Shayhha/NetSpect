@@ -132,7 +132,7 @@ QTableWidget {
 }
 
 QTableWidget::item {
-    padding: 6px;
+    padding: 5px;
     border: none;
 }
 
@@ -651,6 +651,7 @@ QCheckBox {
     padding: 10px;
     padding-left: 5px;
     padding-right: 5px;
+    border: 1px solid black;
 }
 
 #networkInterfaceComboBox QAbstractItemView::item:hover {
@@ -773,6 +774,83 @@ QCheckBox {
 
 /*--------------------------------Main-Window-End---------------------------------*/
 
+/*-------------------------------Analytics-Window---------------------------------*/
+
+#analyticsYearComboBoxFrame {
+    background-color: #f3f3f3;
+    color: black;
+    border: 2px solid lightgray; 
+    border-radius: 10px;
+    padding-left: 10px;
+}
+
+#analyticsYearComboBox {
+    background-color: transparent;
+    border-radius: 10px;
+    border-style: outset;
+    border-width: 2px;
+    border-color: transparent;	
+    padding: 4px;
+	padding-left: 10px;
+    color: black;
+}
+
+#analyticsYearComboBox QAbstractItemView {
+    background-color:  rgb(245,245,245);
+    selection-background-color: rgb(95, 97, 109);
+    color: rgb(0, 0, 0);    
+    padding: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border: 1px solid black;
+}
+
+#analyticsYearComboBox QAbstractItemView::item:hover { 
+    background-color: rgba(0, 0, 0, 0.07);
+    color: black;
+    border-radius: 6px;
+    padding-left: 8px;
+}
+
+#analyticsYearComboBox QAbstractItemView::item:selected { 
+    color: black;
+    border: none;
+    outline: none;
+}
+
+#analyticsYearComboBox QListView{
+    outline: 0px;
+}
+
+#analyticsYearComboBoxArrow {
+    background-color: lightgray;
+    color: black;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding-left: 10px;
+}
+
+#analyticsYearSelectionLabel {
+	background-color: transparent;
+	color: #f3f3f3;
+}
+
+#lineChartVerticalFrame { 
+    background-color: #f3f3f3;
+    border: 2px solid black; 
+    border-radius: 20px;
+    margin: 0px 15px 10px 15px;
+    color: black;
+}
+
+#histogramChartTitleLabel {
+    background-color: #f3f3f3;
+    margin: 0;
+    color: black;
+}
+
+/*-----------------------------Analytics-Window-End-------------------------------*/
+
 /*---------------------------------Report-Window----------------------------------*/
 
 #reportSelectionLabel {
@@ -814,6 +892,7 @@ QCheckBox {
     padding: 10px;
     padding-left: 5px;
     padding-right: 5px;
+    border: 1px solid black;
 }
 
 #reportDurationComboBox QAbstractItemView::item:hover { 
@@ -1295,6 +1374,7 @@ QCheckBox {
     padding: 10px;
     padding-left: 5px;
     padding-right: 5px;
+    border: 1px solid black;
 }
 
 #colorModeComboBox QAbstractItemView::item:hover { 
@@ -1443,6 +1523,7 @@ QCheckBox {
     padding: 10px;
     padding-left: 5px;
     padding-right: 5px;
+    border: 1px solid black;
 }
 
 #operationModeComboBox QAbstractItemView::item:hover { 

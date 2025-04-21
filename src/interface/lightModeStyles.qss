@@ -148,7 +148,7 @@ QTableWidget {
 }
 
 QTableWidget::item {
-    padding: 6px;
+    padding: 5px;
     border: none;  
 }
 
@@ -794,6 +794,83 @@ QCheckBox {
 }
 
 /*--------------------------------Main-Window-End---------------------------------*/
+
+/*-------------------------------Analytics-Window---------------------------------*/
+
+#analyticsYearComboBoxFrame {
+    background-color: #ebeff7;
+    color: #151519;
+    border: 2px solid #899fce; 
+    border-radius: 10px;
+    padding-left: 10px;
+}
+
+#analyticsYearComboBox {
+    background-color: transparent;
+    border-radius: 10px;
+    border: 2px solid #899fce;	
+    padding: 4px;
+	padding-left: 10px;
+    color: #151519;
+}
+
+#analyticsYearComboBoxArrow {
+    background-color: #899fce;
+    color: #151519;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding-left: 10px;
+}
+
+#analyticsYearComboBox QAbstractItemView {
+    background-color: rgb(245,245,245);
+    selection-background-color: rgb(214, 214, 214);
+    selection-color: black;
+    color: #151519;      
+    padding: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border: 1px solid black;
+}
+
+#analyticsYearComboBox QAbstractItemView::item:hover { 
+    background-color: rgba(137, 159, 206, 0.2);
+    color: #151519;
+    border-radius: 6px;
+    padding-left: 8px;
+}
+
+#analyticsYearComboBox QAbstractItemView::item:selected { 
+    color: #151519;
+    border: none;
+    outline: none;
+}
+
+#analyticsYearComboBox QListView{
+    outline: 0px;
+}
+
+#analyticsYearSelectionLabel {
+	background-color: transparent;
+	color: #151519;
+}
+
+#lineChartVerticalFrame { 
+    background-color: #ebeff7;
+    border: 2px solid black; 
+    border-radius: 20px;
+    margin: 0px 15px 10px 15px;
+    color: #151519;
+}
+
+#histogramChartTitleLabel {
+    background-color: #ebeff7;
+    margin: 0;
+    color: #151519;
+}
+
+
+/*-----------------------------Analytics-Window-End-------------------------------*/
 
 /*---------------------------------Report-Window----------------------------------*/
 

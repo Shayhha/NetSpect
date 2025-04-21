@@ -738,6 +738,7 @@ class Ui_NetSpect(object):
 "    padding: 10px;\n"
 "    padding-left: 5px;\n"
 "    padding-right: 5px;\n"
+"	border: 1px solid black;\n"
 "}\n"
 "\n"
 "#networkInterfaceComboBox QAbstractItemView::item:hover {\n"
@@ -985,7 +986,7 @@ class Ui_NetSpect(object):
 "}\n"
 "\n"
 "#historyTableWidget::item {\n"
-"    padding: 6px;\n"
+"    padding: 5px;\n"
 "    border: none;\n"
 "}\n"
 "\n"
@@ -1064,48 +1065,165 @@ class Ui_NetSpect(object):
         self.stackedWidget.addWidget(self.homePage)
         self.analyticsPage = QWidget()
         self.analyticsPage.setObjectName(u"analyticsPage")
+        self.gridLayout_9 = QGridLayout(self.analyticsPage)
+        self.gridLayout_9.setSpacing(0)
+        self.gridLayout_9.setObjectName(u"gridLayout_9")
+        self.gridLayout_9.setContentsMargins(0, 0, 0, 0)
         self.analyticsHorizontalFrame = QFrame(self.analyticsPage)
         self.analyticsHorizontalFrame.setObjectName(u"analyticsHorizontalFrame")
-        self.analyticsHorizontalFrame.setGeometry(QRect(0, 0, 930, 660))
         self.analyticsHorizontalFrame.setMinimumSize(QSize(0, 660))
         self.analyticsHorizontalFrame.setFont(font8)
-        self.horizontalLayout_15 = QHBoxLayout(self.analyticsHorizontalFrame)
-        self.horizontalLayout_15.setSpacing(10)
-        self.horizontalLayout_15.setObjectName(u"horizontalLayout_15")
-        self.horizontalLayout_15.setContentsMargins(20, 20, 20, 20)
-        self.lineChartVerticalFrame = QFrame(self.analyticsHorizontalFrame)
-        self.lineChartVerticalFrame.setObjectName(u"lineChartVerticalFrame")
-        self.verticalLayout_29 = QVBoxLayout(self.lineChartVerticalFrame)
-        self.verticalLayout_29.setSpacing(0)
-        self.verticalLayout_29.setObjectName(u"verticalLayout_29")
-        self.verticalLayout_29.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_30 = QVBoxLayout(self.analyticsHorizontalFrame)
+        self.verticalLayout_30.setSpacing(0)
+        self.verticalLayout_30.setObjectName(u"verticalLayout_30")
+        self.verticalLayout_30.setContentsMargins(0, 0, 0, 0)
+        self.analyticsYearHorizontalFrame = QFrame(self.analyticsHorizontalFrame)
+        self.analyticsYearHorizontalFrame.setObjectName(u"analyticsYearHorizontalFrame")
+        self.analyticsYearHorizontalFrame.setMinimumSize(QSize(0, 45))
+        self.analyticsYearHorizontalFrame.setMaximumSize(QSize(16777215, 45))
+        self.horizontalLayout_33 = QHBoxLayout(self.analyticsYearHorizontalFrame)
+        self.horizontalLayout_33.setSpacing(5)
+        self.horizontalLayout_33.setObjectName(u"horizontalLayout_33")
+        self.horizontalLayout_33.setContentsMargins(16, 10, 0, 0)
+        self.analyticsYearSelectionLabel = QLabel(self.analyticsYearHorizontalFrame)
+        self.analyticsYearSelectionLabel.setObjectName(u"analyticsYearSelectionLabel")
+        self.analyticsYearSelectionLabel.setMinimumSize(QSize(115, 35))
+        self.analyticsYearSelectionLabel.setMaximumSize(QSize(115, 16777215))
+        self.analyticsYearSelectionLabel.setFont(font4)
+        self.analyticsYearSelectionLabel.setStyleSheet(u"#selectYearSelectionLabel {\n"
+"	background-color: transparent;\n"
+"	color: #f3f3f3;\n"
+"}")
+        self.analyticsYearSelectionLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
+        self.analyticsYearSelectionLabel.setWordWrap(False)
 
-        self.horizontalLayout_15.addWidget(self.lineChartVerticalFrame)
+        self.horizontalLayout_33.addWidget(self.analyticsYearSelectionLabel)
+
+        self.analyticsYearComboBoxFrame = QFrame(self.analyticsYearHorizontalFrame)
+        self.analyticsYearComboBoxFrame.setObjectName(u"analyticsYearComboBoxFrame")
+        self.analyticsYearComboBoxFrame.setMinimumSize(QSize(100, 32))
+        self.analyticsYearComboBoxFrame.setMaximumSize(QSize(100, 32))
+        self.analyticsYearComboBoxFrame.setFont(font8)
+        self.analyticsYearComboBoxFrame.setStyleSheet(u"#analyticsYearComboBoxFrame {\n"
+"    background-color: #f3f3f3;\n"
+"    color: black;\n"
+"    border: 2px solid lightgray; \n"
+"    border-radius: 10px;\n"
+"    padding-left: 10px;\n"
+"}")
+        self.analyticsYearComboBoxFrame.setFrameShape(QFrame.Shape.StyledPanel)
+        self.analyticsYearComboBoxFrame.setFrameShadow(QFrame.Shadow.Raised)
+        self.analyticsYearComboBoxArrow = QFrame(self.analyticsYearComboBoxFrame)
+        self.analyticsYearComboBoxArrow.setObjectName(u"analyticsYearComboBoxArrow")
+        self.analyticsYearComboBoxArrow.setGeometry(QRect(75, 0, 24, 32))
+        self.analyticsYearComboBoxArrow.setMinimumSize(QSize(24, 32))
+        self.analyticsYearComboBoxArrow.setMaximumSize(QSize(22, 32))
+        self.analyticsYearComboBoxArrow.setFont(font8)
+        self.analyticsYearComboBoxArrow.setStyleSheet(u"#analyticsYearComboBoxArrow {\n"
+"    background-color: lightgray;\n"
+"    color: black;\n"
+"    border-top-right-radius: 10px;\n"
+"    border-bottom-right-radius: 10px;\n"
+"    padding-left: 10px;\n"
+"}")
+        self.analyticsYearComboBoxArrow.setFrameShape(QFrame.Shape.StyledPanel)
+        self.analyticsYearComboBoxArrow.setFrameShadow(QFrame.Shadow.Raised)
+        self.analyticsYearComboBox = QComboBox(self.analyticsYearComboBoxFrame)
+        self.analyticsYearComboBox.addItem("")
+        self.analyticsYearComboBox.addItem("")
+        self.analyticsYearComboBox.setObjectName(u"analyticsYearComboBox")
+        self.analyticsYearComboBox.setEnabled(True)
+        self.analyticsYearComboBox.setGeometry(QRect(0, 0, 100, 32))
+        self.analyticsYearComboBox.setMinimumSize(QSize(100, 32))
+        self.analyticsYearComboBox.setMaximumSize(QSize(100, 32))
+        self.analyticsYearComboBox.setFont(font8)
+        self.analyticsYearComboBox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.analyticsYearComboBox.setStyleSheet(u"#analyticsYearComboBox {\n"
+"    background-color: transparent;\n"
+"    border-radius: 10px;\n"
+"    border-style: outset;\n"
+"    border-width: 2px;\n"
+"    border-color: transparent;	\n"
+"    padding: 4px;\n"
+"	padding-left: 10px;\n"
+"    color: black;\n"
+"}\n"
+"\n"
+"#analyticsYearComboBox QAbstractItemView {\n"
+"    background-color:  rgb(245,245,245);\n"
+"    selection-background-color: rgb(95, 97, 109);\n"
+"    color: rgb(0, 0, 0);    \n"
+"    padding: 10px;\n"
+"    padding-left: 5px;\n"
+"    padding-right: 5px;\n"
+"	border: 1px solid black;\n"
+"}\n"
+"\n"
+"#analyticsYearComboBox QAbstractItemView::item:hover { \n"
+"    background-color: rgba(0, 0, 0, 0.07);\n"
+"    color: black;\n"
+"    border-radius: 6px;\n"
+"    padding-left: 8px;\n"
+"}\n"
+"\n"
+"#analyticsYearComboBox QAbstractItemView::item:selected { \n"
+"    color: black;\n"
+"    border: none;\n"
+"    outline: none;\n"
+"}\n"
+"\n"
+"#analyticsYearComboBox QListView{\n"
+"    outline: 0px;\n"
+"}")
+
+        self.horizontalLayout_33.addWidget(self.analyticsYearComboBoxFrame)
+
+        self.analyticsYearHorizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_33.addItem(self.analyticsYearHorizontalSpacer)
+
+
+        self.verticalLayout_30.addWidget(self.analyticsYearHorizontalFrame)
 
         self.chartsVerticalFrame = QFrame(self.analyticsHorizontalFrame)
         self.chartsVerticalFrame.setObjectName(u"chartsVerticalFrame")
         self.chartsVerticalFrame.setMaximumSize(QSize(16777215, 16777215))
-        self.verticalLayout_32 = QVBoxLayout(self.chartsVerticalFrame)
-        self.verticalLayout_32.setSpacing(0)
-        self.verticalLayout_32.setObjectName(u"verticalLayout_32")
-        self.verticalLayout_32.setContentsMargins(0, 0, 10, 0)
-        self.barChartverticalFrame = QFrame(self.chartsVerticalFrame)
-        self.barChartverticalFrame.setObjectName(u"barChartverticalFrame")
-        self.barChartverticalFrame.setMaximumSize(QSize(16777215, 16777215))
-        self.verticalLayout_31 = QVBoxLayout(self.barChartverticalFrame)
-        self.verticalLayout_31.setObjectName(u"verticalLayout_31")
-
-        self.verticalLayout_32.addWidget(self.barChartverticalFrame)
-
+        self.horizontalLayout_15 = QHBoxLayout(self.chartsVerticalFrame)
+        self.horizontalLayout_15.setSpacing(0)
+        self.horizontalLayout_15.setObjectName(u"horizontalLayout_15")
+        self.horizontalLayout_15.setContentsMargins(0, 0, 0, 0)
         self.cardsHorizontalFrame = QFrame(self.chartsVerticalFrame)
         self.cardsHorizontalFrame.setObjectName(u"cardsHorizontalFrame")
+        self.cardsHorizontalFrame.setMinimumSize(QSize(0, 307))
         self.horizontalLayout_29 = QHBoxLayout(self.cardsHorizontalFrame)
+        self.horizontalLayout_29.setSpacing(0)
         self.horizontalLayout_29.setObjectName(u"horizontalLayout_29")
+        self.horizontalLayout_29.setContentsMargins(10, 10, 10, 10)
 
-        self.verticalLayout_32.addWidget(self.cardsHorizontalFrame)
+        self.horizontalLayout_15.addWidget(self.cardsHorizontalFrame)
+
+        self.barChartVerticalFrame = QFrame(self.chartsVerticalFrame)
+        self.barChartVerticalFrame.setObjectName(u"barChartVerticalFrame")
+        self.barChartVerticalFrame.setMinimumSize(QSize(0, 307))
+        self.barChartVerticalFrame.setMaximumSize(QSize(16777215, 16777215))
+        self.verticalLayout_31 = QVBoxLayout(self.barChartVerticalFrame)
+        self.verticalLayout_31.setSpacing(0)
+        self.verticalLayout_31.setObjectName(u"verticalLayout_31")
+        self.verticalLayout_31.setContentsMargins(10, 10, 10, 10)
+
+        self.horizontalLayout_15.addWidget(self.barChartVerticalFrame)
 
 
-        self.horizontalLayout_15.addWidget(self.chartsVerticalFrame)
+        self.verticalLayout_30.addWidget(self.chartsVerticalFrame)
+
+        self.lineChartVerticalFrame = QFrame(self.analyticsHorizontalFrame)
+        self.lineChartVerticalFrame.setObjectName(u"lineChartVerticalFrame")
+        self.lineChartVerticalFrame.setMinimumSize(QSize(0, 0))
+
+        self.verticalLayout_30.addWidget(self.lineChartVerticalFrame)
+
+
+        self.gridLayout_9.addWidget(self.analyticsHorizontalFrame, 0, 0, 1, 1)
 
         self.stackedWidget.addWidget(self.analyticsPage)
         self.reportPage = QWidget()
@@ -1209,6 +1327,7 @@ class Ui_NetSpect(object):
 "    padding: 10px;\n"
 "    padding-left: 5px;\n"
 "    padding-right: 5px;\n"
+"	border: 1px solid black;\n"
 "}\n"
 "\n"
 "#reportDurationComboBox QAbstractItemView::item:hover { \n"
@@ -2864,6 +2983,7 @@ class Ui_NetSpect(object):
 "    padding: 10px;\n"
 "    padding-left: 5px;\n"
 "    padding-right: 5px;\n"
+"	border: 1px solid black;\n"
 "}\n"
 "\n"
 "#colorModeComboBox QAbstractItemView::item:hover { \n"
@@ -2975,6 +3095,7 @@ class Ui_NetSpect(object):
 "    padding: 10px;\n"
 "    padding-left: 5px;\n"
 "    padding-right: 5px;\n"
+"	border: 1px solid black;\n"
 "}\n"
 "\n"
 "#operationModeComboBox QAbstractItemView::item:hover { \n"
@@ -3882,6 +4003,7 @@ class Ui_NetSpect(object):
         self.retranslateUi(NetSpect)
 
         self.stackedWidget.setCurrentIndex(0)
+        self.analyticsYearComboBox.setCurrentIndex(0)
         self.reportDurationComboBox.setCurrentIndex(3)
 
 
@@ -3966,6 +4088,13 @@ class Ui_NetSpect(object):
         ___qtablewidgetitem4.setText(QCoreApplication.translate("NetSpect", u"Detected Attack", None));
         ___qtablewidgetitem5 = self.historyTableWidget.horizontalHeaderItem(5)
         ___qtablewidgetitem5.setText(QCoreApplication.translate("NetSpect", u"Timestamp", None));
+        self.analyticsYearSelectionLabel.setText(QCoreApplication.translate("NetSpect", u"Select Year:", None))
+        self.analyticsYearComboBox.setItemText(0, QCoreApplication.translate("NetSpect", u"2025", None))
+        self.analyticsYearComboBox.setItemText(1, QCoreApplication.translate("NetSpect", u"2024", None))
+
+#if QT_CONFIG(tooltip)
+        self.analyticsYearComboBox.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Select the time range for the report.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.reportSelectionLabel.setText(QCoreApplication.translate("NetSpect", u"Report Selection", None))
         self.reportDurationComboBox.setItemText(0, QCoreApplication.translate("NetSpect", u"Last 24 Hours", None))
         self.reportDurationComboBox.setItemText(1, QCoreApplication.translate("NetSpect", u"Last 7 Days", None))

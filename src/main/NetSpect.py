@@ -89,6 +89,7 @@ class NetSpect(QMainWindow):
         self.ui.networkInterfaceComboBox.currentIndexChanged.connect(self.ChangeNetworkInterface) #connect interfaces combobox to its method
         self.ui.colorModeComboBox.currentIndexChanged.connect(self.ChangeColorMode) #connecct color mode combobox to its method
         self.ui.operationModeComboBox.currentIndexChanged.connect(self.ChangeOperationMode) #connect operation mode combobox to its method
+        self.ui.analyticsYearComboBox.currentIndexChanged.connect(self.ChangeAnalyticsYear) #connect analytics year combobox to its method
         self.ChangeNetworkInterface() #set default network interface from combobox
 
         # initialize other interface components and show interface
@@ -446,7 +447,8 @@ class NetSpect(QMainWindow):
                 self.InitHistoryTable(self.userData.get('alertList')) #initialize our history table
                 self.InitReportTable(self.userData.get('alertList')) #initialize our report table
                 self.InitMacAddresses(self.userData.get('blackList')) #intialize our mac address black list
-                UserInterfaceFunctions.UpdateChartAfterLogin(self, self.userData.get('pieChartData')) #initialize pie chart
+                UserInterfaceFunctions.UpdatePieChartAfterLogin(self, self.userData.get('pieChartData')) #initialize pie chart
+                UserInterfaceFunctions.UpdateHistogramChartAfterLogin(self, self.userData.get('analyticsChartData').get('chartData')) #initialize histogram chart
                 self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has logged in.', 'INFO') #log login event
 
             # means we set user interface for logged out user
@@ -1266,7 +1268,8 @@ class NetSpect(QMainWindow):
 
             # add alert to our history and report tables in user interface, update counter and show tray message
             self.UpdateNumberOfDetectionsCounterLabel(1, True) #increment the number of detections counter
-            UserInterfaceFunctions.UpdateChartAfterAttack(self, attackType) #increment attack type in pie chart
+            UserInterfaceFunctions.UpdatePieChartAfterAttack(self, attackType) #increment attack type in pie chart
+            UserInterfaceFunctions.UpdateHistogramChartAfterAttack(self, attackType) #increment attack type in histogram chart
             UserInterfaceFunctions.ShowTrayMessage(self, 'Security Alert', f'Potential {alert.get('attackType')} attack detected from IP: {alert.get('srcIp')}. Immediate action recommended.', 'Warning')
             self.AddRowToHistoryTable(alert.get('srcIp'), alert.get('srcMac'), alert.get('dstIp'), alert.get('dstMac'), alert.get('attackType'), alert.get('timestamp'))
             self.AddRowToReportTable(alert.get('interface'), alert.get('attackType'), alert.get('srcIp'), alert.get('srcMac'), alert.get('dstIp'), alert.get('dstMac'), 
@@ -1290,7 +1293,8 @@ class NetSpect(QMainWindow):
                     self.userData['alertList'] = [] #clear alertsList in userData
                     self.userData['pieChartData'] = {} #clear pieChartData in userData
                     self.UpdateNumberOfDetectionsCounterLabel(0) #reset the number of detections counter in user interface
-                    UserInterfaceFunctions.ResetChartToDefault(self) #reset our pie chart
+                    UserInterfaceFunctions.ResetPieChartToDefault(self) #reset our pie chart
+                    UserInterfaceFunctions.ResetHistogramChartToDefault(self) #reset our histogram chart
                     self.ui.historyTableWidget.setRowCount(0) #clear history table
                     self.ui.reportPreviewTableModel.ClearRows() #clear report table
 
@@ -1404,6 +1408,22 @@ class NetSpect(QMainWindow):
         if self.sqlThread:
             if self.userData.get('userId'):
                 self.sqlThread.UpdateOperationMode(self.userData.get('userId'), self.userData.get('operationMode'))
+
+
+    # method for changing the operation mode of application, detection or collection
+    def ChangeAnalyticsYear(self):
+        if self.ui.analyticsYearComboBox.currentText(): #ensures that the following code does not execute when we initialize/re-initialize the combobox year values
+            # send a log that the user is changing the analytics year selection
+            self.SendLogDict(f'Main_Thread: {'User ' + self.userData.get('userName') if self.userData.get('userId') else 'Default user'} is changing the analytics year to: "{self.ui.analyticsYearComboBox.currentText()}".', 'INFO')
+
+            # update the histogram chart based on the selected year, first clear the current chart if it exists then create a new one
+            selectedData = self.userData.get('analyticsChartData').get('chartData', None)
+            if selectedData:
+                UserInterfaceFunctions.ResetHistogramChartToDefault(self, hideChart=False)
+                if selectedData.get(self.ui.analyticsYearComboBox.currentText(), None):
+                    UserInterfaceFunctions.CreateHistogramChartData(self, selectedData)
+            else:
+                UserInterfaceFunctions.ResetHistogramChartToDefault(self)
 
 
     # method for creating alerts report for user in desired format, txt or csv

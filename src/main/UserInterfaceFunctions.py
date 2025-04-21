@@ -222,6 +222,7 @@ def ToggleUserInterface(self, state):
     if state:
         self.ui.accountIcon.hide()
         self.ui.reportDurationComboBox.setEnabled(True)
+        self.ui.analyticsYearComboBox.setEnabled(True)
         self.ui.welcomeLabel.show()
         self.ui.logoutIcon.show()
         ShowSettingsInputFields(self)
@@ -231,21 +232,24 @@ def ToggleUserInterface(self, state):
         HideSettingsInputFields(self)
         self.ui.logoutIcon.hide()
         self.ui.welcomeLabel.hide()
+        self.ui.analyticsYearComboBox.setEnabled(False)
         self.ui.reportDurationComboBox.setEnabled(False)
         self.ui.welcomeLabel.clear()
         self.ui.accountIcon.show()
         self.ui.colorModeComboBox.setCurrentIndex(0) #reset the color combobox if the user has logged out
         self.ui.operationModeComboBox.setCurrentIndex(0) #reset the operation mode combobox if the user has logged out
 
-    #clear history and report tables and blacklist and pie chart
+    # clear history and report tables and blacklist
     self.ui.historyTableWidget.setRowCount(0)
     self.ui.reportPreviewTableModel.ClearRows()
     self.ui.macAddressListWidget.clear()
-    ResetPieChartToDefault(self) #reset our pie chart
 
-    # reset analytics combobox, set new values
+    # reset analytics combobox with current chart data
     self.ui.analyticsYearComboBox.clear()
     InitAnalyticsYearCombobox(self)
+
+    # reset attack distribution pie chart
+    ResetPieChartToDefault(self) #reset our pie chart
 
     # reset all the analytics charts
     ResetHistogramChartToDefault(self) #reset our histogram chart
@@ -336,6 +340,13 @@ def TogglePasswordVisibility(lineEditWidget, eyeIcon):
     else:
         lineEditWidget.setEchoMode(QLineEdit.Password) #hide the password
         eyeIcon.setIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'EyeOpen.png'))) #change to closed eye icon
+
+
+# function for initializing the analytics combobox with year values
+def InitAnalyticsYearCombobox(self):
+    # check that yearData dictionary is initialized before setting comobox itemss
+    if self.userData.get('analyticsChartData', {}).get('yearData', {}):
+        self.ui.analyticsYearComboBox.addItems(list(reversed(self.userData.get('analyticsChartData', {}).get('yearData', {}))))
 
 
 # function for toggling between detection or collection states and setting startStop button stylesheet accordingly
@@ -884,7 +895,7 @@ def UpdatePieChartAfterAttack(self, attackName):
         
         UpdatePieChartLegendsAndSlices(self) #update the text data of legends and slice labels
         
-        # update the userdata object
+        # update pieChartData dictionary in userdata
         self.userData.get('pieChartData').setdefault(attackName, 0)
         self.userData['pieChartData'][attackName] += 1
 
@@ -971,15 +982,12 @@ def ResetPieChartToDefault(self):
 
 # class for initializing the Histogram on the Analytics page
 class AnalyticsHistogramChart():
-
     # define our attack classes and their colors and the months of the year to show in the chart
     histogramClasses = AttackPieChart.pieChartLabelDict.keys()
     histogramColors = [color[2] for color in AttackPieChart.pieChartLabelDict.values()]
-    histogramMonths = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-    ]
-    
+    histogramMonths = ['January', 'February', 'March', 'April', 'May', 'June', 
+                       'July', 'August', 'September', 'October', 'November', 'December']
+
     # method for initializing the histogram chart
     def InitAnalyticsHistogramChart(self):
         # create the chart object and set fonts and colors
@@ -1037,14 +1045,6 @@ class AnalyticsHistogramChart():
             value = barSet.at(index) 
             month = AnalyticsHistogramChart.histogramMonths[index] 
             QToolTip.showText(QCursor.pos(), f'Attack: {className}\nCount: {int(value)}\nMonth: {month}', self)
-
-
-# function for initializing the analytics combobox with year values based on if the user is logged-in or not
-def InitAnalyticsYearCombobox(self):
-    if self.userData.get('analyticsChartData').get('chartData'):
-        self.ui.analyticsYearComboBox.addItems(list(reversed(self.userData.get('analyticsChartData').get('chartData'))))
-    else:
-        self.ui.analyticsYearComboBox.addItems([str(datetime.now().year)]) 
 
 
 # helper function for updating the grid lines and ticks based on the given maximum value
@@ -1144,8 +1144,8 @@ def CreateHistogramChartData(self, histogramChartData=None):
         if self.ui.histogramAxisY:
             self.ui.histogramBarSeries.detachAxis(self.ui.histogramAxisY)
             self.ui.histogramChart.removeAxis(self.ui.histogramAxisY)
-        self.ui.histogramChart.addAxis(axisY, Qt.AlignLeft)
-        barSeries.attachAxis(axisY)
+        self.ui.histogramChart.addAxis(self.ui.histogramAxisY, Qt.AlignLeft)
+        self.ui.histogramBarSeries.attachAxis(self.ui.histogramAxisY)
         self.ui.histogramChartVerticalFrame.update()
 
     except Exception as e:
@@ -1199,9 +1199,9 @@ def UpdateHistogramChartAfterAttack(self, attackName):
 
             self.ui.histogramChartVerticalFrame.update() #ensure the chart updates
 
-        # update the userdata object #? check if its relevant
-        # self.userData.get('analyticsChartData').get('chartData').get(self.ui.analyticsYearComboBox.currentText()).get(datetime.now().month).setdefault(attackName, 0)
-        # self.userData['analyticsChartData']['chartData'][self.ui.analyticsYearComboBox.currentText()][datetime.now().month][attackName] += 1
+        # update chartData dictionary in userdata
+        self.userData.get('analyticsChartData').get('chartData').get(self.ui.analyticsYearComboBox.currentText()).get(datetime.now().month).setdefault(attackName, 0)
+        self.userData['analyticsChartData']['chartData'][self.ui.analyticsYearComboBox.currentText()][datetime.now().month][attackName] += 1
 
     except Exception as e:
         ShowMessageBox('Error Updating Histogram Chart', 'Error occurred while updating histogram chart after an attack, try again later.', 'Critical')
@@ -1236,8 +1236,6 @@ def ResetHistogramChartToDefault(self, hideChart=True):
             self.ui.histogramChartTitleLabel.setText('No data to display...')
             self.ui.histogramChartTitleLabel.show()
             self.ui.histogramChartView.hide()
-
-        #? add a clear to the userdata dict if 'analyticsChartData' , need to check that user has logged out
 
         # validate that the background color matches the current users preference
         self.ui.histogramChart.setBackgroundBrush(QColor('#f3f3f3') if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
@@ -1553,7 +1551,7 @@ def ShowTrayMessage(self, title, message, iconType='Information', duration=5000)
 #----------------------------------------------MAIN-FUNCTION-------------------------------------------------#
 
 # main function that sets up all the ui elements on startup
-def InitAnimationsUI(self):
+def InitUserInterface(self):
     # set the title and icon for main window
     self.setWindowTitle('NetSpect™')
     self.setWindowIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'NetSpectIconTransparent.png')))

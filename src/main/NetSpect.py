@@ -93,7 +93,8 @@ class NetSpect(QMainWindow):
         self.ChangeNetworkInterface() #set default network interface from combobox
 
         # initialize other interface components and show interface
-        UserInterfaceFunctions.InitAnimationsUI(self) # setup left sidebar elements and login/register popup frame
+        self.InitUserData() #initialize user data dictionary to default
+        UserInterfaceFunctions.InitUserInterface(self) # setup left sidebar and various elements in gui
         self.InitSystemInfo(NetworkInformation.GetSystemInformation()) #initialize the system information in the info page (machine name, version, etc.)
         self.InitValidators() #initialize the network information in the info page (interface name, mac address, ips, etc.)
         self.UpdateNumberOfDetectionsCounterLabel(0) #reset number of detections counter label
@@ -237,6 +238,18 @@ class NetSpect(QMainWindow):
         # log initializing sql thread
         self.SendLogDict('SQL_Thread: Starting SQL thread.', 'INFO')
     
+
+    # method for initializing user data dictionary including pie chart, histogram chart and bar chart dictionaries to default
+    def InitUserData(self):
+        # initialize user data dictionary to default state
+        self.userData = {'userId': None, 'email': None, 'userName': None, 'lightMode': 0, 'operationMode': 0, 
+                    'numberOfDetections': 0, 'alertList': [], 'pieChartData': {}, 'analyticsChartData': {}, 'blackList': []}
+        
+        # initialize pie chart, histogram chart and bar chart dictionaries to default state
+        self.userData.setdefault('pieChartData', {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0})
+        self.userData.setdefault('analyticsChartData', {}).setdefault('chartData', {}).setdefault(str(datetime.now().year), {}).setdefault(datetime.now().month, {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0})
+        self.userData['analyticsChartData'].setdefault('yearData', {}).setdefault(str(datetime.now().year), {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0})
+
 
     # method for setting input validators on line edits in gui
     def InitValidators(self):
@@ -453,10 +466,9 @@ class NetSpect(QMainWindow):
 
             # means we set user interface for logged out user
             else:
-                self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has logged out.', 'INFO') #log logout event
-                self.userData = {'userId': None, 'email': None, 'userName': None, 'lightMode': 0, 'operationMode': 0, 
-                                 'numberOfDetections': 0, 'alertList': [], 'pieChartData': {}, 'analyticsChartData': {}, 'blackList': []} #reset our user data dictionary
+                self.InitUserData() #initialzie user data dictionary to default
                 UserInterfaceFunctions.ToggleUserInterface(self, False) #reset our user interface
+                self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has logged out.', 'INFO') #log logout event
 
 
     # method for updating number of detections counter label in gui
@@ -1417,10 +1429,10 @@ class NetSpect(QMainWindow):
             self.SendLogDict(f'Main_Thread: {'User ' + self.userData.get('userName') if self.userData.get('userId') else 'Default user'} is changing the analytics year to: "{self.ui.analyticsYearComboBox.currentText()}".', 'INFO')
 
             # update the histogram chart based on the selected year, first clear the current chart if it exists then create a new one
-            selectedData = self.userData.get('analyticsChartData').get('chartData', None)
+            selectedData = self.userData.get('analyticsChartData').get('chartData', {})
             if selectedData:
                 UserInterfaceFunctions.ResetHistogramChartToDefault(self, hideChart=False)
-                if selectedData.get(self.ui.analyticsYearComboBox.currentText(), None):
+                if selectedData.get(self.ui.analyticsYearComboBox.currentText()):
                     UserInterfaceFunctions.CreateHistogramChartData(self, selectedData)
             else:
                 UserInterfaceFunctions.ResetHistogramChartToDefault(self)

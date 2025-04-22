@@ -424,7 +424,7 @@ def ToggleColorMode(self):
             </html>
         ''')
         self.ui.piChart.setBackgroundBrush(QColor(204, 204, 204, 153))
-        self.ui.histogramChart.setBackgroundBrush(QColor('#f3f3f3'))
+        self.ui.histogramChart.setBackgroundBrush(QColor(204, 204, 204, 153))
         with open(currentDir.parent / 'interface' / 'darkModeStyles.qss', 'r') as stylesFile: #load styles from file
             self.setStyleSheet(stylesFile.read())
     else:
@@ -1075,7 +1075,7 @@ def CreateHistogramChartData(self, histogramChartData=None):
         self.ui.histogramChart.setTitle(f'Monthly Network Attacks For Year {yearComboboxSelection}')
         self.ui.histogramChartTitleLabel.hide()
         self.ui.histogramChartView.show()
-        self.ui.histogramChart.setBackgroundBrush(QColor('#f3f3f3') if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
+        self.ui.histogramChart.setBackgroundBrush(QColor(204, 204, 204, 156) if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
 
         # create histogram bar series and bar sets
         self.ui.histogramBarSeries = QBarSeries()
@@ -1229,7 +1229,7 @@ def ResetHistogramChartToDefault(self, hideChart=True):
             self.ui.histogramChartView.hide()
 
         # validate that the background color matches the current users preference
-        self.ui.histogramChart.setBackgroundBrush(QColor('#f3f3f3') if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
+        self.ui.histogramChart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
 
     except Exception as e:
         ShowMessageBox('Error Clearing Histogram Chart', 'Error occurred while clearing histogram chart, try again later.', 'Critical')
@@ -1325,7 +1325,7 @@ def CreateBarChartData(self, barChartData=None):
         self.ui.barChart.setTitle(f'Network Attacks For Year {yearComboboxSelection}')
         self.ui.barChartTitleLabel.hide()
         self.ui.barChartView.show()
-        self.ui.barChart.setBackgroundBrush(QColor('#f3f3f3') if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
+        self.ui.barChart.setBackgroundBrush(QColor(204, 204, 204, 156) if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
 
         # create horizontal stacked bar series and bar sets
         self.ui.barChartBarSeries = QHorizontalStackedBarSeries()
@@ -1483,6 +1483,87 @@ def ResetBarChartToDefault(self, hideChart=True):
         ShowMessageBox('Error Clearing Bar Chart', 'Error occurred while clearing bar chart, try again later.', 'Critical')
 
 #------------------------------------------HORIZONTAL-BAR-CHART-END------------------------------------------#
+
+#---------------------------------------------ANALYTICS-CARDS------------------------------------------------#
+
+# function for setting data into the cards section one by one
+def SetDataIntoCards(self):
+    try:
+        currentYear = self.ui.analyticsYearComboBox.currentText()
+        if any(attackCount > 0 for attackCount in self.userData.get('analyticsChartData').get('barChartData').get(currentYear).values()) > 0:
+            # update attacks per month and total number of attacks
+            totalNumberOfAttacks = sum(self.userData.get('analyticsChartData').get('barChartData').get(currentYear).values())
+            self.ui.totalNumOfAttacksValueLabel.setText(str(totalNumberOfAttacks))
+            self.ui.attacksPerMonthValueLabel.setText('{:.2f}'.format(totalNumberOfAttacks / 12))
+
+            # update most popular attack
+            mostPopularAttack = max(self.userData.get('analyticsChartData').get('barChartData').get(currentYear), key=self.userData.get('analyticsChartData').get('barChartData').get(currentYear).get)
+            mostPopularAttack = '<br>'.join(mostPopularAttack.split()) if ' ' in mostPopularAttack else mostPopularAttack #to ensure that there wont be a crash in case of future attack names
+            self.ui.mostPopularAttackValueLabel.setText(mostPopularAttack)
+
+            # update the font sizes after updating the value
+            UpdateFontSizeInLabel(self, self.ui.totalNumOfAttacksValueLabel)
+            UpdateFontSizeInLabel(self, self.ui.attacksPerMonthValueLabel)
+    except Exception as e:
+        ShowMessageBox('Error Setting Cards Data', 'Error occurred while setting data into analytics cards, try again later.', 'Critical')
+
+
+# function for updating the data in the cards after an attack
+def UpdateDataInCardsAfterAttack(self):
+    try:
+        # only updating the histogram chart if the user year selection is the current year, otherwise it will update when a user changes the combobox value
+        yearComboboxSelection = self.ui.analyticsYearComboBox.currentText()
+        if yearComboboxSelection == str(datetime.now().year):
+            SetDataIntoCards(self)
+
+    except Exception as e:
+        ShowMessageBox('Error Setting Cards Data', 'Error occurred while setting data into analytics cards, try again later.', 'Critical')
+
+
+# function for resetting the data in the cards section to the default values
+def ResertDataInCards(self):
+    try:
+        self.ui.totalNumOfAttacksValueLabel.setText('0')
+        self.ui.attacksPerMonthValueLabel.setText('0')
+        self.ui.mostPopularAttackValueLabel.setText('No<br>Data')
+        self.ui.mostPopularAttackValueLabel.setStyleSheet(f'''
+            margin: 10px;
+            margin-top: 10px;
+            background-color: transparent;
+            color: {'black' if self.userData.get('lightMode') == 0 else '#151519'};
+        ''')
+    except Exception as e:
+        ShowMessageBox('Error Resetting Cards Data', 'Error occurred while resetting data into analytics cards, try again later.', 'Critical')
+
+
+# function for calculating and resizing the font for the labels in the cards based on the data in them 
+def UpdateFontSizeInLabel(self, label_object):
+    # get the current text in the card and set a default value for font size
+    current_length = len(label_object.text().replace('.', ''))
+    font_size = 10
+
+    # find the font side and top margin based on the number of digits in the card
+    match current_length:
+        case 1:
+            font_size = 60
+        case 2:
+            font_size = 50
+        case 3:
+            font_size = 40
+        case 4:
+            font_size = 33
+        case _:
+            font_size = 30
+
+    # apply the styles to the object
+    label_object.setStyleSheet(f'''
+        font-size: {font_size}px;
+        margin: 10px;
+        background-color: transparent;
+        color: {'black' if self.userData.get('lightMode') == 0 else '#151519'};
+    ''')
+
+#-------------------------------------------ANALYTICS-CARDS-END----------------------------------------------#
 
 #--------------------------------------------TABLE-VIEW-FILTER-----------------------------------------------#
 

@@ -470,6 +470,7 @@ class NetSpect(QMainWindow):
                 UserInterfaceFunctions.UpdatePieChartAfterLogin(self, self.userData.get('pieChartData')) #initialize pie chart
                 UserInterfaceFunctions.UpdateHistogramChartAfterLogin(self, self.userData.get('analyticsChartData').get('histogramChartData')) #initialize histogram chart
                 UserInterfaceFunctions.UpdateBarChartAfterLogin(self, self.userData.get('analyticsChartData').get('barChartData')) #initialize horizontal bar chart
+                UserInterfaceFunctions.SetDataIntoCards(self) #initialize analytics cards section
                 self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has logged in.', 'INFO') #log login event
 
             # means we set user interface for logged out user
@@ -1291,6 +1292,7 @@ class NetSpect(QMainWindow):
             UserInterfaceFunctions.UpdatePieChartAfterAttack(self, attackType) #increment attack type in pie chart
             UserInterfaceFunctions.UpdateHistogramChartAfterAttack(self, attackType) #increment attack type in histogram chart
             UserInterfaceFunctions.UpdateBarChartAfterAttack(self, attackType) #increment attack type in horizontal bar chart
+            UserInterfaceFunctions.UpdateDataInCardsAfterAttack(self) #update the data in each card in analytics page
             UserInterfaceFunctions.ShowTrayMessage(self, 'Security Alert', f'Potential {alert.get('attackType')} attack detected from IP: {alert.get('srcIp')}. Immediate action recommended.', 'Warning')
             self.AddRowToHistoryTable(alert.get('srcIp'), alert.get('srcMac'), alert.get('dstIp'), alert.get('dstMac'), alert.get('attackType'), alert.get('timestamp'))
             self.AddRowToReportTable(alert.get('interface'), alert.get('attackType'), alert.get('srcIp'), alert.get('srcMac'), alert.get('dstIp'), alert.get('dstMac'), 
@@ -1450,10 +1452,12 @@ class NetSpect(QMainWindow):
                 # initialize both histogram chart and bar chart based on the selected year
                 UserInterfaceFunctions.CreateHistogramChartData(self, self.userData.get('analyticsChartData').get('histogramChartData', {}))
                 UserInterfaceFunctions.CreateBarChartData(self, self.userData.get('analyticsChartData').get('barChartData', {}))
+                UserInterfaceFunctions.SetDataIntoCards(self)
             else:
                 # reset both histogram chart and horizontal bar chart and show charts
                 UserInterfaceFunctions.ResetHistogramChartToDefault(self)
                 UserInterfaceFunctions.ResetBarChartToDefault(self)
+                UserInterfaceFunctions.ResertDataInCards(self)
 
 
     # method for creating alerts report for user in desired format, txt or csv

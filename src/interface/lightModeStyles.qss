@@ -869,18 +869,76 @@ QCheckBox {
     color: #151519;
 }
 
+#barChartVerticalFrame { 
+    background-color: #ebeff7;
+    border: 2px solid black;
+    border-radius: 20px;
+    margin: 10px 15px 10px 10px;
+    color: #151519;
+}
+
 #barChartTitleLabel {
     background-color: #ebeff7;
     margin: 0;
     color: black;
 }
 
-#barChartVerticalFrame { 
-    background-color: #ebeff7;
-    border: 2px solid black;
-    border-radius: 20px;
-    margin: 0px 15px 10px 15px;
-    color: #151519;
+/* Cards Section */
+#attacksPerMonthVerticalFrame {
+	background-color: #ebeff7;
+	border-radius: 20px;
+    border: 2px solid black; 
+	color: #151519;
+}
+
+#attacksPerMonthTitleLabel {
+	background-color: transparent;
+	color: #151519;
+}
+
+#attacksPerMonthValueLabel {
+    font-size: 60px;
+    margin: 10px;
+	background-color: transparent;
+	color: #151519;
+}
+
+#totalNumOfAttacksVerticalFrame {
+	background-color: #ebeff7;
+	border-radius: 20px;
+    border: 2px solid black; 
+	color: #151519;
+}
+
+#totalNumOfAttacksTitleLabel {
+	background-color: transparent;
+	color: #151519;
+}
+
+#totalNumOfAttacksValueLabel {
+    font-size: 60px;
+    margin: 10px;
+	background-color: transparent;
+	color: #151519;
+}
+
+#mostPopularAttackVerticalFrame {
+	background-color: #ebeff7;
+	border-radius: 20px;
+    border: 2px solid black; 
+	color: #151519;
+}
+
+#mostPopularAttackTitleLabel {
+	background-color: transparent;
+	color: #151519;
+}
+
+#mostPopularAttackValueLabel {
+	margin: 10px;
+	margin-top: 0px;
+	background-color: transparent;
+	color: #151519;
 }
 
 /*-----------------------------Analytics-Window-End-------------------------------*/

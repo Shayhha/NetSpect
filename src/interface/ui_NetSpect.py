@@ -1187,18 +1187,216 @@ class Ui_NetSpect(object):
 
         self.chartsVerticalFrame = QFrame(self.analyticsHorizontalFrame)
         self.chartsVerticalFrame.setObjectName(u"chartsVerticalFrame")
-        self.chartsVerticalFrame.setMaximumSize(QSize(16777215, 16777215))
+        self.chartsVerticalFrame.setMaximumSize(QSize(16777215, 550))
         self.horizontalLayout_15 = QHBoxLayout(self.chartsVerticalFrame)
         self.horizontalLayout_15.setSpacing(0)
         self.horizontalLayout_15.setObjectName(u"horizontalLayout_15")
         self.horizontalLayout_15.setContentsMargins(0, 0, 0, 0)
         self.cardsHorizontalFrame = QFrame(self.chartsVerticalFrame)
         self.cardsHorizontalFrame.setObjectName(u"cardsHorizontalFrame")
-        self.cardsHorizontalFrame.setMinimumSize(QSize(0, 307))
+        self.cardsHorizontalFrame.setMinimumSize(QSize(465, 307))
+        self.cardsHorizontalFrame.setMaximumSize(QSize(700, 16777215))
         self.horizontalLayout_29 = QHBoxLayout(self.cardsHorizontalFrame)
-        self.horizontalLayout_29.setSpacing(0)
+        self.horizontalLayout_29.setSpacing(10)
         self.horizontalLayout_29.setObjectName(u"horizontalLayout_29")
-        self.horizontalLayout_29.setContentsMargins(10, 10, 10, 10)
+        self.horizontalLayout_29.setContentsMargins(15, 10, 0, 10)
+        self.attacksPerMonthVerticalFrame = QFrame(self.cardsHorizontalFrame)
+        self.attacksPerMonthVerticalFrame.setObjectName(u"attacksPerMonthVerticalFrame")
+        self.attacksPerMonthVerticalFrame.setMinimumSize(QSize(143, 0))
+        self.attacksPerMonthVerticalFrame.setStyleSheet(u"#attacksPerMonthVerticalFrame {\n"
+"	background-color: rgba(204, 204, 204, 0.6);\n"
+"	border-radius: 20px;\n"
+"    border: 2px solid black; \n"
+"	color: black;\n"
+"}")
+        self.verticalLayout_29 = QVBoxLayout(self.attacksPerMonthVerticalFrame)
+        self.verticalLayout_29.setSpacing(0)
+        self.verticalLayout_29.setObjectName(u"verticalLayout_29")
+        self.verticalLayout_29.setContentsMargins(0, 0, 0, 0)
+        self.verticalSpacer_18 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_29.addItem(self.verticalSpacer_18)
+
+        self.attacksPerMonthTitleLabel = QLabel(self.attacksPerMonthVerticalFrame)
+        self.attacksPerMonthTitleLabel.setObjectName(u"attacksPerMonthTitleLabel")
+        self.attacksPerMonthTitleLabel.setMinimumSize(QSize(0, 0))
+        self.attacksPerMonthTitleLabel.setMaximumSize(QSize(16777215, 110))
+        self.attacksPerMonthTitleLabel.setFont(font4)
+        self.attacksPerMonthTitleLabel.setStyleSheet(u"#attacksPerMonthTitleLabel {\n"
+"	background-color: transparent;\n"
+"	color: black;\n"
+"}")
+        self.attacksPerMonthTitleLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.attacksPerMonthTitleLabel.setWordWrap(True)
+
+        self.verticalLayout_29.addWidget(self.attacksPerMonthTitleLabel)
+
+        self.verticalSpacer_24 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_29.addItem(self.verticalSpacer_24)
+
+        self.attacksPerMonthValueLabel = QLabel(self.attacksPerMonthVerticalFrame)
+        self.attacksPerMonthValueLabel.setObjectName(u"attacksPerMonthValueLabel")
+        self.attacksPerMonthValueLabel.setMinimumSize(QSize(0, 0))
+        self.attacksPerMonthValueLabel.setMaximumSize(QSize(16777215, 16777215))
+        font10 = QFont()
+        font10.setFamilies([u"Days One"])
+        font10.setBold(True)
+        self.attacksPerMonthValueLabel.setFont(font10)
+        self.attacksPerMonthValueLabel.setStyleSheet(u"#attacksPerMonthValueLabel {\n"
+"	font-size: 60px;\n"
+"	margin: 10px;\n"
+"	background-color: transparent;\n"
+"	color: black;\n"
+"}")
+        self.attacksPerMonthValueLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.attacksPerMonthValueLabel.setWordWrap(False)
+
+        self.verticalLayout_29.addWidget(self.attacksPerMonthValueLabel)
+
+        self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_29.addItem(self.verticalSpacer_4)
+
+        self.verticalSpacer_21 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_29.addItem(self.verticalSpacer_21)
+
+
+        self.horizontalLayout_29.addWidget(self.attacksPerMonthVerticalFrame)
+
+        self.totalNumOfAttacksVerticalFrame = QFrame(self.cardsHorizontalFrame)
+        self.totalNumOfAttacksVerticalFrame.setObjectName(u"totalNumOfAttacksVerticalFrame")
+        self.totalNumOfAttacksVerticalFrame.setMinimumSize(QSize(143, 0))
+        self.totalNumOfAttacksVerticalFrame.setStyleSheet(u"#totalNumOfAttacksVerticalFrame {\n"
+"	background-color: rgba(204, 204, 204, 0.6);\n"
+"	border-radius: 20px;\n"
+"    border: 2px solid black; \n"
+"	color: black;\n"
+"}")
+        self.verticalLayout_33 = QVBoxLayout(self.totalNumOfAttacksVerticalFrame)
+        self.verticalLayout_33.setSpacing(0)
+        self.verticalLayout_33.setObjectName(u"verticalLayout_33")
+        self.verticalLayout_33.setContentsMargins(0, 0, 0, 0)
+        self.verticalSpacer_19 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_33.addItem(self.verticalSpacer_19)
+
+        self.totalNumOfAttacksTitleLabel = QLabel(self.totalNumOfAttacksVerticalFrame)
+        self.totalNumOfAttacksTitleLabel.setObjectName(u"totalNumOfAttacksTitleLabel")
+        self.totalNumOfAttacksTitleLabel.setMinimumSize(QSize(0, 0))
+        self.totalNumOfAttacksTitleLabel.setMaximumSize(QSize(16777215, 110))
+        self.totalNumOfAttacksTitleLabel.setFont(font4)
+        self.totalNumOfAttacksTitleLabel.setStyleSheet(u"#totalNumOfAttacksTitleLabel {\n"
+"	background-color: transparent;\n"
+"	color: black;\n"
+"}")
+        self.totalNumOfAttacksTitleLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.totalNumOfAttacksTitleLabel.setWordWrap(True)
+
+        self.verticalLayout_33.addWidget(self.totalNumOfAttacksTitleLabel)
+
+        self.verticalSpacer_25 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_33.addItem(self.verticalSpacer_25)
+
+        self.totalNumOfAttacksValueLabel = QLabel(self.totalNumOfAttacksVerticalFrame)
+        self.totalNumOfAttacksValueLabel.setObjectName(u"totalNumOfAttacksValueLabel")
+        sizePolicy.setHeightForWidth(self.totalNumOfAttacksValueLabel.sizePolicy().hasHeightForWidth())
+        self.totalNumOfAttacksValueLabel.setSizePolicy(sizePolicy)
+        self.totalNumOfAttacksValueLabel.setMinimumSize(QSize(0, 0))
+        self.totalNumOfAttacksValueLabel.setMaximumSize(QSize(16777215, 16777215))
+        self.totalNumOfAttacksValueLabel.setFont(font10)
+        self.totalNumOfAttacksValueLabel.setStyleSheet(u"#totalNumOfAttacksValueLabel {\n"
+"	font-size: 60px;\n"
+"	margin: 10px;\n"
+"	background-color: transparent;\n"
+"	color: black;\n"
+"}")
+        self.totalNumOfAttacksValueLabel.setScaledContents(False)
+        self.totalNumOfAttacksValueLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.totalNumOfAttacksValueLabel.setWordWrap(False)
+        self.totalNumOfAttacksValueLabel.setMargin(0)
+
+        self.verticalLayout_33.addWidget(self.totalNumOfAttacksValueLabel)
+
+        self.verticalSpacer_22 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_33.addItem(self.verticalSpacer_22)
+
+        self.verticalSpacer_5 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_33.addItem(self.verticalSpacer_5)
+
+
+        self.horizontalLayout_29.addWidget(self.totalNumOfAttacksVerticalFrame)
+
+        self.mostPopularAttackVerticalFrame = QFrame(self.cardsHorizontalFrame)
+        self.mostPopularAttackVerticalFrame.setObjectName(u"mostPopularAttackVerticalFrame")
+        self.mostPopularAttackVerticalFrame.setMinimumSize(QSize(143, 0))
+        self.mostPopularAttackVerticalFrame.setStyleSheet(u"#mostPopularAttackVerticalFrame {\n"
+"	background-color: rgba(204, 204, 204, 0.6);\n"
+"	border-radius: 20px;\n"
+"    border: 2px solid black; \n"
+"	color: black;\n"
+"}")
+        self.verticalLayout_34 = QVBoxLayout(self.mostPopularAttackVerticalFrame)
+        self.verticalLayout_34.setSpacing(0)
+        self.verticalLayout_34.setObjectName(u"verticalLayout_34")
+        self.verticalLayout_34.setContentsMargins(0, 0, 0, 0)
+        self.verticalSpacer_20 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_34.addItem(self.verticalSpacer_20)
+
+        self.mostPopularAttackTitleLabel = QLabel(self.mostPopularAttackVerticalFrame)
+        self.mostPopularAttackTitleLabel.setObjectName(u"mostPopularAttackTitleLabel")
+        self.mostPopularAttackTitleLabel.setMinimumSize(QSize(0, 0))
+        self.mostPopularAttackTitleLabel.setMaximumSize(QSize(16777215, 110))
+        self.mostPopularAttackTitleLabel.setFont(font4)
+        self.mostPopularAttackTitleLabel.setStyleSheet(u"#mostPopularAttackTitleLabel {\n"
+"	background-color: transparent;\n"
+"	color: black;\n"
+"}")
+        self.mostPopularAttackTitleLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.mostPopularAttackTitleLabel.setWordWrap(True)
+
+        self.verticalLayout_34.addWidget(self.mostPopularAttackTitleLabel)
+
+        self.verticalSpacer_26 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_34.addItem(self.verticalSpacer_26)
+
+        self.mostPopularAttackValueLabel = QLabel(self.mostPopularAttackVerticalFrame)
+        self.mostPopularAttackValueLabel.setObjectName(u"mostPopularAttackValueLabel")
+        self.mostPopularAttackValueLabel.setMinimumSize(QSize(0, 97))
+        self.mostPopularAttackValueLabel.setMaximumSize(QSize(16777215, 16777215))
+        font11 = QFont()
+        font11.setFamilies([u"Days One"])
+        font11.setPointSize(17)
+        font11.setBold(True)
+        self.mostPopularAttackValueLabel.setFont(font11)
+        self.mostPopularAttackValueLabel.setStyleSheet(u"#mostPopularAttackValueLabel {\n"
+"	margin: 10px;\n"
+"	margin-top: 0px;\n"
+"	background-color: transparent;\n"
+"	color: black;\n"
+"}")
+        self.mostPopularAttackValueLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.mostPopularAttackValueLabel.setWordWrap(True)
+
+        self.verticalLayout_34.addWidget(self.mostPopularAttackValueLabel)
+
+        self.verticalSpacer_6 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_34.addItem(self.verticalSpacer_6)
+
+        self.verticalSpacer_23 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_34.addItem(self.verticalSpacer_23)
+
+
+        self.horizontalLayout_29.addWidget(self.mostPopularAttackVerticalFrame)
+
 
         self.horizontalLayout_15.addWidget(self.cardsHorizontalFrame)
 
@@ -1207,10 +1405,10 @@ class Ui_NetSpect(object):
         self.barChartVerticalFrame.setMinimumSize(QSize(0, 307))
         self.barChartVerticalFrame.setMaximumSize(QSize(16777215, 16777215))
         self.barChartVerticalFrame.setStyleSheet(u"#barChartVerticalFrame { \n"
-"    background-color: #f3f3f3;\n"
+"    background-color: rgba(204, 204, 204, 0.6);\n"
 "    border: 2px solid black; \n"
 "    border-radius: 20px;\n"
-"    margin: 0px 15px 10px 15px;\n"
+"    margin: 10px 15px 10px 10px;\n"
 "    color: black;\n"
 "}")
 
@@ -1221,9 +1419,9 @@ class Ui_NetSpect(object):
 
         self.histogramChartVerticalFrame = QFrame(self.analyticsHorizontalFrame)
         self.histogramChartVerticalFrame.setObjectName(u"histogramChartVerticalFrame")
-        self.histogramChartVerticalFrame.setMinimumSize(QSize(0, 0))
+        self.histogramChartVerticalFrame.setMinimumSize(QSize(0, 307))
         self.histogramChartVerticalFrame.setStyleSheet(u"#histogramChartVerticalFrame { \n"
-"    background-color: #f3f3f3;\n"
+"    background-color: rgba(204, 204, 204, 0.6);\n"
 "    border: 2px solid black; \n"
 "    border-radius: 20px;\n"
 "    margin: 0px 15px 10px 15px;\n"
@@ -1374,10 +1572,10 @@ class Ui_NetSpect(object):
         self.arpSpoofingCheckBox = QCheckBox(self.reportSelectionVerticalFrameInside)
         self.arpSpoofingCheckBox.setObjectName(u"arpSpoofingCheckBox")
         self.arpSpoofingCheckBox.setMaximumSize(QSize(16777215, 30))
-        font10 = QFont()
-        font10.setFamilies([u"Cairo"])
-        font10.setPointSize(13)
-        self.arpSpoofingCheckBox.setFont(font10)
+        font12 = QFont()
+        font12.setFamilies([u"Cairo"])
+        font12.setPointSize(13)
+        self.arpSpoofingCheckBox.setFont(font12)
         self.arpSpoofingCheckBox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.arpSpoofingCheckBox.setStyleSheet(u"#arpSpoofingCheckBox {\n"
 "    spacing: 10px; /* Space between checkbox and text */\n"
@@ -1412,7 +1610,7 @@ class Ui_NetSpect(object):
         self.portScanningCheckBox = QCheckBox(self.reportSelectionVerticalFrameInside)
         self.portScanningCheckBox.setObjectName(u"portScanningCheckBox")
         self.portScanningCheckBox.setMaximumSize(QSize(16777215, 30))
-        self.portScanningCheckBox.setFont(font10)
+        self.portScanningCheckBox.setFont(font12)
         self.portScanningCheckBox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.portScanningCheckBox.setStyleSheet(u"#portScanningCheckBox {\n"
 "    spacing: 10px; /* Space between checkbox and text */\n"
@@ -1447,7 +1645,7 @@ class Ui_NetSpect(object):
         self.denialOfServiceCheckBox = QCheckBox(self.reportSelectionVerticalFrameInside)
         self.denialOfServiceCheckBox.setObjectName(u"denialOfServiceCheckBox")
         self.denialOfServiceCheckBox.setMaximumSize(QSize(16777215, 30))
-        self.denialOfServiceCheckBox.setFont(font10)
+        self.denialOfServiceCheckBox.setFont(font12)
         self.denialOfServiceCheckBox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.denialOfServiceCheckBox.setStyleSheet(u"#denialOfServiceCheckBox {\n"
 "    spacing: 10px; /* Space between checkbox and text */\n"
@@ -1482,7 +1680,7 @@ class Ui_NetSpect(object):
         self.dnsTunnelingCheckBox = QCheckBox(self.reportSelectionVerticalFrameInside)
         self.dnsTunnelingCheckBox.setObjectName(u"dnsTunnelingCheckBox")
         self.dnsTunnelingCheckBox.setMaximumSize(QSize(16777215, 30))
-        self.dnsTunnelingCheckBox.setFont(font10)
+        self.dnsTunnelingCheckBox.setFont(font12)
         self.dnsTunnelingCheckBox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.dnsTunnelingCheckBox.setStyleSheet(u"#dnsTunnelingCheckBox {\n"
 "    spacing: 10px; /* Space between checkbox and text */\n"
@@ -1529,7 +1727,7 @@ class Ui_NetSpect(object):
         self.machineInfoCheckBox = QCheckBox(self.reportSelectionVerticalFrameInside)
         self.machineInfoCheckBox.setObjectName(u"machineInfoCheckBox")
         self.machineInfoCheckBox.setMaximumSize(QSize(16777215, 30))
-        self.machineInfoCheckBox.setFont(font10)
+        self.machineInfoCheckBox.setFont(font12)
         self.machineInfoCheckBox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.machineInfoCheckBox.setStyleSheet(u"QCheckBox::indicator {\n"
 "    width: 16px;  /* Increase checkbox size */\n"
@@ -1572,11 +1770,11 @@ class Ui_NetSpect(object):
         self.downloadReportPushButton = QPushButton(self.downloadReportButtonVerticalFrame)
         self.downloadReportPushButton.setObjectName(u"downloadReportPushButton")
         self.downloadReportPushButton.setMaximumSize(QSize(160, 31))
-        font11 = QFont()
-        font11.setFamilies([u"Cairo"])
-        font11.setPointSize(11)
-        font11.setBold(True)
-        self.downloadReportPushButton.setFont(font11)
+        font13 = QFont()
+        font13.setFamilies([u"Cairo"])
+        font13.setPointSize(11)
+        font13.setBold(True)
+        self.downloadReportPushButton.setFont(font13)
         self.downloadReportPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.downloadReportPushButton.setStyleSheet(u"#downloadReportPushButton  {\n"
 "    background-color: #4E4F5A; \n"
@@ -1601,7 +1799,7 @@ class Ui_NetSpect(object):
         self.cancelReportPushButton = QPushButton(self.downloadReportButtonVerticalFrame)
         self.cancelReportPushButton.setObjectName(u"cancelReportPushButton")
         self.cancelReportPushButton.setMaximumSize(QSize(160, 31))
-        self.cancelReportPushButton.setFont(font11)
+        self.cancelReportPushButton.setFont(font13)
         self.cancelReportPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.cancelReportPushButton.setStyleSheet(u"#cancelReportPushButton  {\n"
 "    background-color: #D84F4F; \n"
@@ -1629,7 +1827,7 @@ class Ui_NetSpect(object):
         sizePolicy4.setHeightForWidth(self.reportProgressBar.sizePolicy().hasHeightForWidth())
         self.reportProgressBar.setSizePolicy(sizePolicy4)
         self.reportProgressBar.setMaximumSize(QSize(160, 26))
-        self.reportProgressBar.setFont(font11)
+        self.reportProgressBar.setFont(font13)
         self.reportProgressBar.setStyleSheet(u"#reportProgressBar {\n"
 "    border: 2px solid #d3d3d3;\n"
 "    border-radius: 10px;\n"
@@ -2440,7 +2638,7 @@ class Ui_NetSpect(object):
         self.ipAddressesListWidget.setObjectName(u"ipAddressesListWidget")
         self.ipAddressesListWidget.setMinimumSize(QSize(400, 140))
         self.ipAddressesListWidget.setMaximumSize(QSize(400, 160))
-        self.ipAddressesListWidget.setFont(font10)
+        self.ipAddressesListWidget.setFont(font12)
         self.ipAddressesListWidget.setStyleSheet(u"#ipAddressesListWidget {\n"
 "    background-color: rgba(198, 198, 198, 0.6);\n"
 "    border-radius: 15px;\n"
@@ -2603,11 +2801,11 @@ class Ui_NetSpect(object):
         self.emailLineEdit = QLineEdit(self.settingsChangeInsideVerticalFrame)
         self.emailLineEdit.setObjectName(u"emailLineEdit")
         self.emailLineEdit.setMaximumSize(QSize(500, 33))
-        font12 = QFont()
-        font12.setFamilies([u"Cairo"])
-        font12.setPointSize(11)
-        font12.setBold(False)
-        self.emailLineEdit.setFont(font12)
+        font14 = QFont()
+        font14.setFamilies([u"Cairo"])
+        font14.setPointSize(11)
+        font14.setBold(False)
+        self.emailLineEdit.setFont(font14)
         self.emailLineEdit.setStyleSheet(u"#emailLineEdit {\n"
 "    background-color: #f3f3f3; \n"
 "    border: 2px solid lightgray;  \n"
@@ -2624,13 +2822,13 @@ class Ui_NetSpect(object):
         self.saveEmailErrorMessageLabel.setSizePolicy(sizePolicy6)
         self.saveEmailErrorMessageLabel.setMinimumSize(QSize(252, 20))
         self.saveEmailErrorMessageLabel.setMaximumSize(QSize(500, 60))
-        font13 = QFont()
-        font13.setFamilies([u"Cairo"])
-        font13.setPointSize(10)
-        font13.setBold(True)
-        font13.setStrikeOut(False)
-        font13.setKerning(True)
-        self.saveEmailErrorMessageLabel.setFont(font13)
+        font15 = QFont()
+        font15.setFamilies([u"Cairo"])
+        font15.setPointSize(10)
+        font15.setBold(True)
+        font15.setStrikeOut(False)
+        font15.setKerning(True)
+        self.saveEmailErrorMessageLabel.setFont(font15)
         self.saveEmailErrorMessageLabel.setStyleSheet(u"#saveEmailErrorMessageLabel {\n"
 "	color: #D84F4F;\n"
 "	background-color: #3C3D4A;\n"
@@ -2658,11 +2856,11 @@ class Ui_NetSpect(object):
         self.emailPushButton.setObjectName(u"emailPushButton")
         self.emailPushButton.setMinimumSize(QSize(0, 31))
         self.emailPushButton.setMaximumSize(QSize(145, 16777215))
-        font14 = QFont()
-        font14.setFamilies([u"Cairo"])
-        font14.setPointSize(12)
-        font14.setBold(True)
-        self.emailPushButton.setFont(font14)
+        font16 = QFont()
+        font16.setFamilies([u"Cairo"])
+        font16.setPointSize(12)
+        font16.setBold(True)
+        self.emailPushButton.setFont(font16)
         self.emailPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.emailPushButton.setStyleSheet(u"#emailPushButton  {\n"
 "    background-color: #4E4F5A; \n"
@@ -2705,10 +2903,10 @@ class Ui_NetSpect(object):
         self.usernameLineEdit = QLineEdit(self.settingsChangeInsideVerticalFrame)
         self.usernameLineEdit.setObjectName(u"usernameLineEdit")
         self.usernameLineEdit.setMaximumSize(QSize(500, 33))
-        font15 = QFont()
-        font15.setFamilies([u"Cairo"])
-        font15.setPointSize(11)
-        self.usernameLineEdit.setFont(font15)
+        font17 = QFont()
+        font17.setFamilies([u"Cairo"])
+        font17.setPointSize(11)
+        self.usernameLineEdit.setFont(font17)
         self.usernameLineEdit.setStyleSheet(u"#usernameLineEdit {\n"
 "    background-color: #f3f3f3; \n"
 "    border: 2px solid lightgray;  \n"
@@ -2726,11 +2924,11 @@ class Ui_NetSpect(object):
         self.saveUsernameErrorMessageLabel.setSizePolicy(sizePolicy6)
         self.saveUsernameErrorMessageLabel.setMinimumSize(QSize(252, 20))
         self.saveUsernameErrorMessageLabel.setMaximumSize(QSize(500, 50))
-        font16 = QFont()
-        font16.setFamilies([u"Cairo"])
-        font16.setPointSize(10)
-        font16.setBold(True)
-        self.saveUsernameErrorMessageLabel.setFont(font16)
+        font18 = QFont()
+        font18.setFamilies([u"Cairo"])
+        font18.setPointSize(10)
+        font18.setBold(True)
+        self.saveUsernameErrorMessageLabel.setFont(font18)
         self.saveUsernameErrorMessageLabel.setStyleSheet(u"#saveUsernameErrorMessageLabel {\n"
 "	color: #D84F4F;\n"
 "	background-color: #3C3D4A;\n"
@@ -2750,7 +2948,7 @@ class Ui_NetSpect(object):
         self.usernamePushButton.setObjectName(u"usernamePushButton")
         self.usernamePushButton.setMinimumSize(QSize(0, 31))
         self.usernamePushButton.setMaximumSize(QSize(145, 16777215))
-        self.usernamePushButton.setFont(font14)
+        self.usernamePushButton.setFont(font16)
         self.usernamePushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.usernamePushButton.setStyleSheet(u"#usernamePushButton  {\n"
 "    background-color: #4E4F5A; \n"
@@ -2798,7 +2996,7 @@ class Ui_NetSpect(object):
         self.oldPasswordLineEdit = QLineEdit(self.PasswordVerticalFrame)
         self.oldPasswordLineEdit.setObjectName(u"oldPasswordLineEdit")
         self.oldPasswordLineEdit.setMaximumSize(QSize(500, 33))
-        self.oldPasswordLineEdit.setFont(font15)
+        self.oldPasswordLineEdit.setFont(font17)
         self.oldPasswordLineEdit.setStyleSheet(u"#oldPasswordLineEdit {\n"
 "    background-color: #f3f3f3; \n"
 "    border: 2px solid lightgray;  \n"
@@ -2813,7 +3011,7 @@ class Ui_NetSpect(object):
         self.newPasswordLineEdit = QLineEdit(self.PasswordVerticalFrame)
         self.newPasswordLineEdit.setObjectName(u"newPasswordLineEdit")
         self.newPasswordLineEdit.setMaximumSize(QSize(500, 33))
-        self.newPasswordLineEdit.setFont(font15)
+        self.newPasswordLineEdit.setFont(font17)
         self.newPasswordLineEdit.setStyleSheet(u"#newPasswordLineEdit {\n"
 "    background-color: #f3f3f3; \n"
 "    border: 2px solid lightgray;  \n"
@@ -2828,7 +3026,7 @@ class Ui_NetSpect(object):
         self.confirmPasswordLineEdit = QLineEdit(self.PasswordVerticalFrame)
         self.confirmPasswordLineEdit.setObjectName(u"confirmPasswordLineEdit")
         self.confirmPasswordLineEdit.setMaximumSize(QSize(500, 33))
-        self.confirmPasswordLineEdit.setFont(font15)
+        self.confirmPasswordLineEdit.setFont(font17)
         self.confirmPasswordLineEdit.setStyleSheet(u"#confirmPasswordLineEdit {\n"
 "    background-color: #f3f3f3; \n"
 "    border: 2px solid lightgray;  \n"
@@ -2849,7 +3047,7 @@ class Ui_NetSpect(object):
         self.savePasswordErrorMessageLabel.setSizePolicy(sizePolicy6)
         self.savePasswordErrorMessageLabel.setMinimumSize(QSize(252, 20))
         self.savePasswordErrorMessageLabel.setMaximumSize(QSize(500, 50))
-        self.savePasswordErrorMessageLabel.setFont(font16)
+        self.savePasswordErrorMessageLabel.setFont(font18)
         self.savePasswordErrorMessageLabel.setStyleSheet(u"#savePasswordErrorMessageLabel {\n"
 "	color: #D84F4F;\n"
 "	background-color: #3C3D4A;\n"
@@ -2870,7 +3068,7 @@ class Ui_NetSpect(object):
         self.passwordPushButton.setObjectName(u"passwordPushButton")
         self.passwordPushButton.setMinimumSize(QSize(0, 31))
         self.passwordPushButton.setMaximumSize(QSize(145, 16777215))
-        self.passwordPushButton.setFont(font14)
+        self.passwordPushButton.setFont(font16)
         self.passwordPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.passwordPushButton.setStyleSheet(u"#passwordPushButton  {\n"
 "    background-color: #4E4F5A; \n"
@@ -3167,7 +3365,7 @@ class Ui_NetSpect(object):
         self.macAddressListWidget = QListWidget(self.verticalFrame_2)
         self.macAddressListWidget.setObjectName(u"macAddressListWidget")
         self.macAddressListWidget.setMaximumSize(QSize(375, 275))
-        self.macAddressListWidget.setFont(font10)
+        self.macAddressListWidget.setFont(font12)
         self.macAddressListWidget.setStyleSheet(u"#macAddressListWidget {\n"
 "   background-color: #f3f3f3;\n"
 "   color: black;\n"
@@ -3241,7 +3439,7 @@ class Ui_NetSpect(object):
         self.macAddressLineEdit = QLineEdit(self.frame_2)
         self.macAddressLineEdit.setObjectName(u"macAddressLineEdit")
         self.macAddressLineEdit.setMaximumSize(QSize(16777215, 33))
-        self.macAddressLineEdit.setFont(font15)
+        self.macAddressLineEdit.setFont(font17)
         self.macAddressLineEdit.setStyleSheet(u"#macAddressLineEdit {\n"
 "    background-color: #f0f0f0; \n"
 "    border: 2px solid lightgray;  \n"
@@ -3257,7 +3455,7 @@ class Ui_NetSpect(object):
         self.addMacAddressPushButton.setObjectName(u"addMacAddressPushButton")
         self.addMacAddressPushButton.setMinimumSize(QSize(70, 35))
         self.addMacAddressPushButton.setMaximumSize(QSize(70, 35))
-        self.addMacAddressPushButton.setFont(font14)
+        self.addMacAddressPushButton.setFont(font16)
         self.addMacAddressPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.addMacAddressPushButton.setStyleSheet(u"#addMacAddressPushButton  {\n"
 "    background-color: #3a8e32; \n"
@@ -3286,7 +3484,7 @@ class Ui_NetSpect(object):
         self.macAddressBlacklistErrorMessageLabel.setSizePolicy(sizePolicy6)
         self.macAddressBlacklistErrorMessageLabel.setMinimumSize(QSize(252, 20))
         self.macAddressBlacklistErrorMessageLabel.setMaximumSize(QSize(375, 100))
-        self.macAddressBlacklistErrorMessageLabel.setFont(font16)
+        self.macAddressBlacklistErrorMessageLabel.setFont(font18)
         self.macAddressBlacklistErrorMessageLabel.setStyleSheet(u"#macAddressBlacklistErrorMessageLabel {\n"
 "	color: #D84F4F;\n"
 "	background-color: #3C3D4A;\n"
@@ -3325,7 +3523,7 @@ class Ui_NetSpect(object):
         self.clearHistoryPushButton.setObjectName(u"clearHistoryPushButton")
         self.clearHistoryPushButton.setMinimumSize(QSize(145, 31))
         self.clearHistoryPushButton.setMaximumSize(QSize(145, 31))
-        self.clearHistoryPushButton.setFont(font14)
+        self.clearHistoryPushButton.setFont(font16)
         self.clearHistoryPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.clearHistoryPushButton.setStyleSheet(u"#clearHistoryPushButton  {\n"
 "    background-color: #D84F4F; \n"
@@ -3349,7 +3547,7 @@ class Ui_NetSpect(object):
         self.deleteAccoutPushButton.setObjectName(u"deleteAccoutPushButton")
         self.deleteAccoutPushButton.setMinimumSize(QSize(145, 31))
         self.deleteAccoutPushButton.setMaximumSize(QSize(145, 31))
-        self.deleteAccoutPushButton.setFont(font14)
+        self.deleteAccoutPushButton.setFont(font16)
         self.deleteAccoutPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.deleteAccoutPushButton.setStyleSheet(u"#deleteAccoutPushButton  {\n"
 "    background-color: #D84F4F; \n"
@@ -3434,11 +3632,11 @@ class Ui_NetSpect(object):
         self.loginLabel.setObjectName(u"loginLabel")
         self.loginLabel.setMinimumSize(QSize(0, 50))
         self.loginLabel.setMaximumSize(QSize(16777215, 70))
-        font17 = QFont()
-        font17.setFamilies([u"Cairo"])
-        font17.setPointSize(20)
-        font17.setBold(True)
-        self.loginLabel.setFont(font17)
+        font19 = QFont()
+        font19.setFamilies([u"Cairo"])
+        font19.setPointSize(20)
+        font19.setBold(True)
+        self.loginLabel.setFont(font19)
         self.loginLabel.setStyleSheet(u"#loginLabel {\n"
 "	color: #f3f3f3;\n"
 "	background-color: #2D2E36;\n"
@@ -3473,11 +3671,11 @@ class Ui_NetSpect(object):
         self.loginPasswordLineEdit.setSizePolicy(sizePolicy6)
         self.loginPasswordLineEdit.setMinimumSize(QSize(250, 34))
         self.loginPasswordLineEdit.setMaximumSize(QSize(16777215, 34))
-        font18 = QFont()
-        font18.setFamilies([u"Cairo"])
-        font18.setPointSize(12)
-        font18.setBold(False)
-        self.loginPasswordLineEdit.setFont(font18)
+        font20 = QFont()
+        font20.setFamilies([u"Cairo"])
+        font20.setPointSize(12)
+        font20.setBold(False)
+        self.loginPasswordLineEdit.setFont(font20)
         self.loginPasswordLineEdit.setStyleSheet(u"#loginPasswordLineEdit {\n"
 "    background-color: #f0f0f0; \n"
 "    border: 2px solid lightgray;  \n"
@@ -3498,7 +3696,7 @@ class Ui_NetSpect(object):
         self.loginErrorMessageLabel.setSizePolicy(sizePolicy6)
         self.loginErrorMessageLabel.setMinimumSize(QSize(252, 20))
         self.loginErrorMessageLabel.setMaximumSize(QSize(16777215, 50))
-        self.loginErrorMessageLabel.setFont(font16)
+        self.loginErrorMessageLabel.setFont(font18)
         self.loginErrorMessageLabel.setStyleSheet(u"#loginErrorMessageLabel {\n"
 "	color: #D84F4F;\n"
 "	background-color: #2D2E36;\n"
@@ -3521,7 +3719,7 @@ class Ui_NetSpect(object):
         self.loginPushButton = QPushButton(self.loginButtonFrame)
         self.loginPushButton.setObjectName(u"loginPushButton")
         self.loginPushButton.setMaximumSize(QSize(100, 36))
-        self.loginPushButton.setFont(font14)
+        self.loginPushButton.setFont(font16)
         self.loginPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.loginPushButton.setStyleSheet(u"#loginPushButton  {\n"
 "    background-color: #4E4F5A; \n"
@@ -3552,7 +3750,7 @@ class Ui_NetSpect(object):
         self.moveToRegisterLabel.setSizePolicy(sizePolicy6)
         self.moveToRegisterLabel.setMinimumSize(QSize(250, 20))
         self.moveToRegisterLabel.setMaximumSize(QSize(16777215, 20))
-        self.moveToRegisterLabel.setFont(font18)
+        self.moveToRegisterLabel.setFont(font20)
         self.moveToRegisterLabel.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.moveToRegisterLabel.setStyleSheet(u"#moveToRegisterLabel {\n"
 "	color: #6BA6FD;\n"
@@ -3573,7 +3771,7 @@ class Ui_NetSpect(object):
         self.moveToForgotPasswordLabel.setSizePolicy(sizePolicy6)
         self.moveToForgotPasswordLabel.setMinimumSize(QSize(250, 20))
         self.moveToForgotPasswordLabel.setMaximumSize(QSize(16777215, 20))
-        self.moveToForgotPasswordLabel.setFont(font18)
+        self.moveToForgotPasswordLabel.setFont(font20)
         self.moveToForgotPasswordLabel.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.moveToForgotPasswordLabel.setStyleSheet(u"#moveToForgotPasswordLabel {\n"
 "	color: #6BA6FD;\n"
@@ -3625,7 +3823,7 @@ class Ui_NetSpect(object):
         self.registerLabel.setObjectName(u"registerLabel")
         self.registerLabel.setMinimumSize(QSize(0, 50))
         self.registerLabel.setMaximumSize(QSize(16777215, 70))
-        self.registerLabel.setFont(font17)
+        self.registerLabel.setFont(font19)
         self.registerLabel.setStyleSheet(u"#registerLabel {\n"
 "	color: #f3f3f3;\n"
 "	background-color: #2D2E36;\n"
@@ -3703,7 +3901,7 @@ class Ui_NetSpect(object):
         self.registerErrorMessageLabel.setSizePolicy(sizePolicy6)
         self.registerErrorMessageLabel.setMinimumSize(QSize(252, 20))
         self.registerErrorMessageLabel.setMaximumSize(QSize(16777215, 50))
-        self.registerErrorMessageLabel.setFont(font16)
+        self.registerErrorMessageLabel.setFont(font18)
         self.registerErrorMessageLabel.setStyleSheet(u"#registerErrorMessageLabel {\n"
 "	color: #D84F4F;\n"
 "	padding-bottom: 5px;\n"
@@ -3728,7 +3926,7 @@ class Ui_NetSpect(object):
         self.registerPushButton = QPushButton(self.registerButtonFrame)
         self.registerPushButton.setObjectName(u"registerPushButton")
         self.registerPushButton.setMaximumSize(QSize(100, 36))
-        self.registerPushButton.setFont(font14)
+        self.registerPushButton.setFont(font16)
         self.registerPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.registerPushButton.setStyleSheet(u"#registerPushButton  {\n"
 "    background-color: #4E4F5A; \n"
@@ -3759,7 +3957,7 @@ class Ui_NetSpect(object):
         self.moveToLoginLabel.setSizePolicy(sizePolicy6)
         self.moveToLoginLabel.setMinimumSize(QSize(250, 20))
         self.moveToLoginLabel.setMaximumSize(QSize(16777215, 20))
-        self.moveToLoginLabel.setFont(font18)
+        self.moveToLoginLabel.setFont(font20)
         self.moveToLoginLabel.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.moveToLoginLabel.setStyleSheet(u"#moveToLoginLabel {\n"
 "	color: #6BA6FD;\n"
@@ -3808,7 +4006,7 @@ class Ui_NetSpect(object):
         self.resetPasswordLabel.setObjectName(u"resetPasswordLabel")
         self.resetPasswordLabel.setMinimumSize(QSize(0, 50))
         self.resetPasswordLabel.setMaximumSize(QSize(16777215, 70))
-        self.resetPasswordLabel.setFont(font17)
+        self.resetPasswordLabel.setFont(font19)
         self.resetPasswordLabel.setStyleSheet(u"#resetPasswordLabel {\n"
 "	color: #f3f3f3;\n"
 "	background-color: #2D2E36;\n"
@@ -3843,7 +4041,7 @@ class Ui_NetSpect(object):
         self.resetPasswordEmailErrorMessageLabel.setSizePolicy(sizePolicy6)
         self.resetPasswordEmailErrorMessageLabel.setMinimumSize(QSize(252, 20))
         self.resetPasswordEmailErrorMessageLabel.setMaximumSize(QSize(16777215, 50))
-        self.resetPasswordEmailErrorMessageLabel.setFont(font16)
+        self.resetPasswordEmailErrorMessageLabel.setFont(font18)
         self.resetPasswordEmailErrorMessageLabel.setStyleSheet(u"#resetPasswordEmailErrorMessageLabel {\n"
 "	color: #D84F4F;\n"
 "	background-color: #2D2E36;\n"
@@ -3867,7 +4065,7 @@ class Ui_NetSpect(object):
         self.sendCodePushButton = QPushButton(self.sendCodeButtonFrame)
         self.sendCodePushButton.setObjectName(u"sendCodePushButton")
         self.sendCodePushButton.setMaximumSize(QSize(120, 36))
-        self.sendCodePushButton.setFont(font14)
+        self.sendCodePushButton.setFont(font16)
         self.sendCodePushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.sendCodePushButton.setStyleSheet(u"#sendCodePushButton  {\n"
 "    background-color: #4E4F5A; \n"
@@ -3898,7 +4096,7 @@ class Ui_NetSpect(object):
         self.resetPasswordCodeLineEdit.setSizePolicy(sizePolicy6)
         self.resetPasswordCodeLineEdit.setMinimumSize(QSize(250, 34))
         self.resetPasswordCodeLineEdit.setMaximumSize(QSize(16777215, 34))
-        self.resetPasswordCodeLineEdit.setFont(font18)
+        self.resetPasswordCodeLineEdit.setFont(font20)
         self.resetPasswordCodeLineEdit.setStyleSheet(u"#resetPasswordCodeLineEdit {\n"
 "    background-color: #f0f0f0; \n"
 "    border: 2px solid lightgray;  \n"
@@ -3919,7 +4117,7 @@ class Ui_NetSpect(object):
         self.resetPasswordCodeErrorMessageLabel.setSizePolicy(sizePolicy6)
         self.resetPasswordCodeErrorMessageLabel.setMinimumSize(QSize(252, 20))
         self.resetPasswordCodeErrorMessageLabel.setMaximumSize(QSize(16777215, 50))
-        self.resetPasswordCodeErrorMessageLabel.setFont(font16)
+        self.resetPasswordCodeErrorMessageLabel.setFont(font18)
         self.resetPasswordCodeErrorMessageLabel.setStyleSheet(u"#resetPasswordCodeErrorMessageLabel {\n"
 "	color: #D84F4F;\n"
 "	background-color: #2D2E36;\n"
@@ -3943,7 +4141,7 @@ class Ui_NetSpect(object):
         self.verifyCodePushButton = QPushButton(self.verifyCodeButtonFrame)
         self.verifyCodePushButton.setObjectName(u"verifyCodePushButton")
         self.verifyCodePushButton.setMaximumSize(QSize(120, 36))
-        self.verifyCodePushButton.setFont(font14)
+        self.verifyCodePushButton.setFont(font16)
         self.verifyCodePushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.verifyCodePushButton.setStyleSheet(u"#verifyCodePushButton  {\n"
 "    background-color: #4E4F5A; \n"
@@ -3974,7 +4172,7 @@ class Ui_NetSpect(object):
         self.cancelResetPasswordProcessLabel.setSizePolicy(sizePolicy6)
         self.cancelResetPasswordProcessLabel.setMinimumSize(QSize(250, 20))
         self.cancelResetPasswordProcessLabel.setMaximumSize(QSize(16777215, 20))
-        self.cancelResetPasswordProcessLabel.setFont(font18)
+        self.cancelResetPasswordProcessLabel.setFont(font20)
         self.cancelResetPasswordProcessLabel.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.cancelResetPasswordProcessLabel.setStyleSheet(u"#cancelResetPasswordProcessLabel {\n"
 "	color: #6BA6FD;\n"
@@ -4105,6 +4303,12 @@ class Ui_NetSpect(object):
 #if QT_CONFIG(tooltip)
         self.analyticsYearComboBox.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Select the time range for the report.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
+        self.attacksPerMonthTitleLabel.setText(QCoreApplication.translate("NetSpect", u"<p style=\"line-height: 0.7;\">Attacks Per <br>Month</p>", None))
+        self.attacksPerMonthValueLabel.setText(QCoreApplication.translate("NetSpect", u"0", None))
+        self.totalNumOfAttacksTitleLabel.setText(QCoreApplication.translate("NetSpect", u"<p style=\"line-height: 0.7;\">Total Number <br>of Attacks</p>", None))
+        self.totalNumOfAttacksValueLabel.setText(QCoreApplication.translate("NetSpect", u"0", None))
+        self.mostPopularAttackTitleLabel.setText(QCoreApplication.translate("NetSpect", u"<p style=\"line-height: 0.7;\">Most Popular <br>Attak</p>", None))
+        self.mostPopularAttackValueLabel.setText(QCoreApplication.translate("NetSpect", u"No<br>Data", None))
         self.reportSelectionLabel.setText(QCoreApplication.translate("NetSpect", u"Report Selection", None))
         self.reportDurationComboBox.setItemText(0, QCoreApplication.translate("NetSpect", u"Last 24 Hours", None))
         self.reportDurationComboBox.setItemText(1, QCoreApplication.translate("NetSpect", u"Last 7 Days", None))

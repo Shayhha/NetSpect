@@ -796,7 +796,7 @@ QCheckBox {
 }
 
 #analyticsYearComboBox QAbstractItemView {
-    background-color:  rgb(245,245,245);
+    background-color: rgb(245,245,245);
     selection-background-color: rgb(95, 97, 109);
     color: rgb(0, 0, 0);    
     padding: 10px;
@@ -836,7 +836,7 @@ QCheckBox {
 }
 
 #histogramChartVerticalFrame { 
-    background-color: #f3f3f3;
+    background-color: rgba(204, 204, 204, 0.6);
     border: 2px solid black; 
     border-radius: 20px;
     margin: 0px 15px 10px 15px;
@@ -844,8 +844,16 @@ QCheckBox {
 }
 
 #histogramChartTitleLabel {
-    background-color: #f3f3f3;
+    background-color: rgba(0, 0, 0, 0);
     margin: 0;
+    color: black;
+}
+
+#barChartVerticalFrame { 
+    background-color: rgba(204, 204, 204, 0.6);
+    border: 2px solid black; 
+    border-radius: 20px;
+    margin: 10px 15px 10px 10px;
     color: black;
 }
 
@@ -855,12 +863,62 @@ QCheckBox {
     color: black;
 }
 
-#barChartVerticalFrame { 
-    background-color: #f3f3f3;
+/* Cards Section */
+#attacksPerMonthVerticalFrame {
+	background-color: rgba(204, 204, 204, 0.6);
+	border-radius: 20px;
     border: 2px solid black; 
-    border-radius: 20px;
-    margin: 0px 15px 10px 15px;
-    color: black;
+	color: black;
+}
+
+#attacksPerMonthTitleLabel {
+	background-color: transparent;
+	color: black;
+}
+
+#attacksPerMonthValueLabel {
+    font-size: 60px;
+	margin: 10px;
+	background-color: transparent;
+	color: black;
+}
+
+#totalNumOfAttacksVerticalFrame {
+	background-color: rgba(204, 204, 204, 0.6);
+	border-radius: 20px;
+    border: 2px solid black; 
+	color: black;
+}
+
+#totalNumOfAttacksTitleLabel {
+	background-color: transparent;
+	color: black;
+}
+
+#totalNumOfAttacksValueLabel {
+    font-size: 60px;
+	margin: 10px;
+	background-color: transparent;
+	color: black;
+}
+
+#mostPopularAttackVerticalFrame {
+	background-color: rgba(204, 204, 204, 0.6);
+	border-radius: 20px;
+    border: 2px solid black; 
+	color: black;
+}
+
+#mostPopularAttackTitleLabel {
+	background-color: transparent;
+	color: black;
+}
+
+#mostPopularAttackValueLabel {
+	margin: 10px;
+	margin-top: 0px;
+	background-color: transparent;
+	color: black;
 }
 
 /*-----------------------------Analytics-Window-End-------------------------------*/

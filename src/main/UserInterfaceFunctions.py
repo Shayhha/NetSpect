@@ -1051,7 +1051,7 @@ def UpdateHistogramChartLines(self, newValue):
     intervals = desiredLines - 1 #set intervals based on number of lines
 
     # use ceiling division to get the smallest step that will cover newValue
-    step = (newValue + intervals - 1) // intervals
+    step = ((newValue + 2) + (intervals - 1)) // intervals
     adjustedMax = step * intervals
 
     # set the tick interval for histogram Y-axis
@@ -1065,8 +1065,8 @@ def CreateHistogramChartData(self, histogramChartData=None):
     try:
         # find valid months based on the current month and selected year in the combobox
         yearComboboxSelection = self.ui.analyticsYearComboBox.currentText()
-        validMonths = AnalyticsHistogramChart.histogramMonths 
-        if int(yearComboboxSelection) == datetime.now().year:
+        validMonths = AnalyticsHistogramChart.histogramMonths
+        if yearComboboxSelection == str(datetime.now().year):
             currentMonth = datetime.now().month
             validMonths = AnalyticsHistogramChart.histogramMonths[:currentMonth] #get all the valid months from January untill current month
 
@@ -1156,8 +1156,8 @@ def UpdateHistogramChartAfterAttack(self, attackName):
             newValue = barSet.at(monthIndex) + 1
             barSet.replace(monthIndex, newValue)
 
-            # check if we need to update the Y-axis range, need to update if the new value is larger than the max value
-            if newValue > self.ui.histogramAxisY.max():
+            # check if we need to update the Y-axis range, need to update if the new value is equal or larger than the max value
+            if newValue >= self.ui.histogramAxisY.max():
                 # detach the series from the chart and axes
                 self.ui.histogramBarSeries.detachAxis(self.ui.histogramAxisY)
                 self.ui.histogramBarSeries.detachAxis(self.ui.histogramAxisX)

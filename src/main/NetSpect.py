@@ -469,6 +469,7 @@ class NetSpect(QMainWindow):
                 self.InitMacAddresses(self.userData.get('blackList')) #intialize our mac address black list
                 UserInterfaceFunctions.UpdatePieChartAfterLogin(self, self.userData.get('pieChartData')) #initialize pie chart
                 UserInterfaceFunctions.UpdateHistogramChartAfterLogin(self, self.userData.get('analyticsChartData').get('histogramChartData')) #initialize histogram chart
+                UserInterfaceFunctions.UpdateBarChartAfterLogin(self, self.userData.get('analyticsChartData').get('barChartData')) #initialize horizontal bar chart
                 self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has logged in.', 'INFO') #log login event
 
             # means we set user interface for logged out user
@@ -1289,6 +1290,7 @@ class NetSpect(QMainWindow):
             self.UpdateNumberOfDetectionsCounterLabel(1, True) #increment the number of detections counter
             UserInterfaceFunctions.UpdatePieChartAfterAttack(self, attackType) #increment attack type in pie chart
             UserInterfaceFunctions.UpdateHistogramChartAfterAttack(self, attackType) #increment attack type in histogram chart
+            UserInterfaceFunctions.UpdateBarChartAfterAttack(self, attackType) #increment attack type in horizontal bar chart
             UserInterfaceFunctions.ShowTrayMessage(self, 'Security Alert', f'Potential {alert.get('attackType')} attack detected from IP: {alert.get('srcIp')}. Immediate action recommended.', 'Warning')
             self.AddRowToHistoryTable(alert.get('srcIp'), alert.get('srcMac'), alert.get('dstIp'), alert.get('dstMac'), alert.get('attackType'), alert.get('timestamp'))
             self.AddRowToReportTable(alert.get('interface'), alert.get('attackType'), alert.get('srcIp'), alert.get('srcMac'), alert.get('dstIp'), alert.get('dstMac'), 
@@ -1429,20 +1431,29 @@ class NetSpect(QMainWindow):
                 self.sqlThread.UpdateOperationMode(self.userData.get('userId'), self.userData.get('operationMode'))
 
 
-    # method for changing the operation mode of application, detection or collection
+    # method for changing the current year in analytics page for showing detection information for given year
     def ChangeAnalyticsYear(self):
-        if self.ui.analyticsYearComboBox.currentText(): #ensures that the following code does not execute when we initialize/re-initialize the combobox year values
+        # get current year chosen in combobox
+        currentYear = self.ui.analyticsYearComboBox.currentText()
+
+        # ensures that the we initialize the combobox year values only when year is set
+        if currentYear:
             # send a log that the user is changing the analytics year selection
-            self.SendLogDict(f'Main_Thread: {'User ' + self.userData.get('userName') if self.userData.get('userId') else 'Default user'} is changing the analytics year to: "{self.ui.analyticsYearComboBox.currentText()}".', 'INFO')
+            self.SendLogDict(f'Main_Thread: {'User ' + self.userData.get('userName') if self.userData.get('userId') else 'Default user'} is changing the analytics year to: "{currentYear}".', 'INFO')
 
             # update the histogram chart based on the selected year, first clear the current chart if it exists then create a new one
-            selectedData = self.userData.get('analyticsChartData').get('histogramChartData', {})
-            if selectedData:
+            if any(attackCount > 0 for attackCount in self.userData.get('analyticsChartData').get('barChartData').get(currentYear).values()) > 0:
+                # reset both histogram chart and horizontal bar chart
                 UserInterfaceFunctions.ResetHistogramChartToDefault(self, hideChart=False)
-                if selectedData.get(self.ui.analyticsYearComboBox.currentText()):
-                    UserInterfaceFunctions.CreateHistogramChartData(self, selectedData)
+                UserInterfaceFunctions.ResetBarChartToDefault(self, hideChart=False)
+
+                # initialize both histogram chart and bar chart based on the selected year
+                UserInterfaceFunctions.CreateHistogramChartData(self, self.userData.get('analyticsChartData').get('histogramChartData', {}))
+                UserInterfaceFunctions.CreateBarChartData(self, self.userData.get('analyticsChartData').get('barChartData', {}))
             else:
+                # reset both histogram chart and horizontal bar chart and show charts
                 UserInterfaceFunctions.ResetHistogramChartToDefault(self)
+                UserInterfaceFunctions.ResetBarChartToDefault(self)
 
 
     # method for creating alerts report for user in desired format, txt or csv

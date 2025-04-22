@@ -2,7 +2,7 @@ from PySide6 import QtWidgets
 from PySide6.QtCore import Qt, QTimer, QPropertyAnimation, QEasingCurve, QEasingCurve, QSortFilterProxyModel, QAbstractTableModel, QModelIndex, QMargins
 from PySide6.QtWidgets import QApplication, QMenu, QTableWidget, QWidget, QDialog, QLabel, QLineEdit, QStyle, QSizePolicy, QPushButton, QGridLayout, QHeaderView, QSystemTrayIcon, QVBoxLayout, QHBoxLayout, QGraphicsDropShadowEffect, QToolTip
 from PySide6.QtGui import QAction, QColor, QIcon, QPixmap, QFont, QCursor, QPainter, QPen
-from PySide6.QtCharts import QChart, QChartView, QPieSeries, QBarSeries, QHorizontalBarSeries, QBarSet, QBarCategoryAxis, QValueAxis
+from PySide6.QtCharts import QChart, QChartView, QPieSeries, QBarSeries, QHorizontalStackedBarSeries, QBarSet, QBarCategoryAxis, QValueAxis
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -253,6 +253,7 @@ def ToggleUserInterface(self, state):
 
     # reset all the analytics charts
     ResetHistogramChartToDefault(self) #reset our histogram chart
+    ResetBarChartToDefault(self) #reset our horizontal bar chart
 
     #set combobox and checkboxes default state
     self.ui.reportDurationComboBox.setCurrentIndex(3)
@@ -1034,7 +1035,7 @@ class AnalyticsHistogramChart():
         self.ui.histogramChartView.hide()
 
 
-    # simple method for showing a tooltip on each bar of the histogram chart when the user hovers it with the mouse
+    # method for showing a tooltip on each bar of the histogram chart when the user hovers it with the mouse
     def ShowTooltip(self, state, index, barSet):
         if state:
             # get class name, value and month and show tooltip text
@@ -1044,7 +1045,7 @@ class AnalyticsHistogramChart():
             QToolTip.showText(QCursor.pos(), f'Attack: {className}\nCount: {int(value)}\nMonth: {month}', self)
 
 
-# helper function for updating the grid lines and ticks based on the given maximum value
+# function for updating the grid lines and ticks based on the given maximum value in histogram chart
 def UpdateHistogramChartLines(self, newValue):
     # set desired lines to be five lines for fixed uniform look
     desiredLines = 5 #set to five lines in total
@@ -1060,7 +1061,7 @@ def UpdateHistogramChartLines(self, newValue):
     self.ui.histogramAxisY.setTickCount(desiredLines)
 
 
-# helper function for creating the chart data, axies and bars using the diven data dict, if data dict is None then create an empty chart
+# function for creating the histogram chart data, axies and bars using the diven data dict, if data dict is None then create an empty histogram chart
 def CreateHistogramChartData(self, histogramChartData=None):
     try:
         # find valid months based on the current month and selected year in the combobox
@@ -1076,30 +1077,35 @@ def CreateHistogramChartData(self, histogramChartData=None):
         self.ui.histogramChartView.show()
         self.ui.histogramChart.setBackgroundBrush(QColor('#f3f3f3') if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
 
-        # create bar sets for each class
+        # create histogram bar series and bar sets
+        self.ui.histogramBarSeries = QBarSeries()
         self.ui.histogramBarSets = []
-        for i, className in enumerate(AnalyticsHistogramChart.histogramClasses): 
+        histogramMonthsLength = len(AnalyticsHistogramChart.histogramMonths)
+
+        # iterate over each class name in our histogram attack classes
+        for i, className in enumerate(AnalyticsHistogramChart.histogramClasses):
+            # define bar set and set bar set color
             barSet = QBarSet(className)
             barSet.setColor(AnalyticsHistogramChart.histogramColors[i]) #set predefined color
             
             # connect hovered signal to custom slot
             barSet.hovered.connect(lambda state, index, barSet=barSet: AnalyticsHistogramChart.ShowTooltip(self, state, index, barSet))
-            
-            # append data for this class from dictionary
-            if histogramChartData: #check if there is data to add to the chart, if not then the chart will be empty
-                for month in histogramChartData.get(yearComboboxSelection).keys(): #iterate over all months in the list (skipping the first index because it not a month)
-                    barSet.append(histogramChartData.get(yearComboboxSelection).get(month).get(className)) #get value for this class
-                self.ui.histogramBarSets.append(barSet)
-            else:
-                # insert zero data into the chart for a default and empty histogram chart
-                for _ in AnalyticsHistogramChart.histogramMonths:
-                    barSet.append(0)
-                self.ui.histogramBarSets.append(barSet)
 
-        # create bar series and add bar sets
-        self.ui.histogramBarSeries = QBarSeries()
-        for barSet in self.ui.histogramBarSets:
+            # check if there is data to add to the chart, if not then the chart will be empty
+            if histogramChartData and yearComboboxSelection in histogramChartData:
+                # iterate over all months in the histogramChartData dictionary
+                for month in histogramChartData.get(yearComboboxSelection).keys():
+                    barSet.append(histogramChartData.get(yearComboboxSelection).get(month).get(className, 0)) #append attack counter value
+            else:
+                # insert bar set values list with zeros to initialize empty histogram chart
+                barSetValues = [0] * histogramMonthsLength #list for appending zero values to chart
+                barSet.append(barSetValues) #append zero values to chart
+
+            # append bar set into our histogram bar series and sets
             self.ui.histogramBarSeries.append(barSet)
+            self.ui.histogramBarSets.append(barSet)
+
+         # add histogram bar series to histogram chart
         self.ui.histogramChart.addSeries(self.ui.histogramBarSeries)
 
         # create X-axis months
@@ -1145,7 +1151,7 @@ def UpdateHistogramChartAfterAttack(self, attackName):
     try:
         # only updating the histogram chart if the user year selection is the current year, otherwise it will update when a user changes the combobox value
         yearComboboxSelection = self.ui.analyticsYearComboBox.currentText()
-        if int(yearComboboxSelection) == datetime.now().year:
+        if yearComboboxSelection == str(datetime.now().year):
             # checking in there is any histogram chart data already or not, if not then we need to create the data
             if not self.ui.histogramChart.series(): #need to create chart data
                 CreateHistogramChartData(self)
@@ -1185,8 +1191,8 @@ def UpdateHistogramChartAfterAttack(self, attackName):
             self.ui.histogramChartVerticalFrame.update() #ensure the chart updates
 
         # update histogramChartData dictionary in userData
-        self.userData.get('analyticsChartData').get('histogramChartData').get(self.ui.analyticsYearComboBox.currentText()).get(datetime.now().month).setdefault(attackName, 0)
-        self.userData['analyticsChartData']['histogramChartData'][self.ui.analyticsYearComboBox.currentText()][datetime.now().month][attackName] += 1
+        self.userData.get('analyticsChartData').get('histogramChartData').get(yearComboboxSelection).get(datetime.now().month).setdefault(attackName, 0)
+        self.userData['analyticsChartData']['histogramChartData'][yearComboboxSelection][datetime.now().month][attackName] += 1
 
     except Exception as e:
         ShowMessageBox('Error Updating Histogram Chart', 'Error occurred while updating histogram chart after an attack, try again later.', 'Critical')
@@ -1205,7 +1211,7 @@ def UpdateHistogramChartAfterLogin(self, histogramChartData):
         ShowMessageBox('Error Updating Histogram Chart', 'Error occurred while updating histogram chart, try again later.', 'Critical')
 
 
-# function for clearing the histogram chart and resetting to default empty histogram chart. the 'hideChart' parameter is used when we dont want to hide the chart object after clearing the data in it
+# function for clearing the histogram chart and resetting to default empty histogram chart
 def ResetHistogramChartToDefault(self, hideChart=True):
     try:
         # clear the histogram chart data and set the default title
@@ -1229,6 +1235,254 @@ def ResetHistogramChartToDefault(self, hideChart=True):
         ShowMessageBox('Error Clearing Histogram Chart', 'Error occurred while clearing histogram chart, try again later.', 'Critical')
 
 #-------------------------------------------HISTOGRAM-CHART-END----------------------------------------------#
+
+#-------------------------------------------HORIZONTAL-BAR-CHART---------------------------------------------#
+
+# class for initializing the horizontal bar chart on the Analytics page
+class AnalyticsBarChart:
+    # define our attack classes and their colors to show in the bar chart
+    barClasses = AttackPieChart.pieChartLabelDict.keys()
+    barColors = [color[2] for color in AttackPieChart.pieChartLabelDict.values()]
+
+    # method for initializing the hhorizontal bar chart
+    def InitAnalyticsBarChart(self):
+        # create the chart object and set fonts and colors
+        self.ui.barChart = QChart()
+        self.ui.barChart.legend().setVisible(True)
+        self.ui.barChart.legend().setFont(QFont('Cairo', 9, QFont.Bold))
+        self.ui.barChart.legend().setContentsMargins(0, 0, 0, 0)
+        self.ui.barChart.legend().layout().setContentsMargins(0, 0, 0, 0)
+        self.ui.barChart.legend().setBackgroundVisible(False)
+        self.ui.barChart.legend().setAlignment(Qt.AlignTop)
+        self.ui.barChart.layout().setContentsMargins(0, 0, 0, 0)
+        self.ui.barChart.setMargins(QMargins(0, 0, 0, 0))
+        self.ui.barChart.setBackgroundRoundness(0)
+        self.ui.barChart.setBackgroundBrush(QColor('#f3f3f3') if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
+        self.ui.barChart.setTitle(f'No data to display...')
+        self.ui.barChart.setTitleFont(QFont('Cairo', 18, QFont.Bold, False))
+        self.ui.barChart.setAnimationOptions(QChart.SeriesAnimations)
+
+        # create a separate QLabel for the title (will be visible when there is no data to display)
+        self.ui.barChartTitleLabel = QLabel('No data to display...')
+        self.ui.barChartTitleLabel.setAlignment(Qt.AlignCenter)
+        self.ui.barChartTitleLabel.setFont(QFont('Cairo', 18, QFont.Bold))
+        self.ui.barChartTitleLabel.setObjectName('barChartTitleLabel')
+        self.ui.barChartTitleLabel.setAlignment(Qt.AlignHCenter)  # Start centered
+        self.ui.barChartTitleLabel.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+
+        # create the chartView object
+        self.ui.barChartView  = QChartView(self.ui.barChart)
+        self.ui.barChartView.setRenderHint(QPainter.Antialiasing)
+
+        # create a VBoxLayout that the bar chart and title will sit in
+        VBoxLayout = QVBoxLayout()
+        VBoxLayout.setSpacing(0)
+        VBoxLayout.setContentsMargins(6, 6, 6, 6)
+        VBoxLayout.addWidget(self.ui.barChartTitleLabel) #adding title
+        VBoxLayout.addWidget(self.ui.barChartView) #adding bar chart
+        
+        # add the VBoxLayout to the ui frame
+        self.ui.barChartVerticalFrame.setLayout(VBoxLayout)
+        self.ui.barChartVerticalFrame.update()
+
+        # hide the chart and show the title
+        self.ui.barChartTitleLabel.show()
+        self.ui.barChartView.hide()
+
+
+    # method for showing a tooltip on each bar of the histogram chart when the user hovers it with the mouse
+    def ShowTooltip(self, state, index, barSet):
+        if state:
+            # get class name, value and month and show tooltip text
+            className = barSet.label()
+            value = barSet.at(index) 
+            QToolTip.showText(QCursor.pos(), f'Attack: {className}\nCount: {int(value)}', self)
+
+
+# function for updating the grid lines and ticks based on the given maximum value in bar chart
+def UpdateBarChartLines(self, newValue):
+    # set desired lines to be five lines for fixed uniform look
+    desiredLines = 5 #set to five lines in total
+    intervals = desiredLines - 1 #set intervals based on number of lines
+
+    # use ceiling division to get the smallest step that will cover newValue
+    step = ((newValue + 2) + (intervals - 1)) // intervals
+    adjustedMax = step * intervals
+
+    # set the tick interval for bar chart X-axis
+    self.ui.barChartAxisX.setRange(0, adjustedMax)
+    self.ui.barChartAxisX.setTickInterval(step)
+    self.ui.barChartAxisX.setTickCount(desiredLines)
+
+
+# function for creating the bar chart data, axies and bars using the diven data dict, if data dict is None then create an empty bar chart
+def CreateBarChartData(self, barChartData=None):
+    try:
+        # find valid months based on the current month and selected year in the combobox
+        yearComboboxSelection = self.ui.analyticsYearComboBox.currentText()
+
+        # hide the title and show the chart
+        self.ui.barChart.setTitle(f'Network Attacks For Year {yearComboboxSelection}')
+        self.ui.barChartTitleLabel.hide()
+        self.ui.barChartView.show()
+        self.ui.barChart.setBackgroundBrush(QColor('#f3f3f3') if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
+
+        # create horizontal stacked bar series and bar sets
+        self.ui.barChartBarSeries = QHorizontalStackedBarSeries()
+        self.ui.barChartBarSets = []
+        barClassesLength = len(AnalyticsBarChart.barClasses)
+
+        # iterate over each class name in our bar chart attack classes
+        for i, className in enumerate(AnalyticsBarChart.barClasses):
+            # define bar set and bar set values list and set bar set color
+            barSet = QBarSet(className)
+            barSetValues = [0] * barClassesLength #list for appending values in right position in chart
+            barSet.setColor(AnalyticsBarChart.barColors[i]) #set predefined color
+
+            # connect hovered signal to custom slot
+            barSet.hovered.connect(lambda state, index, barSet=barSet: AnalyticsBarChart.ShowTooltip(self, state, index, barSet))
+
+            # check if there is data to add to the chart, if not then the chart will be empty
+            if barChartData and yearComboboxSelection in barChartData:
+                barSetValues[i] = barChartData[yearComboboxSelection].get(className, 0) #append attack counter value
+
+            # insert bar set values list based on value given if bar chart data is set else with zeros to initialize empty bar chart
+            barSet.append(barSetValues)
+
+            # append bar set into our bar chart bar series and sets
+            self.ui.barChartBarSeries.append(barSet)
+            self.ui.barChartBarSets.append(barSet)
+
+        # add bar chart bar series to bar chart
+        self.ui.barChart.addSeries(self.ui.barChartBarSeries)
+
+        # create X-axis values
+        self.ui.barChartAxisX = QValueAxis()
+        self.ui.barChartAxisX.setTitleText('Number of Attacks')
+        self.ui.barChartAxisX.setLabelsFont(QFont('Cairo', 9, QFont.Bold, False))
+        self.ui.barChartAxisX.setTitleFont(QFont('Cairo', 11, QFont.Bold, False))
+        self.ui.barChartAxisX.setGridLineColor(QColor('#73758b'))
+        self.ui.barChartAxisX.setLinePen(QPen(QColor('#73758b'), 1))
+        self.ui.barChartAxisX.setTickInterval(1)
+        self.ui.barChartAxisX.setLabelFormat('%d') #integer labels
+        self.ui.barChart.addAxis(self.ui.barChartAxisX, Qt.AlignBottom)
+        self.ui.barChartBarSeries.attachAxis(self.ui.barChartAxisX)
+
+        # create Y-axis attack types
+        self.ui.barChartAxisY = QBarCategoryAxis()
+        self.ui.barChartAxisY.append(AnalyticsBarChart.barClasses)
+        self.ui.barChartAxisY.setTitleText('Attack Types')
+        self.ui.barChartAxisY.setLabelsFont(QFont('Cairo', 9, QFont.Bold, True))
+        self.ui.barChartAxisY.setTitleFont(QFont('Cairo', 12, QFont.Bold, False))
+        self.ui.barChartAxisY.setGridLineColor(QColor('#73758b'))
+        self.ui.barChartAxisY.setLinePen(QPen(QColor('#73758b'), 1))
+        self.ui.barChart.addAxis(self.ui.barChartAxisY, Qt.AlignLeft)
+        self.ui.barChartBarSeries.attachAxis(self.ui.barChartAxisY)
+
+        # update bar chart lines based on max value in axis
+        UpdateBarChartLines(self, self.ui.barChartAxisX.max())
+
+        # remove the old axis from chart and add the adjusted axies to the chart
+        if self.ui.barChartAxisX:
+            self.ui.barChartBarSeries.detachAxis(self.ui.barChartAxisX)
+            self.ui.barChart.removeAxis(self.ui.barChartAxisX)
+        self.ui.barChart.addAxis(self.ui.barChartAxisX, Qt.AlignBottom)
+        self.ui.barChartBarSeries.attachAxis(self.ui.barChartAxisX)
+        self.ui.barChartVerticalFrame.update()
+
+    except Exception as e:
+        ShowMessageBox('Error Creating Bar Chart', 'Error occurred while creating bar chart with given data, try again later.', 'Critical')
+
+
+# function for updating the bar chart after an attack was detected, expects an attack name like in database: 'ARP Spoofing', 'Port Scan', etc.
+def UpdateBarChartAfterAttack(self, attackName):
+    try:
+        # only updating the bar chart if the user year selection is the current year, otherwise it will update when a user changes the combobox value
+        yearComboboxSelection = self.ui.analyticsYearComboBox.currentText()
+        if yearComboboxSelection == str(datetime.now().year):
+            # checking in there is any bar chart data already or not, if not then we need to create the data
+            if not self.ui.barChart.series(): #need to create chart data
+                CreateBarChartData(self)
+
+            # updating the bar data for the given attack type in the current month
+            barSet = self.ui.barChartBarSets[list(AnalyticsBarChart.barClasses).index(attackName)]
+            attackIndex = list(AnalyticsBarChart.barClasses).index(attackName)
+            newValue = barSet.at(attackIndex) + 1
+            barSet.replace(attackIndex, newValue)
+
+            # check if we need to update the X-axis range, need to update if the new value is equal or larger than the max value
+            if newValue >= self.ui.barChartAxisX.max():
+                # detach the series from the chart and axes
+                self.ui.barChartBarSeries.detachAxis(self.ui.barChartAxisY)
+                self.ui.barChartBarSeries.detachAxis(self.ui.barChartAxisX)
+                self.ui.barChart.removeSeries(self.ui.barChartBarSeries)
+                self.ui.barChart.removeAxis(self.ui.barChartAxisX)
+
+                # create a new X-axis
+                self.ui.barChartAxisX = QValueAxis()
+                self.ui.barChartAxisX.setTitleText('Number of Attacks')
+                self.ui.barChartAxisX.setLabelsFont(QFont('Cairo', 9, QFont.Bold, False))
+                self.ui.barChartAxisX.setTitleFont(QFont('Cairo', 11, QFont.Bold, False))
+                self.ui.barChartAxisX.setGridLineColor(QColor('#73758b'))
+                self.ui.barChartAxisX.setLinePen(QPen(QColor('#73758b'), 1))
+                self.ui.barChartAxisX.setLabelFormat('%d') #integer labels
+
+                # update bar chart lines based on new value
+                UpdateBarChartLines(self, newValue)
+
+                # attach the new axis and series back to the chart
+                self.ui.barChart.addAxis(self.ui.barChartAxisX, Qt.AlignBottom)
+                self.ui.barChart.addSeries(self.ui.barChartBarSeries)
+                self.ui.barChartBarSeries.attachAxis(self.ui.barChartAxisX)
+                self.ui.barChartBarSeries.attachAxis(self.ui.barChartAxisY)
+
+            self.ui.barChartVerticalFrame.update() #ensure the chart updates
+
+        # update histogramChartData dictionary in userData
+        self.userData.get('analyticsChartData').get('barChartData').get(yearComboboxSelection).setdefault(attackName, 0)
+        self.userData['analyticsChartData']['barChartData'][yearComboboxSelection][attackName] += 1
+
+    except Exception as e:
+        ShowMessageBox('Error Updating Bar Chart', 'Error occurred while updating bar chart after an attack, try again later.', 'Critical')
+
+
+# function for updating the bar chart after user login with data from database
+def UpdateBarChartAfterLogin(self, barChartData):
+    try:
+        # check if there's at least one attack in barChartData dictionary
+        if any(attackCount > 0 for yearData in barChartData.values() for attackCount in yearData.values()):
+            CreateBarChartData(self, barChartData)
+        else:
+            ResetBarChartToDefault(self)
+
+    except Exception as e:
+        ShowMessageBox('Error Updating Bar Chart', 'Error occurred while updating bar chart, try again later.', 'Critical')
+
+
+# function for clearing the bar chart and resetting to default empty bar chart
+def ResetBarChartToDefault(self, hideChart=True):
+    try:
+        # clear the bar chart data and set the default title
+        for series in self.ui.barChart.series():
+            self.ui.barChart.removeSeries(series)
+
+        # clear all axes and grid lines and reset the title
+        for axis in self.ui.barChart.axes():
+            self.ui.barChart.removeAxis(axis)
+
+        # hide the chart and show the title
+        if hideChart:
+            self.ui.barChartTitleLabel.setText('No data to display...')
+            self.ui.barChartTitleLabel.show()
+            self.ui.barChartView.hide()
+
+        # validate that the background color matches the current users preference
+        self.ui.barChart.setBackgroundBrush(QColor('#f3f3f3') if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
+
+    except Exception as e:
+        ShowMessageBox('Error Clearing Bar Chart', 'Error occurred while clearing bar chart, try again later.', 'Critical')
+
+#------------------------------------------HORIZONTAL-BAR-CHART-END------------------------------------------#
 
 #--------------------------------------------TABLE-VIEW-FILTER-----------------------------------------------#
 
@@ -1556,6 +1810,7 @@ def InitUserInterface(self):
     # initilize charts in GUI
     AttackPieChart.InitAttackPieChart(self)
     AnalyticsHistogramChart.InitAnalyticsHistogramChart(self)
+    AnalyticsBarChart.InitAnalyticsBarChart(self)
 
     # initilize report preview table view and initialize selected attacks and time filter
     InitReportTableView(self)

@@ -869,6 +869,12 @@ QCheckBox {
     color: #151519;
 }
 
+#barChartTitleLabel {
+    background-color: #ebeff7;
+    margin: 0;
+    color: black;
+}
+
 #barChartVerticalFrame { 
     background-color: #ebeff7;
     border: 2px solid black;

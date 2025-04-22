@@ -546,9 +546,9 @@ class SQL_Thread(QThread):
         self.cursor.execute(query, (userId, userId))
         result = self.cursor.fetchall()
 
-        # chartData represents dictionary of years, each year has dictionary of months, where each month has dictionary of attack types with their attack counter
-        # yearData represents dictionary of years, each year has dictionary of attack types with their attack counter related to this year
-        analyticsChartData = {'chartData': {}, 'yearData': {}}
+        # histogramChartData represents dictionary of years, each year has dictionary of months, where each month has dictionary of attack types with their attack counter
+        # barChartData represents dictionary of years, each year has dictionary of attack types with their attack counter related to this year
+        analyticsChartData = {'histogramChartData': {}, 'barChartData': {}}
 
         # check if we received result from query
         if result:
@@ -557,28 +557,28 @@ class SQL_Thread(QThread):
                 # initialize parameters based on row values
                 year, month, attackType, attackCount = str(row[0]), row[1], row[2], row[3]
 
-                # initialize chartData for the year if not present in our dict
-                if year not in analyticsChartData.get('chartData'):
-                    analyticsChartData['chartData'][year] = {attackMonth: {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0} for attackMonth in range(1, 13)}
+                # initialize histogramChartData for the year if not present in our dict
+                if year not in analyticsChartData.get('histogramChartData'):
+                    analyticsChartData['histogramChartData'][year] = {attackMonth: {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0} for attackMonth in range(1, 13)}
 
-                # initialize yearData for the year if not present in our dict
-                if year not in analyticsChartData.get('yearData'):
-                    analyticsChartData['yearData'][year] = {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0}
+                # initialize barChartData for the year if not present in our dict
+                if year not in analyticsChartData.get('barChartData'):
+                    analyticsChartData['barChartData'][year] = {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0}
 
                 # check if month is not zero, if so it means its monthly attack type data
                 if month != 0:
-                    # check if attack type is present in our chartData dictionary
-                    if attackType in analyticsChartData.get('chartData').get(year).get(month):
-                        analyticsChartData['chartData'][year][month][attackType] = attackCount
+                    # check if attack type is present in our histogramChartData dictionary
+                    if attackType in analyticsChartData.get('histogramChartData').get(year).get(month):
+                        analyticsChartData['histogramChartData'][year][month][attackType] = attackCount
 
                 # else it means its yearly attack type data
                 else:
-                    # check if attack type is present in our yearData dictionary
-                    if attackType in analyticsChartData.get('yearData').get(year):
-                        analyticsChartData['yearData'][year][attackType] = attackCount
+                    # check if attack type is present in our barChartData dictionary
+                    if attackType in analyticsChartData.get('barChartData').get(year):
+                        analyticsChartData['barChartData'][year][attackType] = attackCount
 
         return analyticsChartData
-    
+
 
     # method for adding alert for user in Alerts table
     @Slot(int, str, str, str, str, str, str, str, str)

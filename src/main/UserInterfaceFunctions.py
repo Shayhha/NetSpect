@@ -2,7 +2,7 @@ from PySide6 import QtWidgets
 from PySide6.QtCore import Qt, QTimer, QPropertyAnimation, QEasingCurve, QEasingCurve, QSortFilterProxyModel, QAbstractTableModel, QModelIndex, QMargins
 from PySide6.QtWidgets import QApplication, QMenu, QTableWidget, QWidget, QDialog, QLabel, QLineEdit, QStyle, QSizePolicy, QPushButton, QGridLayout, QHeaderView, QSystemTrayIcon, QVBoxLayout, QHBoxLayout, QGraphicsDropShadowEffect, QToolTip
 from PySide6.QtGui import QAction, QColor, QIcon, QPixmap, QFont, QCursor, QPainter, QPen
-from PySide6.QtCharts import QChart, QChartView, QPieSeries, QBarSeries, QBarSet, QBarCategoryAxis, QValueAxis
+from PySide6.QtCharts import QChart, QChartView, QPieSeries, QBarSeries, QHorizontalBarSeries, QBarSet, QBarCategoryAxis, QValueAxis
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -344,9 +344,9 @@ def TogglePasswordVisibility(lineEditWidget, eyeIcon):
 
 # function for initializing the analytics combobox with year values
 def InitAnalyticsYearCombobox(self):
-    # check that yearData dictionary is initialized before setting comobox itemss
-    if self.userData.get('analyticsChartData', {}).get('yearData', {}):
-        self.ui.analyticsYearComboBox.addItems(list(reversed(self.userData.get('analyticsChartData', {}).get('yearData', {}))))
+    # check that barChartData dictionary is initialized before setting comobox itemss
+    if self.userData.get('analyticsChartData', {}).get('barChartData', {}):
+        self.ui.analyticsYearComboBox.addItems(list(reversed(self.userData.get('analyticsChartData', {}).get('barChartData', {}))))
 
 
 # function for toggling between detection or collection states and setting startStop button stylesheet accordingly
@@ -895,7 +895,7 @@ def UpdatePieChartAfterAttack(self, attackName):
         
         UpdatePieChartLegendsAndSlices(self) #update the text data of legends and slice labels
         
-        # update pieChartData dictionary in userdata
+        # update pieChartData dictionary in userData
         self.userData.get('pieChartData').setdefault(attackName, 0)
         self.userData['pieChartData'][attackName] += 1
 
@@ -991,46 +991,43 @@ class AnalyticsHistogramChart():
     # method for initializing the histogram chart
     def InitAnalyticsHistogramChart(self):
         # create the chart object and set fonts and colors
-        histogramChart = QChart()
-        histogramChart.legend().setVisible(True)
-        histogramChart.legend().setFont(QFont('Cairo', 9, QFont.Bold))
-        histogramChart.legend().setContentsMargins(0, 0, 0, 0)
-        histogramChart.legend().layout().setContentsMargins(0, 0, 0, 0)
-        histogramChart.legend().setBackgroundVisible(False)
-        histogramChart.legend().setAlignment(Qt.AlignTop)
-        histogramChart.layout().setContentsMargins(0, 0, 0, 0)
-        histogramChart.setMargins(QMargins(0, 0, 0, 0))
-        histogramChart.setBackgroundRoundness(0)
-        histogramChart.setBackgroundBrush(QColor('#f3f3f3') if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
-        histogramChart.setTitle(f'No data to display...')
-        histogramChart.setTitleFont(QFont('Cairo', 18, QFont.Bold, False))
-        histogramChart.setAnimationOptions(QChart.SeriesAnimations)
+        self.ui.histogramChart = QChart()
+        self.ui.histogramChart.legend().setVisible(True)
+        self.ui.histogramChart.legend().setFont(QFont('Cairo', 9, QFont.Bold))
+        self.ui.histogramChart.legend().setContentsMargins(0, 0, 0, 0)
+        self.ui.histogramChart.legend().layout().setContentsMargins(0, 0, 0, 0)
+        self.ui.histogramChart.legend().setBackgroundVisible(False)
+        self.ui.histogramChart.legend().setAlignment(Qt.AlignTop)
+        self.ui.histogramChart.layout().setContentsMargins(0, 0, 0, 0)
+        self.ui.histogramChart.setMargins(QMargins(0, 0, 0, 0))
+        self.ui.histogramChart.setBackgroundRoundness(0)
+        self.ui.histogramChart.setBackgroundBrush(QColor('#f3f3f3') if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
+        self.ui.histogramChart.setTitle(f'No data to display...')
+        self.ui.histogramChart.setTitleFont(QFont('Cairo', 18, QFont.Bold, False))
+        self.ui.histogramChart.setAnimationOptions(QChart.SeriesAnimations)
 
         # create a separate QLabel for the title (will be visible when there is no data to display)
-        titleLabel = QLabel('No data to display...')
-        titleLabel.setAlignment(Qt.AlignCenter)
-        titleLabel.setFont(QFont('Cairo', 18, QFont.Bold))
-        titleLabel.setObjectName('histogramChartTitleLabel')
-        titleLabel.setAlignment(Qt.AlignHCenter)  # Start centered
-        titleLabel.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        self.ui.histogramChartTitleLabel = QLabel('No data to display...')
+        self.ui.histogramChartTitleLabel.setAlignment(Qt.AlignCenter)
+        self.ui.histogramChartTitleLabel.setFont(QFont('Cairo', 18, QFont.Bold))
+        self.ui.histogramChartTitleLabel.setObjectName('histogramChartTitleLabel')
+        self.ui.histogramChartTitleLabel.setAlignment(Qt.AlignHCenter)  # Start centered
+        self.ui.histogramChartTitleLabel.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
 
         # create the chartView object
-        chartView = QChartView(histogramChart)
-        chartView.setRenderHint(QPainter.Antialiasing)
+        self.ui.histogramChartView = QChartView(self.ui.histogramChart)
+        self.ui.histogramChartView.setRenderHint(QPainter.Antialiasing)
 
         # create a VBoxLayout that the histogram chart and title will sit in
         VBoxLayout = QVBoxLayout()
         VBoxLayout.setSpacing(0)
         VBoxLayout.setContentsMargins(6, 6, 6, 6)
-        VBoxLayout.addWidget(titleLabel) #adding title
-        VBoxLayout.addWidget(chartView) #adding histogram chart
-        
-        # add the VBoxLayout to the ui frame and save references to chart related objects
+        VBoxLayout.addWidget(self.ui.histogramChartTitleLabel) #adding title
+        VBoxLayout.addWidget(self.ui.histogramChartView) #adding histogram chart
+
+        # add the VBoxLayout to the ui frame
         self.ui.histogramChartVerticalFrame.setLayout(VBoxLayout)
         self.ui.histogramChartVerticalFrame.update()
-        self.ui.histogramChart = histogramChart
-        self.ui.histogramChartView = chartView
-        self.ui.histogramChartTitleLabel = titleLabel
 
         # hide the chart and show the title
         self.ui.histogramChartTitleLabel.show()
@@ -1048,19 +1045,19 @@ class AnalyticsHistogramChart():
 
 
 # helper function for updating the grid lines and ticks based on the given maximum value
-def UpdateHistogramChartLines(axisY, newValue):
-    # determine the number of grid lines based on whether max_data is even or odd
-    desiredLines = 4 if newValue % 2 == 0 else 5
-    intervals = desiredLines - 1 #there are desiredLines–1 intervals
+def UpdateHistogramChartLines(self, newValue):
+    # set desired lines to be five lines for fixed uniform look
+    desiredLines = 5 #set to five lines in total
+    intervals = desiredLines - 1 #set intervals based on number of lines
 
     # use ceiling division to get the smallest step that will cover newValue
     step = (newValue + intervals - 1) // intervals
     adjustedMax = step * intervals
 
-    # set the tick interval
-    axisY.setRange(0, adjustedMax)
-    axisY.setTickInterval(step)
-    axisY.setTickCount(desiredLines)
+    # set the tick interval for histogram Y-axis
+    self.ui.histogramAxisY.setRange(0, adjustedMax)
+    self.ui.histogramAxisY.setTickInterval(step)
+    self.ui.histogramAxisY.setTickCount(desiredLines)
 
 
 # helper function for creating the chart data, axies and bars using the diven data dict, if data dict is None then create an empty chart
@@ -1080,7 +1077,7 @@ def CreateHistogramChartData(self, histogramChartData=None):
         self.ui.histogramChart.setBackgroundBrush(QColor('#f3f3f3') if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
 
         # create bar sets for each class
-        barSets = []
+        self.ui.histogramBarSets = []
         for i, className in enumerate(AnalyticsHistogramChart.histogramClasses): 
             barSet = QBarSet(className)
             barSet.setColor(AnalyticsHistogramChart.histogramColors[i]) #set predefined color
@@ -1092,53 +1089,44 @@ def CreateHistogramChartData(self, histogramChartData=None):
             if histogramChartData: #check if there is data to add to the chart, if not then the chart will be empty
                 for month in histogramChartData.get(yearComboboxSelection).keys(): #iterate over all months in the list (skipping the first index because it not a month)
                     barSet.append(histogramChartData.get(yearComboboxSelection).get(month).get(className)) #get value for this class
-                barSets.append(barSet)
+                self.ui.histogramBarSets.append(barSet)
             else:
                 # insert zero data into the chart for a default and empty histogram chart
                 for _ in AnalyticsHistogramChart.histogramMonths:
                     barSet.append(0)
-                barSets.append(barSet)
+                self.ui.histogramBarSets.append(barSet)
 
         # create bar series and add bar sets
-        barSeries = QBarSeries()
-        for barSet in barSets:
-            barSeries.append(barSet)
-        self.ui.histogramChart.addSeries(barSeries)
+        self.ui.histogramBarSeries = QBarSeries()
+        for barSet in self.ui.histogramBarSets:
+            self.ui.histogramBarSeries.append(barSet)
+        self.ui.histogramChart.addSeries(self.ui.histogramBarSeries)
 
         # create X-axis months
-        axisX = QBarCategoryAxis()
-        axisX.append(validMonths)
-        axisX.setTitleText('Month')
-        axisX.setLabelsFont(QFont('Cairo', 9, QFont.Bold, True))
-        axisX.setTitleFont(QFont('Cairo', 12, QFont.Bold, False))
-        axisX.setGridLineColor(QColor('#73758b')) 
-        axisX.setLinePen(QPen(QColor('#73758b'), 1))
-        self.ui.histogramChart.addAxis(axisX, Qt.AlignBottom)
-        barSeries.attachAxis(axisX)
+        self.ui.histogramAxisX = QBarCategoryAxis()
+        self.ui.histogramAxisX.append(validMonths)
+        self.ui.histogramAxisX.setTitleText('Month')
+        self.ui.histogramAxisX.setLabelsFont(QFont('Cairo', 9, QFont.Bold, True))
+        self.ui.histogramAxisX.setTitleFont(QFont('Cairo', 12, QFont.Bold, False))
+        self.ui.histogramAxisX.setGridLineColor(QColor('#73758b')) 
+        self.ui.histogramAxisX.setLinePen(QPen(QColor('#73758b'), 1))
+        self.ui.histogramChart.addAxis(self.ui.histogramAxisX, Qt.AlignBottom)
+        self.ui.histogramBarSeries.attachAxis(self.ui.histogramAxisX)
 
         # create Y-axis values
-        axisY = QValueAxis()
-        axisY.setTitleText('Number of Attacks')
-        axisY.setLabelsFont(QFont('Cairo', 9, QFont.Bold, False))
-        axisY.setTitleFont(QFont('Cairo', 11, QFont.Bold, False))
-        axisY.setGridLineColor(QColor('#73758b'))
-        axisY.setLinePen(QPen(QColor('#73758b'), 1))
-        axisY.setTickInterval(1)
-        axisY.setLabelFormat('%d') #integer labels
-        self.ui.histogramChart.addAxis(axisY, Qt.AlignLeft)
-        barSeries.attachAxis(axisY)
+        self.ui.histogramAxisY = QValueAxis()
+        self.ui.histogramAxisY.setTitleText('Number of Attacks')
+        self.ui.histogramAxisY.setLabelsFont(QFont('Cairo', 9, QFont.Bold, False))
+        self.ui.histogramAxisY.setTitleFont(QFont('Cairo', 11, QFont.Bold, False))
+        self.ui.histogramAxisY.setGridLineColor(QColor('#73758b'))
+        self.ui.histogramAxisY.setLinePen(QPen(QColor('#73758b'), 1))
+        self.ui.histogramAxisY.setTickInterval(1)
+        self.ui.histogramAxisY.setLabelFormat('%d') #integer labels
+        self.ui.histogramChart.addAxis(self.ui.histogramAxisY, Qt.AlignLeft)
+        self.ui.histogramBarSeries.attachAxis(self.ui.histogramAxisY)
 
-        # add references of chart objects to self.ui
-        self.ui.histogramAxisY = axisY
-        self.ui.histogramBarSeries = barSeries
-        self.ui.histogramBarSets = barSets
-
-        # adjust the Y-axis range of values to be at least from 0 to 4 including, this ensures that there are no wierd values in the Y-axis
-        maxValue = self.ui.histogramAxisY.max()
-        if maxValue <= 4:
-            self.ui.histogramAxisY.setRange(0, 4)
-        else:
-            UpdateHistogramChartLines(self.ui.histogramAxisY, maxValue)
+        # update histogram chart lines based on max value in axis
+        UpdateHistogramChartLines(self, self.ui.histogramAxisY.max())
 
         # remove the old axis from chart and add the adjusted axies to the chart
         if self.ui.histogramAxisY:
@@ -1169,39 +1157,36 @@ def UpdateHistogramChartAfterAttack(self, attackName):
             barSet.replace(monthIndex, newValue)
 
             # check if we need to update the Y-axis range, need to update if the new value is larger than the max value
-            if newValue > self.ui.histogramChart.axes(Qt.Vertical)[0].max(): 
+            if newValue > self.ui.histogramAxisY.max():
                 # detach the series from the chart and axes
                 self.ui.histogramBarSeries.detachAxis(self.ui.histogramAxisY)
-                self.ui.histogramBarSeries.detachAxis(self.ui.histogramChart.axes(Qt.Horizontal)[0])
+                self.ui.histogramBarSeries.detachAxis(self.ui.histogramAxisX)
                 self.ui.histogramChart.removeSeries(self.ui.histogramBarSeries)
                 self.ui.histogramChart.removeAxis(self.ui.histogramAxisY)
 
                 # create a new Y-axis
-                axisY = QValueAxis()
-                axisY.setTitleText('Number of Attacks')
-                axisY.setLabelsFont(QFont('Cairo', 9, QFont.Bold, False))
-                axisY.setTitleFont(QFont('Cairo', 11, QFont.Bold, False))
-                axisY.setGridLineColor(QColor('#73758b'))
-                axisY.setLinePen(QPen(QColor('#73758b'), 1))
-                axisY.setLabelFormat('%d') #integer labels
+                self.ui.histogramAxisY = QValueAxis()
+                self.ui.histogramAxisY.setTitleText('Number of Attacks')
+                self.ui.histogramAxisY.setLabelsFont(QFont('Cairo', 9, QFont.Bold, False))
+                self.ui.histogramAxisY.setTitleFont(QFont('Cairo', 11, QFont.Bold, False))
+                self.ui.histogramAxisY.setGridLineColor(QColor('#73758b'))
+                self.ui.histogramAxisY.setLinePen(QPen(QColor('#73758b'), 1))
+                self.ui.histogramAxisY.setLabelFormat('%d') #integer labels
 
-                # set the range from 0 to new value
-                axisY.setRange(0, newValue)
-                UpdateHistogramChartLines(axisY, newValue)
+                # update histogram chart lines based on new value
+                UpdateHistogramChartLines(self, newValue)
 
                 # attach the new axis and series back to the chart
-                self.ui.histogramChart.addAxis(axisY, Qt.AlignLeft)
-                axisX = self.ui.histogramChart.axes(Qt.Horizontal)[0]
+                self.ui.histogramChart.addAxis(self.ui.histogramAxisY, Qt.AlignLeft)
                 self.ui.histogramChart.addSeries(self.ui.histogramBarSeries)
-                self.ui.histogramBarSeries.attachAxis(axisX)
-                self.ui.histogramBarSeries.attachAxis(axisY)
-                self.ui.histogramAxisY = axisY #update the reference to the new Y-axis
+                self.ui.histogramBarSeries.attachAxis(self.ui.histogramAxisX)
+                self.ui.histogramBarSeries.attachAxis(self.ui.histogramAxisY)
 
             self.ui.histogramChartVerticalFrame.update() #ensure the chart updates
 
-        # update chartData dictionary in userdata
-        self.userData.get('analyticsChartData').get('chartData').get(self.ui.analyticsYearComboBox.currentText()).get(datetime.now().month).setdefault(attackName, 0)
-        self.userData['analyticsChartData']['chartData'][self.ui.analyticsYearComboBox.currentText()][datetime.now().month][attackName] += 1
+        # update histogramChartData dictionary in userData
+        self.userData.get('analyticsChartData').get('histogramChartData').get(self.ui.analyticsYearComboBox.currentText()).get(datetime.now().month).setdefault(attackName, 0)
+        self.userData['analyticsChartData']['histogramChartData'][self.ui.analyticsYearComboBox.currentText()][datetime.now().month][attackName] += 1
 
     except Exception as e:
         ShowMessageBox('Error Updating Histogram Chart', 'Error occurred while updating histogram chart after an attack, try again later.', 'Critical')
@@ -1211,11 +1196,11 @@ def UpdateHistogramChartAfterAttack(self, attackName):
 def UpdateHistogramChartAfterLogin(self, histogramChartData):
     try:
         # check if there's at least one attack in histogramChartData dictionary
-        if len(histogramChartData) > 0:
+        if any(attackCount > 0 for yearData in histogramChartData.values() for monthData in yearData.values() for attackCount in monthData.values()):
             CreateHistogramChartData(self, histogramChartData)
         else:
-            ResetHistogramChartToDefault()
-        
+            ResetHistogramChartToDefault(self)
+
     except Exception as e:
         ShowMessageBox('Error Updating Histogram Chart', 'Error occurred while updating histogram chart, try again later.', 'Critical')
 

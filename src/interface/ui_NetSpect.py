@@ -1213,10 +1213,6 @@ class Ui_NetSpect(object):
 "    margin: 0px 15px 10px 15px;\n"
 "    color: black;\n"
 "}")
-        self.verticalLayout_31 = QVBoxLayout(self.barChartVerticalFrame)
-        self.verticalLayout_31.setSpacing(0)
-        self.verticalLayout_31.setObjectName(u"verticalLayout_31")
-        self.verticalLayout_31.setContentsMargins(10, 10, 10, 10)
 
         self.horizontalLayout_15.addWidget(self.barChartVerticalFrame)
 

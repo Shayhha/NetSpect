@@ -239,16 +239,22 @@ class NetSpect(QMainWindow):
         self.SendLogDict('SQL_Thread: Starting SQL thread.', 'INFO')
     
 
-    # method for initializing user data dictionary including pie chart, histogram chart and bar chart dictionaries to default
-    def InitUserData(self):
-        # initialize user data dictionary to default state
-        self.userData = {'userId': None, 'email': None, 'userName': None, 'lightMode': 0, 'operationMode': 0, 
-                            'numberOfDetections': 0, 'alertList': [], 'pieChartData': {}, 'analyticsChartData': {}, 'blackList': []}
+    # method for initializing user data dictionary including pie chart, histogram chart and bar chart dictionaries
+    def InitUserData(self, userData=None):
+        # means we need to initialize userData dictionary with given data
+        if userData:
+            self.userData = userData
 
-        # initialize pie chart, histogram chart and bar chart dictionaries to default state
+        # else means we need to reset userData dictionary to default state
+        else:
+            # initialize user data dictionary to default state
+            self.userData = {'userId': None, 'email': None, 'userName': None, 'lightMode': 0, 'operationMode': 0, 
+                                'numberOfDetections': 0, 'alertList': [], 'pieChartData': {}, 'analyticsChartData': {}, 'blackList': []}
+
+        # initialize pie chart, histogram chart and bar chart dictionaries with default states if not initialized
         self.userData.setdefault('pieChartData', {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0})
-        self.userData.setdefault('analyticsChartData', {}).setdefault('yearData', {}).setdefault(str(datetime.now().year), {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0})
-        self.userData.setdefault('analyticsChartData', {}).setdefault('chartData', {}).setdefault(str(datetime.now().year), 
+        self.userData.setdefault('analyticsChartData', {}).setdefault('barChartData', {}).setdefault(str(datetime.now().year), {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0})
+        self.userData.setdefault('analyticsChartData', {}).setdefault('histogramChartData', {}).setdefault(str(datetime.now().year), 
                                     {month: {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0} for month in range(1, 13)})
 
 
@@ -449,7 +455,7 @@ class NetSpect(QMainWindow):
         if not self.isDetection:
             # means we need to set user interface for logged in user
             if state and userData:
-                self.userData = userData #save user data dictionary for logged in user
+                self.InitUserData(userData) #initialzie user data dictionary for logged in user
                 UserInterfaceFunctions.AccountIconClicked(self) #close login popup
                 self.ui.colorModeComboBox.setCurrentIndex(self.userData.get('lightMode')) #set color mode combobox to the value received from database
                 self.ui.operationModeComboBox.setCurrentIndex(self.userData.get('operationMode')) #set operation mode combobox to the value received from database
@@ -462,7 +468,7 @@ class NetSpect(QMainWindow):
                 self.InitReportTable(self.userData.get('alertList')) #initialize our report table
                 self.InitMacAddresses(self.userData.get('blackList')) #intialize our mac address black list
                 UserInterfaceFunctions.UpdatePieChartAfterLogin(self, self.userData.get('pieChartData')) #initialize pie chart
-                UserInterfaceFunctions.UpdateHistogramChartAfterLogin(self, self.userData.get('analyticsChartData').get('chartData')) #initialize histogram chart
+                UserInterfaceFunctions.UpdateHistogramChartAfterLogin(self, self.userData.get('analyticsChartData').get('histogramChartData')) #initialize histogram chart
                 self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has logged in.', 'INFO') #log login event
 
             # means we set user interface for logged out user
@@ -1430,7 +1436,7 @@ class NetSpect(QMainWindow):
             self.SendLogDict(f'Main_Thread: {'User ' + self.userData.get('userName') if self.userData.get('userId') else 'Default user'} is changing the analytics year to: "{self.ui.analyticsYearComboBox.currentText()}".', 'INFO')
 
             # update the histogram chart based on the selected year, first clear the current chart if it exists then create a new one
-            selectedData = self.userData.get('analyticsChartData').get('chartData', {})
+            selectedData = self.userData.get('analyticsChartData').get('histogramChartData', {})
             if selectedData:
                 UserInterfaceFunctions.ResetHistogramChartToDefault(self, hideChart=False)
                 if selectedData.get(self.ui.analyticsYearComboBox.currentText()):

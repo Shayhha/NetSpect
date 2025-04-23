@@ -1070,11 +1070,13 @@ def UpdateHistogramChartLines(self, newValue):
 # function for creating the histogram chart data, axies and bars using the diven data dict, if data dict is None then create an empty histogram chart
 def CreateHistogramChartData(self, histogramChartData=None):
     try:
-        # find valid months based on the current month and selected year in the combobox
+        # get valid months based on the current month and get selected year from year combobox
         yearComboboxSelection = self.ui.analyticsYearComboBox.currentText()
         validMonths = AnalyticsHistogramChart.histogramMonths
+
+        # check if year combobox is set to current year, if so we update the histogram chart months based on valid months
         if yearComboboxSelection == str(datetime.now().year):
-            currentMonth = datetime.now().month
+            currentMonth = datetime.now().month #get current month
             validMonths = AnalyticsHistogramChart.histogramMonths[:currentMonth] #get all the valid months from January untill current month
 
         # hide the title and show the chart
@@ -1155,16 +1157,28 @@ def CreateHistogramChartData(self, histogramChartData=None):
 # function for updating the histogram chart after an attack was detected, expects an attack name like in database: 'ARP Spoofing', 'Port Scan', etc.
 def UpdateHistogramChartAfterAttack(self, attackName):
     try:
-        # only updating the histogram chart if the user year selection is the current year, otherwise it will update when a user changes the combobox value
+        # get selected year from year combobox
         yearComboboxSelection = self.ui.analyticsYearComboBox.currentText()
+
+        # updating the histogram chart if the user year selection is the current year
         if yearComboboxSelection == str(datetime.now().year):
+            currentMonth = datetime.now().month #get current month
+
             # checking in there is any histogram chart data already or not, if not then we need to create the data
-            if not self.ui.histogramChart.series(): #need to create chart data
+            if not self.ui.histogramChart.series():
                 CreateHistogramChartData(self)
 
-            # updating the histogram data for the given attack type in the current month
+            # check if we got into a new month, if so we rebuild the X-axis month labels
+            if currentMonth > self.ui.histogramAxisX.count():
+                # get the updated valid months based on current month and update our month labels with new month
+                validMonths = AnalyticsHistogramChart.histogramMonths[:currentMonth]
+                self.ui.histogramAxisX.clear()
+                self.ui.histogramAxisX.append(validMonths)
+                self.ui.histogramBarSeries.attachAxis(self.ui.histogramAxisX)
+
+            # updating the histogram data for the given attack type in the current month index
             barSet = self.ui.histogramBarSets[AnalyticsHistogramChart.histogramClasses.index(attackName)]
-            monthIndex = AnalyticsHistogramChart.histogramMonths.index(datetime.now().strftime('%B'))
+            monthIndex = currentMonth - 1
             newValue = barSet.at(monthIndex) + 1
             barSet.replace(monthIndex, newValue)
 
@@ -1324,7 +1338,7 @@ def UpdateBarChartLines(self, newValue):
 # function for creating the bar chart data, axies and bars using the diven data dict, if data dict is None then create an empty bar chart
 def CreateBarChartData(self, barChartData=None):
     try:
-        # find valid months based on the current month and selected year in the combobox
+        # get selected year from year combobox
         yearComboboxSelection = self.ui.analyticsYearComboBox.currentText()
 
         # hide the title and show the chart
@@ -1403,14 +1417,16 @@ def CreateBarChartData(self, barChartData=None):
 # function for updating the bar chart after an attack was detected, expects an attack name like in database: 'ARP Spoofing', 'Port Scan', etc.
 def UpdateBarChartAfterAttack(self, attackName):
     try:
-        # only updating the bar chart if the user year selection is the current year, otherwise it will update when a user changes the combobox value
+        # get selected year from year combobox
         yearComboboxSelection = self.ui.analyticsYearComboBox.currentText()
+
+        # updating the bar chart if the user year selection is the current year
         if yearComboboxSelection == str(datetime.now().year):
             # checking in there is any bar chart data already or not, if not then we need to create the data
-            if not self.ui.barChart.series(): #need to create chart data
+            if not self.ui.barChart.series():
                 CreateBarChartData(self)
 
-            # updating the bar data for the given attack type in the current month
+            # updating the bar data for the given attack type in the current attack index
             barSet = self.ui.barChartBarSets[AnalyticsBarChart.barClasses.index(attackName)]
             attackIndex = AnalyticsBarChart.barClasses.index(attackName)
             newValue = barSet.at(attackIndex) + 1

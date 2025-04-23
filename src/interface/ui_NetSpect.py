@@ -1356,6 +1356,7 @@ class Ui_NetSpect(object):
         self.mostPopularAttackTitleLabel.setStyleSheet(u"#mostPopularAttackTitleLabel {\n"
 "	background-color: transparent;\n"
 "	color: black;\n"
+"	margin-top: 5px;\n"
 "}")
         self.mostPopularAttackTitleLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.mostPopularAttackTitleLabel.setWordWrap(True)

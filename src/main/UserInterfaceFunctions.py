@@ -428,9 +428,52 @@ def ToggleColorMode(self):
                 </body>
             </html>
         ''')
-        self.ui.piChart.setBackgroundBrush(QColor(204, 204, 204, 153))
-        self.ui.histogramChart.setBackgroundBrush(QColor(204, 204, 204, 153))
-        self.ui.barChart.setBackgroundBrush(QColor(204, 204, 204, 153))
+        colorObj = QColor('black')
+        # Set the background color for the pie chart object
+        if hasattr(self.ui, 'piChart'):
+            self.ui.piChart.setBackgroundBrush(QColor(204, 204, 204, 153))
+
+        # Set the background color for the histogram chart object
+        if hasattr(self.ui, 'histogramChart'):
+            self.ui.histogramChart.setBackgroundBrush(QColor(204, 204, 204, 153))
+            self.ui.histogramChart.legend().setLabelColor(colorObj)
+            self.ui.histogramChart.setTitleBrush(colorObj)
+
+        # Set the background color for the bar chart object
+        if hasattr(self.ui, 'barChart'):
+            self.ui.barChart.setBackgroundBrush(QColor(204, 204, 204, 153))
+            self.ui.barChart.legend().setLabelColor(colorObj)
+            self.ui.barChart.setTitleBrush(colorObj)
+
+        # Set the background color for the histogram chart axis and legends objects
+        if hasattr(self.ui, 'histogramAxisX') and hasattr(self.ui, 'histogramAxisY'):
+            self.ui.histogramAxisX.setTitleBrush(colorObj)
+            self.ui.histogramAxisX.setLabelsBrush(colorObj)
+            self.ui.histogramAxisX.setGridLineColor(colorObj)
+            self.ui.histogramAxisX.setLinePen(QPen(colorObj, 1))
+            self.ui.histogramAxisY.setTitleBrush(colorObj)
+            self.ui.histogramAxisY.setLabelsBrush(colorObj)
+            self.ui.histogramAxisY.setGridLineColor(colorObj)
+            self.ui.histogramAxisY.setLinePen(QPen(colorObj))
+            self.ui.ARPSpoofingHistogramChartBar.setPen(QPen(colorObj, 1))
+            self.ui.PortScanHistogramChartBar.setPen(QPen(colorObj, 1))
+            self.ui.DoSHistogramChartBar.setPen(QPen(colorObj, 1))
+            self.ui.DNSTunnelingHistogramChartBar.setPen(QPen(colorObj, 1))
+
+        # Set the background color for the bar chart axis and legends objects
+        if hasattr(self.ui, 'barChartAxisX') and hasattr(self.ui, 'barChartAxisY'):
+            self.ui.barChartAxisX.setTitleBrush(colorObj)
+            self.ui.barChartAxisX.setLabelsBrush(colorObj)
+            self.ui.barChartAxisX.setGridLineColor(colorObj)
+            self.ui.barChartAxisX.setLinePen(QPen(colorObj, 1))
+            self.ui.barChartAxisY.setTitleBrush(colorObj)
+            self.ui.barChartAxisY.setLabelsBrush(colorObj)
+            self.ui.barChartAxisY.setGridLineColor(colorObj)
+            self.ui.barChartAxisY.setLinePen(QPen(colorObj, 1))
+            self.ui.ARPSpoofingBarChartBar.setPen(QPen(colorObj, 1))
+            self.ui.PortScanBarChartBar.setPen(QPen(colorObj, 1))
+            self.ui.DoSBarChartBar.setPen(QPen(colorObj, 1))
+            self.ui.DNSTunnelingBarChartBar.setPen(QPen(colorObj, 1))
         with open(currentDir.parent / 'interface' / 'darkModeStyles.qss', 'r') as stylesFile: #load styles from file
             self.setStyleSheet(stylesFile.read())
     else:
@@ -456,9 +499,52 @@ def ToggleColorMode(self):
                 </body>
             </html>
         ''')
-        self.ui.piChart.setBackgroundBrush(QColor('#c1d0ef'))
-        self.ui.histogramChart.setBackgroundBrush(QColor('#ebeff7'))
-        self.ui.barChart.setBackgroundBrush(QColor('#ebeff7'))
+        colorObj = QColor('#151519')
+        # Set the background color for the pie chart object
+        if hasattr(self.ui, 'piChart'):
+            self.ui.piChart.setBackgroundBrush(QColor('#c1d0ef'))
+            
+        # Set the background color for the histogram chart object
+        if hasattr(self.ui, 'histogramChart'):
+            self.ui.histogramChart.setBackgroundBrush(QColor('#ebeff7'))
+            self.ui.histogramChart.legend().setLabelColor(colorObj)
+            self.ui.histogramChart.setTitleBrush(colorObj)
+
+        # Set the background color for the bar chart object
+        if hasattr(self.ui, 'barChart'):
+            self.ui.barChart.setBackgroundBrush(QColor('#ebeff7'))
+            self.ui.barChart.legend().setLabelColor(colorObj)
+            self.ui.barChart.setTitleBrush(colorObj)
+
+        # Set the background color for the histogram chart axis and legends objects
+        if hasattr(self.ui, 'histogramAxisX') and hasattr(self.ui, 'histogramAxisY'):
+            self.ui.histogramAxisX.setTitleBrush(colorObj)
+            self.ui.histogramAxisX.setLabelsBrush(colorObj)
+            self.ui.histogramAxisX.setGridLineColor(colorObj)
+            self.ui.histogramAxisX.setLinePen(QPen(colorObj, 1))
+            self.ui.histogramAxisY.setTitleBrush(colorObj)
+            self.ui.histogramAxisY.setLabelsBrush(colorObj)
+            self.ui.histogramAxisY.setGridLineColor(colorObj)
+            self.ui.histogramAxisY.setLinePen(QPen(colorObj))
+            self.ui.ARPSpoofingHistogramChartBar.setPen(QPen(colorObj, 1))
+            self.ui.PortScanHistogramChartBar.setPen(QPen(colorObj, 1))
+            self.ui.DoSHistogramChartBar.setPen(QPen(colorObj, 1))
+            self.ui.DNSTunnelingHistogramChartBar.setPen(QPen(colorObj, 1))
+
+        # Set the background color for the bar chart axis and legends objects
+        if hasattr(self.ui, 'barChartAxisX') and hasattr(self.ui, 'barChartAxisY'):
+            self.ui.barChartAxisX.setTitleBrush(colorObj)
+            self.ui.barChartAxisX.setLabelsBrush(colorObj)
+            self.ui.barChartAxisX.setGridLineColor(colorObj)
+            self.ui.barChartAxisX.setLinePen(QPen(colorObj, 1))
+            self.ui.barChartAxisY.setTitleBrush(colorObj)
+            self.ui.barChartAxisY.setLabelsBrush(colorObj)
+            self.ui.barChartAxisY.setGridLineColor(colorObj)
+            self.ui.barChartAxisY.setLinePen(QPen(colorObj, 1))
+            self.ui.ARPSpoofingBarChartBar.setPen(QPen(colorObj, 1))
+            self.ui.PortScanBarChartBar.setPen(QPen(colorObj, 1))
+            self.ui.DoSBarChartBar.setPen(QPen(colorObj, 1))
+            self.ui.DNSTunnelingBarChartBar.setPen(QPen(colorObj, 1))
         with open(currentDir.parent / 'interface' / 'lightModeStyles.qss', 'r') as stylesFile: #load styles from file
             self.setStyleSheet(stylesFile.read())
 
@@ -1009,12 +1095,14 @@ class AnalyticsHistogramChart():
         self.ui.histogramChart.legend().layout().setContentsMargins(0, 0, 0, 0)
         self.ui.histogramChart.legend().setBackgroundVisible(False)
         self.ui.histogramChart.legend().setAlignment(Qt.AlignTop)
+        self.ui.histogramChart.legend().setLabelColor(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
         self.ui.histogramChart.layout().setContentsMargins(0, 0, 0, 0)
         self.ui.histogramChart.setMargins(QMargins(0, 0, 0, 0))
         self.ui.histogramChart.setBackgroundRoundness(0)
         self.ui.histogramChart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
         self.ui.histogramChart.setTitle(f'No data to display...')
         self.ui.histogramChart.setTitleFont(QFont('Cairo', 18, QFont.Bold, False))
+        self.ui.histogramChart.setTitleBrush(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
         self.ui.histogramChart.setAnimationOptions(QChart.SeriesAnimations)
 
         # create a separate QLabel for the title (will be visible when there is no data to display)
@@ -1099,7 +1187,9 @@ def CreateHistogramChartData(self, histogramChartData=None):
             # define bar set and set bar set color
             barSet = QBarSet(className)
             barSet.setColor(AnalyticsHistogramChart.histogramColors[i]) #set predefined color
-            
+            barSet.setPen(QPen(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'), 1))
+            setattr(self.ui, f'{''.join(className.split(' '))}HistogramChartBar', barSet) #adding the barSet object to ui
+
             # connect hovered signal to custom slot
             barSet.hovered.connect(lambda state, index, barSet=barSet: AnalyticsHistogramChart.ShowTooltip(self, state, index, barSet))
 
@@ -1124,20 +1214,24 @@ def CreateHistogramChartData(self, histogramChartData=None):
         self.ui.histogramAxisX = QBarCategoryAxis()
         self.ui.histogramAxisX.append(validMonths)
         self.ui.histogramAxisX.setTitleText('Month')
+        self.ui.histogramAxisX.setTitleBrush(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
         self.ui.histogramAxisX.setLabelsFont(QFont('Cairo', 9, QFont.Bold, True))
+        self.ui.histogramAxisX.setLabelsBrush(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
         self.ui.histogramAxisX.setTitleFont(QFont('Cairo', 12, QFont.Bold, False))
-        self.ui.histogramAxisX.setGridLineColor(QColor('#73758b')) 
-        self.ui.histogramAxisX.setLinePen(QPen(QColor('#73758b'), 1))
+        self.ui.histogramAxisX.setGridLineColor(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
+        self.ui.histogramAxisX.setLinePen(QPen(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'), 1))
         self.ui.histogramChart.addAxis(self.ui.histogramAxisX, Qt.AlignBottom)
         self.ui.histogramBarSeries.attachAxis(self.ui.histogramAxisX)
 
         # create Y-axis values
         self.ui.histogramAxisY = QValueAxis()
         self.ui.histogramAxisY.setTitleText('Number of Attacks')
+        self.ui.histogramAxisY.setTitleBrush(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
         self.ui.histogramAxisY.setLabelsFont(QFont('Cairo', 9, QFont.Bold, False))
+        self.ui.histogramAxisY.setLabelsBrush(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
         self.ui.histogramAxisY.setTitleFont(QFont('Cairo', 11, QFont.Bold, False))
-        self.ui.histogramAxisY.setGridLineColor(QColor('#73758b'))
-        self.ui.histogramAxisY.setLinePen(QPen(QColor('#73758b'), 1))
+        self.ui.histogramAxisY.setGridLineColor(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
+        self.ui.histogramAxisY.setLinePen(QPen(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'), 1))
         self.ui.histogramAxisY.setTickInterval(1)
         self.ui.histogramAxisY.setLabelFormat('%d') #integer labels
         self.ui.histogramChart.addAxis(self.ui.histogramAxisY, Qt.AlignLeft)
@@ -1197,10 +1291,12 @@ def UpdateHistogramChartAfterAttack(self, attackName):
                 # create a new Y-axis
                 self.ui.histogramAxisY = QValueAxis()
                 self.ui.histogramAxisY.setTitleText('Number of Attacks')
+                self.ui.histogramAxisY.setTitleBrush(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
                 self.ui.histogramAxisY.setLabelsFont(QFont('Cairo', 9, QFont.Bold, False))
+                self.ui.histogramAxisY.setLabelsBrush(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
                 self.ui.histogramAxisY.setTitleFont(QFont('Cairo', 11, QFont.Bold, False))
-                self.ui.histogramAxisY.setGridLineColor(QColor('#73758b'))
-                self.ui.histogramAxisY.setLinePen(QPen(QColor('#73758b'), 1))
+                self.ui.histogramAxisY.setGridLineColor(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
+                self.ui.histogramAxisY.setLinePen(QPen(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'), 1))
                 self.ui.histogramAxisY.setLabelFormat('%d') #integer labels
 
                 # update histogram chart lines based on new value
@@ -1278,12 +1374,14 @@ class AnalyticsBarChart():
         self.ui.barChart.legend().layout().setContentsMargins(0, 0, 0, 0)
         self.ui.barChart.legend().setBackgroundVisible(False)
         self.ui.barChart.legend().setAlignment(Qt.AlignTop)
+        self.ui.barChart.legend().setLabelColor(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
         self.ui.barChart.layout().setContentsMargins(0, 0, 0, 0)
         self.ui.barChart.setMargins(QMargins(0, 0, 0, 0))
         self.ui.barChart.setBackgroundRoundness(0)
         self.ui.barChart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
         self.ui.barChart.setTitle(f'No data to display...')
         self.ui.barChart.setTitleFont(QFont('Cairo', 18, QFont.Bold, False))
+        self.ui.barChart.setTitleBrush(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
         self.ui.barChart.setAnimationOptions(QChart.SeriesAnimations)
 
         # create a separate QLabel for the title (will be visible when there is no data to display)
@@ -1362,6 +1460,8 @@ def CreateBarChartData(self, barChartData=None):
             barSet = QBarSet(className)
             barSetValues = [0] * barClassesLength #list for appending values in right position in chart
             barSet.setColor(AnalyticsBarChart.barColors[i]) #set predefined color
+            barSet.setPen(QPen(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'), 1))
+            setattr(self.ui, f'{''.join(className.split(' '))}BarChartBar', barSet) #adding the barSet object to ui
 
             # connect hovered signal to custom slot
             barSet.hovered.connect(lambda state, index, barSet=barSet: AnalyticsBarChart.ShowTooltip(self, state, index, barSet))
@@ -1383,10 +1483,12 @@ def CreateBarChartData(self, barChartData=None):
         # create X-axis values
         self.ui.barChartAxisX = QValueAxis()
         self.ui.barChartAxisX.setTitleText('Number of Attacks')
+        self.ui.barChartAxisX.setTitleBrush(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
         self.ui.barChartAxisX.setLabelsFont(QFont('Cairo', 9, QFont.Bold, False))
+        self.ui.barChartAxisX.setLabelsBrush(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
         self.ui.barChartAxisX.setTitleFont(QFont('Cairo', 11, QFont.Bold, False))
-        self.ui.barChartAxisX.setGridLineColor(QColor('#73758b'))
-        self.ui.barChartAxisX.setLinePen(QPen(QColor('#73758b'), 1))
+        self.ui.barChartAxisX.setGridLineColor(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
+        self.ui.barChartAxisX.setLinePen(QPen(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'), 1))
         self.ui.barChartAxisX.setTickInterval(1)
         self.ui.barChartAxisX.setLabelFormat('%d') #integer labels
         self.ui.barChart.addAxis(self.ui.barChartAxisX, Qt.AlignBottom)
@@ -1396,10 +1498,12 @@ def CreateBarChartData(self, barChartData=None):
         self.ui.barChartAxisY = QBarCategoryAxis()
         self.ui.barChartAxisY.append(AnalyticsBarChart.barClasses)
         self.ui.barChartAxisY.setTitleText('Attack Types')
+        self.ui.barChartAxisY.setTitleBrush(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
         self.ui.barChartAxisY.setLabelsFont(QFont('Cairo', 9, QFont.Bold, True))
+        self.ui.barChartAxisY.setLabelsBrush(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
         self.ui.barChartAxisY.setTitleFont(QFont('Cairo', 12, QFont.Bold, False))
-        self.ui.barChartAxisY.setGridLineColor(QColor('#73758b'))
-        self.ui.barChartAxisY.setLinePen(QPen(QColor('#73758b'), 1))
+        self.ui.barChartAxisY.setGridLineColor(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
+        self.ui.barChartAxisY.setLinePen(QPen(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'), 1))
         self.ui.barChart.addAxis(self.ui.barChartAxisY, Qt.AlignLeft)
         self.ui.barChartBarSeries.attachAxis(self.ui.barChartAxisY)
 
@@ -1447,10 +1551,12 @@ def UpdateBarChartAfterAttack(self, attackName):
                 # create a new X-axis
                 self.ui.barChartAxisX = QValueAxis()
                 self.ui.barChartAxisX.setTitleText('Number of Attacks')
+                self.ui.barChartAxisX.setTitleBrush(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
                 self.ui.barChartAxisX.setLabelsFont(QFont('Cairo', 9, QFont.Bold, False))
+                self.ui.barChartAxisX.setLabelsBrush(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
                 self.ui.barChartAxisX.setTitleFont(QFont('Cairo', 11, QFont.Bold, False))
-                self.ui.barChartAxisX.setGridLineColor(QColor('#73758b'))
-                self.ui.barChartAxisX.setLinePen(QPen(QColor('#73758b'), 1))
+                self.ui.barChartAxisX.setGridLineColor(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
+                self.ui.barChartAxisX.setLinePen(QPen(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'), 1))
                 self.ui.barChartAxisX.setLabelFormat('%d') #integer labels
 
                 # update bar chart lines based on new value
@@ -1525,7 +1631,7 @@ def SetDataIntoCards(self):
             # update most popular attack
             mostPopularAttack = max(self.userData.get('analyticsChartData').get('barChartData').get(currentYear), key=self.userData.get('analyticsChartData').get('barChartData').get(currentYear).get)
             mostPopularAttack = '<br>'.join(mostPopularAttack.split()) if ' ' in mostPopularAttack else mostPopularAttack #to ensure that there wont be a crash in case of future attack names
-            self.ui.mostPopularAttackValueLabel.setText(mostPopularAttack)
+            self.ui.mostPopularAttackValueLabel.setText(mostPopularAttack if 'DoS' not in mostPopularAttack else 'Denial of<br>Service') #ensuring that DoS is displayed as Denial of Service
 
             # update the font sizes after updating the value
             UpdateFontSizeInLabel(self, self.ui.totalNumOfAttacksValueLabel)

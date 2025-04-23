@@ -3024,6 +3024,7 @@ QToolTip {
                           <string notr="true">#mostPopularAttackTitleLabel {
 	background-color: transparent;
 	color: black;
+	margin-top: 5px;
 }</string>
                          </property>
                          <property name="text">

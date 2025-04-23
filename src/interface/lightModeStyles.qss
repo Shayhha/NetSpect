@@ -866,7 +866,7 @@ QCheckBox {
 #histogramChartTitleLabel {
     background-color: #ebeff7;
     margin: 0;
-    color: #151519;
+    color: #404044;
 }
 
 #barChartVerticalFrame { 
@@ -880,7 +880,7 @@ QCheckBox {
 #barChartTitleLabel {
     background-color: #ebeff7;
     margin: 0;
-    color: black;
+    color: #404044;
 }
 
 /* Cards Section */
@@ -932,6 +932,7 @@ QCheckBox {
 #mostPopularAttackTitleLabel {
 	background-color: transparent;
 	color: #151519;
+    margin-top: 5px;
 }
 
 #mostPopularAttackValueLabel {

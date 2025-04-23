@@ -1510,6 +1510,7 @@ class Ui_NetSpect(object):
         self.reportDurationComboBox.addItem("")
         self.reportDurationComboBox.addItem("")
         self.reportDurationComboBox.addItem("")
+        self.reportDurationComboBox.addItem("")
         self.reportDurationComboBox.setObjectName(u"reportDurationComboBox")
         self.reportDurationComboBox.setEnabled(False)
         self.reportDurationComboBox.setGeometry(QRect(0, 0, 210, 32))
@@ -4212,7 +4213,7 @@ class Ui_NetSpect(object):
 
         self.stackedWidget.setCurrentIndex(0)
         self.analyticsYearComboBox.setCurrentIndex(0)
-        self.reportDurationComboBox.setCurrentIndex(3)
+        self.reportDurationComboBox.setCurrentIndex(4)
 
 
         QMetaObject.connectSlotsByName(NetSpect)
@@ -4301,7 +4302,7 @@ class Ui_NetSpect(object):
         self.analyticsYearComboBox.setItemText(1, QCoreApplication.translate("NetSpect", u"2024", None))
 
 #if QT_CONFIG(tooltip)
-        self.analyticsYearComboBox.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Select the time range for the report.</p></body></html>", None))
+        self.analyticsYearComboBox.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Select the year for analytics detection data.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.attacksPerMonthTitleLabel.setText(QCoreApplication.translate("NetSpect", u"<p style=\"line-height: 0.7;\">Attacks Per <br>Month</p>", None))
         self.attacksPerMonthValueLabel.setText(QCoreApplication.translate("NetSpect", u"0", None))
@@ -4310,10 +4311,11 @@ class Ui_NetSpect(object):
         self.mostPopularAttackTitleLabel.setText(QCoreApplication.translate("NetSpect", u"<p style=\"line-height: 0.7;\">Most Popular <br>Attak</p>", None))
         self.mostPopularAttackValueLabel.setText(QCoreApplication.translate("NetSpect", u"No<br>Data", None))
         self.reportSelectionLabel.setText(QCoreApplication.translate("NetSpect", u"Report Selection", None))
-        self.reportDurationComboBox.setItemText(0, QCoreApplication.translate("NetSpect", u"Last 24 Hours", None))
-        self.reportDurationComboBox.setItemText(1, QCoreApplication.translate("NetSpect", u"Last 7 Days", None))
-        self.reportDurationComboBox.setItemText(2, QCoreApplication.translate("NetSpect", u"Last 30 Days", None))
-        self.reportDurationComboBox.setItemText(3, QCoreApplication.translate("NetSpect", u"All Available Data", None))
+        self.reportDurationComboBox.setItemText(0, QCoreApplication.translate("NetSpect", u"Last Day", None))
+        self.reportDurationComboBox.setItemText(1, QCoreApplication.translate("NetSpect", u"Last Week", None))
+        self.reportDurationComboBox.setItemText(2, QCoreApplication.translate("NetSpect", u"Last Month", None))
+        self.reportDurationComboBox.setItemText(3, QCoreApplication.translate("NetSpect", u"Last Year", None))
+        self.reportDurationComboBox.setItemText(4, QCoreApplication.translate("NetSpect", u"All Available Data", None))
 
 #if QT_CONFIG(tooltip)
         self.reportDurationComboBox.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Select the time range for the report.</p></body></html>", None))

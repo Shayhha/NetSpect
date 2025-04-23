@@ -734,12 +734,12 @@ class NetSpect(QMainWindow):
         if not isClosing:
             # in case of an error we show error message
             if stateDict.get('state') == False and stateDict.get('message'):
-                UserInterfaceFunctions.ShowMessageBox('Error Occurred', stateDict.get('message'), 'Critical')
                 self.SendLogDict(f'Report_Thread: {stateDict.get('message')}', 'ERROR') #log error event
+                UserInterfaceFunctions.ShowMessageBox('Error Occurred', stateDict.get('message'), 'Critical')
             # in case of cancelation, we show cancelation messsage
             elif stateDict.get('state') == True and stateDict.get('message'):
+                self.SendLogDict(f'Report_Thread: {stateDict.get('message')}', 'INFO') #log cancel report event
                 UserInterfaceFunctions.ShowMessageBox('Canceled Report Generation', stateDict.get('message'), 'Information')
-                self.SendLogDict(f'Report_Thread: {stateDict.get('message')}', 'ERROR') #log error event
             # else we show success message
             else:
                 UserInterfaceFunctions.ShowMessageBox('Generated Report Successfully', 'Generated report in desired format successfully.', 'Information')
@@ -1125,8 +1125,8 @@ class NetSpect(QMainWindow):
                     self.SendLogDict('Data_Collector_Thread: Starting data collector thread.', 'INFO') #log data collector start event
 
         else:
-            UserInterfaceFunctions.ShowMessageBox('Error Starting Scan', 'One of the threads is still in process, cannot start new scan.', 'Warning')
             self.SendLogDict('Main_Thread: One of the threads is still in process, cannot start new scan.', 'INFO') #log event
+            UserInterfaceFunctions.ShowMessageBox('Error Starting Scan', 'One of the threads is still in process, cannot start new scan.', 'Warning')
 
 
     # method for startStop button for starting or stopping detection or collection
@@ -1224,11 +1224,12 @@ class NetSpect(QMainWindow):
 
             # check if user entered valid email
             if state != QValidator.Acceptable:
-                UserInterfaceFunctions.ChangeErrorMessageText(self.ui.resetPasswordEmailErrorMessageLabel, 'Please enter a valid email address into the field before receiving a validation code.')
+                UserInterfaceFunctions.ChangeErrorMessageText(self.ui.resetPasswordEmailErrorMessageLabel, 'Please enter a valid email address into the field before receiving a reset code.')
             # else we process the reset password request
             else:
                 # generate a 16-character reset code, timestamp and 8-character password for user and save them in resetPasswordValidator
                 self.resetPasswordValidator.update({'resetCode': NetSpect.GetResetCode(length=16), 'timestamp': NetworkInformation.GetCurrentTimestamp(), 'newPassword': NetSpect.GetPassword(length=8)})
+                self.SendLogDict(f'Main_Thread: Reset code for email {email} successfully generated.', 'INFO') #log reset code generation event
                 # send reset code to user's email
                 self.sqlThread.SendResetPasswordCode(email, self.resetPasswordValidator.get('resetCode'))
 
@@ -1246,8 +1247,9 @@ class NetSpect(QMainWindow):
             # check if reset code expired, if so we show message
             elif NetworkInformation.CompareTimepstemps(self.resetPasswordValidator.get('timestamp'), NetworkInformation.GetCurrentTimestamp(), minutes=5):
                 UserInterfaceFunctions.AccountIconClicked(self)
-                UserInterfaceFunctions.ShowMessageBox('Reset Code Expired', 'The password reset code has expired, it was valid for 5 minutes. Try resetting password again.', 'Information')
                 self.resetPasswordValidator.update({'resetCode': None, 'timestamp': None, 'newPassword': None}) #reset our resetPasswordValidator
+                self.SendLogDict(f'Main_Thread: Reset code for email {email} has expired.', 'INFO') #log reset code expiration event
+                UserInterfaceFunctions.ShowMessageBox('Reset Code Expired', 'The password reset code has expired, it was valid for 5 minutes. Try resetting password again.', 'Information')
             # check if reset code does'nt match stored code
             elif receivedResetCode != self.resetPasswordValidator.get('resetCode'):
                 UserInterfaceFunctions.ChangeErrorMessageText(self.ui.resetPasswordCodeErrorMessageLabel, 'Your given reset code is incorrect, try again.')
@@ -1309,15 +1311,21 @@ class NetSpect(QMainWindow):
         if self.isDetection:
             UserInterfaceFunctions.ShowMessageBox('Error Deleting Alerts', 'Please stop network scan before attempting to delete alerts history.', 'Information')
         else:
-            if self.userData:
-                # check that alert list has alerts and not empty
-                if self.userData.get('alertList'):
+            # check that alert list has alerts and not empty
+            if self.userData and self.userData.get('alertList'):
+                result = UserInterfaceFunctions.ShowMessageBox('Delete Alerts Confirmation', 'Deleting your alerts will permanently remove all your detection history data. Do you want to proceed?', 'Question')
+                # if true we proceed and delete user's alerts
+                if result:
                     # clear history and report tables and also reset alertsList and user interface counter
                     self.userData['alertList'] = [] #clear alertsList in userData
                     self.userData['pieChartData'] = {} #clear pieChartData in userData
+                    self.userData['analyticsChartData'] = {} #clear analyticsChartData in userData
+                    self.InitUserData(self.userData) #intialize userData again with empty data for charts for initializing default state
                     self.UpdateNumberOfDetectionsCounterLabel(0) #reset the number of detections counter in user interface
                     UserInterfaceFunctions.ResetPieChartToDefault(self) #reset our pie chart
                     UserInterfaceFunctions.ResetHistogramChartToDefault(self) #reset our histogram chart
+                    UserInterfaceFunctions.ResetBarChartToDefault(self) #reset our bar chart
+                    UserInterfaceFunctions.ResertDataInCards(self) #reset our cards
                     self.ui.historyTableWidget.setRowCount(0) #clear history table
                     self.ui.reportPreviewTableModel.ClearRows() #clear report table
 
@@ -1325,9 +1333,10 @@ class NetSpect(QMainWindow):
                     if self.sqlThread and self.userData.get('userId'):
                         self.sqlThread.DeleteAlerts(self.userData.get('userId'))
                     else:
+                        self.SendLogDict(f'Main_Thread: User Deleted all alerts history data.', 'INFO') #log delete alerts event
                         UserInterfaceFunctions.ShowMessageBox('Alerts Deletion Successful', 'Deleted all alerts history for previously detected attacks.', 'Information')
-                else:
-                    UserInterfaceFunctions.ShowMessageBox('No Alerts Found', 'Your alert history is empty. There are no alerts to delete at this time.', 'Information')
+            else:
+                UserInterfaceFunctions.ShowMessageBox('No Alerts Found', 'Your alert history is empty. There are no alerts to delete at this time.', 'Information')
 
 
     # method for adding an item to the mac address blacklist when user clicks the add button in settings page
@@ -1361,76 +1370,69 @@ class NetSpect(QMainWindow):
 
     # method for saving and updating the user's email after user clicks save button in settings page
     def SaveEmailButtonClicked(self):
-        if self.sqlThread:
-            if self.userData.get('userId') != None:
-                newEmail = self.ui.emailLineEdit.text()
-                state = self.emailValidator.validate(newEmail, 0)[0]
-                if newEmail == self.userData.get('email'):
-                    UserInterfaceFunctions.ChangeErrorMessageText(self.ui.saveEmailErrorMessageLabel ,'Your new email is the same as the current email, please enter a different email before clicking the save button.')
-                elif state != QValidator.Acceptable:
-                    UserInterfaceFunctions.ChangeErrorMessageText(self.ui.saveEmailErrorMessageLabel ,'Please enter a valid email address into the field before clicking the save button.')
-                else:
-                    self.sqlThread.ChangeEmail(self.userData.get('userId'), newEmail)
+        if self.sqlThread and self.userData.get('userId'):
+            newEmail = self.ui.emailLineEdit.text()
+            state = self.emailValidator.validate(newEmail, 0)[0]
+            if newEmail == self.userData.get('email'):
+                UserInterfaceFunctions.ChangeErrorMessageText(self.ui.saveEmailErrorMessageLabel ,'Your new email is the same as the current email, please enter a different email before clicking the save button.')
+            elif state != QValidator.Acceptable:
+                UserInterfaceFunctions.ChangeErrorMessageText(self.ui.saveEmailErrorMessageLabel ,'Please enter a valid email address into the field before clicking the save button.')
+            else:
+                self.sqlThread.ChangeEmail(self.userData.get('userId'), newEmail)
 
 
     # method for saving and updating the user's username after user clicks save button in settings page
     def SaveUsernameButtonClicked(self):
-        if self.sqlThread:
-            if self.userData.get('userId') != None:
-                newUsername = self.ui.usernameLineEdit.text()
-                state = self.usernameValidator.validate(newUsername, 0)[0]
-                if newUsername == self.userData.get('username'):
-                    UserInterfaceFunctions.ChangeErrorMessageText(self.ui.saveUsernameErrorMessageLabel ,'Your new username is the same as the current username, please enter a different username before clicking the save button.')
-                elif state != QValidator.Acceptable:
-                    UserInterfaceFunctions.ChangeErrorMessageText(self.ui.saveUsernameErrorMessageLabel ,'Please enter a valid username into the field before clicking the save button.')
-                else:
-                    self.sqlThread.ChangeUserName(self.userData.get('userId'), newUsername)
+        if self.sqlThread and self.userData.get('userId'):
+            newUsername = self.ui.usernameLineEdit.text()
+            state = self.usernameValidator.validate(newUsername, 0)[0]
+            if newUsername == self.userData.get('username'):
+                UserInterfaceFunctions.ChangeErrorMessageText(self.ui.saveUsernameErrorMessageLabel ,'Your new username is the same as the current username, please enter a different username before clicking the save button.')
+            elif state != QValidator.Acceptable:
+                UserInterfaceFunctions.ChangeErrorMessageText(self.ui.saveUsernameErrorMessageLabel ,'Please enter a valid username into the field before clicking the save button.')
+            else:
+                self.sqlThread.ChangeUserName(self.userData.get('userId'), newUsername)
 
 
     # method for saving and updating the user's password after user clicks save button in settings page
     def SavePasswordButtonClicked(self):
-        if self.sqlThread:
-            if self.userData.get('userId') != None:
-                oldPassword = self.ui.oldPasswordLineEdit.text()
-                newPassword = self.ui.newPasswordLineEdit.text()
-                confirmPassword = self.ui.confirmPasswordLineEdit.text()
-                if (len(oldPassword) == 0) or (len(newPassword) == 0) or (len(confirmPassword) == 0):
-                    UserInterfaceFunctions.ChangeErrorMessageText(self.ui.savePasswordErrorMessageLabel ,'Please fill in all password fields before clicking the save button.')
-                elif newPassword != confirmPassword:
-                    UserInterfaceFunctions.ChangeErrorMessageText(self.ui.savePasswordErrorMessageLabel ,'Please confirm your new password, the password in the second and third fields must be the same before clicking the save button.')
-                else:
-                    if self.ValidatePassword(oldPassword, self.ui.savePasswordErrorMessageLabel, 'You have entered an invalid password in the first field, please enter the correct current password before clicking the save button.'):
-                        if self.ValidatePassword(newPassword, self.ui.savePasswordErrorMessageLabel, 'You have entered an invalid password in the second field, please enter a valid new password before clicking the save button.'):
-                            if self.ValidatePassword(confirmPassword, self.ui.savePasswordErrorMessageLabel, 'You have entered an invalid password in the third field, please enter a valid new password before clicking the save button.'):
-                                self.sqlThread.ChangePassword(self.userData.get('userId'), NetSpect.ToSHA256(newPassword), NetSpect.ToSHA256(oldPassword))
+        if self.sqlThread and self.userData.get('userId'):
+            oldPassword = self.ui.oldPasswordLineEdit.text()
+            newPassword = self.ui.newPasswordLineEdit.text()
+            confirmPassword = self.ui.confirmPasswordLineEdit.text()
+            if (len(oldPassword) == 0) or (len(newPassword) == 0) or (len(confirmPassword) == 0):
+                UserInterfaceFunctions.ChangeErrorMessageText(self.ui.savePasswordErrorMessageLabel ,'Please fill in all password fields before clicking the save button.')
+            elif newPassword != confirmPassword:
+                UserInterfaceFunctions.ChangeErrorMessageText(self.ui.savePasswordErrorMessageLabel ,'Please confirm your new password, the password in the second and third fields must be the same before clicking the save button.')
+            else:
+                if self.ValidatePassword(oldPassword, self.ui.savePasswordErrorMessageLabel, 'You have entered an invalid password in the first field, please enter the correct current password before clicking the save button.'):
+                    if self.ValidatePassword(newPassword, self.ui.savePasswordErrorMessageLabel, 'You have entered an invalid password in the second field, please enter a valid new password before clicking the save button.'):
+                        if self.ValidatePassword(confirmPassword, self.ui.savePasswordErrorMessageLabel, 'You have entered an invalid password in the third field, please enter a valid new password before clicking the save button.'):
+                            self.sqlThread.ChangePassword(self.userData.get('userId'), NetSpect.ToSHA256(newPassword), NetSpect.ToSHA256(oldPassword))
 
 
     # method for changing the UI color mode
     def ChangeColorMode(self):
-        # send a log that the user is changing the ui color preference
-        self.SendLogDict(f'Main_Thread: {'User ' + self.userData.get('userName') if self.userData.get('userId') else 'Default user'} is changing the UI color preference to: "{self.ui.colorModeComboBox.currentText()}".', 'INFO')
-
         # update the ui based on the users selection
         UserInterfaceFunctions.ToggleColorMode(self)
 
         # change the value of lightMode in the database for the current user
-        if self.sqlThread:
-            if self.userData.get('userId'):
-                self.sqlThread.UpdateLightMode(self.userData.get('userId'), self.userData.get('lightMode'))
+        if self.sqlThread and self.userData.get('userId'):
+            self.sqlThread.UpdateLightMode(self.userData.get('userId'), self.userData.get('lightMode'))
+        else:
+            self.SendLogDict(f'Main_Thread: User has changed the UI color preference to "{self.ui.colorModeComboBox.currentText()}".', 'INFO') #log change color mode event
 
 
     # method for changing the operation mode of application, detection or collection
     def ChangeOperationMode(self):
-        # send a log that the user is changing the operation mode preference
-        self.SendLogDict(f'Main_Thread: {'User ' + self.userData.get('userName') if self.userData.get('userId') else 'Default user'} is changing the operation mode preference to: "{self.ui.operationModeComboBox.currentText()}".', 'INFO')
-
         # update the ui based on the users selection
         UserInterfaceFunctions.ToggleOperationMode(self)
 
         # change the value of operationMode in the database for the current user
-        if self.sqlThread:
-            if self.userData.get('userId'):
-                self.sqlThread.UpdateOperationMode(self.userData.get('userId'), self.userData.get('operationMode'))
+        if self.sqlThread and self.userData.get('userId'):
+            self.sqlThread.UpdateOperationMode(self.userData.get('userId'), self.userData.get('operationMode'))
+        else:
+            self.SendLogDict(f'Main_Thread: User has changed the operation mode preference to "{self.ui.operationModeComboBox.currentText()}".', 'INFO') #log change operation mode event
 
 
     # method for changing the current year in analytics page for showing detection information for given year
@@ -1440,8 +1442,8 @@ class NetSpect(QMainWindow):
 
         # ensures that the we initialize the combobox year values only when year is set
         if currentYear:
-            # send a log that the user is changing the analytics year selection
-            self.SendLogDict(f'Main_Thread: {'User ' + self.userData.get('userName') if self.userData.get('userId') else 'Default user'} is changing the analytics year to: "{currentYear}".', 'INFO')
+            # send a log that the user has changed the analytics year selection
+            self.SendLogDict(f'Main_Thread: {'User ' + self.userData.get('userName') if self.userData.get('userId') else 'User'} has changed the analytics year to "{currentYear}".', 'INFO')
 
             # update the histogram chart based on the selected year, first clear the current chart if it exists then create a new one
             if any(attackCount > 0 for attackCount in self.userData.get('analyticsChartData').get('barChartData').get(currentYear).values()) > 0:
@@ -1454,7 +1456,7 @@ class NetSpect(QMainWindow):
                 UserInterfaceFunctions.CreateBarChartData(self, self.userData.get('analyticsChartData').get('barChartData', {}))
                 UserInterfaceFunctions.SetDataIntoCards(self)
             else:
-                # reset both histogram chart and horizontal bar chart and show charts
+                # reset both histogram chart and horizontal bar chart and hide charts
                 UserInterfaceFunctions.ResetHistogramChartToDefault(self)
                 UserInterfaceFunctions.ResetBarChartToDefault(self)
                 UserInterfaceFunctions.ResertDataInCards(self)
@@ -1508,7 +1510,6 @@ class NetSpect(QMainWindow):
             UserInterfaceFunctions.ShowMessageBox('Error In Login', 'Error loggin into user account due to server error, please try again later.', 'Critical')
         # means failed loggin in, we show error message
         elif not resultDict.get('state'):
-            self.SendLogDict(f'Main_Thread: {resultDict.get('message')}', 'ERROR') #log error event
             UserInterfaceFunctions.ChangeErrorMessageText(self.ui.loginErrorMessageLabel, resultDict.get('message'))
         # means we successfully logged in
         elif resultDict.get('state') and resultDict.get('result'):
@@ -1524,7 +1525,6 @@ class NetSpect(QMainWindow):
             UserInterfaceFunctions.ShowMessageBox('Error In Register', 'Error registering new user due to server error, please try again later.', 'Critical')
         # means failed registering user, we show error message
         elif not resultDict.get('state'):
-            self.SendLogDict(f'Main_Thread: {resultDict.get('message')}', 'ERROR') #log error event
             UserInterfaceFunctions.ChangeErrorMessageText(self.ui.registerErrorMessageLabel, resultDict.get('message'))
         # means we successfully registered user, we process a login request to our sql thread to log into his new account
         elif resultDict.get('state'):
@@ -1543,7 +1543,6 @@ class NetSpect(QMainWindow):
             self.resetPasswordValidator.update({'resetCode': None, 'timestamp': None, 'newPassword': None}) #reset our resetPasswordValidator
         # means failed sending code, we show error message
         elif not resultDict.get('state'):
-            self.SendLogDict(f'Main_Thread: {resultDict.get('message')}', 'ERROR') #log error event
             UserInterfaceFunctions.ChangeErrorMessageText(self.ui.resetPasswordEmailErrorMessageLabel, resultDict.get('message'))
             self.resetPasswordValidator.update({'resetCode': None, 'timestamp': None, 'newPassword': None}) #reset our resetPasswordValidator
         # means we successfully sent reset password code
@@ -1562,7 +1561,6 @@ class NetSpect(QMainWindow):
             UserInterfaceFunctions.ShowMessageBox('Error Changing Password', 'Error changing password due to server error, please try again later.', 'Critical')
         # means failed changing password, we show error message
         elif not resultDict.get('state'):
-            self.SendLogDict(f'Main_Thread: {resultDict.get('message')}', 'ERROR') #log error event
             UserInterfaceFunctions.ChangeErrorMessageText(self.ui.resetPasswordCodeErrorMessageLabel, resultDict.get('message'))
         # means we successfully changed password for user
         elif resultDict.get('state'):
@@ -1627,7 +1625,6 @@ class NetSpect(QMainWindow):
             self.SendLogDict('Main_Thread: Error adding an item to the blacklist due to server error.', 'ERROR') #log error event
             UserInterfaceFunctions.ShowMessageBox('Error Adding To Blacklist', 'Error adding an item to the blacklist due to server error, please try again later.', 'Critical')
         elif not resultDict.get('state'):
-            self.SendLogDict(f'Main_Thread: {resultDict.get('message')}', 'ERROR') #log error event
             UserInterfaceFunctions.ChangeErrorMessageText(self.ui.macAddressBlacklistErrorMessageLabel, resultDict.get('message'))
         elif resultDict.get('state'):
             newMacAddress = self.ui.macAddressLineEdit.text().lower() #convert characters to lower case for ease of use
@@ -1644,7 +1641,6 @@ class NetSpect(QMainWindow):
             self.SendLogDict('Main_Thread: Error removing an item from the blacklist due to server error.', 'ERROR') #log error event
             UserInterfaceFunctions.ShowMessageBox('Error Removing From Blacklist', 'Error removing an item from the blacklist due to server error, please try again later.', 'Critical')
         elif not resultDict.get('state'):
-            self.SendLogDict(f'Main_Thread: {resultDict.get('message')}', 'ERROR') #log error event
             UserInterfaceFunctions.ChangeErrorMessageText(self.ui.macAddressBlacklistErrorMessageLabel, resultDict.get('message'))
         elif resultDict.get('state'):
             self.ui.macAddressListWidget.takeItem(self.ui.macAddressListWidget.row(self.seletecItemForDelete))
@@ -1660,7 +1656,6 @@ class NetSpect(QMainWindow):
             self.SendLogDict('Main_Thread: Error saving email due to server error.', 'ERROR') #log error event
             UserInterfaceFunctions.ShowMessageBox('Error Saving Email', 'Error saving email due to server error, please try again later.', 'Critical')
         elif not resultDict.get('state'):
-            self.SendLogDict(f'Main_Thread: {resultDict.get('message')}', 'ERROR') #log error event
             UserInterfaceFunctions.ChangeErrorMessageText(self.ui.saveEmailErrorMessageLabel, resultDict.get('message'))
         elif resultDict.get('state'):
             self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has changed email successfully.', 'INFO') #log change email event
@@ -1676,7 +1671,6 @@ class NetSpect(QMainWindow):
             self.SendLogDict('Main_Thread: Error saving username due to server error.', 'ERROR') #log error event
             UserInterfaceFunctions.ShowMessageBox('Error Saving Username', 'Error saving username due to server error, please try again later.', 'Critical')
         elif not resultDict.get('state'):
-            self.SendLogDict(f'Main_Thread: {resultDict.get('message')}', 'ERROR') #log error event
             UserInterfaceFunctions.ChangeErrorMessageText(self.ui.saveUsernameErrorMessageLabel, resultDict.get('message'))
         elif resultDict.get('state'):
             self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has changed username to {self.ui.usernameLineEdit.text()} successfully.', 'INFO') #log change username event
@@ -1693,7 +1687,6 @@ class NetSpect(QMainWindow):
             self.SendLogDict('Main_Thread: Error saving password due to server error.', 'ERROR') #log error event
             UserInterfaceFunctions.ShowMessageBox('Error Saving Password', 'Error saving password due to server error, please try again later.', 'Critical')
         elif not resultDict.get('state'):
-            self.SendLogDict(f'Main_Thread: {resultDict.get('message')}', 'ERROR') #log error event
             UserInterfaceFunctions.ChangeErrorMessageText(self.ui.savePasswordErrorMessageLabel, resultDict.get('message'))
         elif resultDict.get('state'):
             self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has changed password successfully.', 'INFO') #log change password event
@@ -1720,7 +1713,7 @@ class NetSpect(QMainWindow):
             self.SendLogDict(f'Main_Thread: Error Updating Color Preference. {resultDict.get('message')}', 'ERROR') #log change color mode event
             UserInterfaceFunctions.ShowMessageBox('Error Updating Color Preference', resultDict.get('message'))
         elif resultDict.get('state'):
-            self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has changed the UI color preference successfully.', 'INFO') #log change color mode event
+            self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has changed the UI color preference to "{self.ui.colorModeComboBox.currentText()}".', 'INFO') #log change color mode event
     
 
     # method for showing results for update operation mode after changing operation mode in GUI
@@ -1733,7 +1726,7 @@ class NetSpect(QMainWindow):
             self.SendLogDict(f'Main_Thread: Error Updating Operation Mode Preference. {resultDict.get('message')}', 'ERROR') #log change operation mode event
             UserInterfaceFunctions.ShowMessageBox('Error Updating Operation Mode Preference', resultDict.get('message'))
         elif resultDict.get('state'):
-            self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has changed operation mode preference successfully.', 'INFO') #log change operation mode event
+            self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has changed the operation mode preference to "{self.ui.operationModeComboBox.currentText()}".', 'INFO') #log change operation mode event
 
     #--------------------------------------------SQL-RESULT-SLOTS-END--------------------------------------------#
 

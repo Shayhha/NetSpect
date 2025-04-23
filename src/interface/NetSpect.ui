@@ -2485,7 +2485,7 @@ QToolTip {
                      <cursorShape>PointingHandCursor</cursorShape>
                     </property>
                     <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the time range for the report.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the year for analytics detection data.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                     <property name="styleSheet">
                      <string notr="true">#analyticsYearComboBox {
@@ -3458,21 +3458,26 @@ QToolTip {
 }</string>
                        </property>
                        <property name="currentIndex">
-                        <number>3</number>
+                        <number>4</number>
                        </property>
                        <item>
                         <property name="text">
-                         <string>Last 24 Hours</string>
+                         <string>Last Day</string>
                         </property>
                        </item>
                        <item>
                         <property name="text">
-                         <string>Last 7 Days</string>
+                         <string>Last Week</string>
                         </property>
                        </item>
                        <item>
                         <property name="text">
-                         <string>Last 30 Days</string>
+                         <string>Last Month</string>
+                        </property>
+                       </item>
+                       <item>
+                        <property name="text">
+                         <string>Last Year</string>
                         </property>
                        </item>
                        <item>

@@ -255,8 +255,11 @@ def ToggleUserInterface(self, state):
     ResetHistogramChartToDefault(self) #reset our histogram chart
     ResetBarChartToDefault(self) #reset our horizontal bar chart
 
+    # reset analytics cards
+    ResertDataInCards(self)
+
     #set combobox and checkboxes default state
-    self.ui.reportDurationComboBox.setCurrentIndex(3)
+    self.ui.reportDurationComboBox.setCurrentIndex(4)
     self.ui.arpSpoofingCheckBox.setChecked(True)
     self.ui.portScanningCheckBox.setChecked(True)
     self.ui.denialOfServiceCheckBox.setChecked(True)
@@ -347,7 +350,9 @@ def TogglePasswordVisibility(lineEditWidget, eyeIcon):
 def InitAnalyticsYearCombobox(self):
     # check that barChartData dictionary is initialized before setting comobox itemss
     if self.userData.get('analyticsChartData', {}).get('barChartData', {}):
+        self.ui.analyticsYearComboBox.blockSignals(True) #block signals while adding items to year combobox
         self.ui.analyticsYearComboBox.addItems(list(reversed(self.userData.get('analyticsChartData', {}).get('barChartData', {}))))
+        self.ui.analyticsYearComboBox.blockSignals(False) #enable signals again after adding the items to year combobox
 
 
 # function for toggling between detection or collection states and setting startStop button stylesheet accordingly
@@ -425,6 +430,7 @@ def ToggleColorMode(self):
         ''')
         self.ui.piChart.setBackgroundBrush(QColor(204, 204, 204, 153))
         self.ui.histogramChart.setBackgroundBrush(QColor(204, 204, 204, 153))
+        self.ui.barChart.setBackgroundBrush(QColor(204, 204, 204, 153))
         with open(currentDir.parent / 'interface' / 'darkModeStyles.qss', 'r') as stylesFile: #load styles from file
             self.setStyleSheet(stylesFile.read())
     else:
@@ -452,6 +458,7 @@ def ToggleColorMode(self):
         ''')
         self.ui.piChart.setBackgroundBrush(QColor('#c1d0ef'))
         self.ui.histogramChart.setBackgroundBrush(QColor('#ebeff7'))
+        self.ui.barChart.setBackgroundBrush(QColor('#ebeff7'))
         with open(currentDir.parent / 'interface' / 'lightModeStyles.qss', 'r') as stylesFile: #load styles from file
             self.setStyleSheet(stylesFile.read())
 
@@ -984,7 +991,7 @@ def ResetPieChartToDefault(self):
 # class for initializing the Histogram on the Analytics page
 class AnalyticsHistogramChart():
     # define our attack classes and their colors and the months of the year to show in the chart
-    histogramClasses = AttackPieChart.pieChartLabelDict.keys()
+    histogramClasses = [attackType for attackType in AttackPieChart.pieChartLabelDict]
     histogramColors = [color[2] for color in AttackPieChart.pieChartLabelDict.values()]
     histogramMonths = ['January', 'February', 'March', 'April', 'May', 'June', 
                        'July', 'August', 'September', 'October', 'November', 'December']
@@ -1002,7 +1009,7 @@ class AnalyticsHistogramChart():
         self.ui.histogramChart.layout().setContentsMargins(0, 0, 0, 0)
         self.ui.histogramChart.setMargins(QMargins(0, 0, 0, 0))
         self.ui.histogramChart.setBackgroundRoundness(0)
-        self.ui.histogramChart.setBackgroundBrush(QColor('#f3f3f3') if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
+        self.ui.histogramChart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
         self.ui.histogramChart.setTitle(f'No data to display...')
         self.ui.histogramChart.setTitleFont(QFont('Cairo', 18, QFont.Bold, False))
         self.ui.histogramChart.setAnimationOptions(QChart.SeriesAnimations)
@@ -1075,7 +1082,7 @@ def CreateHistogramChartData(self, histogramChartData=None):
         self.ui.histogramChart.setTitle(f'Monthly Network Attacks For Year {yearComboboxSelection}')
         self.ui.histogramChartTitleLabel.hide()
         self.ui.histogramChartView.show()
-        self.ui.histogramChart.setBackgroundBrush(QColor(204, 204, 204, 156) if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
+        self.ui.histogramChart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
 
         # create histogram bar series and bar sets
         self.ui.histogramBarSeries = QBarSeries()
@@ -1157,7 +1164,7 @@ def UpdateHistogramChartAfterAttack(self, attackName):
                 CreateHistogramChartData(self)
 
             # updating the histogram data for the given attack type in the current month
-            barSet = self.ui.histogramBarSets[list(AnalyticsHistogramChart.histogramClasses).index(attackName)]
+            barSet = self.ui.histogramBarSets[AnalyticsHistogramChart.histogramClasses.index(attackName)]
             monthIndex = AnalyticsHistogramChart.histogramMonths.index(datetime.now().strftime('%B'))
             newValue = barSet.at(monthIndex) + 1
             barSet.replace(monthIndex, newValue)
@@ -1241,7 +1248,7 @@ def ResetHistogramChartToDefault(self, hideChart=True):
 # class for initializing the horizontal bar chart on the Analytics page
 class AnalyticsBarChart:
     # define our attack classes and their colors to show in the bar chart
-    barClasses = AttackPieChart.pieChartLabelDict.keys()
+    barClasses = [attackType for attackType in AttackPieChart.pieChartLabelDict]
     barColors = [color[2] for color in AttackPieChart.pieChartLabelDict.values()]
 
     # method for initializing the hhorizontal bar chart
@@ -1257,7 +1264,7 @@ class AnalyticsBarChart:
         self.ui.barChart.layout().setContentsMargins(0, 0, 0, 0)
         self.ui.barChart.setMargins(QMargins(0, 0, 0, 0))
         self.ui.barChart.setBackgroundRoundness(0)
-        self.ui.barChart.setBackgroundBrush(QColor('#f3f3f3') if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
+        self.ui.barChart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
         self.ui.barChart.setTitle(f'No data to display...')
         self.ui.barChart.setTitleFont(QFont('Cairo', 18, QFont.Bold, False))
         self.ui.barChart.setAnimationOptions(QChart.SeriesAnimations)
@@ -1325,7 +1332,7 @@ def CreateBarChartData(self, barChartData=None):
         self.ui.barChart.setTitle(f'Network Attacks For Year {yearComboboxSelection}')
         self.ui.barChartTitleLabel.hide()
         self.ui.barChartView.show()
-        self.ui.barChart.setBackgroundBrush(QColor(204, 204, 204, 156) if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
+        self.ui.barChart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
 
         # create horizontal stacked bar series and bar sets
         self.ui.barChartBarSeries = QHorizontalStackedBarSeries()
@@ -1405,8 +1412,8 @@ def UpdateBarChartAfterAttack(self, attackName):
                 CreateBarChartData(self)
 
             # updating the bar data for the given attack type in the current month
-            barSet = self.ui.barChartBarSets[list(AnalyticsBarChart.barClasses).index(attackName)]
-            attackIndex = list(AnalyticsBarChart.barClasses).index(attackName)
+            barSet = self.ui.barChartBarSets[AnalyticsBarChart.barClasses.index(attackName)]
+            attackIndex = AnalyticsBarChart.barClasses.index(attackName)
             newValue = barSet.at(attackIndex) + 1
             barSet.replace(attackIndex, newValue)
 
@@ -1477,7 +1484,7 @@ def ResetBarChartToDefault(self, hideChart=True):
             self.ui.barChartView.hide()
 
         # validate that the background color matches the current users preference
-        self.ui.barChart.setBackgroundBrush(QColor('#f3f3f3') if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
+        self.ui.barChart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
 
     except Exception as e:
         ShowMessageBox('Error Clearing Bar Chart', 'Error occurred while clearing bar chart, try again later.', 'Critical')
@@ -1504,6 +1511,7 @@ def SetDataIntoCards(self):
             # update the font sizes after updating the value
             UpdateFontSizeInLabel(self, self.ui.totalNumOfAttacksValueLabel)
             UpdateFontSizeInLabel(self, self.ui.attacksPerMonthValueLabel)
+
     except Exception as e:
         ShowMessageBox('Error Setting Cards Data', 'Error occurred while setting data into analytics cards, try again later.', 'Critical')
 
@@ -1532,36 +1540,41 @@ def ResertDataInCards(self):
             background-color: transparent;
             color: {'black' if self.userData.get('lightMode') == 0 else '#151519'};
         ''')
+
     except Exception as e:
         ShowMessageBox('Error Resetting Cards Data', 'Error occurred while resetting data into analytics cards, try again later.', 'Critical')
 
 
 # function for calculating and resizing the font for the labels in the cards based on the data in them 
-def UpdateFontSizeInLabel(self, label_object):
-    # get the current text in the card and set a default value for font size
-    current_length = len(label_object.text().replace('.', ''))
-    font_size = 10
+def UpdateFontSizeInLabel(self, labelObject):
+    try:
+        # get the current text in the card and set a default value for font size
+        currentLength = len(labelObject.text().replace('.', ''))
+        fontSize = 10
 
-    # find the font side and top margin based on the number of digits in the card
-    match current_length:
-        case 1:
-            font_size = 60
-        case 2:
-            font_size = 50
-        case 3:
-            font_size = 40
-        case 4:
-            font_size = 33
-        case _:
-            font_size = 30
+        # find the font side and top margin based on the number of digits in the card
+        match currentLength:
+            case 1:
+                fontSize = 60
+            case 2:
+                fontSize = 50
+            case 3:
+                fontSize = 40
+            case 4:
+                fontSize = 33
+            case _:
+                fontSize = 30
 
-    # apply the styles to the object
-    label_object.setStyleSheet(f'''
-        font-size: {font_size}px;
-        margin: 10px;
-        background-color: transparent;
-        color: {'black' if self.userData.get('lightMode') == 0 else '#151519'};
-    ''')
+        # apply the styles to the object
+        labelObject.setStyleSheet(f'''
+            font-size: {fontSize}px;
+            margin: 10px;
+            background-color: transparent;
+            color: {'black' if self.userData.get('lightMode') == 0 else '#151519'};
+        ''')
+
+    except Exception as e:
+        ShowMessageBox('Error Updating Cards Font', 'Error occurred while updating font for analytics cards, try again later.', 'Critical')
 
 #-------------------------------------------ANALYTICS-CARDS-END----------------------------------------------#
 
@@ -1689,11 +1702,13 @@ class CustomFilterProxyModel(QSortFilterProxyModel):
         currentTime = datetime.now()
 
         # time filtering logic, if the combobox is selected with 'All Available Data' then it will skip the time filter
-        if self.timeFilter == 'Last 24 Hours' and rowTimestamp < currentTime - timedelta(days=1):
+        if self.timeFilter == 'Last Day' and rowTimestamp < currentTime - timedelta(days=1):
             return False
-        elif self.timeFilter == 'Last 7 Days' and rowTimestamp < currentTime - timedelta(days=7):
+        elif self.timeFilter == 'Last Week' and rowTimestamp < currentTime - timedelta(days=7):
             return False
-        elif self.timeFilter == 'Last 30 Days' and rowTimestamp < currentTime - timedelta(days=30):
+        elif self.timeFilter == 'Last Month' and rowTimestamp < currentTime - timedelta(days=30):
+            return False
+        elif self.timeFilter == 'Last Year' and rowTimestamp < currentTime - timedelta(days=365):
             return False
 
         # attack filtering logic by attack checkboxes

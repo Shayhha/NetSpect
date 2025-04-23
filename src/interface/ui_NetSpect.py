@@ -1194,7 +1194,7 @@ class Ui_NetSpect(object):
         self.horizontalLayout_15.setContentsMargins(0, 0, 0, 0)
         self.cardsHorizontalFrame = QFrame(self.chartsVerticalFrame)
         self.cardsHorizontalFrame.setObjectName(u"cardsHorizontalFrame")
-        self.cardsHorizontalFrame.setMinimumSize(QSize(465, 307))
+        self.cardsHorizontalFrame.setMinimumSize(QSize(493, 307))
         self.cardsHorizontalFrame.setMaximumSize(QSize(700, 16777215))
         self.horizontalLayout_29 = QHBoxLayout(self.cardsHorizontalFrame)
         self.horizontalLayout_29.setSpacing(10)
@@ -1202,7 +1202,7 @@ class Ui_NetSpect(object):
         self.horizontalLayout_29.setContentsMargins(15, 10, 0, 10)
         self.attacksPerMonthVerticalFrame = QFrame(self.cardsHorizontalFrame)
         self.attacksPerMonthVerticalFrame.setObjectName(u"attacksPerMonthVerticalFrame")
-        self.attacksPerMonthVerticalFrame.setMinimumSize(QSize(143, 0))
+        self.attacksPerMonthVerticalFrame.setMinimumSize(QSize(150, 0))
         self.attacksPerMonthVerticalFrame.setStyleSheet(u"#attacksPerMonthVerticalFrame {\n"
 "	background-color: rgba(204, 204, 204, 0.6);\n"
 "	border-radius: 20px;\n"
@@ -1267,7 +1267,7 @@ class Ui_NetSpect(object):
 
         self.totalNumOfAttacksVerticalFrame = QFrame(self.cardsHorizontalFrame)
         self.totalNumOfAttacksVerticalFrame.setObjectName(u"totalNumOfAttacksVerticalFrame")
-        self.totalNumOfAttacksVerticalFrame.setMinimumSize(QSize(143, 0))
+        self.totalNumOfAttacksVerticalFrame.setMinimumSize(QSize(150, 0))
         self.totalNumOfAttacksVerticalFrame.setStyleSheet(u"#totalNumOfAttacksVerticalFrame {\n"
 "	background-color: rgba(204, 204, 204, 0.6);\n"
 "	border-radius: 20px;\n"
@@ -1333,7 +1333,7 @@ class Ui_NetSpect(object):
 
         self.mostPopularAttackVerticalFrame = QFrame(self.cardsHorizontalFrame)
         self.mostPopularAttackVerticalFrame.setObjectName(u"mostPopularAttackVerticalFrame")
-        self.mostPopularAttackVerticalFrame.setMinimumSize(QSize(143, 0))
+        self.mostPopularAttackVerticalFrame.setMinimumSize(QSize(150, 0))
         self.mostPopularAttackVerticalFrame.setStyleSheet(u"#mostPopularAttackVerticalFrame {\n"
 "	background-color: rgba(204, 204, 204, 0.6);\n"
 "	border-radius: 20px;\n"
@@ -4309,7 +4309,7 @@ class Ui_NetSpect(object):
         self.totalNumOfAttacksTitleLabel.setText(QCoreApplication.translate("NetSpect", u"<p style=\"line-height: 0.7;\">Total Number <br>of Attacks</p>", None))
         self.totalNumOfAttacksValueLabel.setText(QCoreApplication.translate("NetSpect", u"0", None))
         self.mostPopularAttackTitleLabel.setText(QCoreApplication.translate("NetSpect", u"<p style=\"line-height: 0.7;\">Most Popular <br>Attak</p>", None))
-        self.mostPopularAttackValueLabel.setText(QCoreApplication.translate("NetSpect", u"No<br>Data", None))
+        self.mostPopularAttackValueLabel.setText(QCoreApplication.translate("NetSpect", u"DNS<br>Tunneling", None))
         self.reportSelectionLabel.setText(QCoreApplication.translate("NetSpect", u"Report Selection", None))
         self.reportDurationComboBox.setItemText(0, QCoreApplication.translate("NetSpect", u"Last Day", None))
         self.reportDurationComboBox.setItemText(1, QCoreApplication.translate("NetSpect", u"Last Week", None))

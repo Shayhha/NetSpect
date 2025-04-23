@@ -462,6 +462,10 @@ def ToggleColorMode(self):
         with open(currentDir.parent / 'interface' / 'lightModeStyles.qss', 'r') as stylesFile: #load styles from file
             self.setStyleSheet(stylesFile.read())
 
+    # update the font sizes after updating the value
+    UpdateFontSizeInLabel(self, self.ui.totalNumOfAttacksValueLabel)
+    UpdateFontSizeInLabel(self, self.ui.attacksPerMonthValueLabel)
+
 #-------------------------------------------CLICK-FUNCTIONS-END----------------------------------------------#
 
 #---------------------------------------------OTHER-FUNCTIONS------------------------------------------------#

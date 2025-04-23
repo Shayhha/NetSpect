@@ -2586,7 +2586,7 @@ QToolTip {
                   <widget class="QFrame" name="cardsHorizontalFrame">
                    <property name="minimumSize">
                     <size>
-                     <width>465</width>
+                     <width>493</width>
                      <height>307</height>
                     </size>
                    </property>
@@ -2616,7 +2616,7 @@ QToolTip {
                      <widget class="QFrame" name="attacksPerMonthVerticalFrame">
                       <property name="minimumSize">
                        <size>
-                        <width>143</width>
+                        <width>150</width>
                         <height>0</height>
                        </size>
                       </property>
@@ -2781,7 +2781,7 @@ QToolTip {
                      <widget class="QFrame" name="totalNumOfAttacksVerticalFrame">
                       <property name="minimumSize">
                        <size>
-                        <width>143</width>
+                        <width>150</width>
                         <height>0</height>
                        </size>
                       </property>
@@ -2958,7 +2958,7 @@ QToolTip {
                      <widget class="QFrame" name="mostPopularAttackVerticalFrame">
                       <property name="minimumSize">
                        <size>
-                        <width>143</width>
+                        <width>150</width>
                         <height>0</height>
                        </size>
                       </property>
@@ -3080,7 +3080,7 @@ QToolTip {
 }</string>
                          </property>
                          <property name="text">
-                          <string>No&lt;br&gt;Data</string>
+                          <string>DNS&lt;br&gt;Tunneling</string>
                          </property>
                          <property name="alignment">
                           <set>Qt::AlignmentFlag::AlignCenter</set>

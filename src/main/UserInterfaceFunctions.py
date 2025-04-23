@@ -628,7 +628,7 @@ class CustomMessageBox(QDialog):
         # set the message box window title and icon
         self.setWindowTitle(title)
         self.setWindowIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'NetSpectIconTransparent.png')))
-        #self.setFont(QFont('Cairo', 13)) #set font size for messagebox
+        self.setFont(QFont('Cairo', 13)) #set font size for messagebox
 
         # create the main vertical layout
         layout = QVBoxLayout()
@@ -702,7 +702,6 @@ class CustomMessageBox(QDialog):
             QLabel {
                 color: black;
                 font-family: 'Cairo';
-                font-size: 18px;
             }
 
             QLabel[alignment='Qt::AlignVCenter|Qt::AlignLeft'] {
@@ -1246,7 +1245,7 @@ def ResetHistogramChartToDefault(self, hideChart=True):
 #-------------------------------------------HORIZONTAL-BAR-CHART---------------------------------------------#
 
 # class for initializing the horizontal bar chart on the Analytics page
-class AnalyticsBarChart:
+class AnalyticsBarChart():
     # define our attack classes and their colors to show in the bar chart
     barClasses = [attackType for attackType in AttackPieChart.pieChartLabelDict]
     barColors = [color[2] for color in AttackPieChart.pieChartLabelDict.values()]
@@ -1297,10 +1296,10 @@ class AnalyticsBarChart:
         self.ui.barChartView.hide()
 
 
-    # method for showing a tooltip on each bar of the histogram chart when the user hovers it with the mouse
+    # method for showing a tooltip on each bar of the bar chart when the user hovers it with the mouse
     def ShowTooltip(self, state, index, barSet):
         if state:
-            # get class name, value and month and show tooltip text
+            # get class name and value and show tooltip text
             className = barSet.label()
             value = barSet.at(index) 
             QToolTip.showText(QCursor.pos(), f'Attack: {className}\nCount: {int(value)}', self)

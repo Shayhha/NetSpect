@@ -399,9 +399,11 @@ def ToggleStartStopState(self, state):
 
 # function for toggling between light and dark mode by the user (also used when logging in and out of an account)
 def ToggleColorMode(self):
-    # clear existing css from each element in the ui file (needed to make sure that no style changes are transferred from previous color mode selection)
-    self.setStyleSheet('') #clear css from main element
-    for child in self.findChildren(QWidget): #clear css from all child elements
+    # clear css from main element
+    self.setStyleSheet('')
+
+     # clear existing css from each element in the ui file
+    for child in self.findChildren(QWidget):
         child.setStyleSheet('')
 
     # apply default dark mode or light mode theme to the application based on users selection
@@ -428,54 +430,11 @@ def ToggleColorMode(self):
                 </body>
             </html>
         ''')
-        colorObj = QColor('black')
-        # Set the background color for the pie chart object
-        if hasattr(self.ui, 'piChart'):
-            self.ui.piChart.setBackgroundBrush(QColor(204, 204, 204, 153))
 
-        # Set the background color for the histogram chart object
-        if hasattr(self.ui, 'histogramChart'):
-            self.ui.histogramChart.setBackgroundBrush(QColor(204, 204, 204, 153))
-            self.ui.histogramChart.legend().setLabelColor(colorObj)
-            self.ui.histogramChart.setTitleBrush(colorObj)
-
-        # Set the background color for the bar chart object
-        if hasattr(self.ui, 'barChart'):
-            self.ui.barChart.setBackgroundBrush(QColor(204, 204, 204, 153))
-            self.ui.barChart.legend().setLabelColor(colorObj)
-            self.ui.barChart.setTitleBrush(colorObj)
-
-        # Set the background color for the histogram chart axis and legends objects
-        if hasattr(self.ui, 'histogramAxisX') and hasattr(self.ui, 'histogramAxisY'):
-            self.ui.histogramAxisX.setTitleBrush(colorObj)
-            self.ui.histogramAxisX.setLabelsBrush(colorObj)
-            self.ui.histogramAxisX.setGridLineColor(colorObj)
-            self.ui.histogramAxisX.setLinePen(QPen(colorObj, 1))
-            self.ui.histogramAxisY.setTitleBrush(colorObj)
-            self.ui.histogramAxisY.setLabelsBrush(colorObj)
-            self.ui.histogramAxisY.setGridLineColor(colorObj)
-            self.ui.histogramAxisY.setLinePen(QPen(colorObj))
-            self.ui.ARPSpoofingHistogramChartBar.setPen(QPen(colorObj, 1))
-            self.ui.PortScanHistogramChartBar.setPen(QPen(colorObj, 1))
-            self.ui.DoSHistogramChartBar.setPen(QPen(colorObj, 1))
-            self.ui.DNSTunnelingHistogramChartBar.setPen(QPen(colorObj, 1))
-
-        # Set the background color for the bar chart axis and legends objects
-        if hasattr(self.ui, 'barChartAxisX') and hasattr(self.ui, 'barChartAxisY'):
-            self.ui.barChartAxisX.setTitleBrush(colorObj)
-            self.ui.barChartAxisX.setLabelsBrush(colorObj)
-            self.ui.barChartAxisX.setGridLineColor(colorObj)
-            self.ui.barChartAxisX.setLinePen(QPen(colorObj, 1))
-            self.ui.barChartAxisY.setTitleBrush(colorObj)
-            self.ui.barChartAxisY.setLabelsBrush(colorObj)
-            self.ui.barChartAxisY.setGridLineColor(colorObj)
-            self.ui.barChartAxisY.setLinePen(QPen(colorObj, 1))
-            self.ui.ARPSpoofingBarChartBar.setPen(QPen(colorObj, 1))
-            self.ui.PortScanBarChartBar.setPen(QPen(colorObj, 1))
-            self.ui.DoSBarChartBar.setPen(QPen(colorObj, 1))
-            self.ui.DNSTunnelingBarChartBar.setPen(QPen(colorObj, 1))
-        with open(currentDir.parent / 'interface' / 'darkModeStyles.qss', 'r') as stylesFile: #load styles from file
+        # load dark mode styles from file
+        with open(currentDir.parent / 'interface' / 'darkModeStyles.qss', 'r') as stylesFile:
             self.setStyleSheet(stylesFile.read())
+
     else:
         self.userData['lightMode'] = 1
         self.ui.accountIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'AccountDark.png')))
@@ -499,54 +458,15 @@ def ToggleColorMode(self):
                 </body>
             </html>
         ''')
-        colorObj = QColor('#151519')
-        # Set the background color for the pie chart object
-        if hasattr(self.ui, 'piChart'):
-            self.ui.piChart.setBackgroundBrush(QColor('#c1d0ef'))
-            
-        # Set the background color for the histogram chart object
-        if hasattr(self.ui, 'histogramChart'):
-            self.ui.histogramChart.setBackgroundBrush(QColor('#ebeff7'))
-            self.ui.histogramChart.legend().setLabelColor(colorObj)
-            self.ui.histogramChart.setTitleBrush(colorObj)
 
-        # Set the background color for the bar chart object
-        if hasattr(self.ui, 'barChart'):
-            self.ui.barChart.setBackgroundBrush(QColor('#ebeff7'))
-            self.ui.barChart.legend().setLabelColor(colorObj)
-            self.ui.barChart.setTitleBrush(colorObj)
-
-        # Set the background color for the histogram chart axis and legends objects
-        if hasattr(self.ui, 'histogramAxisX') and hasattr(self.ui, 'histogramAxisY'):
-            self.ui.histogramAxisX.setTitleBrush(colorObj)
-            self.ui.histogramAxisX.setLabelsBrush(colorObj)
-            self.ui.histogramAxisX.setGridLineColor(colorObj)
-            self.ui.histogramAxisX.setLinePen(QPen(colorObj, 1))
-            self.ui.histogramAxisY.setTitleBrush(colorObj)
-            self.ui.histogramAxisY.setLabelsBrush(colorObj)
-            self.ui.histogramAxisY.setGridLineColor(colorObj)
-            self.ui.histogramAxisY.setLinePen(QPen(colorObj))
-            self.ui.ARPSpoofingHistogramChartBar.setPen(QPen(colorObj, 1))
-            self.ui.PortScanHistogramChartBar.setPen(QPen(colorObj, 1))
-            self.ui.DoSHistogramChartBar.setPen(QPen(colorObj, 1))
-            self.ui.DNSTunnelingHistogramChartBar.setPen(QPen(colorObj, 1))
-
-        # Set the background color for the bar chart axis and legends objects
-        if hasattr(self.ui, 'barChartAxisX') and hasattr(self.ui, 'barChartAxisY'):
-            self.ui.barChartAxisX.setTitleBrush(colorObj)
-            self.ui.barChartAxisX.setLabelsBrush(colorObj)
-            self.ui.barChartAxisX.setGridLineColor(colorObj)
-            self.ui.barChartAxisX.setLinePen(QPen(colorObj, 1))
-            self.ui.barChartAxisY.setTitleBrush(colorObj)
-            self.ui.barChartAxisY.setLabelsBrush(colorObj)
-            self.ui.barChartAxisY.setGridLineColor(colorObj)
-            self.ui.barChartAxisY.setLinePen(QPen(colorObj, 1))
-            self.ui.ARPSpoofingBarChartBar.setPen(QPen(colorObj, 1))
-            self.ui.PortScanBarChartBar.setPen(QPen(colorObj, 1))
-            self.ui.DoSBarChartBar.setPen(QPen(colorObj, 1))
-            self.ui.DNSTunnelingBarChartBar.setPen(QPen(colorObj, 1))
-        with open(currentDir.parent / 'interface' / 'lightModeStyles.qss', 'r') as stylesFile: #load styles from file
+        # load light mode styles from file
+        with open(currentDir.parent / 'interface' / 'lightModeStyles.qss', 'r') as stylesFile:
             self.setStyleSheet(stylesFile.read())
+
+    # update color mode for each of our charts
+    UpdatePieChartColorMode(self)
+    UpdateHistogramChartColorMode(self)
+    UpdateBarChartColorMode(self)
 
     # update the font sizes after updating the value
     UpdateFontSizeInLabel(self, self.ui.totalNumOfAttacksValueLabel)
@@ -882,6 +802,7 @@ def ShowMessageBox(title, message, iconType='Information', isSelectable=False):
 #------------------------------------------CUSTOM-MESSAGEBOX-END---------------------------------------------#
 
 #---------------------------------------------ATTACK-PIE-CHART-----------------------------------------------#
+
 # attack pie chart class for showing attacks distribution over time via a pie chart in GUI
 class AttackPieChart():
     # dictionary for mapping attack names, key is the database name text and the value is a tuple with slice label, legend name, color
@@ -895,48 +816,51 @@ class AttackPieChart():
     # method for creating and initializing an empty attack pie chart
     def InitAttackPieChart(self):
         try:
-            # create pie chart
+            # create pie chart and pie chart series
+            self.ui.pieChart = QChart()
             series = QPieSeries()
-            chart = QChart()
-            chart.addSeries(series)
+            self.ui.pieChart.addSeries(series)
 
             # create font for title
             titleFont = QFont('Cairo', 16, QFont.Bold, False) 
 
             # create a legend widget
-            legendWidget = QWidget()
-            self.ui.legendLayout = QGridLayout(legendWidget)
-            legendWidget.setObjectName('legendWidget')
+            self.ui.legendWidget = QWidget()
+            legendLayout = QGridLayout(self.ui.legendWidget)
+            self.ui.legendWidget.setObjectName('legendWidget')
 
-            # setup the base chart widget
-            chart.legend().setVisible(False)
-            chart.layout().setContentsMargins(0, 0, 0, 0)
-            chart.setAnimationOptions(QChart.AllAnimations)
-            chart.setBackgroundRoundness(0)
-            chart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#c1d0ef'))
-            chart.setTitle('No Data To Display...')
-            chart.setTitleFont(titleFont)
-            
-            # create chart view and vbox layout
-            chartView = QChartView(chart)
-            chartView.setRenderHint(QPainter.Antialiasing)
-            chartView.setMinimumSize(440, 260)
+            # setup the base chart widget for pie chart
+            self.ui.pieChart.legend().setVisible(False)
+            self.ui.pieChart.layout().setContentsMargins(0, 0, 0, 0)
+            self.ui.pieChart.setAnimationOptions(QChart.AllAnimations)
+            self.ui.pieChart.setBackgroundRoundness(0)
+            self.ui.pieChart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#c1d0ef'))
+            self.ui.pieChart.setTitle('No Data To Display...')
+            self.ui.pieChart.setTitleFont(titleFont)
 
+            # create chart view for pie chart
+            self.ui.pieChartView = QChartView(self.ui.pieChart)
+            self.ui.pieChartView.setRenderHint(QPainter.Antialiasing)
+            self.ui.pieChartView.setMinimumSize(440, 260)
+
+            # create vbox layout for pie chart
             VBoxLayout = QVBoxLayout()
             VBoxLayout.setSpacing(0)
             VBoxLayout.setContentsMargins(0, 0, 0, 0)
 
             # add stles to the title
-            titleLabel = QLabel('Attacks Distribution')
-            titleLabel.setObjectName('pieChartTitleLabel') 
+            self.ui.pieChartTitleLabel = QLabel('Attacks Distribution')
+            self.ui.pieChartTitleLabel.setObjectName('pieChartTitleLabel') 
 
             # setup the pie chart legends in advance
             for i, (sliceName, legendName, sliceColor) in enumerate(AttackPieChart.pieChartLabelDict.values()):
-                legendFont = QFont('Cairo', 12, QFont.Bold, False) # font settings for legend (defined once)
+                # create font for legend labels
+                legendFont = QFont('Cairo', 12, QFont.Bold, False)
                 legendLabel = QLabel(f'{legendName} 0%')
                 legendLabel.setFont(legendFont)
                 legendLabel.setObjectName(f'{legendName.replace(' ', '')}LegendLabel') #for example: ARPSpoofingLegendLabel
 
+                # create label for attack types color labels
                 colorLabel = QLabel()
                 colorLabel.setObjectName(f'{legendName.replace(' ', '')}LegendColorLabel')
                 colorLabel.setStyleSheet(f'background-color: {sliceColor.name()}; border: 1px solid black;')
@@ -944,79 +868,80 @@ class AttackPieChart():
 
                 row = i // 2
                 col = (i % 2) * 2
-                self.ui.legendLayout.addWidget(colorLabel, row, col)
-                self.ui.legendLayout.addWidget(legendLabel, row, col + 1)
+                legendLayout.addWidget(colorLabel, row, col)
+                legendLayout.addWidget(legendLabel, row, col + 1)
 
             # add items to the chart VBox
-            VBoxLayout.addWidget(titleLabel)
-            VBoxLayout.addWidget(chartView)
-            VBoxLayout.addWidget(legendWidget)
+            VBoxLayout.addWidget(self.ui.pieChartTitleLabel)
+            VBoxLayout.addWidget(self.ui.pieChartView)
+            VBoxLayout.addWidget(self.ui.legendWidget)
 
-            # save the chart object in self.ui (NetSpect object) for later use
+            # save the chart object in ui for later use
             self.ui.chartVerticalFrame.setLayout(VBoxLayout)
             self.ui.chartVerticalFrame.update()
-            self.ui.piChart = chart
 
         except Exception as e:
             ShowMessageBox('Error In Pie Chart Initialization', 'Error occurred in pie chart initialization, try again later.', 'Critical')
 
 
 # function for updating the pie chart after an attack was detected, expects an attack name like: ARP, DNS, Port Scan, DoS
-def UpdatePieChartAfterAttack(self, attackName):
+def UpdatePieChartAfterAttack(self, attackType):
     try:
-        sliceLable = AttackPieChart.pieChartLabelDict.get(attackName)[0]
-        series = self.ui.piChart.series()[0]
+        # get slice labels and series for updating pie chart
+        sliceLabel = AttackPieChart.pieChartLabelDict.get(attackType)[0]
+        series = self.ui.pieChart.series()[0]
 
         # increment the value of the attack slice based on given attack name
         found = False
         for slice in series.slices():
-            if sliceLable in slice.label():  
+            if sliceLabel in slice.label():  
                 slice.setValue(slice.value() + 1)
                 found = True
                 break
-        
+
         # if slice does not exist, then create a new slice and add it to the pie chart
         if not found:
             sliceFont = QFont('Cairo', 11, QFont.Bold, False)
-            newSlice = series.append(sliceLable, 1)
+            newSlice = series.append(sliceLabel, 1)
             newSlice.setLabelFont(sliceFont)
             newSlice.setLabelVisible(True)
             newSlice.setLabelArmLengthFactor(0.075)
-            newSlice.setLabel(f'{sliceLable} {newSlice.percentage()*100:.1f}%')
+            newSlice.setLabel(f'{sliceLabel} {newSlice.percentage()*100:.1f}%')
             newSlice.setLabelColor(QColor(45, 46, 54, 255) if self.userData.get('lightMode') == 0 else QColor(1, 1, 1, 255))
-            newSlice.setColor(AttackPieChart.pieChartLabelDict.get(attackName)[2])
+            newSlice.setColor(AttackPieChart.pieChartLabelDict.get(attackType)[2])
+            setattr(self.ui, f'{''.join(attackType.split(' '))}PieChartSlice', newSlice) #add new slice to ui
 
         # set the title to be empty (hide the title) if there is at least one attack detection in history
         if series.count() > 0:
-            self.ui.piChart.setTitle('')
+            self.ui.pieChart.setTitle('')
         
-        UpdatePieChartLegendsAndSlices(self) #update the text data of legends and slice labels
+        # update the text data of legends and slice labels
+        UpdatePieChartLegendsAndSlices(self)
         
         # update pieChartData dictionary in userData
-        self.userData.get('pieChartData').setdefault(attackName, 0)
-        self.userData['pieChartData'][attackName] += 1
+        self.userData.get('pieChartData').setdefault(attackType, 0)
+        self.userData['pieChartData'][attackType] += 1
 
     except Exception as e:
         ShowMessageBox('Error Updating Pie Chart', 'Error occurred while updating pie chart, try again later.', 'Critical')
 
-    
-#  function for updating the text of the pie chart legends and slice labels
+
+# function for updating the text of the pie chart legends and slice labels
 def UpdatePieChartLegendsAndSlices(self):
     try:
         # creating a new dict with legend names like: sliceName: legendName
-        pieChartNames = {pieChartValues[0] : pieChartValues[1] for pieChartValues in AttackPieChart.pieChartLabelDict.values()} 
-        series = self.ui.piChart.series()[0] #get the pie chart object
+        pieChartAttackNames = {pieChartValues[0] : pieChartValues[1] for pieChartValues in AttackPieChart.pieChartLabelDict.values()}
         
         # update the legend and slice text for all slices
-        for slice in series.slices():
+        for slice in self.ui.pieChart.series()[0].slices():
             # update the slice text with correct values
             sliceSplit = slice.label().split(' ')
             sliceAttackName = ' '.join([sliceSplit[0], sliceSplit[1]]) if 'Port' in sliceSplit[0] else sliceSplit[0]
             slice.setLabel(f'{sliceAttackName} {slice.percentage()*100:.1f}%')
 
             # update the legend text to match current slice
-            legendLabelText = f'{pieChartNames.get(sliceAttackName)} {slice.percentage()*100:.1f}%'
-            legendLabelName = f'{pieChartNames.get(sliceAttackName).replace(' ', '')}LegendLabel' 
+            legendLabelText = f'{pieChartAttackNames.get(sliceAttackName)} {slice.percentage()*100:.1f}%'
+            legendLabelName = f'{pieChartAttackNames.get(sliceAttackName).replace(' ', '')}LegendLabel' 
             legendLabelObject = self.findChild(QLabel, legendLabelName)
             legendLabelObject.setText(legendLabelText)
 
@@ -1030,45 +955,72 @@ def UpdatePieChartAfterLogin(self, pieChartData):
         # check if there's at least one attack in pieChartData dictionary
         if any(attackCount > 0 for attackCount in pieChartData.values()):
             # remove current series from pie chart if exists
-            if self.ui.piChart.series():
-                self.ui.piChart.removeSeries(self.ui.piChart.series()[0])
+            if self.ui.pieChart.series():
+                self.ui.pieChart.removeSeries(self.ui.pieChart.series()[0])
 
             # create a new series for pie chart with database data
             newSeries = QPieSeries()
-            for attackName, attackCount in pieChartData.items():
+            for attackType, attackCount in pieChartData.items():
                 # check if attack count is greater then zero
                 if attackCount > 0:
                     # add new slice for attack and update the css of the slice label
                     sliceFont = QFont('Cairo', 11, QFont.Bold, False)
-                    newSlice = newSeries.append(AttackPieChart.pieChartLabelDict.get(attackName)[0], attackCount)
+                    newSlice = newSeries.append(AttackPieChart.pieChartLabelDict.get(attackType)[0], attackCount)
                     newSlice.setLabelFont(sliceFont)
                     newSlice.setLabelVisible(True)
                     newSlice.setLabelArmLengthFactor(0.075)
                     newSlice.setLabelColor(QColor(45, 46, 54, 255) if self.userData.get('lightMode') == 0 else QColor(1, 1, 1, 255))
-                    newSlice.setColor(AttackPieChart.pieChartLabelDict.get(attackName)[2])
+                    newSlice.setColor(AttackPieChart.pieChartLabelDict.get(attackType)[2])
+                    setattr(self.ui, f'{''.join(attackType.split(' '))}PieChartSlice', newSlice) #add new slice to ui
 
             # add the new series to the chart and update the GUI
-            self.ui.piChart.addSeries(newSeries)
-            self.ui.piChart.setTitle('') #remove the default title if exists
+            self.ui.pieChart.addSeries(newSeries)
+            self.ui.pieChart.setTitle('') #remove the default title if exists
             UpdatePieChartLegendsAndSlices(self)
 
     except Exception as e:
         ShowMessageBox('Error Updating Pie Chart', 'Error occurred while updating pie chart, try again later.', 'Critical')
 
 
+# function for updating pie chart color mode based on chosen color mode in ui
+def UpdatePieChartColorMode(self):
+    try:
+        # set our desired label color based on ui color mode
+        labelColor = QColor(45, 46, 54, 255) if self.userData.get('lightMode') == 0 else QColor(1, 1, 1, 255)
+
+        # set the background color for the pie chart
+        if hasattr(self.ui, 'pieChart') and self.ui.pieChart:
+            self.ui.pieChart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#c1d0ef'))
+
+        # set the label color for pie chart slices
+        for attackType in AttackPieChart.pieChartLabelDict:
+            # check if attack name label has a slice, if so set its label color
+            pieChartSlice = getattr(self.ui, f'{''.join(attackType.split(' '))}PieChartSlice', None)
+            # if not none we apply color label
+            if pieChartSlice:
+                pieChartSlice.setLabelColor(labelColor)
+
+    except Exception as e:
+        ShowMessageBox('Error Updating Pie Chart Color Mode', 'Error occurred while updating pie chart color mode, try again later.', 'Critical')
+
+
 # function for clearing the pie chart and resetting to default empty pie chart
 def ResetPieChartToDefault(self):
     try:
         # clear the pie chart data and set the default title
-        self.ui.piChart.series()[0].clear()
-        self.ui.piChart.setTitle('No Data To Display...')
+        self.ui.pieChart.series()[0].clear()
+        self.ui.pieChart.setTitle('No Data To Display...')
 
         # update the legend text and set it to the default values of 0%
-        for legendName in AttackPieChart.pieChartLabelDict.values():
-            legendLabelText = f'{legendName[1]} 0%'
-            legendLabelName = f'{legendName[1].replace(' ', '')}LegendLabel' 
+        for attackType, sliceLegendNames in AttackPieChart.pieChartLabelDict.items():
+            legendLabelText = f'{sliceLegendNames[1]} 0%'
+            legendLabelName = f'{sliceLegendNames[1].replace(' ', '')}LegendLabel' 
             legendLabelObject = self.findChild(QLabel, legendLabelName)
             legendLabelObject.setText(legendLabelText)
+
+            # check if slice is present in ui, if so we delete it
+            if hasattr(self.ui, f'{''.join(attackType.split(' '))}PieChartSlice'):
+                delattr(self.ui, f'{''.join(attackType.split(' '))}PieChartSlice')
 
     except Exception as e:
         ShowMessageBox('Error Clearing Pie Chart', 'Error occurred while clearing pie chart, try again later.', 'Critical')
@@ -1079,11 +1031,11 @@ def ResetPieChartToDefault(self):
 
 # class for initializing the Histogram on the Analytics page
 class AnalyticsHistogramChart():
-    # define our attack classes and their colors and the months of the year to show in the chart
-    histogramClasses = [attackType for attackType in AttackPieChart.pieChartLabelDict]
-    histogramColors = [color[2] for color in AttackPieChart.pieChartLabelDict.values()]
-    histogramMonths = ['January', 'February', 'March', 'April', 'May', 'June', 
-                       'July', 'August', 'September', 'October', 'November', 'December']
+    # define our attack types and their colors and the months of the year to show in the chart
+    histogramChartAttackTypes = [attackType for attackType in AttackPieChart.pieChartLabelDict]
+    histogramChartAttackColors = [color[2] for color in AttackPieChart.pieChartLabelDict.values()]
+    histogramChartMonths = ['January', 'February', 'March', 'April', 'May', 'June', 
+                                'July', 'August', 'September', 'October', 'November', 'December']
 
     # method for initializing the histogram chart
     def InitAnalyticsHistogramChart(self):
@@ -1137,10 +1089,10 @@ class AnalyticsHistogramChart():
     def ShowTooltip(self, state, index, barSet):
         if state:
             # get class name, value and month and show tooltip text
-            className = barSet.label()
+            attackType = barSet.label()
             value = barSet.at(index) 
-            month = AnalyticsHistogramChart.histogramMonths[index] 
-            QToolTip.showText(QCursor.pos(), f'Attack: {className}\nCount: {int(value)}\nMonth: {month}', self)
+            month = AnalyticsHistogramChart.histogramChartMonths[index] 
+            QToolTip.showText(QCursor.pos(), f'Attack: {attackType}\nCount: {int(value)}\nMonth: {month}', self)
 
 
 # function for updating the grid lines and ticks based on the given maximum value in histogram chart
@@ -1164,12 +1116,12 @@ def CreateHistogramChartData(self, histogramChartData=None):
     try:
         # get valid months based on the current month and get selected year from year combobox
         yearComboboxSelection = self.ui.analyticsYearComboBox.currentText()
-        validMonths = AnalyticsHistogramChart.histogramMonths
+        validMonths = AnalyticsHistogramChart.histogramChartMonths
 
         # check if year combobox is set to current year, if so we update the histogram chart months based on valid months
         if yearComboboxSelection == str(datetime.now().year):
             currentMonth = datetime.now().month #get current month
-            validMonths = AnalyticsHistogramChart.histogramMonths[:currentMonth] #get all the valid months from January untill current month
+            validMonths = AnalyticsHistogramChart.histogramChartMonths[:currentMonth] #get all the valid months from January untill current month
 
         # hide the title and show the chart
         self.ui.histogramChart.setTitle(f'Monthly Network Attacks For Year {yearComboboxSelection}')
@@ -1177,18 +1129,17 @@ def CreateHistogramChartData(self, histogramChartData=None):
         self.ui.histogramChartView.show()
         self.ui.histogramChart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
 
-        # create histogram bar series and bar sets
-        self.ui.histogramBarSeries = QBarSeries()
-        self.ui.histogramBarSets = []
-        histogramMonthsLength = len(AnalyticsHistogramChart.histogramMonths)
+        # create histogram bar series
+        histogramBarSeries = QBarSeries()
+        histogramMonthsLength = len(AnalyticsHistogramChart.histogramChartMonths)
 
-        # iterate over each class name in our histogram attack classes
-        for i, className in enumerate(AnalyticsHistogramChart.histogramClasses):
+        # iterate over each class name in our histogram attack types
+        for i, attackType in enumerate(AnalyticsHistogramChart.histogramChartAttackTypes):
             # define bar set and set bar set color
-            barSet = QBarSet(className)
-            barSet.setColor(AnalyticsHistogramChart.histogramColors[i]) #set predefined color
+            barSet = QBarSet(attackType)
+            barSet.setColor(AnalyticsHistogramChart.histogramChartAttackColors[i]) #set predefined color
             barSet.setPen(QPen(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'), 1))
-            setattr(self.ui, f'{''.join(className.split(' '))}HistogramChartBar', barSet) #adding the barSet object to ui
+            setattr(self.ui, f'{''.join(attackType.split(' '))}HistogramChartBarSet', barSet) #add new bar set to ui
 
             # connect hovered signal to custom slot
             barSet.hovered.connect(lambda state, index, barSet=barSet: AnalyticsHistogramChart.ShowTooltip(self, state, index, barSet))
@@ -1196,19 +1147,18 @@ def CreateHistogramChartData(self, histogramChartData=None):
             # check if there is data to add to the chart, if not then the chart will be empty
             if histogramChartData and yearComboboxSelection in histogramChartData:
                 # iterate over all months in the histogramChartData dictionary
-                for month in histogramChartData.get(yearComboboxSelection).keys():
-                    barSet.append(histogramChartData.get(yearComboboxSelection).get(month).get(className, 0)) #append attack counter value
+                for month in histogramChartData.get(yearComboboxSelection):
+                    barSet.append(histogramChartData.get(yearComboboxSelection).get(month).get(attackType, 0)) #append attack counter value
             else:
                 # insert bar set values list with zeros to initialize empty histogram chart
                 barSetValues = [0] * histogramMonthsLength #list for appending zero values to chart
                 barSet.append(barSetValues) #append zero values to chart
 
-            # append bar set into our histogram bar series and sets
-            self.ui.histogramBarSeries.append(barSet)
-            self.ui.histogramBarSets.append(barSet)
+            # append bar set into our histogram bar series
+            histogramBarSeries.append(barSet)
 
          # add histogram bar series to histogram chart
-        self.ui.histogramChart.addSeries(self.ui.histogramBarSeries)
+        self.ui.histogramChart.addSeries(histogramBarSeries)
 
         # create X-axis months
         self.ui.histogramAxisX = QBarCategoryAxis()
@@ -1221,7 +1171,7 @@ def CreateHistogramChartData(self, histogramChartData=None):
         self.ui.histogramAxisX.setGridLineColor(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
         self.ui.histogramAxisX.setLinePen(QPen(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'), 1))
         self.ui.histogramChart.addAxis(self.ui.histogramAxisX, Qt.AlignBottom)
-        self.ui.histogramBarSeries.attachAxis(self.ui.histogramAxisX)
+        self.ui.histogramChart.series()[0].attachAxis(self.ui.histogramAxisX)
 
         # create Y-axis values
         self.ui.histogramAxisY = QValueAxis()
@@ -1235,17 +1185,17 @@ def CreateHistogramChartData(self, histogramChartData=None):
         self.ui.histogramAxisY.setTickInterval(1)
         self.ui.histogramAxisY.setLabelFormat('%d') #integer labels
         self.ui.histogramChart.addAxis(self.ui.histogramAxisY, Qt.AlignLeft)
-        self.ui.histogramBarSeries.attachAxis(self.ui.histogramAxisY)
+        self.ui.histogramChart.series()[0].attachAxis(self.ui.histogramAxisY)
 
         # update histogram chart lines based on max value in axis
         UpdateHistogramChartLines(self, self.ui.histogramAxisY.max())
 
         # remove the old axis from chart and add the adjusted axies to the chart
         if self.ui.histogramAxisY:
-            self.ui.histogramBarSeries.detachAxis(self.ui.histogramAxisY)
+            self.ui.histogramChart.series()[0].detachAxis(self.ui.histogramAxisY)
             self.ui.histogramChart.removeAxis(self.ui.histogramAxisY)
         self.ui.histogramChart.addAxis(self.ui.histogramAxisY, Qt.AlignLeft)
-        self.ui.histogramBarSeries.attachAxis(self.ui.histogramAxisY)
+        self.ui.histogramChart.series()[0].attachAxis(self.ui.histogramAxisY)
         self.ui.histogramChartVerticalFrame.update()
 
     except Exception as e:
@@ -1253,7 +1203,7 @@ def CreateHistogramChartData(self, histogramChartData=None):
 
 
 # function for updating the histogram chart after an attack was detected, expects an attack name like in database: 'ARP Spoofing', 'Port Scan', etc.
-def UpdateHistogramChartAfterAttack(self, attackName):
+def UpdateHistogramChartAfterAttack(self, attackType):
     try:
         # get selected year from year combobox
         yearComboboxSelection = self.ui.analyticsYearComboBox.currentText()
@@ -1269,13 +1219,13 @@ def UpdateHistogramChartAfterAttack(self, attackName):
             # check if we got into a new month, if so we rebuild the X-axis month labels
             if currentMonth > self.ui.histogramAxisX.count():
                 # get the updated valid months based on current month and update our month labels with new month
-                validMonths = AnalyticsHistogramChart.histogramMonths[:currentMonth]
+                validMonths = AnalyticsHistogramChart.histogramChartMonths[:currentMonth]
                 self.ui.histogramAxisX.clear()
                 self.ui.histogramAxisX.append(validMonths)
-                self.ui.histogramBarSeries.attachAxis(self.ui.histogramAxisX)
+                self.ui.histogramChart.series()[0].attachAxis(self.ui.histogramAxisX)
 
             # updating the histogram data for the given attack type in the current month index
-            barSet = self.ui.histogramBarSets[AnalyticsHistogramChart.histogramClasses.index(attackName)]
+            barSet =  self.ui.histogramChart.series()[0].barSets()[AnalyticsHistogramChart.histogramChartAttackTypes.index(attackType)]
             monthIndex = currentMonth - 1
             newValue = barSet.at(monthIndex) + 1
             barSet.replace(monthIndex, newValue)
@@ -1283,9 +1233,9 @@ def UpdateHistogramChartAfterAttack(self, attackName):
             # check if we need to update the Y-axis range, need to update if the new value is equal or larger than the max value
             if newValue >= self.ui.histogramAxisY.max():
                 # detach the series from the chart and axes
-                self.ui.histogramBarSeries.detachAxis(self.ui.histogramAxisY)
-                self.ui.histogramBarSeries.detachAxis(self.ui.histogramAxisX)
-                self.ui.histogramChart.removeSeries(self.ui.histogramBarSeries)
+                self.ui.histogramChart.series()[0].detachAxis(self.ui.histogramAxisY)
+                self.ui.histogramChart.series()[0].detachAxis(self.ui.histogramAxisX)
+                self.ui.histogramChart.removeSeries(self.ui.histogramChart.series()[0])
                 self.ui.histogramChart.removeAxis(self.ui.histogramAxisY)
 
                 # create a new Y-axis
@@ -1304,15 +1254,15 @@ def UpdateHistogramChartAfterAttack(self, attackName):
 
                 # attach the new axis and series back to the chart
                 self.ui.histogramChart.addAxis(self.ui.histogramAxisY, Qt.AlignLeft)
-                self.ui.histogramChart.addSeries(self.ui.histogramBarSeries)
-                self.ui.histogramBarSeries.attachAxis(self.ui.histogramAxisX)
-                self.ui.histogramBarSeries.attachAxis(self.ui.histogramAxisY)
+                self.ui.histogramChart.addSeries(self.ui.histogramChart.series()[0])
+                self.ui.histogramChart.series()[0].attachAxis(self.ui.histogramAxisX)
+                self.ui.histogramChart.series()[0].attachAxis(self.ui.histogramAxisY)
 
             self.ui.histogramChartVerticalFrame.update() #ensure the chart updates
 
         # update histogramChartData dictionary in userData
-        self.userData.get('analyticsChartData').get('histogramChartData').get(yearComboboxSelection).get(datetime.now().month).setdefault(attackName, 0)
-        self.userData['analyticsChartData']['histogramChartData'][yearComboboxSelection][datetime.now().month][attackName] += 1
+        self.userData.get('analyticsChartData').get('histogramChartData').get(yearComboboxSelection).get(datetime.now().month).setdefault(attackType, 0)
+        self.userData['analyticsChartData']['histogramChartData'][yearComboboxSelection][datetime.now().month][attackType] += 1
 
     except Exception as e:
         ShowMessageBox('Error Updating Histogram Chart', 'Error occurred while updating histogram chart after an attack, try again later.', 'Critical')
@@ -1331,6 +1281,44 @@ def UpdateHistogramChartAfterLogin(self, histogramChartData):
         ShowMessageBox('Error Updating Histogram Chart', 'Error occurred while updating histogram chart, try again later.', 'Critical')
 
 
+# function for updating histogram chart color mode based on chosen color mode in ui
+def UpdateHistogramChartColorMode(self):
+    try:
+        # set our desired label color based on ui color mode
+        labelColor = QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519')
+
+        # set the background color for the histogram chart
+        if hasattr(self.ui, 'histogramChart') and self.ui.histogramChart:
+            self.ui.histogramChart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
+            self.ui.histogramChart.legend().setLabelColor(labelColor)
+            self.ui.histogramChart.setTitleBrush(labelColor)
+
+        # set the background color for the histogram chart X-axis
+        if hasattr(self.ui, 'histogramAxisX') and self.ui.histogramAxisX:
+            self.ui.histogramAxisX.setTitleBrush(labelColor)
+            self.ui.histogramAxisX.setLabelsBrush(labelColor)
+            self.ui.histogramAxisX.setGridLineColor(labelColor)
+            self.ui.histogramAxisX.setLinePen(QPen(labelColor, 1))
+
+        # set the background color for the histogram chart Y-axis
+        if hasattr(self.ui, 'histogramAxisY') and self.ui.histogramAxisY:
+            self.ui.histogramAxisY.setTitleBrush(labelColor)
+            self.ui.histogramAxisY.setLabelsBrush(labelColor)
+            self.ui.histogramAxisY.setGridLineColor(labelColor)
+            self.ui.histogramAxisY.setLinePen(QPen(labelColor))
+
+        # set the border color for the histogram chart bar sets
+        for attackType in AnalyticsHistogramChart.histogramChartAttackTypes:
+            # check if class name label has a bar set, if so set its border color
+            histogramChartBarSet = getattr(self.ui, f'{''.join(attackType.split(' '))}HistogramChartBarSet', None)
+            # if not none we apply border color
+            if histogramChartBarSet:
+                histogramChartBarSet.setPen(QPen(labelColor, 1))
+
+    except Exception as e:
+        ShowMessageBox('Error Updating Histogram Chart Color Mode', 'Error occurred while updating histogram chart color mode, try again later.', 'Critical')
+
+
 # function for clearing the histogram chart and resetting to default empty histogram chart
 def ResetHistogramChartToDefault(self, hideChart=True):
     try:
@@ -1341,6 +1329,20 @@ def ResetHistogramChartToDefault(self, hideChart=True):
         # clear all axes and grid lines and reset the title
         for axis in self.ui.histogramChart.axes():
             self.ui.histogramChart.removeAxis(axis)
+
+        # clear all histogram chart bar sets in ui if exists
+        for attackType in AnalyticsHistogramChart.histogramChartAttackTypes:
+            # check if bar set is present in ui, if so we delete it
+            if hasattr(self.ui, f'{''.join(attackType.split(' '))}HistogramChartBarSet'):
+                delattr(self.ui, f'{''.join(attackType.split(' '))}HistogramChartBarSet')
+
+        # clear histogram chart X-axis if exists
+        if hasattr(self.ui, 'histogramAxisX'):
+            delattr(self.ui, 'histogramAxisX')
+
+        # clear histogram chart Y-axis if exists
+        if hasattr(self.ui, 'histogramAxisY'):
+            delattr(self.ui, 'histogramAxisY')
 
         # hide the chart and show the title
         if hideChart:
@@ -1360,9 +1362,9 @@ def ResetHistogramChartToDefault(self, hideChart=True):
 
 # class for initializing the horizontal bar chart on the Analytics page
 class AnalyticsBarChart():
-    # define our attack classes and their colors to show in the bar chart
-    barClasses = [attackType for attackType in AttackPieChart.pieChartLabelDict]
-    barColors = [color[2] for color in AttackPieChart.pieChartLabelDict.values()]
+    # define our attack types and their colors to show in the bar chart
+    barChartAttackTypes = [attackType for attackType in AttackPieChart.pieChartLabelDict]
+    barChartAttackColors = [color[2] for color in AttackPieChart.pieChartLabelDict.values()]
 
     # method for initializing the hhorizontal bar chart
     def InitAnalyticsBarChart(self):
@@ -1416,9 +1418,9 @@ class AnalyticsBarChart():
     def ShowTooltip(self, state, index, barSet):
         if state:
             # get class name and value and show tooltip text
-            className = barSet.label()
+            attackType = barSet.label()
             value = barSet.at(index) 
-            QToolTip.showText(QCursor.pos(), f'Attack: {className}\nCount: {int(value)}', self)
+            QToolTip.showText(QCursor.pos(), f'Attack: {attackType}\nCount: {int(value)}', self)
 
 
 # function for updating the grid lines and ticks based on the given maximum value in bar chart
@@ -1449,36 +1451,34 @@ def CreateBarChartData(self, barChartData=None):
         self.ui.barChartView.show()
         self.ui.barChart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
 
-        # create horizontal stacked bar series and bar sets
-        self.ui.barChartBarSeries = QHorizontalStackedBarSeries()
-        self.ui.barChartBarSets = []
-        barClassesLength = len(AnalyticsBarChart.barClasses)
+        # create horizontal stacked bar series
+        barChartBarSeries = QHorizontalStackedBarSeries()
+        barChartAttackTypesLength = len(AnalyticsBarChart.barChartAttackTypes)
 
-        # iterate over each class name in our bar chart attack classes
-        for i, className in enumerate(AnalyticsBarChart.barClasses):
+        # iterate over each class name in our bar chart attack types
+        for i, attackType in enumerate(AnalyticsBarChart.barChartAttackTypes):
             # define bar set and bar set values list and set bar set color
-            barSet = QBarSet(className)
-            barSetValues = [0] * barClassesLength #list for appending values in right position in chart
-            barSet.setColor(AnalyticsBarChart.barColors[i]) #set predefined color
+            barSet = QBarSet(attackType)
+            barSetValues = [0] * barChartAttackTypesLength #list for appending values in right position in chart
+            barSet.setColor(AnalyticsBarChart.barChartAttackColors[i]) #set predefined color
             barSet.setPen(QPen(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'), 1))
-            setattr(self.ui, f'{''.join(className.split(' '))}BarChartBar', barSet) #adding the barSet object to ui
+            setattr(self.ui, f'{''.join(attackType.split(' '))}BarChartBarSet', barSet) #add new bar set to ui
 
             # connect hovered signal to custom slot
             barSet.hovered.connect(lambda state, index, barSet=barSet: AnalyticsBarChart.ShowTooltip(self, state, index, barSet))
 
             # check if there is data to add to the chart, if not then the chart will be empty
             if barChartData and yearComboboxSelection in barChartData:
-                barSetValues[i] = barChartData[yearComboboxSelection].get(className, 0) #append attack counter value
+                barSetValues[i] = barChartData[yearComboboxSelection].get(attackType, 0) #append attack counter value
 
             # insert bar set values list based on value given if bar chart data is set else with zeros to initialize empty bar chart
             barSet.append(barSetValues)
 
-            # append bar set into our bar chart bar series and sets
-            self.ui.barChartBarSeries.append(barSet)
-            self.ui.barChartBarSets.append(barSet)
+            # append bar set into our bar chart bar series
+            barChartBarSeries.append(barSet)
 
         # add bar chart bar series to bar chart
-        self.ui.barChart.addSeries(self.ui.barChartBarSeries)
+        self.ui.barChart.addSeries(barChartBarSeries)
 
         # create X-axis values
         self.ui.barChartAxisX = QValueAxis()
@@ -1492,11 +1492,11 @@ def CreateBarChartData(self, barChartData=None):
         self.ui.barChartAxisX.setTickInterval(1)
         self.ui.barChartAxisX.setLabelFormat('%d') #integer labels
         self.ui.barChart.addAxis(self.ui.barChartAxisX, Qt.AlignBottom)
-        self.ui.barChartBarSeries.attachAxis(self.ui.barChartAxisX)
+        self.ui.barChart.series()[0].attachAxis(self.ui.barChartAxisX)
 
         # create Y-axis attack types
         self.ui.barChartAxisY = QBarCategoryAxis()
-        self.ui.barChartAxisY.append(AnalyticsBarChart.barClasses)
+        self.ui.barChartAxisY.append(AnalyticsBarChart.barChartAttackTypes)
         self.ui.barChartAxisY.setTitleText('Attack Types')
         self.ui.barChartAxisY.setTitleBrush(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
         self.ui.barChartAxisY.setLabelsFont(QFont('Cairo', 9, QFont.Bold, True))
@@ -1505,17 +1505,17 @@ def CreateBarChartData(self, barChartData=None):
         self.ui.barChartAxisY.setGridLineColor(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
         self.ui.barChartAxisY.setLinePen(QPen(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'), 1))
         self.ui.barChart.addAxis(self.ui.barChartAxisY, Qt.AlignLeft)
-        self.ui.barChartBarSeries.attachAxis(self.ui.barChartAxisY)
+        self.ui.barChart.series()[0].attachAxis(self.ui.barChartAxisY)
 
         # update bar chart lines based on max value in axis
         UpdateBarChartLines(self, self.ui.barChartAxisX.max())
 
         # remove the old axis from chart and add the adjusted axies to the chart
         if self.ui.barChartAxisX:
-            self.ui.barChartBarSeries.detachAxis(self.ui.barChartAxisX)
+            self.ui.barChart.series()[0].detachAxis(self.ui.barChartAxisX)
             self.ui.barChart.removeAxis(self.ui.barChartAxisX)
         self.ui.barChart.addAxis(self.ui.barChartAxisX, Qt.AlignBottom)
-        self.ui.barChartBarSeries.attachAxis(self.ui.barChartAxisX)
+        self.ui.barChart.series()[0].attachAxis(self.ui.barChartAxisX)
         self.ui.barChartVerticalFrame.update()
 
     except Exception as e:
@@ -1523,7 +1523,7 @@ def CreateBarChartData(self, barChartData=None):
 
 
 # function for updating the bar chart after an attack was detected, expects an attack name like in database: 'ARP Spoofing', 'Port Scan', etc.
-def UpdateBarChartAfterAttack(self, attackName):
+def UpdateBarChartAfterAttack(self, attackType):
     try:
         # get selected year from year combobox
         yearComboboxSelection = self.ui.analyticsYearComboBox.currentText()
@@ -1535,17 +1535,17 @@ def UpdateBarChartAfterAttack(self, attackName):
                 CreateBarChartData(self)
 
             # updating the bar data for the given attack type in the current attack index
-            barSet = self.ui.barChartBarSets[AnalyticsBarChart.barClasses.index(attackName)]
-            attackIndex = AnalyticsBarChart.barClasses.index(attackName)
+            barSet = self.ui.barChart.series()[0].barSets()[AnalyticsBarChart.barChartAttackTypes.index(attackType)]
+            attackIndex = AnalyticsBarChart.barChartAttackTypes.index(attackType)
             newValue = barSet.at(attackIndex) + 1
             barSet.replace(attackIndex, newValue)
 
             # check if we need to update the X-axis range, need to update if the new value is equal or larger than the max value
             if newValue >= self.ui.barChartAxisX.max():
                 # detach the series from the chart and axes
-                self.ui.barChartBarSeries.detachAxis(self.ui.barChartAxisY)
-                self.ui.barChartBarSeries.detachAxis(self.ui.barChartAxisX)
-                self.ui.barChart.removeSeries(self.ui.barChartBarSeries)
+                self.ui.barChart.series()[0].detachAxis(self.ui.barChartAxisY)
+                self.ui.barChart.series()[0].detachAxis(self.ui.barChartAxisX)
+                self.ui.barChart.removeSeries(self.ui.barChart.series()[0])
                 self.ui.barChart.removeAxis(self.ui.barChartAxisX)
 
                 # create a new X-axis
@@ -1564,15 +1564,15 @@ def UpdateBarChartAfterAttack(self, attackName):
 
                 # attach the new axis and series back to the chart
                 self.ui.barChart.addAxis(self.ui.barChartAxisX, Qt.AlignBottom)
-                self.ui.barChart.addSeries(self.ui.barChartBarSeries)
-                self.ui.barChartBarSeries.attachAxis(self.ui.barChartAxisX)
-                self.ui.barChartBarSeries.attachAxis(self.ui.barChartAxisY)
+                self.ui.barChart.addSeries(self.ui.barChart.series()[0])
+                self.ui.barChart.series()[0].attachAxis(self.ui.barChartAxisX)
+                self.ui.barChart.series()[0].attachAxis(self.ui.barChartAxisY)
 
             self.ui.barChartVerticalFrame.update() #ensure the chart updates
 
         # update histogramChartData dictionary in userData
-        self.userData.get('analyticsChartData').get('barChartData').get(yearComboboxSelection).setdefault(attackName, 0)
-        self.userData['analyticsChartData']['barChartData'][yearComboboxSelection][attackName] += 1
+        self.userData.get('analyticsChartData').get('barChartData').get(yearComboboxSelection).setdefault(attackType, 0)
+        self.userData['analyticsChartData']['barChartData'][yearComboboxSelection][attackType] += 1
 
     except Exception as e:
         ShowMessageBox('Error Updating Bar Chart', 'Error occurred while updating bar chart after an attack, try again later.', 'Critical')
@@ -1591,6 +1591,44 @@ def UpdateBarChartAfterLogin(self, barChartData):
         ShowMessageBox('Error Updating Bar Chart', 'Error occurred while updating bar chart, try again later.', 'Critical')
 
 
+# function for updating bar chart color mode based on chosen color mode in ui
+def UpdateBarChartColorMode(self):
+    try:
+        # set our desired label color based on ui color mode
+        labelColor = QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519')
+
+        # set the background color for the bar chart
+        if hasattr(self.ui, 'barChart') and self.ui.barChart:
+            self.ui.barChart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
+            self.ui.barChart.legend().setLabelColor(labelColor)
+            self.ui.barChart.setTitleBrush(labelColor)
+
+        # set the background color for the bar chart X-axis
+        if hasattr(self.ui, 'barChartAxisX') and self.ui.barChartAxisX:
+            self.ui.barChartAxisX.setTitleBrush(labelColor)
+            self.ui.barChartAxisX.setLabelsBrush(labelColor)
+            self.ui.barChartAxisX.setGridLineColor(labelColor)
+            self.ui.barChartAxisX.setLinePen(QPen(labelColor, 1))
+
+        # set the background color for the bar chart Y-axis
+        if hasattr(self.ui, 'barChartAxisY') and self.ui.barChartAxisY:
+            self.ui.barChartAxisY.setTitleBrush(labelColor)
+            self.ui.barChartAxisY.setLabelsBrush(labelColor)
+            self.ui.barChartAxisY.setGridLineColor(labelColor)
+            self.ui.barChartAxisY.setLinePen(QPen(labelColor, 1))
+
+        # set the border color for the bar chart bar sets
+        for attackType in AnalyticsBarChart.barChartAttackTypes:
+            # check if class name label has a bar set, if so set its border color
+            barChartBarSet = getattr(self.ui, f'{''.join(attackType.split(' '))}BarChartBarSet', None)
+            # if not none we apply border color
+            if barChartBarSet:
+                barChartBarSet.setPen(QPen(labelColor, 1))
+
+    except Exception as e:
+        ShowMessageBox('Error Updating Bar Chart Color Mode', 'Error occurred while updating bar chart color mode, try again later.', 'Critical')
+
+
 # function for clearing the bar chart and resetting to default empty bar chart
 def ResetBarChartToDefault(self, hideChart=True):
     try:
@@ -1601,6 +1639,20 @@ def ResetBarChartToDefault(self, hideChart=True):
         # clear all axes and grid lines and reset the title
         for axis in self.ui.barChart.axes():
             self.ui.barChart.removeAxis(axis)
+
+        # clear all bar chart bar sets in ui if exists
+        for attackType in AnalyticsHistogramChart.histogramChartAttackTypes:
+            # check if bar set is present in ui, if so we delete it
+            if hasattr(self.ui, f'{''.join(attackType.split(' '))}BarChartBarSet'):
+                delattr(self.ui, f'{''.join(attackType.split(' '))}BarChartBarSet')
+
+        # clear bar chart X-axis if exists
+        if hasattr(self.ui, 'barChartAxisX'):
+            delattr(self.ui, 'barChartAxisX')
+        
+        # clear bar chart Y-axis if exists
+        if hasattr(self.ui, 'barChartAxisY'):
+            delattr(self.ui, 'barChartAxisY')
 
         # hide the chart and show the title
         if hideChart:
@@ -1622,7 +1674,7 @@ def ResetBarChartToDefault(self, hideChart=True):
 def SetDataIntoCards(self):
     try:
         currentYear = self.ui.analyticsYearComboBox.currentText()
-        if any(attackCount > 0 for attackCount in self.userData.get('analyticsChartData').get('barChartData').get(currentYear).values()) > 0:
+        if any(attackCount > 0 for attackCount in self.userData.get('analyticsChartData').get('barChartData').get(currentYear).values()):
             # update attacks per month and total number of attacks
             totalNumberOfAttacks = sum(self.userData.get('analyticsChartData').get('barChartData').get(currentYear).values())
             self.ui.totalNumOfAttacksValueLabel.setText(str(totalNumberOfAttacks))
@@ -1802,7 +1854,7 @@ class CustomFilterProxyModel(QSortFilterProxyModel):
         self.timeFilter = 'All Available Data' #set to all available data by default
 
 
-    # function to update selected classes and refresh filter (for checkboxes)
+    # function to update selected types and refresh filter (for checkboxes)
     def SetSelectedAttacks(self, selectedAttacks):
         self.selectedAttacks = set(selectedAttacks)
         self.invalidateFilter() #triggers re-filtering

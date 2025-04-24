@@ -6,7 +6,6 @@ from ipaddress import IPv4Interface, IPv6Interface, IPv4Address, IPv6Address
 from scapy.all import AsyncSniffer, srp, get_if_list, IP, IPv6, TCP, UDP, ICMP, ARP, Ether, Raw, conf
 from scapy.layers.dns import DNS
 from PySide6.QtNetwork import QNetworkInterface
-from collections import defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -232,7 +231,7 @@ class NetworkInformation(ABC):
     def InitNetworkInfo():
         NetworkInformation.networkInfo = NetworkInformation.GetNetworkInterfaces() #find all available network interface and collect all data about these interfaces
         #return all available interface names for the user to select in sorted order
-        return sorted(NetworkInformation.networkInfo.keys(), key=lambda x: (next((i for i, prefix 
+        return sorted(NetworkInformation.networkInfo, key=lambda x: (next((i for i, prefix 
                 in enumerate(NetworkInformation.supportedInterfaces) if x.startswith(prefix)), len(NetworkInformation.supportedInterfaces)), x))
 
 
@@ -483,7 +482,7 @@ class ArpTable():
 # static class that represents the detection of ARP Spoofing attack using an algorithem to detect duplications in ARP tables based on collected ARP packets
 class ArpSpoofing(ABC):
     arpTables = {} #represents all ARP tables where the key of the table is the subnet, each inner ARP table is a tuple (arpTable, invArpTable) with mapping of IP->MAC and MAC->IP in each table in tuple
-    cache = {} #represents a dict with cache of all ip addresses that matched a subnet
+    ipSubnetCache = {} #represents a dict with cache of all ip addresses with their matched subnet
     isArpTables = False #represents initialization state of arpTables dict
 
     # function that iterates over available ipv4 subnets and initializes an ARP table for each one
@@ -497,7 +496,7 @@ class ArpSpoofing(ABC):
         if NetworkInformation.selectedInterface != NetworkInformation.previousInterface:
             # clear previous interface information that was saved in our dictionaries
             NetworkInformation.previousInterface = NetworkInformation.selectedInterface
-            ArpSpoofing.arpTables, ArpSpoofing.cache = {}, {}
+            ArpSpoofing.arpTables, ArpSpoofing.ipSubnetCache = {}, {}
 
             # iterate over all given subnets, for each check if an ARP table exists for it
             for subnet in NetworkInformation.networkInfo.get(NetworkInformation.selectedInterface).get('ipv4Subnets'):
@@ -532,27 +531,28 @@ class ArpSpoofing(ABC):
         return result
 
 
-    # function for getting the correct ARP table given an IP address
+    # function for getting the correct subnet given an IP address
     @staticmethod
     def GetSubnetForIP(ipAddress): 
         try:
-            #convert given IP address into IPv4 address object
+            # convert given IP address into IPv4 address object
             ipObject = IPv4Address(ipAddress)
 
-            #check if the given IP address was cached
-            if ipObject in ArpSpoofing.cache:
-                return ArpSpoofing.cache[ipObject]
+            # check if the given IP address has subnet in ipSubnetCache
+            if ipObject in ArpSpoofing.ipSubnetCache:
+                return ArpSpoofing.ipSubnetCache[ipObject]
 
-            # check if given IP address object is in the subnet list
-            for subnet in ArpSpoofing.arpTables.keys():
+            # check if given IP address object matches subnet object
+            for subnet in ArpSpoofing.arpTables:
+                # means we found matching subnet, we save the match for later use
                 if ipObject in subnet:
-                    ArpSpoofing.cache[ipObject] = subnet
+                    ArpSpoofing.ipSubnetCache[ipObject] = subnet
                     return subnet
-            
-            ArpSpoofing.cache[ipObject] = None
+
+            # finally if no subnet matches IP address we set it to none
+            ArpSpoofing.ipSubnetCache[ipObject] = None
             return None
-        except ValueError as e:
-            print(f'Invalid IP or Subnet: {e}')
+        except Exception:
             return None
   
 
@@ -603,7 +603,7 @@ class ArpSpoofing(ABC):
                             ipArpTable = ArpTable.InitArpTable(packet.srcIp) #initialize temp IP ARP table for specific IP and check if valid
 
                             # we check if there's a reply, if not we dismiss the packet
-                            if ipArpTable[0]:
+                            if ipArpTable[0] and ipArpTable[0].get(packet.srcIp):
                                 # means MAC addresses match, we add entries to our tables
                                 if ipArpTable[0].get(packet.srcIp) == packet.srcMac:
                                     arpTableObject.arpTable[packet.srcIp] = packet.srcMac #assign MAC address to its IP in ARP table
@@ -659,7 +659,7 @@ class PortScanDoSException(Exception):
             attackName = 'PortScan and DoS'
         details = f'\n##### {attackName.upper()} ATTACK ######\n'
         details += '\n'.join([f'''[*] Source IP: {flow[0]} , Source Mac: {flow[1]} , Destination IP: {flow[2]}, Destination Mac: {flow[3]} , Protocol: {flow[4]} , Attack: {attackName}'''
-                        for flow in self.attackDict.keys()])
+                        for flow in self.attackDict])
         return f'{self.args[0]}\nDetails:\n{details}\n'
     
 
@@ -679,7 +679,7 @@ class PortScanDoS(ABC):
     # function for processing the flowDict and creating the dataframe that will be passed to classifier
     @staticmethod
     def ProcessFlows(portScanDosDict):
-        featuresDict = defaultdict(dict) #represents our features dict where each flow tuple has its corresponding features
+        featuresDict = {} #represents our features dict where each flow tuple has its corresponding features
 
         # iterate over our flow dict and calculate features
         for flow, packetList in portScanDosDict.items():
@@ -772,7 +772,7 @@ class PortScanDoS(ABC):
                 'IAT Std': np.std(interArrivalTimes) if interArrivalTimes else 0 #represents std inter-arrival time
             }   
             featuresDict[flow] = flowParametes #save the dictionary of values into the featuresDict
-        return dict(featuresDict)
+        return featuresDict
 
 
     # function for predicting PortScanning and DoS attacks given flow dictionary
@@ -827,10 +827,12 @@ class PortScanDoS(ABC):
                 )
 
             # print the dataframe and other data to the terminal
-            print('#' + '=' * 145 + '#')
-            print(f'\n |>> No Port Scanning / DoS attacks where detected <<|\n |>> Number of flows in current cycle: {len(flowDataframe)} <<|')
-            print(f'\n |>> Currect Cycle Dataframe: <<|\n\n{flowDataframe[keyColumns + ['Result', 'timestamp']]}')
-            print('#' + '=' * 145 + '#')
+            print(
+                '#' + '=' * 155 + '#\n'
+                f'\n |>> No Port Scanning / DoS attacks where detected <<|\n |>> Number of flows in current cycle: {len(flowDataframe)} <<|'
+                f'\n\n |>> Currect Cycle Dataframe: <<|\n\n{flowDataframe[keyColumns + ['Result', 'timestamp']]}'
+                '\n' + '#' + '=' * 155 + '#'
+            )
 
             result['state'] = True #indication for no attacks
 
@@ -875,7 +877,7 @@ class DNSTunneling(ABC):
     # function for processing the flowDict and creating the dataframe that will be passed to classifier
     @staticmethod
     def ProcessFlows(dnsDict): 
-        featuresDict = defaultdict(dict) #represents our features dict where each flow tuple has its corresponding features
+        featuresDict = {} #represents our features dict where each flow tuple has its corresponding features
 
         # iterate over our flow dict and calculate features
         for flow, packetList in dnsDict.items():
@@ -986,7 +988,7 @@ class DNSTunneling(ABC):
                 'IAT Std': np.std(interArrivalTimes) if interArrivalTimes else 0 #represents std inter-arrival time
             }
             featuresDict[flow] = flowParametes #save the dictionary of values into the featuresDict
-        return dict(featuresDict)
+        return featuresDict
 
 
     # function for predicting DNS Tunneling attack given flow dictionary
@@ -1019,12 +1021,14 @@ class DNSTunneling(ABC):
                     type=1,
                     attackDict=attackDict
                 )
-            
+
             # print the dataframe and other data to the terminal
-            print('#' + '=' * 145 + '#')
-            print(f'\n |>> No DNS Tunneling attacks where detected <<|\n |>> Number of flows in current cycle: {len(flowDataframe)} <<|')
-            print(f'\n |>> Currect Cycle Dataframe: <<|\n\n{flowDataframe[keyColumns + ['Result', 'timestamp']]}')
-            print('#' + '=' * 145 + '#')
+            print(
+                '#' + '=' * 155 + '#\n'
+                f'\n |>> No DNS Tunneling attacks where detected <<|\n |>> Number of flows in current cycle: {len(flowDataframe)} <<|'
+                f'\n\n |>> Currect Cycle Dataframe: <<|\n\n{flowDataframe[keyColumns + ['Result', 'timestamp']]}'
+                '\n' + '#' + '=' * 155 + '#'
+            )
 
             result['state'] = True #indication for no attacks
 

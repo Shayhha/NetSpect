@@ -379,6 +379,7 @@ class NetworkInformation(ABC):
 #--------------------------------------------NETWORK-INFORMATION-END-----------------------------------------#
 
 #-----------------------------------------------ARP-SPOOFING-------------------------------------------------#
+# class for throwing custom exeption with str method for showing arpSpoofing detection information
 class ArpSpoofingException(Exception):
     def __init__(self, message, type, attackDict):
         super().__init__(message)
@@ -646,6 +647,7 @@ class ArpSpoofing(ABC):
 #----------------------------------------------ARP-SPOOFING-END----------------------------------------------#
 
 #----------------------------------------------PORT-SCANNING-DoS---------------------------------------------#
+# class for throwing custom exeption with str method for showing portScanDos detection information
 class PortScanDoSException(Exception):
     def __init__(self, message, type, attackDict):
         super().__init__(message)
@@ -661,12 +663,11 @@ class PortScanDoSException(Exception):
         details += '\n'.join([f'''[*] Source IP: {flow[0]} , Source Mac: {flow[1]} , Destination IP: {flow[2]}, Destination Mac: {flow[3]} , Protocol: {flow[4]} , Attack: {attackName}'''
                         for flow in self.attackDict])
         return f'{self.args[0]}\nDetails:\n{details}\n'
-    
 
-# static class that represents the collection and detection of PortScan and DoS attacks 
+
+# static class that represents the collection and detection of PortScan and DoS attacks
 class PortScanDoS(ABC):
-    loadedModel = joblib.load(currentDir.parent / 'models' / 'port_scan_dos_svm_model.pkl') #load SVM model for portScanDos
-    loadedScaler = joblib.load(currentDir.parent / 'models' / 'port_scan_dos_scaler.pkl') #load scaler for SVM model
+    # represents our selected column names for features we trained SVM model for portScanDos
     selectedColumns = [
         'Number of Ports', 'Average Packet Length', 'Packet Length Min', 'Packet Length Max', 
         'Packet Length Std', 'Packet Length Variance', 'Total Length of Fwd Packet', 'Fwd Packet Length Max', 
@@ -675,6 +676,26 @@ class PortScanDoS(ABC):
         'Bwd Segment Size Avg', 'Subflow Fwd Bytes', 'SYN Flag Count', 'ACK Flag Count', 'RST Flag Count', 
         'Flow Duration', 'Packets Per Second', 'IAT Max', 'IAT Mean', 'IAT Std'
     ]
+    modelPath = currentDir.parent / 'models' / 'port_scan_dos_svm_model.pkl' #represents path for SVM model for portScanDos
+    scalerPath = currentDir.parent / 'models' / 'port_scan_dos_scaler.pkl' #represents path for scaler for portScanDos
+    loadedModel = None #represents our SVM model for portScanDos
+    loadedScaler = None #represents our scaler for SVM model for portScanDos
+
+    # function for initialzing SVM model and scaler for detecting PortScan and DoS attacks
+    @staticmethod
+    def InitModel():
+        try:
+            # check that model and scaler exist before attempting to load them
+            if not Path(PortScanDoS.modelPath).exists() or not Path(PortScanDoS.scalerPath).exists():
+                return False
+
+            # if paths exist we load our SVM model and scaler for portScanDos
+            PortScanDoS.loadedModel = joblib.load(PortScanDoS.modelPath) #load SVM model for portScanDos
+            PortScanDoS.loadedScaler = joblib.load(PortScanDoS.scalerPath) #load scaler for SVM model for portScanDos
+            return True
+        except Exception:
+            return False
+
 
     # function for processing the flowDict and creating the dataframe that will be passed to classifier
     @staticmethod
@@ -781,58 +802,60 @@ class PortScanDoS(ABC):
         # represents result of analysis dictionary {state: T/F, type: 1-PortScan / 2-DoS / 3-Together, attackDict: {}}
         result = {'state': False, 'type': 1, 'attackDict': {}}
         attackDict = {} #represents attack dict with anomalies
-        try: 
-            # extract keys and values from flowDict and save it as a DataFrame
-            keyColumns = ['srcIp', 'srcMac', 'dstIp', 'dstMac', 'protocol']
-            flowDataframe = pd.DataFrame.from_dict(flowDict, orient='index').reset_index()
-            flowDataframe.columns = keyColumns + flowDataframe.columns[5:].to_list() #rename the column names of the keys
-            valuesDataframe = flowDataframe.drop(keyColumns, axis=1)
+        try:
+            # chech that SVM model and scaler are initialized before attempting to predict
+            if PortScanDoS.loadedModel and PortScanDoS.loadedScaler:
+                # extract keys and values from flowDict and save it as a DataFrame
+                keyColumns = ['srcIp', 'srcMac', 'dstIp', 'dstMac', 'protocol']
+                flowDataframe = pd.DataFrame.from_dict(flowDict, orient='index').reset_index()
+                flowDataframe.columns = keyColumns + flowDataframe.columns[5:].to_list() #rename the column names of the keys
+                valuesDataframe = flowDataframe.drop(keyColumns, axis=1)
 
-            # scale the input data and predict the scaled input
-            scaledDataframe = PortScanDoS.loadedScaler.transform(valuesDataframe)
-            valuesDataframe = pd.DataFrame(scaledDataframe, columns=PortScanDoS.selectedColumns)
-            predictions = PortScanDoS.loadedModel.predict(valuesDataframe)
-            flowDataframe.loc[:, 'Result'] = predictions
-            flowDataframe.loc[:, 'timestamp'] = np.full(shape=len(flowDataframe), fill_value=NetworkInformation.GetCurrentTimestamp(), dtype=object)
-            attackDictKeys = keyColumns + ['Result'] #first 5 columns + 'Result'
+                # scale the input data and predict the scaled input
+                scaledDataframe = PortScanDoS.loadedScaler.transform(valuesDataframe)
+                valuesDataframe = pd.DataFrame(scaledDataframe, columns=PortScanDoS.selectedColumns)
+                predictions = PortScanDoS.loadedModel.predict(valuesDataframe)
+                flowDataframe.loc[:, 'Result'] = predictions
+                flowDataframe.loc[:, 'timestamp'] = np.full(shape=len(flowDataframe), fill_value=NetworkInformation.GetCurrentTimestamp(), dtype=object)
+                attackDictKeys = keyColumns + ['Result'] #first 5 columns + 'Result'
 
-            # check for PortScan and DoS attacks together in model predictions
-            if (1 in predictions) and (2 in predictions):
-                # we convert the dataframe into dict where each key is flow: (srcIp, srcMac, dstIp, dstMac, protocol, result), value: {details}
-                attackDict = flowDataframe[flowDataframe['Result'] != 0].set_index(attackDictKeys).to_dict(orient='index') #indication of PortScan and DoS attacks together
-                raise PortScanDoSException( #throw an exeption to inform user of its presence
-                    'Detected PortScan and DoS attack',
-                    type=3,
-                    attackDict=attackDict
+                # check for PortScan and DoS attacks together in model predictions
+                if (1 in predictions) and (2 in predictions):
+                    # we convert the dataframe into dict where each key is flow: (srcIp, srcMac, dstIp, dstMac, protocol, result), value: {details}
+                    attackDict = flowDataframe[flowDataframe['Result'] != 0].set_index(attackDictKeys).to_dict(orient='index') #indication of PortScan and DoS attacks together
+                    raise PortScanDoSException( #throw an exeption to inform user of its presence
+                        'Detected PortScan and DoS attack',
+                        type=3,
+                        attackDict=attackDict
+                    )
+
+                # check for PortScan attacks in model predictions
+                elif 1 in predictions:
+                    # we convert the dataframe into dict where each key is flow: (srcIp, srcMac, dstIp, dstMac, protocol, result), value: {details}
+                    attackDict = flowDataframe[flowDataframe['Result'] == 1].set_index(attackDictKeys).to_dict(orient='index') #indication of PortScan attack
+                    raise PortScanDoSException( #throw an exeption to inform user of its presence
+                        'Detected PortScan attack',
+                        type=1,
+                        attackDict=attackDict
+                    )
+
+                # check for DoS attacks in model predictions
+                elif 2 in predictions:
+                    # we convert the dataframe into dict where each key is flow: (srcIp, srcMac, dstIp, dstMac, protocol, result), value: {details}
+                    attackDict = flowDataframe[flowDataframe['Result'] == 2].set_index(attackDictKeys).to_dict(orient='index') #indication of DoS attack
+                    raise PortScanDoSException( #throw an exeption to inform user of its presence
+                        'Detected DoS attack',
+                        type=2,
+                        attackDict=attackDict
+                    )
+
+                # print the dataframe and other data to the terminal
+                print(
+                    '#' + '=' * 155 + '#\n'
+                    f'\n |>> No Port Scanning / DoS attacks where detected <<|\n |>> Number of flows in current cycle: {len(flowDataframe)} <<|'
+                    f'\n\n |>> Currect Cycle Dataframe: <<|\n\n{flowDataframe[keyColumns + ['Result', 'timestamp']]}'
+                    '\n' + '#' + '=' * 155 + '#'
                 )
-
-            # check for PortScan attacks in model predictions
-            elif 1 in predictions:
-                # we convert the dataframe into dict where each key is flow: (srcIp, srcMac, dstIp, dstMac, protocol, result), value: {details}
-                attackDict = flowDataframe[flowDataframe['Result'] == 1].set_index(attackDictKeys).to_dict(orient='index') #indication of PortScan attack
-                raise PortScanDoSException( #throw an exeption to inform user of its presence
-                    'Detected PortScan attack',
-                    type=1,
-                    attackDict=attackDict
-                )
-
-            # check for DoS attacks in model predictions
-            elif 2 in predictions:
-                # we convert the dataframe into dict where each key is flow: (srcIp, srcMac, dstIp, dstMac, protocol, result), value: {details}
-                attackDict = flowDataframe[flowDataframe['Result'] == 2].set_index(attackDictKeys).to_dict(orient='index') #indication of DoS attack
-                raise PortScanDoSException( #throw an exeption to inform user of its presence
-                    'Detected DoS attack',
-                    type=2,
-                    attackDict=attackDict
-                )
-
-            # print the dataframe and other data to the terminal
-            print(
-                '#' + '=' * 155 + '#\n'
-                f'\n |>> No Port Scanning / DoS attacks where detected <<|\n |>> Number of flows in current cycle: {len(flowDataframe)} <<|'
-                f'\n\n |>> Currect Cycle Dataframe: <<|\n\n{flowDataframe[keyColumns + ['Result', 'timestamp']]}'
-                '\n' + '#' + '=' * 155 + '#'
-            )
 
             result['state'] = True #indication for no attacks
 
@@ -847,6 +870,7 @@ class PortScanDoS(ABC):
 #--------------------------------------------PORT-SCANNING-DoS-END-------------------------------------------#
 
 #-----------------------------------------------DNS-TUNNELING------------------------------------------------#
+# class for throwing custom exeption with str method for showing dnsTunneling detection information
 class DNSTunnelingException(Exception):
     def __init__(self, message, type, attackDict):
         super().__init__(message)
@@ -863,8 +887,7 @@ class DNSTunnelingException(Exception):
 
 # static class that represents the collection and detection of DNS Tunneling attack
 class DNSTunneling(ABC):
-    loadedModel = joblib.load(currentDir.parent / 'models' / 'dns_svm_model.pkl') #load SVM model for DNS tunneling
-    loadedScaler = joblib.load(currentDir.parent / 'models' / 'dns_scaler.pkl') #load scaler for SVM model
+    # represents our selected column names for features we trained SVM model for dnsTunneling
     selectedColumns = [
         'A Record Count', 'AAAA Record Count', 'CName Record Count', 'TXT Record Count', 'MX Record Count', 'DF Flag Count',
         'Average Response Data Length', 'Min Response Data Length', 'Max Response Data Length', 'Average Domain Name Length',
@@ -873,6 +896,26 @@ class DNSTunneling(ABC):
         'Number of Sub Domian Names', 'Total Length of Fwd Packet', 'Total Length of Bwd Packet', 'Total Number of Packets', 
         'Flow Duration', 'IAT Max', 'IAT Mean', 'IAT Std'
     ]
+    modelPath = currentDir.parent / 'models' / 'dns_svm_model.pkl' #represents path for SVM model for dnsTunneling
+    scalerPath = currentDir.parent / 'models' / 'dns_scaler.pkl' #represents path for scaler for dnsTunneling
+    loadedModel = None #represents our SVM model for dnsTunneling
+    loadedScaler = None #represents our scaler for SVM model for dnsTunneling
+
+    # function for initialzing SVM model and scaler for detecting dnsTunneling
+    @staticmethod
+    def InitModel():
+        try:
+            # check that model and scaler exist before attempting to load them
+            if not Path(DNSTunneling.modelPath).exists() or not Path(DNSTunneling.scalerPath).exists():
+                return False
+
+            # if paths exist we load our SVM model and scaler for dnsTunneling
+            DNSTunneling.loadedModel = joblib.load(DNSTunneling.modelPath) #load SVM model for dnsTunneling
+            DNSTunneling.loadedScaler = joblib.load(DNSTunneling.scalerPath) #load scaler for SVM model for dnsTunneling
+            return True
+        except Exception:
+            return False
+
 
     # function for processing the flowDict and creating the dataframe that will be passed to classifier
     @staticmethod
@@ -997,38 +1040,40 @@ class DNSTunneling(ABC):
         # represents result of analysis dictionary {state: T/F, type: 1-DnsTunneling, attackDict: {}}
         result = {'state': False, 'type': 1, 'attackDict': {}}
         attackDict = {} #represents attack dict with anomalies
-        try: 
-            # extract keys and values from flowDict and save it as a DataFrame
-            keyColumns = ['srcIp', 'srcMac', 'dstIp', 'dstMac', 'protocol']
-            flowDataframe = pd.DataFrame.from_dict(flowDict, orient='index').reset_index() 
-            flowDataframe.columns = keyColumns + flowDataframe.columns[5:].to_list() #rename the column names of the keys
-            valuesDataframe = flowDataframe.drop(keyColumns, axis=1)
+        try:
+            # chech that SVM model and scaler are initialized before attempting to predict
+            if DNSTunneling.loadedModel and DNSTunneling.loadedScaler:
+                # extract keys and values from flowDict and save it as a DataFrame
+                keyColumns = ['srcIp', 'srcMac', 'dstIp', 'dstMac', 'protocol']
+                flowDataframe = pd.DataFrame.from_dict(flowDict, orient='index').reset_index() 
+                flowDataframe.columns = keyColumns + flowDataframe.columns[5:].to_list() #rename the column names of the keys
+                valuesDataframe = flowDataframe.drop(keyColumns, axis=1)
 
-            # scale the input data and predict the scaled input
-            scaledDataframe = DNSTunneling.loadedScaler.transform(valuesDataframe)
-            valuesDataframe = pd.DataFrame(scaledDataframe, columns=DNSTunneling.selectedColumns)
-            predictions = DNSTunneling.loadedModel.predict(valuesDataframe)
-            flowDataframe.loc[:, 'Result'] = predictions
-            flowDataframe.loc[:, 'timestamp'] = np.full(shape=len(flowDataframe), fill_value=NetworkInformation.GetCurrentTimestamp(), dtype=object)
-            attackDictKeys = keyColumns + ['Result'] #first 5 columns + 'Result'
+                # scale the input data and predict the scaled input
+                scaledDataframe = DNSTunneling.loadedScaler.transform(valuesDataframe)
+                valuesDataframe = pd.DataFrame(scaledDataframe, columns=DNSTunneling.selectedColumns)
+                predictions = DNSTunneling.loadedModel.predict(valuesDataframe)
+                flowDataframe.loc[:, 'Result'] = predictions
+                flowDataframe.loc[:, 'timestamp'] = np.full(shape=len(flowDataframe), fill_value=NetworkInformation.GetCurrentTimestamp(), dtype=object)
+                attackDictKeys = keyColumns + ['Result'] #first 5 columns + 'Result'
 
-            # check for DNS Tunneling attacks in model predictions
-            if 1 in predictions:
-                # we convert the dataframe into dict where each key is flow: (srcIp, srcMac, dstIp, dstMac, protocol, result), value: {details}
-                attackDict = flowDataframe[flowDataframe['Result'] == 1].set_index(attackDictKeys).to_dict(orient='index') #indication of DNS attack
-                raise DNSTunnelingException( #throw an exeption to inform user of its presence
-                    'Detected DNS Tunneling attack',
-                    type=1,
-                    attackDict=attackDict
+                # check for DNS Tunneling attacks in model predictions
+                if 1 in predictions:
+                    # we convert the dataframe into dict where each key is flow: (srcIp, srcMac, dstIp, dstMac, protocol, result), value: {details}
+                    attackDict = flowDataframe[flowDataframe['Result'] == 1].set_index(attackDictKeys).to_dict(orient='index') #indication of DNS attack
+                    raise DNSTunnelingException( #throw an exeption to inform user of its presence
+                        'Detected DNS Tunneling attack',
+                        type=1,
+                        attackDict=attackDict
+                    )
+
+                # print the dataframe and other data to the terminal
+                print(
+                    '#' + '=' * 155 + '#\n'
+                    f'\n |>> No DNS Tunneling attacks where detected <<|\n |>> Number of flows in current cycle: {len(flowDataframe)} <<|'
+                    f'\n\n |>> Currect Cycle Dataframe: <<|\n\n{flowDataframe[keyColumns + ['Result', 'timestamp']]}'
+                    '\n' + '#' + '=' * 155 + '#'
                 )
-
-            # print the dataframe and other data to the terminal
-            print(
-                '#' + '=' * 155 + '#\n'
-                f'\n |>> No DNS Tunneling attacks where detected <<|\n |>> Number of flows in current cycle: {len(flowDataframe)} <<|'
-                f'\n\n |>> Currect Cycle Dataframe: <<|\n\n{flowDataframe[keyColumns + ['Result', 'timestamp']]}'
-                '\n' + '#' + '=' * 155 + '#'
-            )
 
             result['state'] = True #indication for no attacks
 

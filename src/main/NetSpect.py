@@ -102,6 +102,7 @@ class NetSpect(QMainWindow):
         self.ChangeLoginRegisterErrorMessage(isLogin=False) #reset the register popup error message
         self.InitLoggerThread() #call init method for logger thread
         self.InitSQLThread() #call init method for sql thread
+        self.InitModels() #call init method for initializing models and scalers
         self.center() #make the app open in center of screen
         self.show() #show the application
 
@@ -256,6 +257,31 @@ class NetSpect(QMainWindow):
         self.userData.setdefault('analyticsChartData', {}).setdefault('barChartData', {}).setdefault(str(datetime.now().year), {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0})
         self.userData.setdefault('analyticsChartData', {}).setdefault('histogramChartData', {}).setdefault(str(datetime.now().year), 
                                     {month: {'ARP Spoofing': 0, 'Port Scan': 0, 'DoS': 0, 'DNS Tunneling': 0} for month in range(1, 13)})
+
+
+    # method for initializing SVM models ans scalers for portScanDos and dnsTunneling
+    def InitModels(self):
+        # call init methods and save result
+        isPortScanDosModel, isDnsTunnelingModel = PortScanDoS.InitModel(), DNSTunneling.InitModel()
+
+        # check if portScanDos and dnsTunneling model or scaler are not initialized 
+        if not isPortScanDosModel and not isDnsTunnelingModel:
+            self.SendLogDict('Main_Thread: Failed to initialize PortScanDoS and DNSTunneling models or scalers.', 'ERROR') #log error event
+            UserInterfaceFunctions.ShowMessageBox('Error Occurred', 'PortScanDoS and DNSTunneling models or scalers files were not found. Please ensure they exist in the models folder.', 'Critical')
+
+        # check if portScanDos model or scaler is not initialized
+        elif not isPortScanDosModel:
+            self.SendLogDict('Main_Thread: Failed to initialize PortScanDoS model or scaler.', 'ERROR') #log error event
+            UserInterfaceFunctions.ShowMessageBox('Error Occurred', 'PortScanDoS model or scaler files were not found. Please ensure they exist in the models folder.', 'Critical')
+
+        # check if dnsTunneling model or scaler is not initialized 
+        elif not isDnsTunnelingModel:
+            self.SendLogDict('Main_Thread: Failed to initialize DNSTunneling model or scaler.', 'ERROR') #log error event
+            UserInterfaceFunctions.ShowMessageBox('Error Occurred', 'DNSTunneling model or scaler files were not found. Please ensure they exist in the models folder.', 'Critical')
+
+        # else portScanDos and dnsTunneling model and scaler are initialzied
+        else:
+            self.SendLogDict('Main_Thread: Initialized PortScanDoS and DNSTunneling models and scalers successfully.', 'INFO') #log initialization event
 
 
     # method for setting input validators on line edits in gui

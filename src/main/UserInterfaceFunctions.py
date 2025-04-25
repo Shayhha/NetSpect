@@ -1,6 +1,5 @@
-from PySide6 import QtWidgets
 from PySide6.QtCore import Qt, QTimer, QPropertyAnimation, QEasingCurve, QEasingCurve, QSortFilterProxyModel, QAbstractTableModel, QModelIndex, QMargins
-from PySide6.QtWidgets import QApplication, QMenu, QTableWidget, QWidget, QDialog, QLabel, QLineEdit, QStyle, QSizePolicy, QPushButton, QGridLayout, QHeaderView, QSystemTrayIcon, QVBoxLayout, QHBoxLayout, QGraphicsDropShadowEffect, QToolTip
+from PySide6.QtWidgets import QApplication, QMenu, QListWidget, QTableWidget, QTableView, QWidget, QDialog, QPushButton, QLabel, QLineEdit, QStyle, QSizePolicy, QGridLayout, QHeaderView, QSystemTrayIcon, QVBoxLayout, QHBoxLayout, QGraphicsDropShadowEffect, QToolTip
 from PySide6.QtGui import QAction, QColor, QIcon, QPixmap, QFont, QCursor, QPainter, QPen
 from PySide6.QtCharts import QChart, QChartView, QPieSeries, QBarSeries, QHorizontalStackedBarSeries, QBarSet, QBarCategoryAxis, QValueAxis
 from datetime import datetime, timedelta
@@ -498,10 +497,10 @@ def ApplyShadowSidebar(self):
     self.ui.sideFrame.setGraphicsEffect(shadow)
 
 
-# function that shows right-click menu for copying and deleting items in mac address list widget
-def ShowContextMenu(self, position):
+# function that shows right-click menu for copying and deleting items for widget objects
+def ShowContextMenu(self, widgetObject, position, isDelete=False):
     currentStyleSheet = f'''
-        #macListContextMenu {{
+        #contextMenu {{
             {'background-color: #2d2d2d;' if self.userData.get('lightMode') == 0 else 'background-color: #f3f3f3;'}
             {'color: #f0f0f0;' if self.userData.get('lightMode') == 0 else 'color: black;'}
             {'border: 1px solid #555;' if self.userData.get('lightMode') == 0 else 'border: 1px solid gray;'}
@@ -509,40 +508,73 @@ def ShowContextMenu(self, position):
             border-radius: 6px;
         }}
 
-        #macListContextMenu::item {{
+        #contextMenu::item {{
             padding: 5px 20px;
             background-color: transparent;
         }}
 
-        #macListContextMenu::item:selected {{
+        #contextMenu::item:selected {{
             {'background-color: rgba(255, 255, 255, 0.1);' if self.userData.get('lightMode') == 0 else 'background-color: rgba(0, 0, 0, 0.1);'}
             {'color: #ffffff;'if self.userData.get('lightMode') == 0 else 'color: black;'}
             border-radius: 4px;
         }}
     '''
- 
-    # get current item that is selected
-    item = self.ui.macAddressListWidget.itemAt(position)
 
-    # check that item is valid and mac address list widget
-    if item and self.ui.macAddressListWidget.count() > 0:
-        # create context menu for mac address list widget
-        self.ui.macListContextMenu = QMenu()
-        self.ui.macListContextMenu.setObjectName('macListContextMenu')
+    # create context menu for right-click events
+    contextMenu = QMenu()
+    contextMenu.setObjectName('contextMenu')
+    selectedText = None
 
-        # create copy action for context menu
-        self.ui.macAddressListWidget.copyAction = QAction('Copy')
-        self.ui.macAddressListWidget.copyAction.triggered.connect(lambda: CopyToClipboard(item.text()))
-        self.ui.macListContextMenu.addAction(self.ui.macAddressListWidget.copyAction)
+    # check if widget object is QListWidget
+    if isinstance(widgetObject, QListWidget):
+        # get current item that is selected
+        item = widgetObject.itemAt(position)
+        # check if item is valid, if so add actions
+        if item:
+            selectedText = item.text()
 
-        # create delete action for context menu
-        self.ui.macAddressListWidget.deleteAction = QAction('Delete')
-        self.ui.macAddressListWidget.deleteAction.triggered.connect(lambda: self.DeleteMacAddressButtonClicked(item))
-        self.ui.macListContextMenu.addAction(self.ui.macAddressListWidget.deleteAction)
+            # create copy action for context menu
+            copyAction = QAction('Copy')
+            copyAction.triggered.connect(lambda: CopyToClipboard(selectedText))
+            contextMenu.addAction(copyAction)
 
-        # set stylesheet for context menu and show the context menu
-        self.ui.macListContextMenu.setStyleSheet(currentStyleSheet)
-        self.ui.macListContextMenu.exec(self.ui.macAddressListWidget.viewport().mapToGlobal(position))
+            # add delete action if isDeleted flag is set
+            if isDelete:
+                # create delete action for context menu
+                deleteAction = QAction('Delete')
+                deleteAction.triggered.connect(lambda: self.DeleteMacAddressButtonClicked(item))
+                contextMenu.addAction(deleteAction)
+
+    # check if widget object is QTableWidget
+    elif isinstance(widgetObject, QTableWidget):
+        # get current item at index that is selected
+        index = widgetObject.indexAt(position)
+        # check if index is valid, if so add action
+        if index.isValid():
+            selectedText = widgetObject.item(index.row(), index.column()).text()
+
+            # create copy action for context menu
+            copyAction = QAction('Copy')
+            copyAction.triggered.connect(lambda: CopyToClipboard(selectedText))
+            contextMenu.addAction(copyAction)
+
+    # check if widget object is QTableView
+    elif isinstance(widgetObject, QTableView):
+        # get current item at index that is selected
+        index = widgetObject.indexAt(position)
+        # check if index is valid, if so add action
+        if index.isValid():
+            selectedText = index.data()
+
+            # create copy action for context menu
+            copyAction = QAction('Copy')
+            copyAction.triggered.connect(lambda: CopyToClipboard(selectedText))
+            contextMenu.addAction(copyAction)
+
+    # set stylesheet for context menu and show the context menu
+    if selectedText:
+        contextMenu.setStyleSheet(currentStyleSheet)
+        contextMenu.exec(widgetObject.viewport().mapToGlobal(position))
 
 
 # function that copies the item text to the clipborad
@@ -551,13 +583,32 @@ def CopyToClipboard(text):
     clipboard.setText(text)
 
 
-# function for disabling selecion and editing on history table widget and enable some other features
-def DisableSelectionHistoryTableWidget(self):
-    # disable selection and editing on history table
-    self.ui.historyTableWidget.setSelectionMode(QTableWidget.NoSelection) #disable selection
-    self.ui.historyTableWidget.setEditTriggers(QTableWidget.NoEditTriggers) #disable editing
-    self.ui.historyTableWidget.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch) #distribute column widths equally
-    self.ui.historyTableWidget.setTextElideMode(Qt.ElideMiddle) #set elide in middle
+# function for enabling context menu for mac address list widget
+def EnableContextMenuMacAddressListWidget(self):
+    # add a context menu to the mac address list widget
+    self.ui.macAddressListWidget.setContextMenuPolicy(Qt.CustomContextMenu)
+    self.ui.macAddressListWidget.customContextMenuRequested.connect(lambda position : ShowContextMenu(self, self.ui.macAddressListWidget, position, isDelete=True))
+
+
+# function for enabling context menu for ip addresses list widget
+def EnableContextMenuIpAddressesListWidget(self):
+    # add a context menu to the ip addresses list widget
+    self.ui.ipAddressesListWidget.setContextMenuPolicy(Qt.CustomContextMenu)
+    self.ui.ipAddressesListWidget.customContextMenuRequested.connect(lambda position : ShowContextMenu(self, self.ui.ipAddressesListWidget, position))
+
+
+# function for enabling context menu for history table widget and disable editing
+def EnableContextMenuHistoryTableWidget(self):
+   # add a context menu to the history table widget and disbale editing
+    self.ui.historyTableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) #stretch columns
+    self.ui.historyTableWidget.verticalHeader().setSectionResizeMode(QHeaderView.Fixed) #fix row heights
+    self.ui.historyTableWidget.setSelectionMode(QTableWidget.SingleSelection) #set single selection for copy
+    self.ui.historyTableWidget.setEditTriggers(QTableWidget.NoEditTriggers) #set not editable
+    self.ui.historyTableWidget.setSortingEnabled(False) #no sorting, comes sorted from database
+    self.ui.historyTableWidget.setFocusPolicy(Qt.NoFocus) #set no focus
+    self.ui.historyTableWidget.setTextElideMode(Qt.ElideMiddle) #set elide text in the middle
+    self.ui.historyTableWidget.setContextMenuPolicy(Qt.CustomContextMenu) #set custom context menu
+    self.ui.historyTableWidget.customContextMenuRequested.connect(lambda position: ShowContextMenu(self, self.ui.historyTableWidget, position))
 
 
 # function for setting the text of an error message like login/register/change email/ etc.
@@ -1932,23 +1983,25 @@ def GetFilteredAlerts(self):
 
 # function for initializing the table view in the report page when the application loads up
 def InitReportTableView(self):
-    # initialize the Table View and custom table filter
+    # initialize the report preview table model and custom proxy model for filtering 
     self.ui.reportPreviewTableModel = CustomTableModel(self.userData.get('alertList'))
     self.ui.proxyReportPreviewTableModel = CustomFilterProxyModel()
     self.ui.proxyReportPreviewTableModel.setSourceModel(self.ui.reportPreviewTableModel)
 
-    # change some of the table attributes to make it look how we want it
+    # set the table attributes for our preffered view in gui
     self.ui.reportPreviewTableView.setModel(self.ui.proxyReportPreviewTableModel)
     self.ui.reportPreviewTableView.setColumnHidden(self.ui.reportPreviewTableModel.columnCount() - 1, True) #hide osType column
-    self.ui.reportPreviewTableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) #distribute column widths equally
+    self.ui.reportPreviewTableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) #stretch columns
     self.ui.reportPreviewTableView.verticalHeader().setDefaultSectionSize(30) #set max row height to 30px
     self.ui.reportPreviewTableView.verticalHeader().setSectionResizeMode(QHeaderView.Fixed) #fix row heights
     self.ui.reportPreviewTableView.verticalHeader().setStretchLastSection(False) #don't stretch last row
-    self.ui.reportPreviewTableView.setTextElideMode(Qt.ElideMiddle)
-    self.ui.reportPreviewTableView.setSelectionMode(QTableWidget.NoSelection) #disable selection
-    self.ui.reportPreviewTableView.setFocusPolicy(Qt.NoFocus)
-    self.ui.reportPreviewTableView.setEditTriggers(QTableWidget.NoEditTriggers)
-    self.ui.reportPreviewTableView.setSortingEnabled(False)
+    self.ui.reportPreviewTableView.setSelectionMode(QTableWidget.SingleSelection) #set single selection for copy
+    self.ui.reportPreviewTableView.setEditTriggers(QTableWidget.NoEditTriggers) #set not editable
+    self.ui.reportPreviewTableView.setSortingEnabled(False) #no sorting, comes sorted from database
+    self.ui.reportPreviewTableView.setFocusPolicy(Qt.NoFocus) #set no focus
+    self.ui.reportPreviewTableView.setTextElideMode(Qt.ElideMiddle) #set elide text in the middle
+    self.ui.reportPreviewTableView.setContextMenuPolicy(Qt.CustomContextMenu) #set custom context menu
+    self.ui.reportPreviewTableView.customContextMenuRequested.connect(lambda position: ShowContextMenu(self, self.ui.reportPreviewTableView, position))
 
 #------------------------------------------TABLE-VIEW-FILTER-END---------------------------------------------#
 
@@ -2082,8 +2135,10 @@ def InitUserInterface(self):
     # initilize report preview table view and initialize selected attacks and time filter
     InitReportTableView(self)
 
-    # disable selection on history table
-    DisableSelectionHistoryTableWidget(self)
+    # enable context menu on mac address and ip addresses list widgets and on history table widget
+    EnableContextMenuMacAddressListWidget(self)
+    EnableContextMenuIpAddressesListWidget(self)
+    EnableContextMenuHistoryTableWidget(self)
 
     # hide side bar labels and icons and toggle user interface
     HideSideBarLabels(self)
@@ -2092,10 +2147,6 @@ def InitUserInterface(self):
 
     # apply shadow to the left side bar
     ApplyShadowSidebar(self)
-
-    # add a context menu to items that are in the mac address list widget on Settings Page
-    self.ui.macAddressListWidget.setContextMenuPolicy(Qt.CustomContextMenu)
-    self.ui.macAddressListWidget.customContextMenuRequested.connect(lambda position : ShowContextMenu(self, position))
 
     # set the toggle password visability icon in the login and register
     icon = QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'EyeOpen.png'))

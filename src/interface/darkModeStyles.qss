@@ -112,13 +112,23 @@ QListWidget {
    padding: 4px;
 }
 
+QListWidget::item {
+    color: black;
+}
+
+QListWidget::item:selected {
+    background: transparent;
+    color: black;
+    border: none;
+}
+
+QListWidget::focus {
+    outline: none;
+}
+
 QListWidget::corner {
     background-color: #f3f3f3;
     border-top-left-radius: 8px;
-}
-
-QListWidget::item {
-    color: black;
 }
 
 /* Table Widget */
@@ -138,6 +148,7 @@ QTableWidget::item {
 
 QTableWidget::item:selected {
     background: transparent;
+    color: black;
     border: none;
 }
 
@@ -157,6 +168,20 @@ QTableView {
     background-color: transparent;
     color: black;
     gridline-color: black;
+}
+
+QTableView::item {
+    border: none;
+}
+
+QTableView::item:selected {
+    background: transparent;
+    color: black;
+    border: none;
+}
+
+QTableView::focus {
+    outline: none;
 }
 
 QTableView::corner {
@@ -1262,20 +1287,29 @@ QCheckBox {
    padding: 4px;
 }
 
+#ipAddressesListWidget::item {
+    color: black;
+}
+
+#ipAddressesListWidget::item:selected {
+    background: transparent;
+    color: black;
+    border: none;
+}
+
 #ipAddressesListWidget::item:hover {
     background: transparent;
     outline: none;
     border: none;
 }
 
+#ipAddressesListWidget::focus {
+    outline: none;
+}
+
 #ipAddressesListWidget::corner {
     background-color: rgba(198, 198, 198, 0.6);
     border-top-left-radius: 8px;
-}
-
-#ipAddressesListWidget::item { 
-    background: transparent;
-    color: black; 
 }
 
 /*-----------------------------Information-Window-End------------------------------*/
@@ -1480,6 +1514,10 @@ QCheckBox {
    padding: 5px;
 }
 
+#macAddressListWidget::item {
+    color: black;
+}
+
 #macAddressListWidget::item:hover {
     background-color: rgba(0, 0, 0, 0.05);
     border-radius: 10px;
@@ -1491,6 +1529,10 @@ QCheckBox {
     color: black;
     outline: none;
     border: none;
+}
+
+#macAddressListWidget::focus {
+    outline: none;
 }
 
 #macAddressListWidget::corner {

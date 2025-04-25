@@ -575,7 +575,7 @@ QToolTip {
                 <string/>
                </property>
                <property name="pixmap">
-                <pixmap>Icons/BulletedMenuLightRotated.png</pixmap>
+                <pixmap>Icons/BulletedMenuRotatedLight.png</pixmap>
                </property>
                <property name="alignment">
                 <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -2119,6 +2119,7 @@ QToolTip {
 
 #historyTableWidget::item:selected {
     background: transparent;
+     color: black;
     border: none;
 }
 
@@ -4109,6 +4110,20 @@ QCheckBox::indicator:hover {
     gridline-color: black;
 }
 
+#reportPreviewTableView::item {
+    border: none;
+}
+
+#reportPreviewTableView::item:selected {
+    background: transparent;
+    color: black;
+    border: none;
+}
+
+#reportPreviewTableView::focus {
+    outline: none;
+}
+
 #reportPreviewTableView::corner {
     background-color: #f3f3f3;
     border-top-left-radius: 8px;
@@ -5990,19 +6005,29 @@ QCheckBox::indicator:hover {
     padding: 4px;
 }
 
+#ipAddressesListWidget::item {
+    color: black;
+}
+
+#ipAddressesListWidget::item:selected {
+    background: transparent;
+    color: black;
+    border: none;
+}
+
 #ipAddressesListWidget::item:hover {
     background: transparent;
     outline: none;
     border: none;
 }
 
+#ipAddressesListWidget::focus {
+    outline: none;
+}
+
 #ipAddressesListWidget::corner {
     background-color: rgba(198, 198, 198, 0.6);
     border-top-left-radius: 8px;
-}
-
-#ipAddressesListWidget::item {
-    color: black;
 }
 
 #ipAddressesListWidget QScrollBar:vertical, #ipAddressesListWidget QScrollBar:horizontal {
@@ -7593,6 +7618,10 @@ color: #f3f3f3
    padding: 5px;
 }
 
+#macAddressListWidget::item {
+    color: black;
+}
+
 #macAddressListWidget::item:hover {
     background-color: rgba(0, 0, 0, 0.05);
     border-radius: 10px;
@@ -7604,6 +7633,10 @@ color: #f3f3f3
     color: black;
     outline: none;
     border: none;
+}
+
+#macAddressListWidget::focus {
+    outline: none;
 }
 
 #macAddressListWidget::corner {

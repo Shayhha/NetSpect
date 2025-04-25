@@ -399,78 +399,72 @@ def ToggleStartStopState(self, state):
 
 # function for toggling between light and dark mode by the user (also used when logging in and out of an account)
 def ToggleColorMode(self):
-    # clear css from main element
-    self.setStyleSheet('')
+    try:
+        # represents our color mode dictionary with predefiend parameters for changing color mode styles, initialized as dark mode
+        colorMode = {'lightMode': 0, 'fileName': 'darkModeStyles.qss', 'iconColor': 'Light', 'labelColor': '#f3f3f3'} 
 
-     # clear existing css from each element in the ui file
-    for child in self.findChildren(QWidget):
-        child.setStyleSheet('')
+        # check if color mode combobox is set to light mode, if so we change color mode dictionary to light mode dictionary
+        if self.ui.colorModeComboBox.currentText() == 'Light Mode': 
+            colorMode = {'lightMode': 1, 'fileName': 'lightModeStyles.qss', 'iconColor': 'Dark', 'labelColor': '#151519'}
 
-    # apply default dark mode or light mode theme to the application based on users selection
-    if self.ui.colorModeComboBox.currentText() == 'Dark Mode':
-        self.userData['lightMode'] = 0
-        self.ui.accountIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'AccountLight.png')))
-        self.ui.settingsIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'SettingsLight.png')))
-        self.ui.logoutIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'LogoutLight.png')))
-        self.ui.menuIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'BulletedMenuLight.png')))
-        self.ui.closeMenuIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'BulletedMenuLightRotated.png')))
-        self.ui.homePageIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'WorkStationLight.png')))
-        self.ui.analyticsIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'AnalyticsLight.png')))
-        self.ui.reportIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'DocumentLight.png')))
-        self.ui.infoIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'InfoLight.png')))
-        self.ui.githubInfoLabel.setText('''
-            <html>
-                <head/>
-                <body>
-                    <p>
-                        <a href='https://github.com/Shayhha/NetSpect'>
-                            <span style="text-decoration: underline; color: #f3f3f3;">Visit NetSpect Page</span>
-                        </a>
-                    </p>
-                </body>
-            </html>
-        ''')
+        # check that our desired styles qss file exists
+        if Path(currentDir.parent / 'interface' / colorMode.get('fileName')).exists():
+            # clear css from main element
+            self.setStyleSheet('')
 
-        # load dark mode styles from file
-        with open(currentDir.parent / 'interface' / 'darkModeStyles.qss', 'r') as stylesFile:
-            self.setStyleSheet(stylesFile.read())
+            # clear existing css from each element in the ui file
+            for child in self.findChildren(QWidget):
+                child.setStyleSheet('')
 
-    else:
-        self.userData['lightMode'] = 1
-        self.ui.accountIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'AccountDark.png')))
-        self.ui.settingsIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'SettingsDark.png')))
-        self.ui.logoutIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'LogoutDark.png')))
-        self.ui.menuIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'BulletedMenuDark.png')))
-        self.ui.closeMenuIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'BulletedMenuDarkRotated.png')))
-        self.ui.homePageIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'WorkStationDark.png')))
-        self.ui.analyticsIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'AnalyticsDark.png')))
-        self.ui.reportIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'DocumentDark.png')))
-        self.ui.infoIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / 'InfoDark.png')))
-        self.ui.githubInfoLabel.setText('''
-            <html>
-                <head/>
-                <body>
-                    <p>
-                        <a href='https://github.com/Shayhha/NetSpect'>
-                            <span style="text-decoration: underline; color: #151519;">Visit NetSpect Page</span>
-                        </a>
-                    </p>
-                </body>
-            </html>
-        ''')
+            # apply dark mode or light mode theme to the application based on users selection
+            self.userData['lightMode'] = colorMode.get('lightMode')
+            self.ui.accountIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / f'Account{colorMode.get('iconColor')}.png')))
+            self.ui.settingsIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / f'Settings{colorMode.get('iconColor')}.png')))
+            self.ui.logoutIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / f'Logout{colorMode.get('iconColor')}.png')))
+            self.ui.menuIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / f'BulletedMenu{colorMode.get('iconColor')}.png')))
+            self.ui.closeMenuIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / f'BulletedMenuRotated{colorMode.get('iconColor')}.png')))
+            self.ui.homePageIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / f'WorkStation{colorMode.get('iconColor')}.png')))
+            self.ui.analyticsIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / f'Analytics{colorMode.get('iconColor')}.png')))
+            self.ui.reportIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / f'Document{colorMode.get('iconColor')}.png')))
+            self.ui.infoIcon.setPixmap(QPixmap(str(currentDir.parent / 'interface' / 'Icons' / f'Info{colorMode.get('iconColor')}.png')))
+            self.ui.githubInfoLabel.setText(f'''
+                <html>
+                    <head/>
+                    <body>
+                        <p>
+                            <a href='https://github.com/Shayhha/NetSpect'>
+                                <span style="text-decoration: underline; color: {colorMode.get('labelColor')};">Visit NetSpect Page</span>
+                            </a>
+                        </p>
+                    </body>
+                </html>
+            ''')
 
-        # load light mode styles from file
-        with open(currentDir.parent / 'interface' / 'lightModeStyles.qss', 'r') as stylesFile:
-            self.setStyleSheet(stylesFile.read())
+            # load desired styles qss file and apply stylesheet for each of our elements in ui
+            with open(currentDir.parent / 'interface' / colorMode.get('fileName'), 'r') as stylesFile:
+                self.setStyleSheet(stylesFile.read())
 
-    # update color mode for each of our charts
-    UpdatePieChartColorMode(self)
-    UpdateHistogramChartColorMode(self)
-    UpdateBarChartColorMode(self)
+            # update color mode for each of our charts
+            UpdatePieChartColorMode(self)
+            UpdateHistogramChartColorMode(self)
+            UpdateBarChartColorMode(self)
 
-    # update the font sizes after updating the value
-    UpdateFontSizeInLabel(self, self.ui.totalNumOfAttacksValueLabel)
-    UpdateFontSizeInLabel(self, self.ui.attacksPerMonthValueLabel)
+            # update the font sizes after updating the value
+            UpdateFontSizeInLabel(self, self.ui.totalNumOfAttacksValueLabel)
+            UpdateFontSizeInLabel(self, self.ui.attacksPerMonthValueLabel)
+
+        # else desired styles qss file does not exists, we show messagebox
+        else:
+            self.ui.colorModeComboBox.blockSignals(True) #block signals while changing index in color mode combobox
+            self.ui.colorModeComboBox.setCurrentIndex(0 if colorMode.get('lightMode') else 1) #reset the color combobox
+            self.ui.colorModeComboBox.blockSignals(False) #enable signals again after changing index in color mode combobox
+            ShowMessageBox('Error Occurred', f'Interface {colorMode.get('fileName')} file was not found. Please ensure it exist in the interface folder.', 'Critical')
+
+    except Exception as e:
+        self.ui.colorModeComboBox.blockSignals(True) #block signals while changing index in color mode combobox
+        self.ui.colorModeComboBox.setCurrentIndex(0 if colorMode.get('lightMode') else 1) #reset the color combobox
+        self.ui.colorModeComboBox.blockSignals(False) #enable signals again after changing index in color mode combobox
+        ShowMessageBox('Error Changing Color Mode', 'Error occurred while changing color mode, try again later.', 'Critical')
 
 #-------------------------------------------CLICK-FUNCTIONS-END----------------------------------------------#
 
@@ -1052,13 +1046,13 @@ class AnalyticsHistogramChart():
         self.ui.histogramChart.setMargins(QMargins(0, 0, 0, 0))
         self.ui.histogramChart.setBackgroundRoundness(0)
         self.ui.histogramChart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
-        self.ui.histogramChart.setTitle(f'No data to display...')
+        self.ui.histogramChart.setTitle('No Data To Display...')
         self.ui.histogramChart.setTitleFont(QFont('Cairo', 18, QFont.Bold, False))
         self.ui.histogramChart.setTitleBrush(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
         self.ui.histogramChart.setAnimationOptions(QChart.SeriesAnimations)
 
         # create a separate QLabel for the title (will be visible when there is no data to display)
-        self.ui.histogramChartTitleLabel = QLabel('No data to display...')
+        self.ui.histogramChartTitleLabel = QLabel('No Data To Display...')
         self.ui.histogramChartTitleLabel.setAlignment(Qt.AlignCenter)
         self.ui.histogramChartTitleLabel.setFont(QFont('Cairo', 18, QFont.Bold))
         self.ui.histogramChartTitleLabel.setObjectName('histogramChartTitleLabel')
@@ -1346,7 +1340,7 @@ def ResetHistogramChartToDefault(self, hideChart=True):
 
         # hide the chart and show the title
         if hideChart:
-            self.ui.histogramChartTitleLabel.setText('No data to display...')
+            self.ui.histogramChartTitleLabel.setText('No Data To Display...')
             self.ui.histogramChartTitleLabel.show()
             self.ui.histogramChartView.hide()
 
@@ -1381,13 +1375,13 @@ class AnalyticsBarChart():
         self.ui.barChart.setMargins(QMargins(0, 0, 0, 0))
         self.ui.barChart.setBackgroundRoundness(0)
         self.ui.barChart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
-        self.ui.barChart.setTitle(f'No data to display...')
+        self.ui.barChart.setTitle('No Data To Display...')
         self.ui.barChart.setTitleFont(QFont('Cairo', 18, QFont.Bold, False))
         self.ui.barChart.setTitleBrush(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
         self.ui.barChart.setAnimationOptions(QChart.SeriesAnimations)
 
         # create a separate QLabel for the title (will be visible when there is no data to display)
-        self.ui.barChartTitleLabel = QLabel('No data to display...')
+        self.ui.barChartTitleLabel = QLabel('No Data To Display...')
         self.ui.barChartTitleLabel.setAlignment(Qt.AlignCenter)
         self.ui.barChartTitleLabel.setFont(QFont('Cairo', 18, QFont.Bold))
         self.ui.barChartTitleLabel.setObjectName('barChartTitleLabel')
@@ -1656,7 +1650,7 @@ def ResetBarChartToDefault(self, hideChart=True):
 
         # hide the chart and show the title
         if hideChart:
-            self.ui.barChartTitleLabel.setText('No data to display...')
+            self.ui.barChartTitleLabel.setText('No Data To Display...')
             self.ui.barChartTitleLabel.show()
             self.ui.barChartView.hide()
 

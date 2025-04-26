@@ -158,16 +158,16 @@ Make sure to install **[Npcap](https://nmap.org/npcap/)** before running the app
 The following screenshots showcase the application's interface, functionality, and user experience across various scenarios
 
 ### Dark Mode:
-![Home Page](src/interface/screenshots/home_page.png)
+![Login](src/interface/Screenshots/login.png)
 
-![Report Page](src/interface/screenshots/report_page.png)
+![Home Page](src/interface/Screenshots/homepage.png)
 
-![Login](src/interface/screenshots/login.png)
+![Report Page](src/interface/Screenshots/report.png)
 
 ### Light Mode:
-![Settings Page](src/interface/screenshots/settings_page.png)
+![Analytics Page](src/interface/Screenshots/analytics.png)
 
-![Reset Password](src/interface/screenshots/reset_password.png)
+![Settings Page](src/interface/Screenshots/settings.png)
 
 <br>  
 

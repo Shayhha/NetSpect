@@ -142,7 +142,6 @@ QTableWidget {
 }
 
 QTableWidget::item {
-    padding: 5px;
     border: none;
 }
 

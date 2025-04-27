@@ -2113,7 +2113,6 @@ QToolTip {
 }
 
 #historyTableWidget::item {
-    padding: 5px;
     border: none;
 }
 

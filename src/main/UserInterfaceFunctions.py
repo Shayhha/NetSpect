@@ -7,9 +7,9 @@ from pathlib import Path
 
 currentDir = Path(__file__).resolve().parent #represents the path to the current working direcotry where this file is located
 
-#-------------------------------------------ANIMATION-FUNCTIONS----------------------------------------------#
+#-------------------------------------------ANIMATION-methodS----------------------------------------------#
 
-# function for openning the left sideframe with an animation
+# method for openning the left sideframe with an animation
 def OpenSideFrame(self):
     animation = QPropertyAnimation(self.ui.sideFrame, b'minimumWidth')
     animation.setDuration(500)
@@ -32,7 +32,7 @@ def OpenSideFrame(self):
     self.ui.sideFrame.currentAnimation = animation
 
 
-# function for closing the left sideframe with an animation
+# method for closing the left sideframe with an animation
 def CloseSideFrame(self):
     # create animation for minimumWidth
     animation = QPropertyAnimation(self.ui.sideFrame, b'minimumWidth')
@@ -54,7 +54,7 @@ def CloseSideFrame(self):
     self.ui.sideFrame.currentAnimation = animation
 
 
-# function for opening the login/register side frame after clicking the account icon
+# method for opening the login/register side frame after clicking the account icon
 def AccountIconClicked(self):
     # create animation object for the frame
     animation = QPropertyAnimation(self.ui.loginRegisterVerticalFrame, b'maximumWidth')
@@ -86,9 +86,9 @@ def AccountIconClicked(self):
     self.ui.loginRegisterVerticalFrame.currentAnimation = animation
 
 
-# function for changing between the login and register sideframes
+# method for changing between the login and register sideframes
 def SwitchBetweenLoginAndRegister(self, showRegister=True):
-    # first animation: Close the frame
+    # first animation for closing the frame
     anim1 = QPropertyAnimation(self.ui.loginRegisterVerticalFrame, b'maximumWidth')
     anim1.setDuration(200)
     anim1.setEasingCurve(QEasingCurve.InOutQuad)
@@ -104,9 +104,9 @@ def SwitchBetweenLoginAndRegister(self, showRegister=True):
     anim1.finished.connect(lambda: ReopenRegistryFrame(self, showRegister)) 
 
 
-# function for changing between the login and reset password sideframes
+# method for changing between the login and reset password sideframes
 def SwitchBetweenLoginAndForgotPassword(self, showResetPassword):
-    # first animation: Close the frame
+    # first animation for closing the frame
     anim1 = QPropertyAnimation(self.ui.loginRegisterVerticalFrame, b'maximumWidth')
     anim1.setDuration(200)
     anim1.setEasingCurve(QEasingCurve.InOutQuad)
@@ -122,7 +122,7 @@ def SwitchBetweenLoginAndForgotPassword(self, showResetPassword):
     anim1.finished.connect(lambda: ReopenResetPasswordFrame(self, showResetPassword)) 
 
 
-# this is the second animation and visibility switch for the login register side frame
+# method for reopening registery fram with animation
 def ReopenRegistryFrame(self, showRegister):
     # switch visibility
     if showRegister:
@@ -136,7 +136,7 @@ def ReopenRegistryFrame(self, showRegister):
         self.ui.loginUsernameLineEdit.setFocus()
         self.ui.registerEmailLineEdit.clearFocus()
     
-    # second animation: Open the frame
+    # second animation for opening the frame
     anim2 = QPropertyAnimation(self.ui.loginRegisterVerticalFrame, b'maximumWidth')
     anim2.setDuration(375)
     anim2.setEasingCurve(QEasingCurve.InOutQuad)
@@ -146,7 +146,7 @@ def ReopenRegistryFrame(self, showRegister):
     self.ui.loginRegisterVerticalFrame.currentAnimation = anim2
 
 
-# this is the second animation and visibility switch for the login register side frame
+# method for reopening reset password fram with animation
 def ReopenResetPasswordFrame(self, showResetPassword):
     # switch visibility
     if showResetPassword:
@@ -164,7 +164,7 @@ def ReopenResetPasswordFrame(self, showResetPassword):
     # show the correct line edit and push button
     ToggleBetweenEmailAndCodeResetPassword(self, showResetPassword)
 
-    # second animation: Open the frame
+    # second animation for opening the frame
     anim2 = QPropertyAnimation(self.ui.loginRegisterVerticalFrame, b'maximumWidth')
     anim2.setDuration(375)
     anim2.setEasingCurve(QEasingCurve.InOutQuad)
@@ -177,7 +177,7 @@ def ReopenResetPasswordFrame(self, showResetPassword):
 
 #---------------------------------------------CLICK-FUNCTIONS------------------------------------------------#
 
-# function for hiding some labels
+# method for hiding some labels
 def HideSideBarLabels(self):
     self.ui.homePageLabel.hide()
     self.ui.analyticsLabel.hide()
@@ -185,13 +185,13 @@ def HideSideBarLabels(self):
     self.ui.infoLabel.hide()
 
 
-# function for showing some icons
+# method for showing some icons
 def ShowSideBarMenuIcon(self):
     self.ui.menuIcon.show()
     self.ui.closeMenuIcon.hide()
 
 
-# function for changing between enter email and enter code screens in reset password
+# method for changing between enter email and enter code screens in reset password
 def ToggleBetweenEmailAndCodeResetPassword(self, isEmail=True):
     if isEmail:
         # show email section
@@ -215,8 +215,24 @@ def ToggleBetweenEmailAndCodeResetPassword(self, isEmail=True):
         self.ui.verifyCodeButtonFrame.show()
 
 
-# function for showing and hiding user interface
-def ToggleUserInterface(self, state):
+# method for showing and hiding the change email, username, password and operation mode from settings page 
+def ToggleSettingsInputFields(self, state=False):
+    # if true we need to show email, username, password and operation mode
+    if state:
+        self.ui.settingsChangeVerticalFrame.show()
+        self.ui.opperationModeHorizontalFrame.show()
+        self.ui.deleteAccoutPushButton.show()
+        self.ui.settingsInterfaceMacButtonsVerticalFrame.setContentsMargins(0, 10, 0, 0)
+    # else we need to hide email, username, password and operation mode
+    else:
+        self.ui.settingsChangeVerticalFrame.hide()
+        self.ui.opperationModeHorizontalFrame.hide()
+        self.ui.deleteAccoutPushButton.hide()
+        self.ui.settingsInterfaceMacButtonsVerticalFrame.setContentsMargins(40, 0, 0, 0)
+
+
+# method for showing and hiding user interface
+def ToggleUserInterface(self, state=False):
     # if true we need to show user logged in labels
     if state:
         self.ui.accountIcon.hide()
@@ -224,11 +240,11 @@ def ToggleUserInterface(self, state):
         self.ui.analyticsYearComboBox.setEnabled(True)
         self.ui.welcomeLabel.show()
         self.ui.logoutIcon.show()
-        ShowSettingsInputFields(self)
+        ToggleSettingsInputFields(self, True)
 
     # else we hide user labels
     else:
-        HideSettingsInputFields(self)
+        ToggleSettingsInputFields(self, False)
         self.ui.logoutIcon.hide()
         self.ui.welcomeLabel.hide()
         self.ui.analyticsYearComboBox.setEnabled(False)
@@ -268,32 +284,39 @@ def ToggleUserInterface(self, state):
     ToggleColorMode(self) #reset the styles to match the selected index in the color mode combobox
     ToggleOperationMode(self) #reset the styles to match the selected index in the operation mode combobox
 
-    #clear settings, login and register line edits and reset number of detections
+    # clear settings, login and register line edits and error messages and reset number of detections
     self.ui.numberOfDetectionsCounter.setText('0')
-    self.ui.emailLineEdit.clear()
-    self.ui.usernameLineEdit.clear()
-    self.ui.oldPasswordLineEdit.clear()
-    self.ui.newPasswordLineEdit.clear()
-    self.ui.confirmPasswordLineEdit.clear()
-    self.ui.macAddressLineEdit.clear()
     self.ui.loginUsernameLineEdit.clear()
     self.ui.loginPasswordLineEdit.clear()
     self.ui.registerEmailLineEdit.clear()
     self.ui.registerUsernameLineEdit.clear()
     self.ui.registerPasswordLineEdit.clear()
-    self.ui.saveEmailErrorMessageLabel.clear()
-    self.ui.saveUsernameErrorMessageLabel.clear()
-    self.ui.savePasswordErrorMessageLabel.clear()
-    self.ui.macAddressBlacklistErrorMessageLabel.clear()
-    self.ui.registerEmailLineEdit.setStyleSheet(GetDefaultStyleSheetRegisterLineEdits(self, 'registerEmailLineEdit'))
-    self.ui.registerUsernameLineEdit.setStyleSheet(GetDefaultStyleSheetRegisterLineEdits(self, 'registerUsernameLineEdit'))
-    self.ui.registerPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetRegisterLineEdits(self, 'registerPasswordLineEdit'))
-    self.ui.oldPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetSettingsLineEdits(self, 'oldPasswordLineEdit'))
-    self.ui.newPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetSettingsLineEdits(self, 'newPasswordLineEdit'))
-    self.ui.confirmPasswordLineEdit.setStyleSheet(GetDefaultStyleSheetSettingsLineEdits(self, 'confirmPasswordLineEdit'))
+    self.ui.registerConfirmPasswordLineEdit.clear()
+    self.ui.emailLineEdit.clear()
+    self.ui.usernameLineEdit.clear()
+    self.ui.currentPasswordLineEdit.clear()
+    self.ui.newPasswordLineEdit.clear()
+    self.ui.confirmPasswordLineEdit.clear()
+    self.ui.macAddressLineEdit.clear()
+    self.ui.registerEmailLineEdit.setStyleSheet(GetDefaultLineEditStyleSheet(self, 'registerEmailLineEdit'))
+    self.ui.registerUsernameLineEdit.setStyleSheet(GetDefaultLineEditStyleSheet(self, 'registerUsernameLineEdit'))
+    self.ui.registerPasswordLineEdit.setStyleSheet(GetDefaultLineEditStyleSheet(self, 'registerPasswordLineEdit'))
+    self.ui.registerConfirmPasswordLineEdit.setStyleSheet(GetDefaultLineEditStyleSheet(self, 'registerConfirmPasswordLineEdit'))
+    self.ui.emailLineEdit.setStyleSheet(GetDefaultLineEditStyleSheet(self, 'emailLineEdit'))
+    self.ui.usernameLineEdit.setStyleSheet(GetDefaultLineEditStyleSheet(self, 'usernameLineEdit'))
+    self.ui.currentPasswordLineEdit.setStyleSheet(GetDefaultLineEditStyleSheet(self, 'currentPasswordLineEdit'))
+    self.ui.newPasswordLineEdit.setStyleSheet(GetDefaultLineEditStyleSheet(self, 'newPasswordLineEdit'))
+    self.ui.confirmPasswordLineEdit.setStyleSheet(GetDefaultLineEditStyleSheet(self, 'confirmPasswordLineEdit'))
+    self.ui.macAddressLineEdit.setStyleSheet(GetDefaultLineEditStyleSheet(self, 'macAddressLineEdit'))
+    ClearErrorMessageText(self.ui.loginErrorMessageLabel)
+    ClearErrorMessageText(self.ui.registerErrorMessageLabel)
+    ClearErrorMessageText(self.ui.saveEmailErrorMessageLabel)
+    ClearErrorMessageText(self.ui.saveUsernameErrorMessageLabel)
+    ClearErrorMessageText(self.ui.savePasswordErrorMessageLabel)
+    ClearErrorMessageText(self.ui.macAddressBlacklistErrorMessageLabel)
 
 
-# function for showing and hiding report interface
+# method for showing and hiding report interface
 def ToggleReportInterface(self, state):
     # if true we need to show report interface
     if state:
@@ -309,7 +332,7 @@ def ToggleReportInterface(self, state):
         self.ui.downloadReportPushButton.show()
 
 
-# function for toggling between detection and collection interfaces
+# method for toggling between detection and collection interfaces
 def ToggleOperationMode(self):
     # means we need to change to detection interface
     if self.ui.operationModeComboBox.currentIndex() == 0:
@@ -323,29 +346,53 @@ def ToggleOperationMode(self):
         self.ui.trayIcon.toggleDetectionAction.setText('Start Collection')
 
 
-# function for chaning the current page index on the stack widget
+# method for chaning the current page index on the stack widget
 def ChangePageIndex(self, index):
     # clear focus from all line edits
     self.ui.emailLineEdit.clearFocus()
     self.ui.usernameLineEdit.clearFocus()
-    self.ui.oldPasswordLineEdit.clearFocus()
+    self.ui.currentPasswordLineEdit.clearFocus()
     self.ui.newPasswordLineEdit.clearFocus()
     self.ui.confirmPasswordLineEdit.clearFocus()
     self.ui.macAddressLineEdit.clearFocus()
     self.ui.stackedWidget.setCurrentIndex(index)
 
 
-# function for toggling the password visibility using an icon
-def TogglePasswordVisibility(lineEditWidget, eyeIcon):
+# method for initializing eye buttons for password line edits in gui
+def InitPasswordLineEditEyeButtons(self):
+    # get password eye icon
+    eyeIcon = QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'EyeOpen.png'))
+
+    # set the toggle password visability eye icon in login and register
+    self.ui.loginPasswordEyeButton = self.ui.loginPasswordLineEdit.addAction(eyeIcon, QLineEdit.TrailingPosition)
+    self.ui.loginPasswordEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self.ui.loginPasswordLineEdit, self.ui.loginPasswordEyeButton))
+    self.ui.registerPasswordEyeButton = self.ui.registerPasswordLineEdit.addAction(eyeIcon, QLineEdit.TrailingPosition)
+    self.ui.registerPasswordEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self.ui.registerPasswordLineEdit, self.ui.registerPasswordEyeButton))
+    self.ui.registerConfirmPasswordEyeButton = self.ui.registerConfirmPasswordLineEdit.addAction(eyeIcon, QLineEdit.TrailingPosition)
+    self.ui.registerConfirmPasswordEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self.ui.registerConfirmPasswordLineEdit, self.ui.registerConfirmPasswordEyeButton))
+
+    # set the toggle password visability eye icon in the settings page for change password section
+    self.ui.currentPasswordEyeButton = self.ui.currentPasswordLineEdit.addAction(eyeIcon, QLineEdit.TrailingPosition)
+    self.ui.currentPasswordEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self.ui.currentPasswordLineEdit, self.ui.currentPasswordEyeButton))
+    self.ui.newPasswordEyeButton = self.ui.newPasswordLineEdit.addAction(eyeIcon, QLineEdit.TrailingPosition)
+    self.ui.newPasswordEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self.ui.newPasswordLineEdit, self.ui.newPasswordEyeButton))
+    self.ui.confirmPasswordEyeButton = self.ui.confirmPasswordLineEdit.addAction(eyeIcon, QLineEdit.TrailingPosition)
+    self.ui.confirmPasswordEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self.ui.confirmPasswordLineEdit, self.ui.confirmPasswordEyeButton))
+
+
+# method for toggling the password visibility using the eye button
+def TogglePasswordVisibility(lineEditWidget, eyeButton):
+    # check if line edit in password mode
     if lineEditWidget.echoMode() == QLineEdit.Password:
         lineEditWidget.setEchoMode(QLineEdit.Normal) #show the password
-        eyeIcon.setIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'EyeClosed.png'))) #change to open eye icon
+        eyeButton.setIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'EyeClosed.png'))) #change to closed eye icon
+    # else means line edit in normal mode
     else:
         lineEditWidget.setEchoMode(QLineEdit.Password) #hide the password
-        eyeIcon.setIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'EyeOpen.png'))) #change to closed eye icon
+        eyeButton.setIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'EyeOpen.png'))) #change to open eye icon
 
 
-# function for initializing the analytics combobox with year values
+# method for initializing the analytics combobox with year values
 def InitAnalyticsYearCombobox(self):
     # check that barChartData dictionary is initialized before setting comobox itemss
     if self.userData.get('analyticsChartData', {}).get('barChartData', {}):
@@ -354,7 +401,7 @@ def InitAnalyticsYearCombobox(self):
         self.ui.analyticsYearComboBox.blockSignals(False) #enable signals again after adding the items to year combobox
 
 
-# function for toggling between detection or collection states and setting startStop button stylesheet accordingly
+# method for toggling between detection or collection states and setting startStop button stylesheet accordingly
 def ToggleStartStopState(self, state):
     # get the correct styles based on given state
     currentStyleSheet = f'''
@@ -396,7 +443,7 @@ def ToggleStartStopState(self, state):
     self.ui.startStopPushButton.setStyleSheet(currentStyleSheet)
 
 
-# function for toggling between light and dark mode by the user (also used when logging in and out of an account)
+# method for toggling between light and dark mode by the user (also used when logging in and out of an account)
 def ToggleColorMode(self):
     try:
         # represents our color mode dictionary with predefiend parameters for changing color mode styles, initialized as dark mode
@@ -469,7 +516,7 @@ def ToggleColorMode(self):
 
 #---------------------------------------------OTHER-FUNCTIONS------------------------------------------------#
 
-# function for clearing the reset password line edits end error messages
+# method for clearing the reset password line edits end error messages
 def ClearResetPasswordLineEdits(self):
     self.ui.resetPasswordEmailLineEdit.clear()
     self.ui.resetPasswordCodeLineEdit.clear()
@@ -477,7 +524,7 @@ def ClearResetPasswordLineEdits(self):
     self.ui.resetPasswordCodeErrorMessageLabel.clear()
 
 
-# function for adding a box shadow to the login/register side popup frame
+# method for adding a box shadow to the login/register side popup frame
 def ApplyShadowLoginRegister(self):
     shadow = QGraphicsDropShadowEffect()
     shadow.setBlurRadius(15) #no blur, sharp shadow (like blur: 0 in CSS)
@@ -487,7 +534,7 @@ def ApplyShadowLoginRegister(self):
     self.ui.loginRegisterVerticalFrame.setGraphicsEffect(shadow)
 
 
-# function for adding a box shadow to the left side bar
+# method for adding a box shadow to the left side bar
 def ApplyShadowSidebar(self):
     shadow = QGraphicsDropShadowEffect()
     shadow.setBlurRadius(5) # No blur, sharp shadow (like blur: 0 in CSS)
@@ -497,12 +544,12 @@ def ApplyShadowSidebar(self):
     self.ui.sideFrame.setGraphicsEffect(shadow)
 
 
-# function that shows right-click menu for copying and deleting items for widget objects
+# method that shows right-click menu for copying and deleting items for widget objects
 def ShowContextMenu(self, widgetObject, position, isDelete=False):
     currentStyleSheet = f'''
         #contextMenu {{
             {'background-color: #2d2d2d;' if self.userData.get('lightMode') == 0 else 'background-color: #f3f3f3;'}
-            {'color: #f0f0f0;' if self.userData.get('lightMode') == 0 else 'color: black;'}
+            {'color: #f3f3f3;' if self.userData.get('lightMode') == 0 else 'color: black;'}
             {'border: 1px solid #555;' if self.userData.get('lightMode') == 0 else 'border: 1px solid gray;'}
             padding: 5px;
             border-radius: 6px;
@@ -577,27 +624,27 @@ def ShowContextMenu(self, widgetObject, position, isDelete=False):
         contextMenu.exec(widgetObject.viewport().mapToGlobal(position))
 
 
-# function that copies the item text to the clipborad
+# method that copies the item text to the clipborad
 def CopyToClipboard(text):
     clipboard = QApplication.clipboard()  
     clipboard.setText(text)
 
 
-# function for enabling context menu for mac address list widget
+# method for enabling context menu for mac address list widget
 def EnableContextMenuMacAddressListWidget(self):
     # add a context menu to the mac address list widget
     self.ui.macAddressListWidget.setContextMenuPolicy(Qt.CustomContextMenu)
     self.ui.macAddressListWidget.customContextMenuRequested.connect(lambda position : ShowContextMenu(self, self.ui.macAddressListWidget, position, isDelete=True))
 
 
-# function for enabling context menu for ip addresses list widget
+# method for enabling context menu for ip addresses list widget
 def EnableContextMenuIpAddressesListWidget(self):
     # add a context menu to the ip addresses list widget
     self.ui.ipAddressesListWidget.setContextMenuPolicy(Qt.CustomContextMenu)
     self.ui.ipAddressesListWidget.customContextMenuRequested.connect(lambda position : ShowContextMenu(self, self.ui.ipAddressesListWidget, position))
 
 
-# function for enabling context menu for history table widget and disable editing
+# method for enabling context menu for history table widget and disable editing
 def EnableContextMenuHistoryTableWidget(self):
    # add a context menu to the history table widget and disbale editing
     self.ui.historyTableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) #stretch columns
@@ -611,62 +658,50 @@ def EnableContextMenuHistoryTableWidget(self):
     self.ui.historyTableWidget.customContextMenuRequested.connect(lambda position: ShowContextMenu(self, self.ui.historyTableWidget, position))
 
 
-# function for setting the text of an error message like login/register/change email/ etc.
+# method for setting the text of an error message like login/register/change email/ etc.
 def ChangeErrorMessageText(errorMessageObject, message):
     errorMessageObject.setText('<p style="line-height: 0.7;">' + message + '</p>')
     errorMessageObject.show()
 
 
-# fucntion for clearing error message of error message label
+# method for clearing error message of error message label
 def ClearErrorMessageText(errorMessageObject):
     errorMessageObject.setText('')
     errorMessageObject.hide()
 
 
-# hide the change email, username, password and color mode from settings page 
-def HideSettingsInputFields(self):
-    self.ui.settingsChangeVerticalFrame.hide()
-    self.ui.opperationModeHorizontalFrame.hide()
-    self.ui.deleteAccoutPushButton.hide()
-    self.ui.settingsInterfaceMacButtonsVerticalFrame.setContentsMargins(40, 0, 0, 0) 
-
-
-# show the change email, username, password and color mode from settings page 
-def ShowSettingsInputFields(self):
-    self.ui.settingsChangeVerticalFrame.show()
-    self.ui.opperationModeHorizontalFrame.show()
-    self.ui.deleteAccoutPushButton.show()
-    self.ui.settingsInterfaceMacButtonsVerticalFrame.setContentsMargins(0, 10, 0, 0) #returning the default values
-
-
-# function for returning the default style sheet of the line edits in the settings page
-def GetDefaultStyleSheetSettingsLineEdits(self, lineEditName):
+# method for returning the default style sheet of line edit
+def GetDefaultLineEditStyleSheet(self, lineEditName):
     defaultStylesheet = f''' 
         #{lineEditName} {{
             {'background-color: #f3f3f3;' if self.userData.get('lightMode') == 0 else 'background-color: #ebeff7;'}
             {'border: 2px solid lightgray;' if self.userData.get('lightMode') == 0 else 'border: 2px solid #899fce;'}
             border-radius: 10px;
-            padding: 5px;
+            padding: 0px 5px;
             color: black;
-            margin: 0px 0px 0px 0px; 
         }}
     '''
     return defaultStylesheet
 
 
-# function for returning the default style sheet of the line edits in register
-def GetDefaultStyleSheetRegisterLineEdits(self, lineEditName):
-    defaultStylesheet = f''' 
-        #{lineEditName} {{
-            {f'background-color: #f3f3f3;' if self.userData.get('lightMode') == 0 else f'background-color: {'#fbfcfd' if any(prefix in lineEditName for prefix in ['login', 'register', 'reset']) else '#ebeff7'};'}
-            {'border: 2px solid lightgray;' if self.userData.get('lightMode') == 0 else 'border: 2px solid #899fce;'}
-            border-radius: 10px;
-            padding: 5px;
-            color: black;
-            {'margin: 0px 5px 0px 5px;' if ('Password' in lineEditName) else 'margin: 0px 5px 10px 5px;'}
-        }}
-    '''
-    return defaultStylesheet
+# method for changing the styles of a line edit when it does not match the regex
+def NotifyInvalidLineEdit(self, lineEditWidget, lineEditName, errorMessageLabel=None):
+    # get current stylesheet by object name for the given line edit
+    defaultStylesheet = GetDefaultLineEditStyleSheet(self, lineEditName)
+
+    # set initial styles
+    lineEditWidget.setStyleSheet(defaultStylesheet)
+
+    # clear error message and hide error message label if given
+    if errorMessageLabel:
+        ClearErrorMessageText(errorMessageLabel)
+
+    # check if the input matches the regex, if not update the border style to red (invalid input)
+    if not lineEditWidget.hasAcceptableInput():
+        if self.userData.get('lightMode') == 0:
+            lineEditWidget.setStyleSheet(defaultStylesheet.replace('border: 2px solid lightgray;', 'border: 2px solid #d84f4f;'))
+        else:
+            lineEditWidget.setStyleSheet(defaultStylesheet.replace('border: 2px solid #899fce;', 'border: 2px solid #d84f4f;'))
 
 #-------------------------------------------OTHER-FUNCTIONS-END----------------------------------------------#
 
@@ -808,13 +843,13 @@ class CustomMessageBox(QDialog):
         self.setFixedSize(self.size()) #lock the size to prevent resizing
 
 
-    # method for overriting the original accept function and setting isMessageBox flag
+    # method for overriting the original accept method and setting isMessageBox flag
     def accept(self):
         CustomMessageBox.isMessageBox = False
         super().accept()
 
 
-    # method for overriting the original reject function and setting isMessageBox flag
+    # method for overriting the original reject method and setting isMessageBox flag
     def reject(self):
         CustomMessageBox.isMessageBox = False
         super().reject()
@@ -831,7 +866,7 @@ class CustomMessageBox(QDialog):
         return QApplication.style().standardIcon(QStyle.StandardPixmap.SP_MessageBoxInformation)
 
 
-# function for showing message box window
+# method for showing message box window
 def ShowMessageBox(title, message, iconType='Information', isSelectable=False):
     # iconType options can be Information, Warning, Critical, Question, NoIcon
     if not CustomMessageBox.isMessageBox:
@@ -929,7 +964,7 @@ class AttackPieChart():
             ShowMessageBox('Error In Pie Chart Initialization', 'Error occurred in pie chart initialization, try again later.', 'Critical')
 
 
-# function for updating the pie chart after an attack was detected, expects an attack name like: ARP, DNS, Port Scan, DoS
+# method for updating the pie chart after an attack was detected, expects an attack name like: ARP, DNS, Port Scan, DoS
 def UpdatePieChartAfterAttack(self, attackType):
     try:
         # get slice labels and series for updating pie chart
@@ -971,7 +1006,7 @@ def UpdatePieChartAfterAttack(self, attackType):
         ShowMessageBox('Error Updating Pie Chart', 'Error occurred while updating pie chart, try again later.', 'Critical')
 
 
-# function for updating the text of the pie chart legends and slice labels
+# method for updating the text of the pie chart legends and slice labels
 def UpdatePieChartLegendsAndSlices(self):
     try:
         # creating a new dict with legend names like: sliceName: legendName
@@ -994,7 +1029,7 @@ def UpdatePieChartLegendsAndSlices(self):
         ShowMessageBox('Error Updating Pie Chart', 'Error occurred while updating pie chart, try again later.', 'Critical')
 
 
-# function for updating the pie chart after user login with data from database
+# method for updating the pie chart after user login with data from database
 def UpdatePieChartAfterLogin(self, pieChartData):
     try:
         # check if there's at least one attack in pieChartData dictionary
@@ -1027,7 +1062,7 @@ def UpdatePieChartAfterLogin(self, pieChartData):
         ShowMessageBox('Error Updating Pie Chart', 'Error occurred while updating pie chart, try again later.', 'Critical')
 
 
-# function for updating pie chart color mode based on chosen color mode in ui
+# method for updating pie chart color mode based on chosen color mode in ui
 def UpdatePieChartColorMode(self):
     try:
         # set our desired label color based on ui color mode
@@ -1049,7 +1084,7 @@ def UpdatePieChartColorMode(self):
         ShowMessageBox('Error Updating Pie Chart Color Mode', 'Error occurred while updating pie chart color mode, try again later.', 'Critical')
 
 
-# function for clearing the pie chart and resetting to default empty pie chart
+# method for clearing the pie chart and resetting to default empty pie chart
 def ResetPieChartToDefault(self):
     try:
         # clear the pie chart data and set the default title
@@ -1140,7 +1175,7 @@ class AnalyticsHistogramChart():
             QToolTip.showText(QCursor.pos(), f'Attack: {attackType}\nCount: {int(value)}\nMonth: {month}', self)
 
 
-# function for updating the grid lines and ticks based on the given maximum value in histogram chart
+# method for updating the grid lines and ticks based on the given maximum value in histogram chart
 def UpdateHistogramChartLines(self, newValue):
     # set desired lines to be five lines for fixed uniform look
     desiredLines = 5 #set to five lines in total
@@ -1156,7 +1191,7 @@ def UpdateHistogramChartLines(self, newValue):
     self.ui.histogramAxisY.setTickCount(desiredLines)
 
 
-# function for creating the histogram chart data, axies and bars using the diven data dict, if data dict is None then create an empty histogram chart
+# method for creating the histogram chart data, axies and bars using the diven data dict, if data dict is None then create an empty histogram chart
 def CreateHistogramChartData(self, histogramChartData=None):
     try:
         # get valid months based on the current month and get selected year from year combobox
@@ -1247,7 +1282,7 @@ def CreateHistogramChartData(self, histogramChartData=None):
         ShowMessageBox('Error Creating Histogram Chart', 'Error occurred while creating histogram chart with given data, try again later.', 'Critical')
 
 
-# function for updating the histogram chart after an attack was detected, expects an attack name like in database: 'ARP Spoofing', 'Port Scan', etc.
+# method for updating the histogram chart after an attack was detected, expects an attack name like in database: 'ARP Spoofing', 'Port Scan', etc.
 def UpdateHistogramChartAfterAttack(self, attackType):
     try:
         # get selected year from year combobox
@@ -1313,7 +1348,7 @@ def UpdateHistogramChartAfterAttack(self, attackType):
         ShowMessageBox('Error Updating Histogram Chart', 'Error occurred while updating histogram chart after an attack, try again later.', 'Critical')
 
 
-# function for updating the histogram chart after user login with data from database
+# method for updating the histogram chart after user login with data from database
 def UpdateHistogramChartAfterLogin(self, histogramChartData):
     try:
         # check if there's at least one attack in histogramChartData dictionary
@@ -1326,7 +1361,7 @@ def UpdateHistogramChartAfterLogin(self, histogramChartData):
         ShowMessageBox('Error Updating Histogram Chart', 'Error occurred while updating histogram chart, try again later.', 'Critical')
 
 
-# function for updating histogram chart color mode based on chosen color mode in ui
+# method for updating histogram chart color mode based on chosen color mode in ui
 def UpdateHistogramChartColorMode(self):
     try:
         # set our desired label color based on ui color mode
@@ -1364,7 +1399,7 @@ def UpdateHistogramChartColorMode(self):
         ShowMessageBox('Error Updating Histogram Chart Color Mode', 'Error occurred while updating histogram chart color mode, try again later.', 'Critical')
 
 
-# function for clearing the histogram chart and resetting to default empty histogram chart
+# method for clearing the histogram chart and resetting to default empty histogram chart
 def ResetHistogramChartToDefault(self, hideChart=True):
     try:
         # clear the histogram chart data and set the default title
@@ -1468,7 +1503,7 @@ class AnalyticsBarChart():
             QToolTip.showText(QCursor.pos(), f'Attack: {attackType}\nCount: {int(value)}', self)
 
 
-# function for updating the grid lines and ticks based on the given maximum value in bar chart
+# method for updating the grid lines and ticks based on the given maximum value in bar chart
 def UpdateBarChartLines(self, newValue):
     # set desired lines to be five lines for fixed uniform look
     desiredLines = 5 #set to five lines in total
@@ -1484,7 +1519,7 @@ def UpdateBarChartLines(self, newValue):
     self.ui.barChartAxisX.setTickCount(desiredLines)
 
 
-# function for creating the bar chart data, axies and bars using the diven data dict, if data dict is None then create an empty bar chart
+# method for creating the bar chart data, axies and bars using the diven data dict, if data dict is None then create an empty bar chart
 def CreateBarChartData(self, barChartData=None):
     try:
         # get selected year from year combobox
@@ -1567,7 +1602,7 @@ def CreateBarChartData(self, barChartData=None):
         ShowMessageBox('Error Creating Bar Chart', 'Error occurred while creating bar chart with given data, try again later.', 'Critical')
 
 
-# function for updating the bar chart after an attack was detected, expects an attack name like in database: 'ARP Spoofing', 'Port Scan', etc.
+# method for updating the bar chart after an attack was detected, expects an attack name like in database: 'ARP Spoofing', 'Port Scan', etc.
 def UpdateBarChartAfterAttack(self, attackType):
     try:
         # get selected year from year combobox
@@ -1623,7 +1658,7 @@ def UpdateBarChartAfterAttack(self, attackType):
         ShowMessageBox('Error Updating Bar Chart', 'Error occurred while updating bar chart after an attack, try again later.', 'Critical')
 
 
-# function for updating the bar chart after user login with data from database
+# method for updating the bar chart after user login with data from database
 def UpdateBarChartAfterLogin(self, barChartData):
     try:
         # check if there's at least one attack in barChartData dictionary
@@ -1636,7 +1671,7 @@ def UpdateBarChartAfterLogin(self, barChartData):
         ShowMessageBox('Error Updating Bar Chart', 'Error occurred while updating bar chart, try again later.', 'Critical')
 
 
-# function for updating bar chart color mode based on chosen color mode in ui
+# method for updating bar chart color mode based on chosen color mode in ui
 def UpdateBarChartColorMode(self):
     try:
         # set our desired label color based on ui color mode
@@ -1674,7 +1709,7 @@ def UpdateBarChartColorMode(self):
         ShowMessageBox('Error Updating Bar Chart Color Mode', 'Error occurred while updating bar chart color mode, try again later.', 'Critical')
 
 
-# function for clearing the bar chart and resetting to default empty bar chart
+# method for clearing the bar chart and resetting to default empty bar chart
 def ResetBarChartToDefault(self, hideChart=True):
     try:
         # clear the bar chart data and set the default title
@@ -1715,7 +1750,7 @@ def ResetBarChartToDefault(self, hideChart=True):
 
 #---------------------------------------------ANALYTICS-CARDS------------------------------------------------#
 
-# function for setting data into the cards section one by one
+# method for setting data into the cards section one by one
 def SetDataIntoCards(self):
     try:
         currentYear = self.ui.analyticsYearComboBox.currentText()
@@ -1738,7 +1773,7 @@ def SetDataIntoCards(self):
         ShowMessageBox('Error Setting Cards Data', 'Error occurred while setting data into analytics cards, try again later.', 'Critical')
 
 
-# function for updating the data in the cards after an attack
+# method for updating the data in the cards after an attack
 def UpdateDataInCardsAfterAttack(self):
     try:
         # only updating the histogram chart if the user year selection is the current year, otherwise it will update when a user changes the combobox value
@@ -1750,7 +1785,7 @@ def UpdateDataInCardsAfterAttack(self):
         ShowMessageBox('Error Setting Cards Data', 'Error occurred while setting data into analytics cards, try again later.', 'Critical')
 
 
-# function for resetting the data in the cards section to the default values
+# method for resetting the data in the cards section to the default values
 def ResertDataInCards(self):
     try:
         self.ui.totalNumOfAttacksValueLabel.setText('0')
@@ -1767,7 +1802,7 @@ def ResertDataInCards(self):
         ShowMessageBox('Error Resetting Cards Data', 'Error occurred while resetting data into analytics cards, try again later.', 'Critical')
 
 
-# function for calculating and resizing the font for the labels in the cards based on the data in them 
+# method for calculating and resizing the font for the labels in the cards based on the data in them 
 def UpdateFontSizeInLabel(self, labelObject):
     try:
         # get the current text in the card and set a default value for font size
@@ -1802,9 +1837,9 @@ def UpdateFontSizeInLabel(self, labelObject):
 
 #--------------------------------------------TABLE-VIEW-FILTER-----------------------------------------------#
 
-# Custom Table Model that will sit inside the TableView object in the report page and will contain all the relevant data and functions
+# Custom Table Model that will sit inside the TableView object in the report page and will contain all the relevant data and methods
 class CustomTableModel(QAbstractTableModel):
-    reportPreviewColumnHeaders = ['Interface', 'Attack Type', 'Source IP', 'Source Mac', 'Destination IP', 'Destination Mac', 'Protocol', 'Timestamp']
+    reportPreviewColumnHeaders = ['Interface', 'Attack Type', 'Source IP', 'Source MAC', 'Destination IP', 'Destination MAC', 'Protocol', 'Timestamp']
     alertListData = [] #represents our alerts list in table view
 
     # constructor of table model class
@@ -1813,17 +1848,17 @@ class CustomTableModel(QAbstractTableModel):
         self.alertListData = data
 
 
-    # overwrite inherited function to get number of rows
+    # overwrite inherited method to get number of rows
     def rowCount(self, parent=None):
         return len(self.alertListData) #get number of rows in the data
 
 
-    # overwrite inherited function to get number of columns
+    # overwrite inherited method to get number of columns
     def columnCount(self, parent=None):
         return len(self.reportPreviewColumnHeaders) + 1 #get number of columns (includes osType)
 
 
-    # overwrite inherited function to get data from a specific cell
+    # overwrite inherited method to get data from a specific cell
     def data(self, index, role=Qt.DisplayRole):
         if not index.isValid():
             return None
@@ -1843,7 +1878,7 @@ class CustomTableModel(QAbstractTableModel):
         return None
 
 
-    # overwrite inherited function to set the column names
+    # overwrite inherited method to set the column names
     def headerData(self, section, orientation, role=Qt.DisplayRole):
         if role == Qt.DisplayRole and orientation == Qt.Horizontal:
             if section < len(self.reportPreviewColumnHeaders):
@@ -1851,7 +1886,7 @@ class CustomTableModel(QAbstractTableModel):
         return None
     
         
-    # overwrite inherited function to set the data into the column
+    # overwrite inherited method to set the data into the column
     def setData(self, index, value, role=Qt.EditRole):
         if role == Qt.EditRole:
             if index.isValid() and 0 <= index.row() < self.rowCount() and 0 <= index.column() < self.columnCount():
@@ -1861,7 +1896,7 @@ class CustomTableModel(QAbstractTableModel):
         return False
 
 
-    # function to add row to report preview table at the first index in top row
+    # method to add row to report preview table at the first index in top row
     def AddRow(self, interface, attackType, srcIp, srcMac, dstIp, dstMac, protocol, osType, timestamp):
         # create new row to insert into report preview table at the first index in top row
         row = [interface, attackType, srcIp, srcMac, dstIp, dstMac, protocol, timestamp, osType]
@@ -1870,21 +1905,21 @@ class CustomTableModel(QAbstractTableModel):
         self.endInsertRows() #end insertion
 
 
-    # function to add items to a given row by index to report preview table
+    # method to add items to a given row by index to report preview table
     def SetRowItem(self, row, column, value):
         # set data at specific row and column
         index = self.index(row, column)
         self.setData(index, value)
 
 
-    # function to clear out the data from the report preview table
+    # method to clear out the data from the report preview table
     def ClearRows(self):
         self.beginResetModel() #begin reset model
         self.alertListData.clear() #clear the data list
         self.endResetModel() #end reset model
 
 
-# Custom Proxy Model for filtering the TableView that is in the report page, this class will hold the filtering logic and functions
+# Custom Proxy Model for filtering the TableView that is in the report page, this class will hold the filtering logic and methods
 class CustomFilterProxyModel(QSortFilterProxyModel):
     # represents our  alertList columns of our table
     alertListColumns = [('interface', 0), ('attackType', 1), ('srcIp', 2), ('srcMac', 3), ('dstIp', 4),
@@ -1899,19 +1934,19 @@ class CustomFilterProxyModel(QSortFilterProxyModel):
         self.timeFilter = 'All Available Data' #set to all available data by default
 
 
-    # function to update selected types and refresh filter (for checkboxes)
+    # method to update selected types and refresh filter (for checkboxes)
     def SetSelectedAttacks(self, selectedAttacks):
         self.selectedAttacks = set(selectedAttacks)
         self.invalidateFilter() #triggers re-filtering
 
 
-    # function to update time filter and refresh the table (for combobox)
+    # method to update time filter and refresh the table (for combobox)
     def SetTimeFilter(self, timeFilter):
         self.timeFilter = timeFilter
         self.invalidateFilter() #triggers re-filtering
 
 
-    # overwrite inherited function that determines if a row should be shown based on filter conditions
+    # overwrite inherited method that determines if a row should be shown based on filter conditions
     def filterAcceptsRow(self, sourceRow, sourceParent):
         model = self.sourceModel()
 
@@ -1940,7 +1975,7 @@ class CustomFilterProxyModel(QSortFilterProxyModel):
         return True #show current row if it passed all filters
 
 
-# function that will be called when the user clicks on one of the attack checkboxes in the report page (ARP, Port, DoS, DNS)
+# method that will be called when the user clicks on one of the attack checkboxes in the report page (ARP, Port, DoS, DNS)
 def ReportCheckboxToggled(self):
     selectedAttacks = set() #represents a set of all selected attack checkboxes at this point in time
 
@@ -1958,12 +1993,12 @@ def ReportCheckboxToggled(self):
     self.ui.proxyReportPreviewTableModel.SetSelectedAttacks(selectedAttacks)
 
 
-# function that will be called when the user selects a different time fillter option in the report page (combobox)
+# method that will be called when the user selects a different time fillter option in the report page (combobox)
 def ReportDurationComboboxChanged(self):
     self.ui.proxyReportPreviewTableModel.SetTimeFilter(self.ui.reportDurationComboBox.currentText())
 
 
-# function for getting flitered alert list from proxy model
+# method for getting flitered alert list from proxy model
 def GetFilteredAlerts(self):
     filteredAlertList = [] #represents our filtered alerts
     
@@ -1981,7 +2016,7 @@ def GetFilteredAlerts(self):
     return filteredAlertList
 
 
-# function for initializing the table view in the report page when the application loads up
+# method for initializing the table view in the report page when the application loads up
 def InitReportTableView(self):
     # initialize the report preview table model and custom proxy model for filtering 
     self.ui.reportPreviewTableModel = CustomTableModel(self.userData.get('alertList'))
@@ -1992,7 +2027,6 @@ def InitReportTableView(self):
     self.ui.reportPreviewTableView.setModel(self.ui.proxyReportPreviewTableModel)
     self.ui.reportPreviewTableView.setColumnHidden(self.ui.reportPreviewTableModel.columnCount() - 1, True) #hide osType column
     self.ui.reportPreviewTableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) #stretch columns
-    self.ui.reportPreviewTableView.verticalHeader().setDefaultSectionSize(30) #set max row height to 30px
     self.ui.reportPreviewTableView.verticalHeader().setSectionResizeMode(QHeaderView.Fixed) #fix row heights
     self.ui.reportPreviewTableView.verticalHeader().setStretchLastSection(False) #don't stretch last row
     self.ui.reportPreviewTableView.setSelectionMode(QTableWidget.SingleSelection) #set single selection for copy
@@ -2069,7 +2103,7 @@ class SystemTrayIcon():
             self.ui.trayIcon.setContextMenu(self.ui.trayIconMenu)
 
 
-    # fucntion to map the iconType to the appropriate QSystemTrayIcon
+    # method to map the iconType to the appropriate QSystemTrayIcon
     def GetTrayIcon(self, iconType):
         if iconType == 'Warning':
             return QSystemTrayIcon.Warning
@@ -2078,7 +2112,7 @@ class SystemTrayIcon():
         return QSystemTrayIcon.Information
 
 
-    # function for showing queued tray messages
+    # method for showing queued tray messages
     def ShowNextTrayMessage(self):
         # check if tray message queue is not empty
         if SystemTrayIcon.trayMessageQueue:
@@ -2109,7 +2143,7 @@ def ShowTrayMessage(self, title, message, iconType='Information', duration=5000)
 
 #----------------------------------------------MAIN-FUNCTION-------------------------------------------------#
 
-# main function that sets up all the ui elements on startup
+# main method that sets up all the ui elements on startup
 def InitUserInterface(self):
     # set the title and icon for main window
     self.setWindowTitle('NetSpect™')
@@ -2148,25 +2182,7 @@ def InitUserInterface(self):
     # apply shadow to the left side bar
     ApplyShadowSidebar(self)
 
-    # set the toggle password visability icon in the login and register
-    icon = QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'EyeOpen.png'))
-    self.ui.loginEyeButton = self.ui.loginPasswordLineEdit.addAction(icon, QLineEdit.TrailingPosition)
-    self.ui.loginEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self.ui.loginPasswordLineEdit, self.ui.loginEyeButton))
-    self.ui.registerEyeButton = self.ui.registerPasswordLineEdit.addAction(icon, QLineEdit.TrailingPosition)
-    self.ui.registerEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self.ui.registerPasswordLineEdit, self.ui.registerEyeButton))
-
-    # set the toggle password cisability icon in the settings page for change password section
-    self.ui.oldPasswordEyeButton = self.ui.oldPasswordLineEdit.addAction(icon, QLineEdit.TrailingPosition)
-    self.ui.oldPasswordEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self.ui.oldPasswordLineEdit, self.ui.oldPasswordEyeButton))
-    self.ui.newPasswordEyeButton = self.ui.newPasswordLineEdit.addAction(icon, QLineEdit.TrailingPosition)
-    self.ui.newPasswordEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self.ui.newPasswordLineEdit, self.ui.newPasswordEyeButton))
-    self.ui.confirmPasswordEyeButton = self.ui.confirmPasswordLineEdit.addAction(icon, QLineEdit.TrailingPosition)
-    self.ui.confirmPasswordEyeButton.triggered.connect(lambda: TogglePasswordVisibility(self.ui.confirmPasswordLineEdit, self.ui.confirmPasswordEyeButton))
-
-    # hide the error messages in the settings page
-    self.ui.saveEmailErrorMessageLabel.hide()
-    self.ui.saveUsernameErrorMessageLabel.hide()
-    self.ui.savePasswordErrorMessageLabel.hide()
-    self.ui.macAddressBlacklistErrorMessageLabel.hide()
+    # initialize eye buttons for password line edits
+    InitPasswordLineEditEyeButtons(self)
 
 #--------------------------------------------MAIN-FUNCTION-END-----------------------------------------------#

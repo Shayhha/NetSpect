@@ -61,7 +61,7 @@ QScrollBar::sub-line:vertical, QScrollBar::sub-line:horizontal {
 
 QMenu {
     background-color: #2d2d2d;
-    color: #f0f0f0;
+    color: #f3f3f3;
     border: 1px solid #555;
     padding: 5px;
     border-radius: 6px;
@@ -121,7 +121,7 @@ QToolTip {
 
 #centralWidget QMenu {
     background-color: #2d2d2d;
-    color: #f0f0f0;
+    color: #f3f3f3;
     border: 1px solid #555;
     padding: 5px;
     border-radius: 6px;
@@ -2223,7 +2223,7 @@ QToolTip {
                    </column>
                    <column>
                     <property name="text">
-                     <string>Source Mac</string>
+                     <string>Source MAC</string>
                     </property>
                    </column>
                    <column>
@@ -2233,7 +2233,7 @@ QToolTip {
                    </column>
                    <column>
                     <property name="text">
-                     <string>Destination Mac</string>
+                     <string>Destination MAC</string>
                     </property>
                    </column>
                    <column>
@@ -3224,6 +3224,12 @@ QToolTip {
                   <height>0</height>
                  </size>
                 </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>250</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <layout class="QVBoxLayout" name="verticalLayout_16">
                  <property name="spacing">
                   <number>15</number>
@@ -3282,8 +3288,14 @@ QToolTip {
                   <widget class="QFrame" name="reportSelectionVerticalFrameInside">
                    <property name="minimumSize">
                     <size>
-                     <width>235</width>
+                     <width>240</width>
                      <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>240</width>
+                     <height>16777215</height>
                     </size>
                    </property>
                    <property name="styleSheet">
@@ -3294,13 +3306,13 @@ QToolTip {
                      <number>8</number>
                     </property>
                     <property name="leftMargin">
-                     <number>20</number>
+                     <number>10</number>
                     </property>
                     <property name="topMargin">
                      <number>20</number>
                     </property>
                     <property name="rightMargin">
-                     <number>30</number>
+                     <number>20</number>
                     </property>
                     <property name="bottomMargin">
                      <number>20</number>
@@ -3532,28 +3544,25 @@ QToolTip {
                       </property>
                       <property name="styleSheet">
                        <string notr="true">#arpSpoofingCheckBox {
-    spacing: 10px; /* Space between checkbox and text */
-    color: #f3f3f3; /* Optional: Adjust text color */
+    spacing: 10px;
+    color: #f3f3f3;
 }
 
 QCheckBox::indicator {
-    width: 16px;  /* Increase checkbox size */
+    width: 16px;
     height: 16px;
 }
 
-/* Style the checkbox when checked */
 QCheckBox::indicator:checked {
-    background-color: #3a8e32; /* Change color when checked */
+    background-color: #3a8e32;
     border: 2px solid #2e7128;
 }
 
-/* Style the checkbox when unchecked */
 QCheckBox::indicator:unchecked {
     background-color: white;
     border: 2px solid lightgray;
 }
 
-/* Hover effect */
 QCheckBox::indicator:hover {
     border: 2px solid #4d9946;
 }</string>
@@ -3585,28 +3594,25 @@ QCheckBox::indicator:hover {
                       </property>
                       <property name="styleSheet">
                        <string notr="true">#portScanningCheckBox {
-    spacing: 10px; /* Space between checkbox and text */
-    color: #f3f3f3; /* Optional: Adjust text color */
+    spacing: 10px;
+    color: #f3f3f3;
 }
 
 QCheckBox::indicator {
-    width: 16px;  /* Increase checkbox size */
+    width: 16px;
     height: 16px;
 }
 
-/* Style the checkbox when checked */
 QCheckBox::indicator:checked {
-    background-color: #3a8e32; /* Change color when checked */
+    background-color: #3a8e32;
     border: 2px solid #2e7128;
 }
 
-/* Style the checkbox when unchecked */
 QCheckBox::indicator:unchecked {
     background-color: white;
     border: 2px solid lightgray;
 }
 
-/* Hover effect */
 QCheckBox::indicator:hover {
     border: 2px solid #4d9946;
 }</string>
@@ -3638,28 +3644,25 @@ QCheckBox::indicator:hover {
                       </property>
                       <property name="styleSheet">
                        <string notr="true">#denialOfServiceCheckBox {
-    spacing: 10px; /* Space between checkbox and text */
-    color: #f3f3f3; /* Optional: Adjust text color */
+    spacing: 10px;
+    color: #f3f3f3;
 }
 
 QCheckBox::indicator {
-    width: 16px;  /* Increase checkbox size */
+    width: 16px;
     height: 16px;
 }
 
-/* Style the checkbox when checked */
 QCheckBox::indicator:checked {
-    background-color: #3a8e32; /* Change color when checked */
+    background-color: #3a8e32;
     border: 2px solid #2e7128;
 }
 
-/* Style the checkbox when unchecked */
 QCheckBox::indicator:unchecked {
     background-color: white;
     border: 2px solid lightgray;
 }
 
-/* Hover effect */
 QCheckBox::indicator:hover {
     border: 2px solid #4d9946;
 }</string>
@@ -3691,28 +3694,25 @@ QCheckBox::indicator:hover {
                       </property>
                       <property name="styleSheet">
                        <string notr="true">#dnsTunnelingCheckBox {
-    spacing: 10px; /* Space between checkbox and text */
-    color: #f3f3f3; /* Optional: Adjust text color */
+    spacing: 10px;
+    color: #f3f3f3;
 }
 
 QCheckBox::indicator {
-    width: 16px;  /* Increase checkbox size */
+    width: 16px;
     height: 16px;
 }
 
-/* Style the checkbox when checked */
 QCheckBox::indicator:checked {
-    background-color: #3a8e32; /* Change color when checked */
+    background-color: #3a8e32;
     border: 2px solid #2e7128;
 }
 
-/* Style the checkbox when unchecked */
 QCheckBox::indicator:unchecked {
     background-color: white;
     border: 2px solid lightgray;
 }
 
-/* Hover effect */
 QCheckBox::indicator:hover {
     border: 2px solid #4d9946;
 }</string>
@@ -3729,7 +3729,7 @@ QCheckBox::indicator:hover {
                      <widget class="Line" name="horizontalLine2">
                       <property name="minimumSize">
                        <size>
-                        <width>0</width>
+                        <width>210</width>
                         <height>40</height>
                        </size>
                       </property>
@@ -3768,28 +3768,25 @@ QCheckBox::indicator:hover {
                       </property>
                       <property name="styleSheet">
                        <string notr="true">QCheckBox::indicator {
-    width: 16px;  /* Increase checkbox size */
+    width: 16px;
     height: 16px;
 }
 
 QCheckBox {
-    spacing: 10px; /* Space between checkbox and text */
-    color: #f3f3f3; /* Optional: Adjust text color */
+    spacing: 10px;
+    color: #f3f3f3;
 }
 
-/* Style the checkbox when checked */
 QCheckBox::indicator:checked {
-    background-color: #3a8e32; /* Change color when checked */
+    background-color: #3a8e32;
     border: 2px solid #2e7128;
 }
 
-/* Style the checkbox when unchecked */
 QCheckBox::indicator:unchecked {
     background-color: white;
     border: 2px solid lightgray;
 }
 
-/* Hover effect */
 QCheckBox::indicator:hover {
     border: 2px solid #4d9946;
 }</string>
@@ -3945,7 +3942,7 @@ QCheckBox::indicator:hover {
                           <string notr="true">#reportProgressBar {
     border: 2px solid #d3d3d3;
     border-radius: 10px;
-    background-color: #f0f0f0;
+    background-color: #f3f3f3;
     text-align: center;         
     font-weight: bold;
     color: black;
@@ -6228,7 +6225,7 @@ QCheckBox::indicator:hover {
                    </property>
                    <property name="styleSheet">
                     <string notr="true">#userSettingsLabel {
-color: #f3f3f3;
+    color: #f3f3f3;
 }</string>
                    </property>
                    <property name="text">
@@ -6322,7 +6319,7 @@ color: #f3f3f3;
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#changeEmailLabel {
-color: #f3f3f3
+    color: #f3f3f3;
 }</string>
                             </property>
                             <property name="text">
@@ -6350,11 +6347,11 @@ color: #f3f3f3
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#emailLineEdit {
-    background-color: #f3f3f3; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                        
-    color: black;             
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 0px 5px;
+    color: black;
 }</string>
                             </property>
                             <property name="text">
@@ -6382,7 +6379,7 @@ color: #f3f3f3
                             <property name="maximumSize">
                              <size>
                               <width>500</width>
-                              <height>60</height>
+                              <height>50</height>
                              </size>
                             </property>
                             <property name="font">
@@ -6408,13 +6405,13 @@ color: #f3f3f3
                              <number>0</number>
                             </property>
                             <property name="text">
-                             <string>&lt;p style='line-height: 0.7;'&gt;Show error message here&lt;/p&gt;</string>
+                             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please fill in the email address field before changing email address.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                             </property>
                             <property name="textFormat">
                              <enum>Qt::TextFormat::RichText</enum>
                             </property>
                             <property name="scaledContents">
-                             <bool>true</bool>
+                             <bool>false</bool>
                             </property>
                             <property name="alignment">
                              <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -6530,7 +6527,7 @@ color: #f3f3f3
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#changeUsernameLabel {
-color: #f3f3f3
+    color: #f3f3f3;
 }</string>
                             </property>
                             <property name="text">
@@ -6553,16 +6550,15 @@ color: #f3f3f3
                              </font>
                             </property>
                             <property name="toolTip">
-                             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose a username that is at most 10 characters long.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose a new username between 4 and 16 characters.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#usernameLineEdit {
-    background-color: #f3f3f3; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                        
-    color: black;             
-	/*margin-bottom: 10px;*/
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px; 
+    padding: 0px 5px;
+    color: black;
 }</string>
                             </property>
                             <property name="text">
@@ -6607,7 +6603,10 @@ color: #f3f3f3
 }</string>
                             </property>
                             <property name="text">
-                             <string>&lt;p style='line-height: 0.7;'&gt;Show error message here&lt;/p&gt;</string>
+                             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please fill in the username field before changing username.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                            </property>
+                            <property name="scaledContents">
+                             <bool>false</bool>
                             </property>
                             <property name="alignment">
                              <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -6713,7 +6712,7 @@ color: #f3f3f3
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#changePasswordLabel {
-color: #f3f3f3
+    color: #f3f3f3;
 }</string>
                             </property>
                             <property name="text">
@@ -6740,7 +6739,7 @@ color: #f3f3f3
                               <number>0</number>
                              </property>
                              <item>
-                              <widget class="QLineEdit" name="oldPasswordLineEdit">
+                              <widget class="QLineEdit" name="currentPasswordLineEdit">
                                <property name="maximumSize">
                                 <size>
                                  <width>500</width>
@@ -6757,12 +6756,12 @@ color: #f3f3f3
                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter your current password.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                </property>
                                <property name="styleSheet">
-                                <string notr="true">#oldPasswordLineEdit {
-    background-color: #f3f3f3; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                    
-    color: black;             
+                                <string notr="true">#currentPasswordLineEdit {
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 0px 5px;
+    color: black;
 }</string>
                                </property>
                                <property name="text">
@@ -6772,7 +6771,7 @@ color: #f3f3f3
                                 <enum>QLineEdit::EchoMode::Password</enum>
                                </property>
                                <property name="placeholderText">
-                                <string>Old Password</string>
+                                <string>Current Password</string>
                                </property>
                               </widget>
                              </item>
@@ -6791,15 +6790,15 @@ color: #f3f3f3
                                 </font>
                                </property>
                                <property name="toolTip">
-                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Your new password must have at least one uppercase letter and one digit. Minimum 6 characters and at most 20.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose a new password with at least 6 characters and include at least one uppercase letter and one digit.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                </property>
                                <property name="styleSheet">
                                 <string notr="true">#newPasswordLineEdit {
-    background-color: #f3f3f3; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                    
-    color: black;             
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 0px 5px;
+    color: black;
 }</string>
                                </property>
                                <property name="text">
@@ -6832,11 +6831,11 @@ color: #f3f3f3
                                </property>
                                <property name="styleSheet">
                                 <string notr="true">#confirmPasswordLineEdit {
-    background-color: #f3f3f3; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                      
-    color: black;             
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 0px 5px;
+    color: black;
 }</string>
                                </property>
                                <property name="text">
@@ -6888,7 +6887,7 @@ color: #f3f3f3
 }</string>
                             </property>
                             <property name="text">
-                             <string>&lt;p style='line-height: 0.7;'&gt;Show error message here&lt;/p&gt;</string>
+                             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please fill in all the password fields before changing password.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                             </property>
                             <property name="alignment">
                              <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -7063,7 +7062,7 @@ color: #f3f3f3
                                </property>
                                <property name="styleSheet">
                                 <string notr="true">#interfaceSettingsLabel {
-color: #f3f3f3
+    color: #f3f3f3;
 }</string>
                                </property>
                                <property name="text">
@@ -7309,7 +7308,7 @@ color: #f3f3f3
                                </property>
                                <property name="styleSheet">
                                 <string notr="true">#operationModeLabel {
-color: #f3f3f3
+    color: #f3f3f3;
 }</string>
                                </property>
                                <property name="text">
@@ -7581,16 +7580,22 @@ color: #f3f3f3
                                </property>
                                <property name="styleSheet">
                                 <string notr="true">#macAddressBlacklistSettingsLabel {
-color: #f3f3f3
+    color: #f3f3f3;
 }</string>
                                </property>
                                <property name="text">
-                                <string>Mac Address Blacklist:</string>
+                                <string>MAC Address Blacklist:</string>
                                </property>
                               </widget>
                              </item>
                              <item>
                               <widget class="QListWidget" name="macAddressListWidget">
+                               <property name="minimumSize">
+                                <size>
+                                 <width>256</width>
+                                 <height>170</height>
+                                </size>
+                               </property>
                                <property name="maximumSize">
                                 <size>
                                  <width>375</width>
@@ -7724,15 +7729,15 @@ color: #f3f3f3
                                    </font>
                                   </property>
                                   <property name="toolTip">
-                                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Input a Mac address (eg. f7:58:15:f3:ce:22)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter a MAC address (e.g., f7:58:15:f3:ce:22).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                   </property>
                                   <property name="styleSheet">
                                    <string notr="true">#macAddressLineEdit {
-    background-color: #f0f0f0; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                        
-    color: black;             
+    background-color: #f3f3f3;
+    border: 2px solid lightgray; 
+    border-radius: 10px;
+    padding: 0px 5px;
+    color: black;
 }</string>
                                   </property>
                                   <property name="text">
@@ -7771,7 +7776,7 @@ color: #f3f3f3
                                    <cursorShape>PointingHandCursor</cursorShape>
                                   </property>
                                   <property name="toolTip">
-                                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add a Mac address to the blacklist.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add a MAC address to the blacklist.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                   </property>
                                   <property name="styleSheet">
                                    <string notr="true">#addMacAddressPushButton  {
@@ -7815,7 +7820,7 @@ color: #f3f3f3
                                <property name="maximumSize">
                                 <size>
                                  <width>375</width>
-                                 <height>100</height>
+                                 <height>50</height>
                                 </size>
                                </property>
                                <property name="font">
@@ -7832,7 +7837,7 @@ color: #f3f3f3
 }</string>
                                </property>
                                <property name="text">
-                                <string>&lt;p style='line-height: 0.7;'&gt;Show error message here&lt;/p&gt;</string>
+                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please enter a valid MAC address.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                </property>
                                <property name="alignment">
                                 <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -8036,7 +8041,7 @@ color: #f3f3f3
          </property>
          <property name="styleSheet">
           <string notr="true">#loginRegisterVerticalFrame {
-    background-color: #2D2E36;
+    background-color: #2d2e36;
 }</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -8063,18 +8068,18 @@ color: #f3f3f3
             <property name="minimumSize">
              <size>
               <width>300</width>
-              <height>180</height>
+              <height>320</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>300</width>
-              <height>450</height>
+              <height>320</height>
              </size>
             </property>
             <property name="styleSheet">
              <string notr="true">#loginFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
     border: none;
 }</string>
             </property>
@@ -8114,13 +8119,13 @@ color: #f3f3f3
                <property name="minimumSize">
                 <size>
                  <width>300</width>
-                 <height>180</height>
+                 <height>320</height>
                 </size>
                </property>
                <property name="maximumSize">
                 <size>
                  <width>300</width>
-                 <height>450</height>
+                 <height>320</height>
                 </size>
                </property>
                <property name="cursor">
@@ -8128,7 +8133,7 @@ color: #f3f3f3
                </property>
                <property name="styleSheet">
                 <string notr="true">#loginVerticalFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 	border: none;
 }</string>
                </property>
@@ -8137,7 +8142,7 @@ color: #f3f3f3
                  <number>5</number>
                 </property>
                 <property name="leftMargin">
-                 <number>15</number>
+                 <number>20</number>
                 </property>
                 <property name="topMargin">
                  <number>0</number>
@@ -8172,8 +8177,7 @@ color: #f3f3f3
                   <property name="styleSheet">
                    <string notr="true">#loginLabel {
 	color: #f3f3f3;
-	background-color: #2D2E36;
-
+	background-color: #2d2e36;
 }</string>
                   </property>
                   <property name="text">
@@ -8188,103 +8192,140 @@ color: #f3f3f3
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="loginUsernameLineEdit">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
+                 <widget class="QFrame" name="loginLineEditsVerticalFrame">
                   <property name="minimumSize">
                    <size>
-                    <width>250</width>
-                    <height>44</height>
+                    <width>265</width>
+                    <height>100</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
-                    <height>44</height>
+                    <width>265</width>
+                    <height>100</height>
                    </size>
                   </property>
-                  <property name="font">
-                   <font>
-                    <family>Cairo</family>
-                    <pointsize>12</pointsize>
-                   </font>
-                  </property>
-                  <property name="toolTip">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter your account username. If you dont have an account click the blue text below.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                  </property>
                   <property name="styleSheet">
-                   <string notr="true">#loginUsernameLineEdit {
-    background-color: #f0f0f0; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                    
-    color: black;             
-	margin: 0px 5px 10px 5px;
+                   <string notr="true">#loginLineEditsVerticalFrame {
+	background-color: #2d2e36;
+	border: none;
 }</string>
                   </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="placeholderText">
-                   <string>Username</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="loginPasswordLineEdit">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>250</width>
-                    <height>34</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>16777215</width>
-                    <height>34</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <family>Cairo</family>
-                    <pointsize>12</pointsize>
-                    <bold>false</bold>
-                   </font>
-                  </property>
-                  <property name="toolTip">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter your password, if you dont remember either contact support or open a new account.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">#loginPasswordLineEdit {
-    background-color: #f0f0f0; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;         
-    color: black;             
-	margin: 0px 5px 0px 5px;
+                  <layout class="QVBoxLayout" name="verticalLayout_38">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
+                   <property name="leftMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QLineEdit" name="loginUsernameLineEdit">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>265</width>
+                       <height>34</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>34</height>
+                      </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <family>Cairo</family>
+                       <pointsize>12</pointsize>
+                      </font>
+                     </property>
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter your account username. If you don't have an account you can create one below.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">#loginUsernameLineEdit {
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px; 
+    padding: 0px 5px;
+    color: black;
+}</string>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="placeholderText">
+                      <string>Username</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="loginPasswordLineEdit">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>265</width>
+                       <height>34</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>34</height>
+                      </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <family>Cairo</family>
+                       <pointsize>12</pointsize>
+                       <bold>false</bold>
+                      </font>
+                     </property>
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter your password, if you forgot it you can reset it below.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">#loginPasswordLineEdit {
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 0px 5px;
+    color: black;
 }
 
 </string>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="echoMode">
-                   <enum>QLineEdit::EchoMode::Password</enum>
-                  </property>
-                  <property name="placeholderText">
-                   <string>Password</string>
-                  </property>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="echoMode">
+                      <enum>QLineEdit::EchoMode::Password</enum>
+                     </property>
+                     <property name="placeholderText">
+                      <string>Password</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
                  </widget>
                 </item>
                 <item>
@@ -8316,15 +8357,18 @@ color: #f3f3f3
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#loginErrorMessageLabel {
-	color: #D84F4F;
-	background-color: #2D2E36;
+	color: #d84f4f;
+	background-color: #2d2e36;
 }</string>
                   </property>
                   <property name="text">
-                   <string>&lt;p style='line-height: 0.7;'&gt;Username or password is incorrect!&lt;/p&gt;</string>
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please enter your username and password.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignmentFlag::AlignCenter</set>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
                   </property>
                   <property name="textInteractionFlags">
                    <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByMouse</set>
@@ -8335,16 +8379,16 @@ color: #f3f3f3
                  <widget class="QFrame" name="loginButtonFrame">
                   <property name="maximumSize">
                    <size>
-                    <width>500</width>
+                    <width>300</width>
                     <height>70</height>
                    </size>
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#loginButtonFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }</string>
                   </property>
-                  <layout class="QHBoxLayout" name="usernameButtonHorizontalLayout_2">
+                  <layout class="QHBoxLayout" name="loginButtonHorizontalLayout">
                    <property name="spacing">
                     <number>0</number>
                    </property>
@@ -8378,9 +8422,12 @@ color: #f3f3f3
                      <property name="cursor">
                       <cursorShape>PointingHandCursor</cursorShape>
                      </property>
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Log into your account.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
                      <property name="styleSheet">
                       <string notr="true">#loginPushButton  {
-    background-color: #4E4F5A; 
+    background-color: #4e4f5a;
     border: 2px solid lightgray;  
     border-radius: 10px;         
     padding: 5px;                      
@@ -8389,12 +8436,12 @@ color: #f3f3f3
 
 #loginPushButton:hover {
     background-color: #464751; 
-	border-color: #D7D7D7;
+	border-color: #d7d7d7;
 }
 
 #loginPushButton:pressed {
     background-color: #383840; 
-	border-color:#D7D7D7;
+	border-color:#d7d7d7;
 }</string>
                      </property>
                      <property name="text">
@@ -8435,14 +8482,17 @@ color: #f3f3f3
                   <property name="cursor">
                    <cursorShape>PointingHandCursor</cursorShape>
                   </property>
+                  <property name="toolTip">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Register a new account.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
                   <property name="styleSheet">
                    <string notr="true">#moveToRegisterLabel {
-	color: #6BA6FD;
-	background-color: #2D2E36;
+	color: #6ba6fd;
+	background-color: #2d2e36;
 }
 
 #moveToRegisterLabel:hover {
-	color: #6095E3;
+	color: #6095e3;
 }
 </string>
                   </property>
@@ -8484,14 +8534,17 @@ color: #f3f3f3
                   <property name="cursor">
                    <cursorShape>PointingHandCursor</cursorShape>
                   </property>
+                  <property name="toolTip">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Reset your account password with account email address.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
                   <property name="styleSheet">
                    <string notr="true">#moveToForgotPasswordLabel {
-	color: #6BA6FD;
-	background-color: #2D2E36;
+	color: #6ba6fd;
+	background-color: #2d2e36;
 }
 
 #moveToForgotPasswordLabel:hover {
-	color: #6095E3;
+	color: #6095e3;
 }
 </string>
                   </property>
@@ -8517,18 +8570,18 @@ color: #f3f3f3
             <property name="minimumSize">
              <size>
               <width>300</width>
-              <height>230</height>
+              <height>390</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>300</width>
-              <height>730</height>
+              <height>390</height>
              </size>
             </property>
             <property name="styleSheet">
              <string notr="true">#registerFrame {
-    background-color: #2D2E36;
+    background-color: #2d2e36;
     border: none;
 }</string>
             </property>
@@ -8559,18 +8612,18 @@ color: #f3f3f3
                <property name="minimumSize">
                 <size>
                  <width>300</width>
-                 <height>230</height>
+                 <height>390</height>
                 </size>
                </property>
                <property name="maximumSize">
                 <size>
                  <width>300</width>
-                 <height>575</height>
+                 <height>390</height>
                 </size>
                </property>
                <property name="styleSheet">
                 <string notr="true">#registerVerticalFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 	border: none;
 }</string>
                </property>
@@ -8579,7 +8632,7 @@ color: #f3f3f3
                  <number>5</number>
                 </property>
                 <property name="leftMargin">
-                 <number>15</number>
+                 <number>20</number>
                 </property>
                 <property name="topMargin">
                  <number>0</number>
@@ -8615,7 +8668,6 @@ color: #f3f3f3
                    <string notr="true">#registerLabel {
 	color: #f3f3f3;
 	background-color: #2D2E36;
-
 }</string>
                   </property>
                   <property name="text">
@@ -8630,170 +8682,265 @@ color: #f3f3f3
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="registerEmailLineEdit">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
+                 <widget class="QFrame" name="registerLineEditsVerticalFrame">
                   <property name="minimumSize">
                    <size>
-                    <width>250</width>
-                    <height>44</height>
+                    <width>265</width>
+                    <height>200</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
-                    <height>44</height>
+                    <width>265</width>
+                    <height>200</height>
                    </size>
-                  </property>
-                  <property name="sizeIncrement">
-                   <size>
-                    <width>0</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <family>Cairo</family>
-                    <pointsize>12</pointsize>
-                   </font>
-                  </property>
-                  <property name="toolTip">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter a valid email address (e.g., name@example.com).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                   <property name="styleSheet">
-                   <string notr="true">#registerEmailLineEdit {
-    background-color: #f0f0f0; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                     
-    color: black;             
-	margin: 0px 5px 10px 5px;
+                   <string notr="true">#registerLineEditsVerticalFrame {
+	background-color: #2d2e36;
+	border: none;
 }</string>
                   </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="placeholderText">
-                   <string>Email</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="registerUsernameLineEdit">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>250</width>
-                    <height>44</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>16777215</width>
-                    <height>44</height>
-                   </size>
-                  </property>
-                  <property name="sizeIncrement">
-                   <size>
-                    <width>0</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <family>Cairo</family>
-                    <pointsize>12</pointsize>
-                   </font>
-                  </property>
-                  <property name="toolTip">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose a username that is at most 10 characters long.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">#registerUsernameLineEdit {
-    background-color: #f0f0f0; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                      
-    color: black;             
-	margin: 0px 5px 10px 5px;
+                  <layout class="QVBoxLayout" name="verticalLayout_37">
+                   <property name="spacing">
+                    <number>5</number>
+                   </property>
+                   <property name="leftMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QLineEdit" name="registerEmailLineEdit">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>265</width>
+                       <height>34</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>34</height>
+                      </size>
+                     </property>
+                     <property name="sizeIncrement">
+                      <size>
+                       <width>0</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <family>Cairo</family>
+                       <pointsize>12</pointsize>
+                      </font>
+                     </property>
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter a valid email address (e.g., name@example.com).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">#registerEmailLineEdit {
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px; 
+    padding: 0px 5px;
+    color: black;
 }</string>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="placeholderText">
-                   <string>Username</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="registerPasswordLineEdit">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>250</width>
-                    <height>34</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>16777215</width>
-                    <height>34</height>
-                   </size>
-                  </property>
-                  <property name="sizeIncrement">
-                   <size>
-                    <width>0</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <family>Cairo</family>
-                    <pointsize>12</pointsize>
-                   </font>
-                  </property>
-                  <property name="toolTip">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Your password must have at least one uppercase letter and one digit. Minimum 6 characters and at most 20.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                  </property>
-                  <property name="toolTipDuration">
-                   <number>-1</number>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">#registerPasswordLineEdit {
-    background-color: #f0f0f0; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                       
-    color: black;             
-	margin: 0px 5px 0px 5px;
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="placeholderText">
+                      <string>Email</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="registerUsernameLineEdit">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>265</width>
+                       <height>34</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>34</height>
+                      </size>
+                     </property>
+                     <property name="sizeIncrement">
+                      <size>
+                       <width>0</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <family>Cairo</family>
+                       <pointsize>12</pointsize>
+                      </font>
+                     </property>
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose a username between 4 and 16 characters.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">#registerUsernameLineEdit {
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px; 
+    padding: 0px 5px;
+    color: black;
+}</string>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="placeholderText">
+                      <string>Username</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="registerPasswordLineEdit">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>265</width>
+                       <height>34</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>34</height>
+                      </size>
+                     </property>
+                     <property name="sizeIncrement">
+                      <size>
+                       <width>0</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <family>Cairo</family>
+                       <pointsize>12</pointsize>
+                      </font>
+                     </property>
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose a password with at least 6 characters and include at least one uppercase letter and one digit.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="toolTipDuration">
+                      <number>-1</number>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">#registerPasswordLineEdit {
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px; 
+    padding: 0px 5px;
+    color: black;
 }
 
 </string>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                  <property name="echoMode">
-                   <enum>QLineEdit::EchoMode::Password</enum>
-                  </property>
-                  <property name="placeholderText">
-                   <string>Password</string>
-                  </property>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="echoMode">
+                      <enum>QLineEdit::EchoMode::Password</enum>
+                     </property>
+                     <property name="placeholderText">
+                      <string>Password</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QLineEdit" name="registerConfirmPasswordLineEdit">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>265</width>
+                       <height>34</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>34</height>
+                      </size>
+                     </property>
+                     <property name="sizeIncrement">
+                      <size>
+                       <width>0</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <family>Cairo</family>
+                       <pointsize>12</pointsize>
+                      </font>
+                     </property>
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Confirm your password by entering it again.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                     <property name="toolTipDuration">
+                      <number>-1</number>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">#registerConfirmPasswordLineEdit {
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px; 
+    padding: 0px 5px;
+    color: black;
+}
+</string>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="echoMode">
+                      <enum>QLineEdit::EchoMode::Password</enum>
+                     </property>
+                     <property name="placeholderText">
+                      <string>Confirm Password</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
                  </widget>
                 </item>
                 <item>
@@ -8825,13 +8972,12 @@ color: #f3f3f3
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#registerErrorMessageLabel {
-	color: #D84F4F;
-	padding-bottom: 5px;
-	background-color: #2D2E36;
+	color: #d84f4f;
+	background-color: #2d2e36;
 }</string>
                   </property>
                   <property name="text">
-                   <string>&lt;p style='line-height: 0.7;'&gt;Username must to have atleast one capital letter and atleast on digit&lt;/p&gt;</string>
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please fill in all the fields.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -8848,16 +8994,16 @@ color: #f3f3f3
                  <widget class="QFrame" name="registerButtonFrame">
                   <property name="maximumSize">
                    <size>
-                    <width>500</width>
+                    <width>300</width>
                     <height>70</height>
                    </size>
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#registerButtonFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }</string>
                   </property>
-                  <layout class="QHBoxLayout" name="usernameButtonHorizontalLayout_3">
+                  <layout class="QHBoxLayout" name="registerButtonHorizontalLayout">
                    <property name="spacing">
                     <number>0</number>
                    </property>
@@ -8891,9 +9037,12 @@ color: #f3f3f3
                      <property name="cursor">
                       <cursorShape>PointingHandCursor</cursorShape>
                      </property>
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Register a new account.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
                      <property name="styleSheet">
                       <string notr="true">#registerPushButton  {
-    background-color: #4E4F5A; 
+    background-color: #4e4f5a;
     border: 2px solid lightgray;  
     border-radius: 10px;         
     padding: 5px;                     
@@ -8902,12 +9051,12 @@ color: #f3f3f3
 
 #registerPushButton:hover {
     background-color: #464751; 
-	border-color: #D7D7D7;
+	border-color: #d7d7d7;
 }
 
 #registerPushButton:pressed {
     background-color: #383840; 
-	border-color:#D7D7D7;
+	border-color:#d7d7d7;
 }</string>
                      </property>
                      <property name="text">
@@ -8948,14 +9097,17 @@ color: #f3f3f3
                   <property name="cursor">
                    <cursorShape>PointingHandCursor</cursorShape>
                   </property>
+                  <property name="toolTip">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Log into your account.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
                   <property name="styleSheet">
                    <string notr="true">#moveToLoginLabel {
-	color: #6BA6FD;
-	background-color: #2D2E36;
+	color: #6ba6fd;
+	background-color: #2d2e36;
 }
 
 #moveToLoginLabel:hover {
-	color: #6095E3;
+	color: #6095e3;
 }
 </string>
                   </property>
@@ -8978,7 +9130,7 @@ color: #f3f3f3
             <property name="minimumSize">
              <size>
               <width>300</width>
-              <height>150</height>
+              <height>250</height>
              </size>
             </property>
             <property name="maximumSize">
@@ -8986,6 +9138,9 @@ color: #f3f3f3
               <width>300</width>
               <height>250</height>
              </size>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Shadow::Raised</enum>
             </property>
             <layout class="QGridLayout" name="gridLayout_8">
              <property name="leftMargin">
@@ -9009,7 +9164,7 @@ color: #f3f3f3
                 <bool>true</bool>
                </property>
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -9017,7 +9172,7 @@ color: #f3f3f3
                <property name="minimumSize">
                 <size>
                  <width>300</width>
-                 <height>150</height>
+                 <height>250</height>
                 </size>
                </property>
                <property name="maximumSize">
@@ -9031,16 +9186,19 @@ color: #f3f3f3
                </property>
                <property name="styleSheet">
                 <string notr="true">#resetPasswordVerticalFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 	border: none;
 }</string>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::Shape::StyledPanel</enum>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_28">
                 <property name="spacing">
                  <number>5</number>
                 </property>
                 <property name="leftMargin">
-                 <number>15</number>
+                 <number>20</number>
                 </property>
                 <property name="topMargin">
                  <number>0</number>
@@ -9075,8 +9233,7 @@ color: #f3f3f3
                   <property name="styleSheet">
                    <string notr="true">#resetPasswordLabel {
 	color: #f3f3f3;
-	background-color: #2D2E36;
-	margin: 10px 0 10px 0;
+	background-color: #2d2e36;
 }</string>
                   </property>
                   <property name="text">
@@ -9100,7 +9257,7 @@ color: #f3f3f3
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>250</width>
+                    <width>265</width>
                     <height>34</height>
                    </size>
                   </property>
@@ -9121,12 +9278,11 @@ color: #f3f3f3
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#resetPasswordEmailLineEdit {
-    background-color: #f0f0f0; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                    
-    color: black;             
-	margin: 0px 5px 0px 5px;
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px; 
+    padding: 0px 5px;
+    color: black;
 }</string>
                   </property>
                   <property name="text">
@@ -9166,12 +9322,12 @@ color: #f3f3f3
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#resetPasswordEmailErrorMessageLabel {
-	color: #D84F4F;
-	background-color: #2D2E36;
+	color: #d84f4f;
+	background-color: #2d2e36;
 }</string>
                   </property>
                   <property name="text">
-                   <string>&lt;p style='line-height: 0.7;'&gt;Username or password is incorrect!&lt;/p&gt;</string>
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please fill in the email field for receiving a reset code.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -9188,16 +9344,16 @@ color: #f3f3f3
                  <widget class="QFrame" name="sendCodeButtonFrame">
                   <property name="maximumSize">
                    <size>
-                    <width>500</width>
+                    <width>300</width>
                     <height>70</height>
                    </size>
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#sendCodeButtonFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }</string>
                   </property>
-                  <layout class="QHBoxLayout" name="usernameButtonHorizontalLayout_4">
+                  <layout class="QHBoxLayout" name="sendCodeButtonHorizontalLayout">
                    <property name="spacing">
                     <number>0</number>
                    </property>
@@ -9231,9 +9387,12 @@ color: #f3f3f3
                      <property name="cursor">
                       <cursorShape>PointingHandCursor</cursorShape>
                      </property>
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Send a reset code to account email address for reset password.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
                      <property name="styleSheet">
                       <string notr="true">#sendCodePushButton  {
-    background-color: #4E4F5A; 
+    background-color: #4e4f5a; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
     padding: 5px;                      
@@ -9242,12 +9401,12 @@ color: #f3f3f3
 
 #sendCodePushButton:hover {
     background-color: #464751; 
-	border-color: #D7D7D7;
+	border-color: #d7d7d7;
 }
 
 #sendCodePushButton:pressed {
     background-color: #383840; 
-	border-color:#D7D7D7;
+	border-color:#d7d7d7;
 }</string>
                      </property>
                      <property name="text">
@@ -9268,7 +9427,7 @@ color: #f3f3f3
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>250</width>
+                    <width>265</width>
                     <height>34</height>
                    </size>
                   </property>
@@ -9290,12 +9449,11 @@ color: #f3f3f3
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#resetPasswordCodeLineEdit {
-    background-color: #f0f0f0; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;         
-    color: black;             
-	margin: 0px 5px 0px 5px;
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px; 
+    padding: 0px 5px;
+    color: black;
 }
 
 </string>
@@ -9340,12 +9498,12 @@ color: #f3f3f3
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#resetPasswordCodeErrorMessageLabel {
-	color: #D84F4F;
-	background-color: #2D2E36;
+	color: #d84f4f;
+	background-color: #2d2e36;
 }</string>
                   </property>
                   <property name="text">
-                   <string>&lt;p style='line-height: 0.7;'&gt;Username or password is incorrect!&lt;/p&gt;</string>
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please fill in the reset code field for verifying your identity.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -9362,16 +9520,16 @@ color: #f3f3f3
                  <widget class="QFrame" name="verifyCodeButtonFrame">
                   <property name="maximumSize">
                    <size>
-                    <width>500</width>
+                    <width>300</width>
                     <height>70</height>
                    </size>
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#verifyCodeButtonFrame {
-	background-color: #2D2E36;
+	background-color: #2d2e36;
 }</string>
                   </property>
-                  <layout class="QHBoxLayout" name="usernameButtonHorizontalLayout_5">
+                  <layout class="QHBoxLayout" name="verifyCodeButtonHorizontalLayout">
                    <property name="spacing">
                     <number>0</number>
                    </property>
@@ -9405,9 +9563,12 @@ color: #f3f3f3
                      <property name="cursor">
                       <cursorShape>PointingHandCursor</cursorShape>
                      </property>
+                     <property name="toolTip">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Verify reset code and reset account password.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
                      <property name="styleSheet">
                       <string notr="true">#verifyCodePushButton  {
-    background-color: #4E4F5A; 
+    background-color: #4e4f5a; 
     border: 2px solid lightgray;  
     border-radius: 10px;         
     padding: 5px;                      
@@ -9416,12 +9577,12 @@ color: #f3f3f3
 
 #verifyCodePushButton:hover {
     background-color: #464751; 
-	border-color: #D7D7D7;
+	border-color: #d7d7d7;
 }
 
 #verifyCodePushButton:pressed {
     background-color: #383840; 
-	border-color:#D7D7D7;
+	border-color:#d7d7d7;
 }</string>
                      </property>
                      <property name="text">
@@ -9462,14 +9623,17 @@ color: #f3f3f3
                   <property name="cursor">
                    <cursorShape>PointingHandCursor</cursorShape>
                   </property>
+                  <property name="toolTip">
+                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cancel reset password.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  </property>
                   <property name="styleSheet">
                    <string notr="true">#cancelResetPasswordProcessLabel {
-	color: #6BA6FD;
-	background-color: #2D2E36;
+	color: #6ba6fd;
+	background-color: #2d2e36;
 }
 
 #cancelResetPasswordProcessLabel:hover {
-	color: #6095E3;
+	color: #6095e3;
 }
 </string>
                   </property>

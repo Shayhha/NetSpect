@@ -63,7 +63,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
 
 QMenu {
     background-color: #2d2d2d;
-    color: #f0f0f0;
+    color: #f3f3f3;
     border: 1px solid #555;
     padding: 5px;
     border-radius: 6px;
@@ -326,27 +326,30 @@ QCheckBox {
 	border: none;
 }
 
+#loginLineEditsVerticalFrame {
+	background-color: #2d2e36;
+	border: none;
+}
+
 #loginLabel {
 	color: #f3f3f3;
 	background-color: #2d2e36;
 }
 
 #loginUsernameLineEdit {
-    background-color: #f3f3f3; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                    
-    color: black;             
-	margin: 0px 5px 10px 5px;
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 0px 5px;
+    color: black;
 }
 
 #loginPasswordLineEdit {
-    background-color: #f3f3f3; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;         
-    color: black;             
-	margin: 0px 5px 0px 5px;
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 0px 5px;
+    color: black;
 }
 
 #loginErrorMessageLabel {
@@ -361,9 +364,9 @@ QCheckBox {
 #loginPushButton  {
     background-color: #4e4f5a;
     border: 2px solid lightgray;
-    border-radius: 10px;         
-    padding: 5px;                      
-    color: #f3f3f3;       
+    border-radius: 10px;
+    padding: 5px;
+    color: #f3f3f3;
 }
 
 #loginPushButton:hover {
@@ -372,7 +375,7 @@ QCheckBox {
 }
 
 #loginPushButton:pressed {
-    background-color: #383840; 
+    background-color: #383840;
 	border-color:#d7d7d7;
 }
 
@@ -395,41 +398,50 @@ QCheckBox {
 	border: none;
 }
 
+#registerLineEditsVerticalFrame {
+	background-color: #2d2e36;
+	border: none;
+}
+
 #registerLabel {
 	color: #f3f3f3;
 	background-color: #2d2e36;
 }
 
 #registerEmailLineEdit {
-    background-color: #f3f3f3; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                     
-    color: black;             
-	margin: 0px 5px 10px 5px;
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 0px 5px;
+    color: black;
 }
 
 #registerUsernameLineEdit {
-    background-color: #f3f3f3; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                      
-    color: black;             
-	margin: 0px 5px 10px 5px;
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 0px 5px;
+    color: black;
 }
 
 #registerPasswordLineEdit {
-    background-color: #f3f3f3; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                       
-    color: black;             
-	margin: 0px 5px 0px 5px;
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 0px 5px;
+    color: black;
+}
+
+#registerConfirmPasswordLineEdit {
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 0px 5px;
+    color: black;
 }
 
 #registerErrorMessageLabel {
-	color: #D84F4F;
-	padding-bottom: 5px;
+	color: #d84f4f;
 	background-color: #2d2e36;
 }
 
@@ -493,12 +505,11 @@ QCheckBox {
 }
 
 #resetPasswordCodeLineEdit {
-    background-color: #f3f3f3; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;         
-    color: black;             
-	margin: 0px 5px 0px 5px;
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 0px 5px;
+    color: black;
 }
 
 #resetPasswordEmailErrorMessageLabel {
@@ -507,18 +518,16 @@ QCheckBox {
 }
 
 #resetPasswordEmailLineEdit {
-    background-color: #f3f3f3; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                    
-    color: black;             
-	margin: 0px 5px 0px 5px;
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 0px 5px;
+    color: black;
 }
 
 #resetPasswordLabel {
 	color: #f3f3f3;
 	background-color: #2d2e36;
-	margin: 10px 0 10px 0;
 }
 
 #sendCodeButtonFrame {
@@ -1074,7 +1083,7 @@ QCheckBox {
 #reportProgressBar {
     border: 2px solid #d3d3d3;
     border-radius: 10px;
-    background-color: #f0f0f0;
+    background-color: #f3f3f3;
     text-align: center;         
     font-weight: bold;
     color: black;
@@ -1324,15 +1333,15 @@ QCheckBox {
 }
 
 #emailLineEdit {
-    background-color: #f3f3f3; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                        
-    color: black;             
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 0px 5px;
+    color: black;     
 }
 
 #saveEmailErrorMessageLabel {
-	color: #D84F4F;
+	color: #d84f4f;
 	background-color: #3C3D4A;
 	border: none;
 }
@@ -1360,15 +1369,15 @@ QCheckBox {
 }
 
 #usernameLineEdit {
-    background-color: #f3f3f3; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                        
-    color: black;             
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 0px 5px;
+    color: black;
 }
 
 #saveUsernameErrorMessageLabel {
-	color: #D84F4F;
+	color: #d84f4f;
 	background-color: #3C3D4A;
 }
 
@@ -1394,32 +1403,32 @@ QCheckBox {
     color: #f3f3f3
 }
 
-#oldPasswordLineEdit {
-    background-color: #f3f3f3; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                    
-    color: black;             
+#currentPasswordLineEdit {
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 0px 5px;
+    color: black;          
 }
 
 #newPasswordLineEdit {
-    background-color: #f3f3f3; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                    
-    color: black;             
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 0px 5px;
+    color: black;         
 }
 
 #confirmPasswordLineEdit {
-    background-color: #f3f3f3; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                      
-    color: black;             
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 0px 5px;
+    color: black;            
 }
 
 #savePasswordErrorMessageLabel {
-	color: #D84F4F;
+	color: #d84f4f;
 	background-color: #3C3D4A;
 	line-height: 50%;
 }
@@ -1540,11 +1549,11 @@ QCheckBox {
 }
 
 #macAddressLineEdit {
-    background-color: #f3f3f3; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                        
-    color: black;             
+    background-color: #f3f3f3;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 0px 5px;
+    color: black;
 }
 
 #addMacAddressPushButton  {

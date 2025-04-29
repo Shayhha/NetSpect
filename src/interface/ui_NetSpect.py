@@ -67,7 +67,7 @@ class Ui_NetSpect(object):
 "\n"
 "QMenu {\n"
 "    background-color: #2d2d2d;\n"
-"    color: #f0f0f0;\n"
+"    color: #f3f3f3;\n"
 "    border: 1px solid #555;\n"
 "    padding: 5px;\n"
 "    border-radius: 6px;\n"
@@ -128,7 +128,7 @@ class Ui_NetSpect(object):
 "#centralWidget QMenu {\n"
 "    bac"
                         "kground-color: #2d2d2d;\n"
-"    color: #f0f0f0;\n"
+"    color: #f3f3f3;\n"
 "    border: 1px solid #555;\n"
 "    padding: 5px;\n"
 "    border-radius: 6px;\n"
@@ -1451,6 +1451,7 @@ class Ui_NetSpect(object):
         self.reportSelectionVerticalFrameOutside = QFrame(self.reportPreviewHorizontalFrame)
         self.reportSelectionVerticalFrameOutside.setObjectName(u"reportSelectionVerticalFrameOutside")
         self.reportSelectionVerticalFrameOutside.setMinimumSize(QSize(250, 0))
+        self.reportSelectionVerticalFrameOutside.setMaximumSize(QSize(250, 16777215))
         self.verticalLayout_16 = QVBoxLayout(self.reportSelectionVerticalFrameOutside)
         self.verticalLayout_16.setSpacing(15)
         self.verticalLayout_16.setObjectName(u"verticalLayout_16")
@@ -1471,12 +1472,13 @@ class Ui_NetSpect(object):
 
         self.reportSelectionVerticalFrameInside = QFrame(self.reportSelectionVerticalFrameOutside)
         self.reportSelectionVerticalFrameInside.setObjectName(u"reportSelectionVerticalFrameInside")
-        self.reportSelectionVerticalFrameInside.setMinimumSize(QSize(235, 0))
+        self.reportSelectionVerticalFrameInside.setMinimumSize(QSize(240, 0))
+        self.reportSelectionVerticalFrameInside.setMaximumSize(QSize(240, 16777215))
         self.reportSelectionVerticalFrameInside.setStyleSheet(u"")
         self.verticalLayout_11 = QVBoxLayout(self.reportSelectionVerticalFrameInside)
         self.verticalLayout_11.setSpacing(8)
         self.verticalLayout_11.setObjectName(u"verticalLayout_11")
-        self.verticalLayout_11.setContentsMargins(20, 20, 30, 20)
+        self.verticalLayout_11.setContentsMargins(10, 20, 20, 20)
         self.reportDurationComboBoxFrame = QFrame(self.reportSelectionVerticalFrameInside)
         self.reportDurationComboBoxFrame.setObjectName(u"reportDurationComboBoxFrame")
         self.reportDurationComboBoxFrame.setMinimumSize(QSize(210, 32))
@@ -1580,28 +1582,25 @@ class Ui_NetSpect(object):
         self.arpSpoofingCheckBox.setFont(font12)
         self.arpSpoofingCheckBox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.arpSpoofingCheckBox.setStyleSheet(u"#arpSpoofingCheckBox {\n"
-"    spacing: 10px; /* Space between checkbox and text */\n"
-"    color: #f3f3f3; /* Optional: Adjust text color */\n"
+"    spacing: 10px;\n"
+"    color: #f3f3f3;\n"
 "}\n"
 "\n"
 "QCheckBox::indicator {\n"
-"    width: 16px;  /* Increase checkbox size */\n"
+"    width: 16px;\n"
 "    height: 16px;\n"
 "}\n"
 "\n"
-"/* Style the checkbox when checked */\n"
 "QCheckBox::indicator:checked {\n"
-"    background-color: #3a8e32; /* Change color when checked */\n"
+"    background-color: #3a8e32;\n"
 "    border: 2px solid #2e7128;\n"
 "}\n"
 "\n"
-"/* Style the checkbox when unchecked */\n"
 "QCheckBox::indicator:unchecked {\n"
 "    background-color: white;\n"
 "    border: 2px solid lightgray;\n"
 "}\n"
 "\n"
-"/* Hover effect */\n"
 "QCheckBox::indicator:hover {\n"
 "    border: 2px solid #4d9946;\n"
 "}")
@@ -1615,28 +1614,25 @@ class Ui_NetSpect(object):
         self.portScanningCheckBox.setFont(font12)
         self.portScanningCheckBox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.portScanningCheckBox.setStyleSheet(u"#portScanningCheckBox {\n"
-"    spacing: 10px; /* Space between checkbox and text */\n"
-"    color: #f3f3f3; /* Optional: Adjust text color */\n"
+"    spacing: 10px;\n"
+"    color: #f3f3f3;\n"
 "}\n"
 "\n"
 "QCheckBox::indicator {\n"
-"    width: 16px;  /* Increase checkbox size */\n"
+"    width: 16px;\n"
 "    height: 16px;\n"
 "}\n"
 "\n"
-"/* Style the checkbox when checked */\n"
 "QCheckBox::indicator:checked {\n"
-"    background-color: #3a8e32; /* Change color when checked */\n"
+"    background-color: #3a8e32;\n"
 "    border: 2px solid #2e7128;\n"
 "}\n"
 "\n"
-"/* Style the checkbox when unchecked */\n"
 "QCheckBox::indicator:unchecked {\n"
 "    background-color: white;\n"
 "    border: 2px solid lightgray;\n"
 "}\n"
 "\n"
-"/* Hover effect */\n"
 "QCheckBox::indicator:hover {\n"
 "    border: 2px solid #4d9946;\n"
 "}")
@@ -1650,28 +1646,25 @@ class Ui_NetSpect(object):
         self.denialOfServiceCheckBox.setFont(font12)
         self.denialOfServiceCheckBox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.denialOfServiceCheckBox.setStyleSheet(u"#denialOfServiceCheckBox {\n"
-"    spacing: 10px; /* Space between checkbox and text */\n"
-"    color: #f3f3f3; /* Optional: Adjust text color */\n"
+"    spacing: 10px;\n"
+"    color: #f3f3f3;\n"
 "}\n"
 "\n"
 "QCheckBox::indicator {\n"
-"    width: 16px;  /* Increase checkbox size */\n"
+"    width: 16px;\n"
 "    height: 16px;\n"
 "}\n"
 "\n"
-"/* Style the checkbox when checked */\n"
 "QCheckBox::indicator:checked {\n"
-"    background-color: #3a8e32; /* Change color when checked */\n"
+"    background-color: #3a8e32;\n"
 "    border: 2px solid #2e7128;\n"
 "}\n"
 "\n"
-"/* Style the checkbox when unchecked */\n"
 "QCheckBox::indicator:unchecked {\n"
 "    background-color: white;\n"
 "    border: 2px solid lightgray;\n"
 "}\n"
 "\n"
-"/* Hover effect */\n"
 "QCheckBox::indicator:hover {\n"
 "    border: 2px solid #4d9946;\n"
 "}")
@@ -1685,28 +1678,25 @@ class Ui_NetSpect(object):
         self.dnsTunnelingCheckBox.setFont(font12)
         self.dnsTunnelingCheckBox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.dnsTunnelingCheckBox.setStyleSheet(u"#dnsTunnelingCheckBox {\n"
-"    spacing: 10px; /* Space between checkbox and text */\n"
-"    color: #f3f3f3; /* Optional: Adjust text color */\n"
+"    spacing: 10px;\n"
+"    color: #f3f3f3;\n"
 "}\n"
 "\n"
 "QCheckBox::indicator {\n"
-"    width: 16px;  /* Increase checkbox size */\n"
+"    width: 16px;\n"
 "    height: 16px;\n"
 "}\n"
 "\n"
-"/* Style the checkbox when checked */\n"
 "QCheckBox::indicator:checked {\n"
-"    background-color: #3a8e32; /* Change color when checked */\n"
+"    background-color: #3a8e32;\n"
 "    border: 2px solid #2e7128;\n"
 "}\n"
 "\n"
-"/* Style the checkbox when unchecked */\n"
 "QCheckBox::indicator:unchecked {\n"
 "    background-color: white;\n"
 "    border: 2px solid lightgray;\n"
 "}\n"
 "\n"
-"/* Hover effect */\n"
 "QCheckBox::indicator:hover {\n"
 "    border: 2px solid #4d9946;\n"
 "}")
@@ -1716,7 +1706,7 @@ class Ui_NetSpect(object):
 
         self.horizontalLine2 = QFrame(self.reportSelectionVerticalFrameInside)
         self.horizontalLine2.setObjectName(u"horizontalLine2")
-        self.horizontalLine2.setMinimumSize(QSize(0, 40))
+        self.horizontalLine2.setMinimumSize(QSize(210, 40))
         self.horizontalLine2.setStyleSheet(u"#horizontalLine2 {\n"
 " color: #f3f3f3\n"
 "}")
@@ -1732,28 +1722,25 @@ class Ui_NetSpect(object):
         self.machineInfoCheckBox.setFont(font12)
         self.machineInfoCheckBox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.machineInfoCheckBox.setStyleSheet(u"QCheckBox::indicator {\n"
-"    width: 16px;  /* Increase checkbox size */\n"
+"    width: 16px;\n"
 "    height: 16px;\n"
 "}\n"
 "\n"
 "QCheckBox {\n"
-"    spacing: 10px; /* Space between checkbox and text */\n"
-"    color: #f3f3f3; /* Optional: Adjust text color */\n"
+"    spacing: 10px;\n"
+"    color: #f3f3f3;\n"
 "}\n"
 "\n"
-"/* Style the checkbox when checked */\n"
 "QCheckBox::indicator:checked {\n"
-"    background-color: #3a8e32; /* Change color when checked */\n"
+"    background-color: #3a8e32;\n"
 "    border: 2px solid #2e7128;\n"
 "}\n"
 "\n"
-"/* Style the checkbox when unchecked */\n"
 "QCheckBox::indicator:unchecked {\n"
 "    background-color: white;\n"
 "    border: 2px solid lightgray;\n"
 "}\n"
 "\n"
-"/* Hover effect */\n"
 "QCheckBox::indicator:hover {\n"
 "    border: 2px solid #4d9946;\n"
 "}")
@@ -1833,7 +1820,7 @@ class Ui_NetSpect(object):
         self.reportProgressBar.setStyleSheet(u"#reportProgressBar {\n"
 "    border: 2px solid #d3d3d3;\n"
 "    border-radius: 10px;\n"
-"    background-color: #f0f0f0;\n"
+"    background-color: #f3f3f3;\n"
 "    text-align: center;         \n"
 "    font-weight: bold;\n"
 "    color: black;\n"
@@ -2788,7 +2775,7 @@ class Ui_NetSpect(object):
         self.userSettingsLabel.setFont(font5)
         self.userSettingsLabel.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.userSettingsLabel.setStyleSheet(u"#userSettingsLabel {\n"
-"color: #f3f3f3;\n"
+"    color: #f3f3f3;\n"
 "}")
 
         self.verticalLayout_8.addWidget(self.userSettingsLabel)
@@ -2820,7 +2807,7 @@ class Ui_NetSpect(object):
         self.changeEmailLabel.setMinimumSize(QSize(0, 40))
         self.changeEmailLabel.setFont(font6)
         self.changeEmailLabel.setStyleSheet(u"#changeEmailLabel {\n"
-"color: #f3f3f3\n"
+"    color: #f3f3f3;\n"
 "}")
 
         self.verticalLayout_6.addWidget(self.changeEmailLabel)
@@ -2834,11 +2821,11 @@ class Ui_NetSpect(object):
         font14.setBold(False)
         self.emailLineEdit.setFont(font14)
         self.emailLineEdit.setStyleSheet(u"#emailLineEdit {\n"
-"    background-color: #f3f3f3; \n"
-"    border: 2px solid lightgray;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;                        \n"
-"    color: black;             \n"
+"    background-color: #f3f3f3;\n"
+"    border: 2px solid lightgray;\n"
+"    border-radius: 10px;\n"
+"    padding: 0px 5px;\n"
+"    color: black;\n"
 "}")
 
         self.verticalLayout_6.addWidget(self.emailLineEdit)
@@ -2848,7 +2835,7 @@ class Ui_NetSpect(object):
         sizePolicy6.setHeightForWidth(self.saveEmailErrorMessageLabel.sizePolicy().hasHeightForWidth())
         self.saveEmailErrorMessageLabel.setSizePolicy(sizePolicy6)
         self.saveEmailErrorMessageLabel.setMinimumSize(QSize(252, 20))
-        self.saveEmailErrorMessageLabel.setMaximumSize(QSize(500, 60))
+        self.saveEmailErrorMessageLabel.setMaximumSize(QSize(500, 50))
         font15 = QFont()
         font15.setFamilies([u"Cairo"])
         font15.setPointSize(10)
@@ -2864,7 +2851,7 @@ class Ui_NetSpect(object):
         self.saveEmailErrorMessageLabel.setLineWidth(1)
         self.saveEmailErrorMessageLabel.setMidLineWidth(0)
         self.saveEmailErrorMessageLabel.setTextFormat(Qt.TextFormat.RichText)
-        self.saveEmailErrorMessageLabel.setScaledContents(True)
+        self.saveEmailErrorMessageLabel.setScaledContents(False)
         self.saveEmailErrorMessageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.saveEmailErrorMessageLabel.setWordWrap(True)
         self.saveEmailErrorMessageLabel.setMargin(0)
@@ -2922,7 +2909,7 @@ class Ui_NetSpect(object):
         self.changeUsernameLabel.setMinimumSize(QSize(0, 40))
         self.changeUsernameLabel.setFont(font6)
         self.changeUsernameLabel.setStyleSheet(u"#changeUsernameLabel {\n"
-"color: #f3f3f3\n"
+"    color: #f3f3f3;\n"
 "}")
 
         self.verticalLayout_6.addWidget(self.changeUsernameLabel)
@@ -2935,12 +2922,11 @@ class Ui_NetSpect(object):
         font17.setPointSize(11)
         self.usernameLineEdit.setFont(font17)
         self.usernameLineEdit.setStyleSheet(u"#usernameLineEdit {\n"
-"    background-color: #f3f3f3; \n"
-"    border: 2px solid lightgray;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;                        \n"
-"    color: black;             \n"
-"	/*margin-bottom: 10px;*/\n"
+"    background-color: #f3f3f3;\n"
+"    border: 2px solid lightgray;\n"
+"    border-radius: 10px; \n"
+"    padding: 0px 5px;\n"
+"    color: black;\n"
 "}")
 
         self.verticalLayout_6.addWidget(self.usernameLineEdit)
@@ -2960,6 +2946,7 @@ class Ui_NetSpect(object):
 "	color: #D84F4F;\n"
 "	background-color: #3C3D4A;\n"
 "}")
+        self.saveUsernameErrorMessageLabel.setScaledContents(False)
         self.saveUsernameErrorMessageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.saveUsernameErrorMessageLabel.setWordWrap(True)
         self.saveUsernameErrorMessageLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
@@ -3009,7 +2996,7 @@ class Ui_NetSpect(object):
         self.changePasswordLabel.setMinimumSize(QSize(0, 40))
         self.changePasswordLabel.setFont(font6)
         self.changePasswordLabel.setStyleSheet(u"#changePasswordLabel {\n"
-"color: #f3f3f3\n"
+"    color: #f3f3f3;\n"
 "}")
 
         self.verticalLayout_6.addWidget(self.changePasswordLabel)
@@ -3020,31 +3007,31 @@ class Ui_NetSpect(object):
         self.changePasswordVerticalFrame.setSpacing(15)
         self.changePasswordVerticalFrame.setObjectName(u"changePasswordVerticalFrame")
         self.changePasswordVerticalFrame.setContentsMargins(0, 0, 0, 0)
-        self.oldPasswordLineEdit = QLineEdit(self.PasswordVerticalFrame)
-        self.oldPasswordLineEdit.setObjectName(u"oldPasswordLineEdit")
-        self.oldPasswordLineEdit.setMaximumSize(QSize(500, 33))
-        self.oldPasswordLineEdit.setFont(font17)
-        self.oldPasswordLineEdit.setStyleSheet(u"#oldPasswordLineEdit {\n"
-"    background-color: #f3f3f3; \n"
-"    border: 2px solid lightgray;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;                    \n"
-"    color: black;             \n"
+        self.currentPasswordLineEdit = QLineEdit(self.PasswordVerticalFrame)
+        self.currentPasswordLineEdit.setObjectName(u"currentPasswordLineEdit")
+        self.currentPasswordLineEdit.setMaximumSize(QSize(500, 33))
+        self.currentPasswordLineEdit.setFont(font17)
+        self.currentPasswordLineEdit.setStyleSheet(u"#currentPasswordLineEdit {\n"
+"    background-color: #f3f3f3;\n"
+"    border: 2px solid lightgray;\n"
+"    border-radius: 10px;\n"
+"    padding: 0px 5px;\n"
+"    color: black;\n"
 "}")
-        self.oldPasswordLineEdit.setEchoMode(QLineEdit.EchoMode.Password)
+        self.currentPasswordLineEdit.setEchoMode(QLineEdit.EchoMode.Password)
 
-        self.changePasswordVerticalFrame.addWidget(self.oldPasswordLineEdit)
+        self.changePasswordVerticalFrame.addWidget(self.currentPasswordLineEdit)
 
         self.newPasswordLineEdit = QLineEdit(self.PasswordVerticalFrame)
         self.newPasswordLineEdit.setObjectName(u"newPasswordLineEdit")
         self.newPasswordLineEdit.setMaximumSize(QSize(500, 33))
         self.newPasswordLineEdit.setFont(font17)
         self.newPasswordLineEdit.setStyleSheet(u"#newPasswordLineEdit {\n"
-"    background-color: #f3f3f3; \n"
-"    border: 2px solid lightgray;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;                    \n"
-"    color: black;             \n"
+"    background-color: #f3f3f3;\n"
+"    border: 2px solid lightgray;\n"
+"    border-radius: 10px;\n"
+"    padding: 0px 5px;\n"
+"    color: black;\n"
 "}")
         self.newPasswordLineEdit.setEchoMode(QLineEdit.EchoMode.Password)
 
@@ -3055,11 +3042,11 @@ class Ui_NetSpect(object):
         self.confirmPasswordLineEdit.setMaximumSize(QSize(500, 33))
         self.confirmPasswordLineEdit.setFont(font17)
         self.confirmPasswordLineEdit.setStyleSheet(u"#confirmPasswordLineEdit {\n"
-"    background-color: #f3f3f3; \n"
-"    border: 2px solid lightgray;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;                      \n"
-"    color: black;             \n"
+"    background-color: #f3f3f3;\n"
+"    border: 2px solid lightgray;\n"
+"    border-radius: 10px;\n"
+"    padding: 0px 5px;\n"
+"    color: black;\n"
 "}")
         self.confirmPasswordLineEdit.setEchoMode(QLineEdit.EchoMode.Password)
 
@@ -3156,7 +3143,7 @@ class Ui_NetSpect(object):
         self.interfaceSettingsLabel.setMinimumSize(QSize(185, 40))
         self.interfaceSettingsLabel.setFont(font6)
         self.interfaceSettingsLabel.setStyleSheet(u"#interfaceSettingsLabel {\n"
-"color: #f3f3f3\n"
+"    color: #f3f3f3;\n"
 "}")
 
         self.verticalLayout_25.addWidget(self.interfaceSettingsLabel)
@@ -3267,7 +3254,7 @@ class Ui_NetSpect(object):
         self.operationModeLabel.setMinimumSize(QSize(265, 40))
         self.operationModeLabel.setFont(font6)
         self.operationModeLabel.setStyleSheet(u"#operationModeLabel {\n"
-"color: #f3f3f3\n"
+"    color: #f3f3f3;\n"
 "}")
 
         self.verticalLayout_27.addWidget(self.operationModeLabel)
@@ -3384,13 +3371,14 @@ class Ui_NetSpect(object):
         self.macAddressBlacklistSettingsLabel.setMinimumSize(QSize(185, 40))
         self.macAddressBlacklistSettingsLabel.setFont(font6)
         self.macAddressBlacklistSettingsLabel.setStyleSheet(u"#macAddressBlacklistSettingsLabel {\n"
-"color: #f3f3f3\n"
+"    color: #f3f3f3;\n"
 "}")
 
         self.verticalLayout_24.addWidget(self.macAddressBlacklistSettingsLabel)
 
         self.macAddressListWidget = QListWidget(self.verticalFrame_2)
         self.macAddressListWidget.setObjectName(u"macAddressListWidget")
+        self.macAddressListWidget.setMinimumSize(QSize(256, 170))
         self.macAddressListWidget.setMaximumSize(QSize(375, 275))
         self.macAddressListWidget.setFont(font12)
         self.macAddressListWidget.setStyleSheet(u"#macAddressListWidget {\n"
@@ -3476,11 +3464,11 @@ class Ui_NetSpect(object):
         self.macAddressLineEdit.setMaximumSize(QSize(16777215, 33))
         self.macAddressLineEdit.setFont(font17)
         self.macAddressLineEdit.setStyleSheet(u"#macAddressLineEdit {\n"
-"    background-color: #f0f0f0; \n"
-"    border: 2px solid lightgray;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;                        \n"
-"    color: black;             \n"
+"    background-color: #f3f3f3;\n"
+"    border: 2px solid lightgray; \n"
+"    border-radius: 10px;\n"
+"    padding: 0px 5px;\n"
+"    color: black;\n"
 "}")
         self.macAddressLineEdit.setMaxLength(17)
 
@@ -3518,7 +3506,7 @@ class Ui_NetSpect(object):
         sizePolicy6.setHeightForWidth(self.macAddressBlacklistErrorMessageLabel.sizePolicy().hasHeightForWidth())
         self.macAddressBlacklistErrorMessageLabel.setSizePolicy(sizePolicy6)
         self.macAddressBlacklistErrorMessageLabel.setMinimumSize(QSize(252, 20))
-        self.macAddressBlacklistErrorMessageLabel.setMaximumSize(QSize(375, 100))
+        self.macAddressBlacklistErrorMessageLabel.setMaximumSize(QSize(375, 50))
         self.macAddressBlacklistErrorMessageLabel.setFont(font18)
         self.macAddressBlacklistErrorMessageLabel.setStyleSheet(u"#macAddressBlacklistErrorMessageLabel {\n"
 "	color: #D84F4F;\n"
@@ -3626,7 +3614,7 @@ class Ui_NetSpect(object):
         self.loginRegisterVerticalFrame.setObjectName(u"loginRegisterVerticalFrame")
         self.loginRegisterVerticalFrame.setMaximumSize(QSize(300, 16777215))
         self.loginRegisterVerticalFrame.setStyleSheet(u"#loginRegisterVerticalFrame {\n"
-"    background-color: #2D2E36;\n"
+"    background-color: #2d2e36;\n"
 "}")
         self.verticalLayout_19 = QVBoxLayout(self.loginRegisterVerticalFrame)
         self.verticalLayout_19.setSpacing(10)
@@ -3635,10 +3623,10 @@ class Ui_NetSpect(object):
         self.loginFrame = QFrame(self.loginRegisterVerticalFrame)
         self.loginFrame.setObjectName(u"loginFrame")
         self.loginFrame.setEnabled(True)
-        self.loginFrame.setMinimumSize(QSize(300, 180))
-        self.loginFrame.setMaximumSize(QSize(300, 450))
+        self.loginFrame.setMinimumSize(QSize(300, 320))
+        self.loginFrame.setMaximumSize(QSize(300, 320))
         self.loginFrame.setStyleSheet(u"#loginFrame {\n"
-"	background-color: #2D2E36;\n"
+"	background-color: #2d2e36;\n"
 "    border: none;\n"
 "}")
         self.loginFrame.setFrameShape(QFrame.Shape.StyledPanel)
@@ -3652,17 +3640,17 @@ class Ui_NetSpect(object):
         self.loginVerticalFrame.setEnabled(True)
         sizePolicy6.setHeightForWidth(self.loginVerticalFrame.sizePolicy().hasHeightForWidth())
         self.loginVerticalFrame.setSizePolicy(sizePolicy6)
-        self.loginVerticalFrame.setMinimumSize(QSize(300, 180))
-        self.loginVerticalFrame.setMaximumSize(QSize(300, 450))
+        self.loginVerticalFrame.setMinimumSize(QSize(300, 320))
+        self.loginVerticalFrame.setMaximumSize(QSize(300, 320))
         self.loginVerticalFrame.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.loginVerticalFrame.setStyleSheet(u"#loginVerticalFrame {\n"
-"	background-color: #2D2E36;\n"
+"	background-color: #2d2e36;\n"
 "	border: none;\n"
 "}")
         self.verticalLayout_20 = QVBoxLayout(self.loginVerticalFrame)
         self.verticalLayout_20.setSpacing(5)
         self.verticalLayout_20.setObjectName(u"verticalLayout_20")
-        self.verticalLayout_20.setContentsMargins(15, 0, 15, 10)
+        self.verticalLayout_20.setContentsMargins(20, 0, 15, 10)
         self.loginLabel = QLabel(self.loginVerticalFrame)
         self.loginLabel.setObjectName(u"loginLabel")
         self.loginLabel.setMinimumSize(QSize(0, 50))
@@ -3674,37 +3662,47 @@ class Ui_NetSpect(object):
         self.loginLabel.setFont(font19)
         self.loginLabel.setStyleSheet(u"#loginLabel {\n"
 "	color: #f3f3f3;\n"
-"	background-color: #2D2E36;\n"
-"\n"
+"	background-color: #2d2e36;\n"
 "}")
         self.loginLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.loginLabel.setMargin(0)
 
         self.verticalLayout_20.addWidget(self.loginLabel)
 
-        self.loginUsernameLineEdit = QLineEdit(self.loginVerticalFrame)
+        self.loginLineEditsVerticalFrame = QFrame(self.loginVerticalFrame)
+        self.loginLineEditsVerticalFrame.setObjectName(u"loginLineEditsVerticalFrame")
+        self.loginLineEditsVerticalFrame.setMinimumSize(QSize(265, 100))
+        self.loginLineEditsVerticalFrame.setMaximumSize(QSize(265, 100))
+        self.loginLineEditsVerticalFrame.setStyleSheet(u"#loginLineEditsVerticalFrame {\n"
+"	background-color: #2d2e36;\n"
+"	border: none;\n"
+"}")
+        self.verticalLayout_38 = QVBoxLayout(self.loginLineEditsVerticalFrame)
+        self.verticalLayout_38.setSpacing(5)
+        self.verticalLayout_38.setObjectName(u"verticalLayout_38")
+        self.verticalLayout_38.setContentsMargins(0, 0, 0, 0)
+        self.loginUsernameLineEdit = QLineEdit(self.loginLineEditsVerticalFrame)
         self.loginUsernameLineEdit.setObjectName(u"loginUsernameLineEdit")
         sizePolicy6.setHeightForWidth(self.loginUsernameLineEdit.sizePolicy().hasHeightForWidth())
         self.loginUsernameLineEdit.setSizePolicy(sizePolicy6)
-        self.loginUsernameLineEdit.setMinimumSize(QSize(250, 44))
-        self.loginUsernameLineEdit.setMaximumSize(QSize(16777215, 44))
+        self.loginUsernameLineEdit.setMinimumSize(QSize(265, 34))
+        self.loginUsernameLineEdit.setMaximumSize(QSize(16777215, 34))
         self.loginUsernameLineEdit.setFont(font8)
         self.loginUsernameLineEdit.setStyleSheet(u"#loginUsernameLineEdit {\n"
-"    background-color: #f0f0f0; \n"
-"    border: 2px solid lightgray;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;                    \n"
-"    color: black;             \n"
-"	margin: 0px 5px 10px 5px;\n"
+"    background-color: #f3f3f3;\n"
+"    border: 2px solid lightgray;\n"
+"    border-radius: 10px; \n"
+"    padding: 0px 5px;\n"
+"    color: black;\n"
 "}")
 
-        self.verticalLayout_20.addWidget(self.loginUsernameLineEdit)
+        self.verticalLayout_38.addWidget(self.loginUsernameLineEdit)
 
-        self.loginPasswordLineEdit = QLineEdit(self.loginVerticalFrame)
+        self.loginPasswordLineEdit = QLineEdit(self.loginLineEditsVerticalFrame)
         self.loginPasswordLineEdit.setObjectName(u"loginPasswordLineEdit")
         sizePolicy6.setHeightForWidth(self.loginPasswordLineEdit.sizePolicy().hasHeightForWidth())
         self.loginPasswordLineEdit.setSizePolicy(sizePolicy6)
-        self.loginPasswordLineEdit.setMinimumSize(QSize(250, 34))
+        self.loginPasswordLineEdit.setMinimumSize(QSize(265, 34))
         self.loginPasswordLineEdit.setMaximumSize(QSize(16777215, 34))
         font20 = QFont()
         font20.setFamilies([u"Cairo"])
@@ -3712,18 +3710,20 @@ class Ui_NetSpect(object):
         font20.setBold(False)
         self.loginPasswordLineEdit.setFont(font20)
         self.loginPasswordLineEdit.setStyleSheet(u"#loginPasswordLineEdit {\n"
-"    background-color: #f0f0f0; \n"
-"    border: 2px solid lightgray;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;         \n"
-"    color: black;             \n"
-"	margin: 0px 5px 0px 5px;\n"
+"    background-color: #f3f3f3;\n"
+"    border: 2px solid lightgray;\n"
+"    border-radius: 10px;\n"
+"    padding: 0px 5px;\n"
+"    color: black;\n"
 "}\n"
 "\n"
 "")
         self.loginPasswordLineEdit.setEchoMode(QLineEdit.EchoMode.Password)
 
-        self.verticalLayout_20.addWidget(self.loginPasswordLineEdit)
+        self.verticalLayout_38.addWidget(self.loginPasswordLineEdit)
+
+
+        self.verticalLayout_20.addWidget(self.loginLineEditsVerticalFrame)
 
         self.loginErrorMessageLabel = QLabel(self.loginVerticalFrame)
         self.loginErrorMessageLabel.setObjectName(u"loginErrorMessageLabel")
@@ -3733,31 +3733,32 @@ class Ui_NetSpect(object):
         self.loginErrorMessageLabel.setMaximumSize(QSize(16777215, 50))
         self.loginErrorMessageLabel.setFont(font18)
         self.loginErrorMessageLabel.setStyleSheet(u"#loginErrorMessageLabel {\n"
-"	color: #D84F4F;\n"
-"	background-color: #2D2E36;\n"
+"	color: #d84f4f;\n"
+"	background-color: #2d2e36;\n"
 "}")
         self.loginErrorMessageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.loginErrorMessageLabel.setWordWrap(True)
         self.loginErrorMessageLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
         self.verticalLayout_20.addWidget(self.loginErrorMessageLabel)
 
         self.loginButtonFrame = QFrame(self.loginVerticalFrame)
         self.loginButtonFrame.setObjectName(u"loginButtonFrame")
-        self.loginButtonFrame.setMaximumSize(QSize(500, 70))
+        self.loginButtonFrame.setMaximumSize(QSize(300, 70))
         self.loginButtonFrame.setStyleSheet(u"#loginButtonFrame {\n"
-"	background-color: #2D2E36;\n"
+"	background-color: #2d2e36;\n"
 "}")
-        self.usernameButtonHorizontalLayout_2 = QHBoxLayout(self.loginButtonFrame)
-        self.usernameButtonHorizontalLayout_2.setSpacing(0)
-        self.usernameButtonHorizontalLayout_2.setObjectName(u"usernameButtonHorizontalLayout_2")
-        self.usernameButtonHorizontalLayout_2.setContentsMargins(0, 15, 0, 15)
+        self.loginButtonHorizontalLayout = QHBoxLayout(self.loginButtonFrame)
+        self.loginButtonHorizontalLayout.setSpacing(0)
+        self.loginButtonHorizontalLayout.setObjectName(u"loginButtonHorizontalLayout")
+        self.loginButtonHorizontalLayout.setContentsMargins(0, 15, 0, 15)
         self.loginPushButton = QPushButton(self.loginButtonFrame)
         self.loginPushButton.setObjectName(u"loginPushButton")
         self.loginPushButton.setMaximumSize(QSize(100, 36))
         self.loginPushButton.setFont(font16)
         self.loginPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.loginPushButton.setStyleSheet(u"#loginPushButton  {\n"
-"    background-color: #4E4F5A; \n"
+"    background-color: #4e4f5a;\n"
 "    border: 2px solid lightgray;  \n"
 "    border-radius: 10px;         \n"
 "    padding: 5px;                      \n"
@@ -3766,15 +3767,15 @@ class Ui_NetSpect(object):
 "\n"
 "#loginPushButton:hover {\n"
 "    background-color: #464751; \n"
-"	border-color: #D7D7D7;\n"
+"	border-color: #d7d7d7;\n"
 "}\n"
 "\n"
 "#loginPushButton:pressed {\n"
 "    background-color: #383840; \n"
-"	border-color:#D7D7D7;\n"
+"	border-color:#d7d7d7;\n"
 "}")
 
-        self.usernameButtonHorizontalLayout_2.addWidget(self.loginPushButton)
+        self.loginButtonHorizontalLayout.addWidget(self.loginPushButton)
 
 
         self.verticalLayout_20.addWidget(self.loginButtonFrame)
@@ -3788,12 +3789,12 @@ class Ui_NetSpect(object):
         self.moveToRegisterLabel.setFont(font20)
         self.moveToRegisterLabel.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.moveToRegisterLabel.setStyleSheet(u"#moveToRegisterLabel {\n"
-"	color: #6BA6FD;\n"
-"	background-color: #2D2E36;\n"
+"	color: #6ba6fd;\n"
+"	background-color: #2d2e36;\n"
 "}\n"
 "\n"
 "#moveToRegisterLabel:hover {\n"
-"	color: #6095E3;\n"
+"	color: #6095e3;\n"
 "}\n"
 "")
         self.moveToRegisterLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -3809,12 +3810,12 @@ class Ui_NetSpect(object):
         self.moveToForgotPasswordLabel.setFont(font20)
         self.moveToForgotPasswordLabel.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.moveToForgotPasswordLabel.setStyleSheet(u"#moveToForgotPasswordLabel {\n"
-"	color: #6BA6FD;\n"
-"	background-color: #2D2E36;\n"
+"	color: #6ba6fd;\n"
+"	background-color: #2d2e36;\n"
 "}\n"
 "\n"
 "#moveToForgotPasswordLabel:hover {\n"
-"	color: #6095E3;\n"
+"	color: #6095e3;\n"
 "}\n"
 "")
         self.moveToForgotPasswordLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -3830,10 +3831,10 @@ class Ui_NetSpect(object):
         self.registerFrame = QFrame(self.loginRegisterVerticalFrame)
         self.registerFrame.setObjectName(u"registerFrame")
         self.registerFrame.setEnabled(True)
-        self.registerFrame.setMinimumSize(QSize(300, 230))
-        self.registerFrame.setMaximumSize(QSize(300, 730))
+        self.registerFrame.setMinimumSize(QSize(300, 390))
+        self.registerFrame.setMaximumSize(QSize(300, 390))
         self.registerFrame.setStyleSheet(u"#registerFrame {\n"
-"    background-color: #2D2E36;\n"
+"    background-color: #2d2e36;\n"
 "    border: none;\n"
 "}")
         self.registerFrame.setFrameShape(QFrame.Shape.StyledPanel)
@@ -3844,16 +3845,16 @@ class Ui_NetSpect(object):
         self.gridLayout_7.setContentsMargins(0, 0, 0, 0)
         self.registerVerticalFrame = QFrame(self.registerFrame)
         self.registerVerticalFrame.setObjectName(u"registerVerticalFrame")
-        self.registerVerticalFrame.setMinimumSize(QSize(300, 230))
-        self.registerVerticalFrame.setMaximumSize(QSize(300, 575))
+        self.registerVerticalFrame.setMinimumSize(QSize(300, 390))
+        self.registerVerticalFrame.setMaximumSize(QSize(300, 390))
         self.registerVerticalFrame.setStyleSheet(u"#registerVerticalFrame {\n"
-"	background-color: #2D2E36;\n"
+"	background-color: #2d2e36;\n"
 "	border: none;\n"
 "}")
         self.verticalLayout_21 = QVBoxLayout(self.registerVerticalFrame)
         self.verticalLayout_21.setSpacing(5)
         self.verticalLayout_21.setObjectName(u"verticalLayout_21")
-        self.verticalLayout_21.setContentsMargins(15, 0, 15, 10)
+        self.verticalLayout_21.setContentsMargins(20, 0, 15, 10)
         self.registerLabel = QLabel(self.registerVerticalFrame)
         self.registerLabel.setObjectName(u"registerLabel")
         self.registerLabel.setMinimumSize(QSize(0, 50))
@@ -3862,73 +3863,105 @@ class Ui_NetSpect(object):
         self.registerLabel.setStyleSheet(u"#registerLabel {\n"
 "	color: #f3f3f3;\n"
 "	background-color: #2D2E36;\n"
-"\n"
 "}")
         self.registerLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.registerLabel.setMargin(0)
 
         self.verticalLayout_21.addWidget(self.registerLabel)
 
-        self.registerEmailLineEdit = QLineEdit(self.registerVerticalFrame)
+        self.registerLineEditsVerticalFrame = QFrame(self.registerVerticalFrame)
+        self.registerLineEditsVerticalFrame.setObjectName(u"registerLineEditsVerticalFrame")
+        self.registerLineEditsVerticalFrame.setMinimumSize(QSize(265, 200))
+        self.registerLineEditsVerticalFrame.setMaximumSize(QSize(265, 200))
+        self.registerLineEditsVerticalFrame.setStyleSheet(u"#registerLineEditsVerticalFrame {\n"
+"	background-color: #2d2e36;\n"
+"	border: none;\n"
+"}")
+        self.verticalLayout_37 = QVBoxLayout(self.registerLineEditsVerticalFrame)
+        self.verticalLayout_37.setSpacing(5)
+        self.verticalLayout_37.setObjectName(u"verticalLayout_37")
+        self.verticalLayout_37.setContentsMargins(0, 0, 0, 0)
+        self.registerEmailLineEdit = QLineEdit(self.registerLineEditsVerticalFrame)
         self.registerEmailLineEdit.setObjectName(u"registerEmailLineEdit")
         sizePolicy6.setHeightForWidth(self.registerEmailLineEdit.sizePolicy().hasHeightForWidth())
         self.registerEmailLineEdit.setSizePolicy(sizePolicy6)
-        self.registerEmailLineEdit.setMinimumSize(QSize(250, 44))
-        self.registerEmailLineEdit.setMaximumSize(QSize(16777215, 44))
+        self.registerEmailLineEdit.setMinimumSize(QSize(265, 34))
+        self.registerEmailLineEdit.setMaximumSize(QSize(16777215, 34))
         self.registerEmailLineEdit.setSizeIncrement(QSize(0, 0))
         self.registerEmailLineEdit.setFont(font8)
         self.registerEmailLineEdit.setStyleSheet(u"#registerEmailLineEdit {\n"
-"    background-color: #f0f0f0; \n"
-"    border: 2px solid lightgray;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;                     \n"
-"    color: black;             \n"
-"	margin: 0px 5px 10px 5px;\n"
+"    background-color: #f3f3f3;\n"
+"    border: 2px solid lightgray;\n"
+"    border-radius: 10px; \n"
+"    padding: 0px 5px;\n"
+"    color: black;\n"
 "}")
 
-        self.verticalLayout_21.addWidget(self.registerEmailLineEdit)
+        self.verticalLayout_37.addWidget(self.registerEmailLineEdit)
 
-        self.registerUsernameLineEdit = QLineEdit(self.registerVerticalFrame)
+        self.registerUsernameLineEdit = QLineEdit(self.registerLineEditsVerticalFrame)
         self.registerUsernameLineEdit.setObjectName(u"registerUsernameLineEdit")
         sizePolicy6.setHeightForWidth(self.registerUsernameLineEdit.sizePolicy().hasHeightForWidth())
         self.registerUsernameLineEdit.setSizePolicy(sizePolicy6)
-        self.registerUsernameLineEdit.setMinimumSize(QSize(250, 44))
-        self.registerUsernameLineEdit.setMaximumSize(QSize(16777215, 44))
+        self.registerUsernameLineEdit.setMinimumSize(QSize(265, 34))
+        self.registerUsernameLineEdit.setMaximumSize(QSize(16777215, 34))
         self.registerUsernameLineEdit.setSizeIncrement(QSize(0, 0))
         self.registerUsernameLineEdit.setFont(font8)
         self.registerUsernameLineEdit.setStyleSheet(u"#registerUsernameLineEdit {\n"
-"    background-color: #f0f0f0; \n"
-"    border: 2px solid lightgray;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;                      \n"
-"    color: black;             \n"
-"	margin: 0px 5px 10px 5px;\n"
+"    background-color: #f3f3f3;\n"
+"    border: 2px solid lightgray;\n"
+"    border-radius: 10px; \n"
+"    padding: 0px 5px;\n"
+"    color: black;\n"
 "}")
 
-        self.verticalLayout_21.addWidget(self.registerUsernameLineEdit)
+        self.verticalLayout_37.addWidget(self.registerUsernameLineEdit)
 
-        self.registerPasswordLineEdit = QLineEdit(self.registerVerticalFrame)
+        self.registerPasswordLineEdit = QLineEdit(self.registerLineEditsVerticalFrame)
         self.registerPasswordLineEdit.setObjectName(u"registerPasswordLineEdit")
         sizePolicy6.setHeightForWidth(self.registerPasswordLineEdit.sizePolicy().hasHeightForWidth())
         self.registerPasswordLineEdit.setSizePolicy(sizePolicy6)
-        self.registerPasswordLineEdit.setMinimumSize(QSize(250, 34))
+        self.registerPasswordLineEdit.setMinimumSize(QSize(265, 34))
         self.registerPasswordLineEdit.setMaximumSize(QSize(16777215, 34))
         self.registerPasswordLineEdit.setSizeIncrement(QSize(0, 0))
         self.registerPasswordLineEdit.setFont(font8)
         self.registerPasswordLineEdit.setToolTipDuration(-1)
         self.registerPasswordLineEdit.setStyleSheet(u"#registerPasswordLineEdit {\n"
-"    background-color: #f0f0f0; \n"
-"    border: 2px solid lightgray;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;                       \n"
-"    color: black;             \n"
-"	margin: 0px 5px 0px 5px;\n"
+"    background-color: #f3f3f3;\n"
+"    border: 2px solid lightgray;\n"
+"    border-radius: 10px; \n"
+"    padding: 0px 5px;\n"
+"    color: black;\n"
 "}\n"
 "\n"
 "")
         self.registerPasswordLineEdit.setEchoMode(QLineEdit.EchoMode.Password)
 
-        self.verticalLayout_21.addWidget(self.registerPasswordLineEdit)
+        self.verticalLayout_37.addWidget(self.registerPasswordLineEdit)
+
+        self.registerConfirmPasswordLineEdit = QLineEdit(self.registerLineEditsVerticalFrame)
+        self.registerConfirmPasswordLineEdit.setObjectName(u"registerConfirmPasswordLineEdit")
+        sizePolicy6.setHeightForWidth(self.registerConfirmPasswordLineEdit.sizePolicy().hasHeightForWidth())
+        self.registerConfirmPasswordLineEdit.setSizePolicy(sizePolicy6)
+        self.registerConfirmPasswordLineEdit.setMinimumSize(QSize(265, 34))
+        self.registerConfirmPasswordLineEdit.setMaximumSize(QSize(16777215, 34))
+        self.registerConfirmPasswordLineEdit.setSizeIncrement(QSize(0, 0))
+        self.registerConfirmPasswordLineEdit.setFont(font8)
+        self.registerConfirmPasswordLineEdit.setToolTipDuration(-1)
+        self.registerConfirmPasswordLineEdit.setStyleSheet(u"#registerConfirmPasswordLineEdit {\n"
+"    background-color: #f3f3f3;\n"
+"    border: 2px solid lightgray;\n"
+"    border-radius: 10px; \n"
+"    padding: 0px 5px;\n"
+"    color: black;\n"
+"}\n"
+"")
+        self.registerConfirmPasswordLineEdit.setEchoMode(QLineEdit.EchoMode.Password)
+
+        self.verticalLayout_37.addWidget(self.registerConfirmPasswordLineEdit)
+
+
+        self.verticalLayout_21.addWidget(self.registerLineEditsVerticalFrame)
 
         self.registerErrorMessageLabel = QLabel(self.registerVerticalFrame)
         self.registerErrorMessageLabel.setObjectName(u"registerErrorMessageLabel")
@@ -3938,9 +3971,8 @@ class Ui_NetSpect(object):
         self.registerErrorMessageLabel.setMaximumSize(QSize(16777215, 50))
         self.registerErrorMessageLabel.setFont(font18)
         self.registerErrorMessageLabel.setStyleSheet(u"#registerErrorMessageLabel {\n"
-"	color: #D84F4F;\n"
-"	padding-bottom: 5px;\n"
-"	background-color: #2D2E36;\n"
+"	color: #d84f4f;\n"
+"	background-color: #2d2e36;\n"
 "}")
         self.registerErrorMessageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.registerErrorMessageLabel.setWordWrap(True)
@@ -3950,21 +3982,21 @@ class Ui_NetSpect(object):
 
         self.registerButtonFrame = QFrame(self.registerVerticalFrame)
         self.registerButtonFrame.setObjectName(u"registerButtonFrame")
-        self.registerButtonFrame.setMaximumSize(QSize(500, 70))
+        self.registerButtonFrame.setMaximumSize(QSize(300, 70))
         self.registerButtonFrame.setStyleSheet(u"#registerButtonFrame {\n"
-"	background-color: #2D2E36;\n"
+"	background-color: #2d2e36;\n"
 "}")
-        self.usernameButtonHorizontalLayout_3 = QHBoxLayout(self.registerButtonFrame)
-        self.usernameButtonHorizontalLayout_3.setSpacing(0)
-        self.usernameButtonHorizontalLayout_3.setObjectName(u"usernameButtonHorizontalLayout_3")
-        self.usernameButtonHorizontalLayout_3.setContentsMargins(0, 15, 0, 15)
+        self.registerButtonHorizontalLayout = QHBoxLayout(self.registerButtonFrame)
+        self.registerButtonHorizontalLayout.setSpacing(0)
+        self.registerButtonHorizontalLayout.setObjectName(u"registerButtonHorizontalLayout")
+        self.registerButtonHorizontalLayout.setContentsMargins(0, 15, 0, 15)
         self.registerPushButton = QPushButton(self.registerButtonFrame)
         self.registerPushButton.setObjectName(u"registerPushButton")
         self.registerPushButton.setMaximumSize(QSize(100, 36))
         self.registerPushButton.setFont(font16)
         self.registerPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.registerPushButton.setStyleSheet(u"#registerPushButton  {\n"
-"    background-color: #4E4F5A; \n"
+"    background-color: #4e4f5a;\n"
 "    border: 2px solid lightgray;  \n"
 "    border-radius: 10px;         \n"
 "    padding: 5px;                     \n"
@@ -3973,15 +4005,15 @@ class Ui_NetSpect(object):
 "\n"
 "#registerPushButton:hover {\n"
 "    background-color: #464751; \n"
-"	border-color: #D7D7D7;\n"
+"	border-color: #d7d7d7;\n"
 "}\n"
 "\n"
 "#registerPushButton:pressed {\n"
 "    background-color: #383840; \n"
-"	border-color:#D7D7D7;\n"
+"	border-color:#d7d7d7;\n"
 "}")
 
-        self.usernameButtonHorizontalLayout_3.addWidget(self.registerPushButton)
+        self.registerButtonHorizontalLayout.addWidget(self.registerPushButton)
 
 
         self.verticalLayout_21.addWidget(self.registerButtonFrame)
@@ -3995,12 +4027,12 @@ class Ui_NetSpect(object):
         self.moveToLoginLabel.setFont(font20)
         self.moveToLoginLabel.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.moveToLoginLabel.setStyleSheet(u"#moveToLoginLabel {\n"
-"	color: #6BA6FD;\n"
-"	background-color: #2D2E36;\n"
+"	color: #6ba6fd;\n"
+"	background-color: #2d2e36;\n"
 "}\n"
 "\n"
 "#moveToLoginLabel:hover {\n"
-"	color: #6095E3;\n"
+"	color: #6095e3;\n"
 "}\n"
 "")
         self.moveToLoginLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -4015,8 +4047,9 @@ class Ui_NetSpect(object):
 
         self.resetPasswordFrame = QFrame(self.loginRegisterVerticalFrame)
         self.resetPasswordFrame.setObjectName(u"resetPasswordFrame")
-        self.resetPasswordFrame.setMinimumSize(QSize(300, 150))
+        self.resetPasswordFrame.setMinimumSize(QSize(300, 250))
         self.resetPasswordFrame.setMaximumSize(QSize(300, 250))
+        self.resetPasswordFrame.setFrameShadow(QFrame.Shadow.Raised)
         self.gridLayout_8 = QGridLayout(self.resetPasswordFrame)
         self.gridLayout_8.setSpacing(0)
         self.gridLayout_8.setObjectName(u"gridLayout_8")
@@ -4024,19 +4057,20 @@ class Ui_NetSpect(object):
         self.resetPasswordVerticalFrame = QFrame(self.resetPasswordFrame)
         self.resetPasswordVerticalFrame.setObjectName(u"resetPasswordVerticalFrame")
         self.resetPasswordVerticalFrame.setEnabled(True)
-        sizePolicy6.setHeightForWidth(self.resetPasswordVerticalFrame.sizePolicy().hasHeightForWidth())
-        self.resetPasswordVerticalFrame.setSizePolicy(sizePolicy6)
-        self.resetPasswordVerticalFrame.setMinimumSize(QSize(300, 150))
+        sizePolicy.setHeightForWidth(self.resetPasswordVerticalFrame.sizePolicy().hasHeightForWidth())
+        self.resetPasswordVerticalFrame.setSizePolicy(sizePolicy)
+        self.resetPasswordVerticalFrame.setMinimumSize(QSize(300, 250))
         self.resetPasswordVerticalFrame.setMaximumSize(QSize(300, 250))
         self.resetPasswordVerticalFrame.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.resetPasswordVerticalFrame.setStyleSheet(u"#resetPasswordVerticalFrame {\n"
-"	background-color: #2D2E36;\n"
+"	background-color: #2d2e36;\n"
 "	border: none;\n"
 "}")
+        self.resetPasswordVerticalFrame.setFrameShape(QFrame.Shape.StyledPanel)
         self.verticalLayout_28 = QVBoxLayout(self.resetPasswordVerticalFrame)
         self.verticalLayout_28.setSpacing(5)
         self.verticalLayout_28.setObjectName(u"verticalLayout_28")
-        self.verticalLayout_28.setContentsMargins(15, 0, 15, 10)
+        self.verticalLayout_28.setContentsMargins(20, 0, 15, 10)
         self.resetPasswordLabel = QLabel(self.resetPasswordVerticalFrame)
         self.resetPasswordLabel.setObjectName(u"resetPasswordLabel")
         self.resetPasswordLabel.setMinimumSize(QSize(0, 50))
@@ -4044,8 +4078,7 @@ class Ui_NetSpect(object):
         self.resetPasswordLabel.setFont(font19)
         self.resetPasswordLabel.setStyleSheet(u"#resetPasswordLabel {\n"
 "	color: #f3f3f3;\n"
-"	background-color: #2D2E36;\n"
-"	margin: 10px 0 10px 0;\n"
+"	background-color: #2d2e36;\n"
 "}")
         self.resetPasswordLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.resetPasswordLabel.setMargin(0)
@@ -4056,16 +4089,15 @@ class Ui_NetSpect(object):
         self.resetPasswordEmailLineEdit.setObjectName(u"resetPasswordEmailLineEdit")
         sizePolicy6.setHeightForWidth(self.resetPasswordEmailLineEdit.sizePolicy().hasHeightForWidth())
         self.resetPasswordEmailLineEdit.setSizePolicy(sizePolicy6)
-        self.resetPasswordEmailLineEdit.setMinimumSize(QSize(250, 34))
+        self.resetPasswordEmailLineEdit.setMinimumSize(QSize(265, 34))
         self.resetPasswordEmailLineEdit.setMaximumSize(QSize(16777215, 34))
         self.resetPasswordEmailLineEdit.setFont(font8)
         self.resetPasswordEmailLineEdit.setStyleSheet(u"#resetPasswordEmailLineEdit {\n"
-"    background-color: #f0f0f0; \n"
-"    border: 2px solid lightgray;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;                    \n"
-"    color: black;             \n"
-"	margin: 0px 5px 0px 5px;\n"
+"    background-color: #f3f3f3;\n"
+"    border: 2px solid lightgray;\n"
+"    border-radius: 10px; \n"
+"    padding: 0px 5px;\n"
+"    color: black;\n"
 "}")
 
         self.verticalLayout_28.addWidget(self.resetPasswordEmailLineEdit)
@@ -4078,8 +4110,8 @@ class Ui_NetSpect(object):
         self.resetPasswordEmailErrorMessageLabel.setMaximumSize(QSize(16777215, 50))
         self.resetPasswordEmailErrorMessageLabel.setFont(font18)
         self.resetPasswordEmailErrorMessageLabel.setStyleSheet(u"#resetPasswordEmailErrorMessageLabel {\n"
-"	color: #D84F4F;\n"
-"	background-color: #2D2E36;\n"
+"	color: #d84f4f;\n"
+"	background-color: #2d2e36;\n"
 "}")
         self.resetPasswordEmailErrorMessageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.resetPasswordEmailErrorMessageLabel.setWordWrap(True)
@@ -4089,21 +4121,21 @@ class Ui_NetSpect(object):
 
         self.sendCodeButtonFrame = QFrame(self.resetPasswordVerticalFrame)
         self.sendCodeButtonFrame.setObjectName(u"sendCodeButtonFrame")
-        self.sendCodeButtonFrame.setMaximumSize(QSize(500, 70))
+        self.sendCodeButtonFrame.setMaximumSize(QSize(300, 70))
         self.sendCodeButtonFrame.setStyleSheet(u"#sendCodeButtonFrame {\n"
-"	background-color: #2D2E36;\n"
+"	background-color: #2d2e36;\n"
 "}")
-        self.usernameButtonHorizontalLayout_4 = QHBoxLayout(self.sendCodeButtonFrame)
-        self.usernameButtonHorizontalLayout_4.setSpacing(0)
-        self.usernameButtonHorizontalLayout_4.setObjectName(u"usernameButtonHorizontalLayout_4")
-        self.usernameButtonHorizontalLayout_4.setContentsMargins(0, 10, 0, 10)
+        self.sendCodeButtonHorizontalLayout = QHBoxLayout(self.sendCodeButtonFrame)
+        self.sendCodeButtonHorizontalLayout.setSpacing(0)
+        self.sendCodeButtonHorizontalLayout.setObjectName(u"sendCodeButtonHorizontalLayout")
+        self.sendCodeButtonHorizontalLayout.setContentsMargins(0, 10, 0, 10)
         self.sendCodePushButton = QPushButton(self.sendCodeButtonFrame)
         self.sendCodePushButton.setObjectName(u"sendCodePushButton")
         self.sendCodePushButton.setMaximumSize(QSize(120, 36))
         self.sendCodePushButton.setFont(font16)
         self.sendCodePushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.sendCodePushButton.setStyleSheet(u"#sendCodePushButton  {\n"
-"    background-color: #4E4F5A; \n"
+"    background-color: #4e4f5a; \n"
 "    border: 2px solid lightgray;  \n"
 "    border-radius: 10px;         \n"
 "    padding: 5px;                      \n"
@@ -4112,15 +4144,15 @@ class Ui_NetSpect(object):
 "\n"
 "#sendCodePushButton:hover {\n"
 "    background-color: #464751; \n"
-"	border-color: #D7D7D7;\n"
+"	border-color: #d7d7d7;\n"
 "}\n"
 "\n"
 "#sendCodePushButton:pressed {\n"
 "    background-color: #383840; \n"
-"	border-color:#D7D7D7;\n"
+"	border-color:#d7d7d7;\n"
 "}")
 
-        self.usernameButtonHorizontalLayout_4.addWidget(self.sendCodePushButton)
+        self.sendCodeButtonHorizontalLayout.addWidget(self.sendCodePushButton)
 
 
         self.verticalLayout_28.addWidget(self.sendCodeButtonFrame)
@@ -4129,16 +4161,15 @@ class Ui_NetSpect(object):
         self.resetPasswordCodeLineEdit.setObjectName(u"resetPasswordCodeLineEdit")
         sizePolicy6.setHeightForWidth(self.resetPasswordCodeLineEdit.sizePolicy().hasHeightForWidth())
         self.resetPasswordCodeLineEdit.setSizePolicy(sizePolicy6)
-        self.resetPasswordCodeLineEdit.setMinimumSize(QSize(250, 34))
+        self.resetPasswordCodeLineEdit.setMinimumSize(QSize(265, 34))
         self.resetPasswordCodeLineEdit.setMaximumSize(QSize(16777215, 34))
         self.resetPasswordCodeLineEdit.setFont(font20)
         self.resetPasswordCodeLineEdit.setStyleSheet(u"#resetPasswordCodeLineEdit {\n"
-"    background-color: #f0f0f0; \n"
-"    border: 2px solid lightgray;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;         \n"
-"    color: black;             \n"
-"	margin: 0px 5px 0px 5px;\n"
+"    background-color: #f3f3f3;\n"
+"    border: 2px solid lightgray;\n"
+"    border-radius: 10px; \n"
+"    padding: 0px 5px;\n"
+"    color: black;\n"
 "}\n"
 "\n"
 "")
@@ -4154,8 +4185,8 @@ class Ui_NetSpect(object):
         self.resetPasswordCodeErrorMessageLabel.setMaximumSize(QSize(16777215, 50))
         self.resetPasswordCodeErrorMessageLabel.setFont(font18)
         self.resetPasswordCodeErrorMessageLabel.setStyleSheet(u"#resetPasswordCodeErrorMessageLabel {\n"
-"	color: #D84F4F;\n"
-"	background-color: #2D2E36;\n"
+"	color: #d84f4f;\n"
+"	background-color: #2d2e36;\n"
 "}")
         self.resetPasswordCodeErrorMessageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.resetPasswordCodeErrorMessageLabel.setWordWrap(True)
@@ -4165,21 +4196,21 @@ class Ui_NetSpect(object):
 
         self.verifyCodeButtonFrame = QFrame(self.resetPasswordVerticalFrame)
         self.verifyCodeButtonFrame.setObjectName(u"verifyCodeButtonFrame")
-        self.verifyCodeButtonFrame.setMaximumSize(QSize(500, 70))
+        self.verifyCodeButtonFrame.setMaximumSize(QSize(300, 70))
         self.verifyCodeButtonFrame.setStyleSheet(u"#verifyCodeButtonFrame {\n"
-"	background-color: #2D2E36;\n"
+"	background-color: #2d2e36;\n"
 "}")
-        self.usernameButtonHorizontalLayout_5 = QHBoxLayout(self.verifyCodeButtonFrame)
-        self.usernameButtonHorizontalLayout_5.setSpacing(0)
-        self.usernameButtonHorizontalLayout_5.setObjectName(u"usernameButtonHorizontalLayout_5")
-        self.usernameButtonHorizontalLayout_5.setContentsMargins(0, 10, 0, 10)
+        self.verifyCodeButtonHorizontalLayout = QHBoxLayout(self.verifyCodeButtonFrame)
+        self.verifyCodeButtonHorizontalLayout.setSpacing(0)
+        self.verifyCodeButtonHorizontalLayout.setObjectName(u"verifyCodeButtonHorizontalLayout")
+        self.verifyCodeButtonHorizontalLayout.setContentsMargins(0, 10, 0, 10)
         self.verifyCodePushButton = QPushButton(self.verifyCodeButtonFrame)
         self.verifyCodePushButton.setObjectName(u"verifyCodePushButton")
         self.verifyCodePushButton.setMaximumSize(QSize(120, 36))
         self.verifyCodePushButton.setFont(font16)
         self.verifyCodePushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.verifyCodePushButton.setStyleSheet(u"#verifyCodePushButton  {\n"
-"    background-color: #4E4F5A; \n"
+"    background-color: #4e4f5a; \n"
 "    border: 2px solid lightgray;  \n"
 "    border-radius: 10px;         \n"
 "    padding: 5px;                      \n"
@@ -4188,15 +4219,15 @@ class Ui_NetSpect(object):
 "\n"
 "#verifyCodePushButton:hover {\n"
 "    background-color: #464751; \n"
-"	border-color: #D7D7D7;\n"
+"	border-color: #d7d7d7;\n"
 "}\n"
 "\n"
 "#verifyCodePushButton:pressed {\n"
 "    background-color: #383840; \n"
-"	border-color:#D7D7D7;\n"
+"	border-color:#d7d7d7;\n"
 "}")
 
-        self.usernameButtonHorizontalLayout_5.addWidget(self.verifyCodePushButton)
+        self.verifyCodeButtonHorizontalLayout.addWidget(self.verifyCodePushButton)
 
 
         self.verticalLayout_28.addWidget(self.verifyCodeButtonFrame)
@@ -4210,12 +4241,12 @@ class Ui_NetSpect(object):
         self.cancelResetPasswordProcessLabel.setFont(font20)
         self.cancelResetPasswordProcessLabel.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.cancelResetPasswordProcessLabel.setStyleSheet(u"#cancelResetPasswordProcessLabel {\n"
-"	color: #6BA6FD;\n"
-"	background-color: #2D2E36;\n"
+"	color: #6ba6fd;\n"
+"	background-color: #2d2e36;\n"
 "}\n"
 "\n"
 "#cancelResetPasswordProcessLabel:hover {\n"
-"	color: #6095E3;\n"
+"	color: #6095e3;\n"
 "}\n"
 "")
         self.cancelResetPasswordProcessLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -4322,11 +4353,11 @@ class Ui_NetSpect(object):
         ___qtablewidgetitem = self.historyTableWidget.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("NetSpect", u"Source IP", None));
         ___qtablewidgetitem1 = self.historyTableWidget.horizontalHeaderItem(1)
-        ___qtablewidgetitem1.setText(QCoreApplication.translate("NetSpect", u"Source Mac", None));
+        ___qtablewidgetitem1.setText(QCoreApplication.translate("NetSpect", u"Source MAC", None));
         ___qtablewidgetitem2 = self.historyTableWidget.horizontalHeaderItem(2)
         ___qtablewidgetitem2.setText(QCoreApplication.translate("NetSpect", u"Destination IP", None));
         ___qtablewidgetitem3 = self.historyTableWidget.horizontalHeaderItem(3)
-        ___qtablewidgetitem3.setText(QCoreApplication.translate("NetSpect", u"Destination Mac", None));
+        ___qtablewidgetitem3.setText(QCoreApplication.translate("NetSpect", u"Destination MAC", None));
         ___qtablewidgetitem4 = self.historyTableWidget.horizontalHeaderItem(4)
         ___qtablewidgetitem4.setText(QCoreApplication.translate("NetSpect", u"Detected Attack", None));
         ___qtablewidgetitem5 = self.historyTableWidget.horizontalHeaderItem(5)
@@ -4402,30 +4433,30 @@ class Ui_NetSpect(object):
 #endif // QT_CONFIG(tooltip)
         self.emailLineEdit.setText("")
         self.emailLineEdit.setPlaceholderText(QCoreApplication.translate("NetSpect", u"New Email", None))
-        self.saveEmailErrorMessageLabel.setText(QCoreApplication.translate("NetSpect", u"<p style='line-height: 0.7;'>Show error message here</p>", None))
+        self.saveEmailErrorMessageLabel.setText(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Please fill in the email address field before changing email address.</p></body></html>", None))
 #if QT_CONFIG(tooltip)
         self.emailPushButton.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Save your new email.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.emailPushButton.setText(QCoreApplication.translate("NetSpect", u"Save Email", None))
         self.changeUsernameLabel.setText(QCoreApplication.translate("NetSpect", u"Change Username:", None))
 #if QT_CONFIG(tooltip)
-        self.usernameLineEdit.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Choose a username that is at most 10 characters long.</p></body></html>", None))
+        self.usernameLineEdit.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Choose a new username between 4 and 16 characters.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.usernameLineEdit.setText("")
         self.usernameLineEdit.setPlaceholderText(QCoreApplication.translate("NetSpect", u"New Username", None))
-        self.saveUsernameErrorMessageLabel.setText(QCoreApplication.translate("NetSpect", u"<p style='line-height: 0.7;'>Show error message here</p>", None))
+        self.saveUsernameErrorMessageLabel.setText(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Please fill in the username field before changing username.</p></body></html>", None))
 #if QT_CONFIG(tooltip)
         self.usernamePushButton.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Save your new username.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.usernamePushButton.setText(QCoreApplication.translate("NetSpect", u"Save Username", None))
         self.changePasswordLabel.setText(QCoreApplication.translate("NetSpect", u"Change Password:", None))
 #if QT_CONFIG(tooltip)
-        self.oldPasswordLineEdit.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Enter your current password.</p></body></html>", None))
+        self.currentPasswordLineEdit.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Enter your current password.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
-        self.oldPasswordLineEdit.setText("")
-        self.oldPasswordLineEdit.setPlaceholderText(QCoreApplication.translate("NetSpect", u"Old Password", None))
+        self.currentPasswordLineEdit.setText("")
+        self.currentPasswordLineEdit.setPlaceholderText(QCoreApplication.translate("NetSpect", u"Current Password", None))
 #if QT_CONFIG(tooltip)
-        self.newPasswordLineEdit.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Your new password must have at least one uppercase letter and one digit. Minimum 6 characters and at most 20.</p></body></html>", None))
+        self.newPasswordLineEdit.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Choose a new password with at least 6 characters and include at least one uppercase letter and one digit.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.newPasswordLineEdit.setText("")
         self.newPasswordLineEdit.setPlaceholderText(QCoreApplication.translate("NetSpect", u"New Password", None))
@@ -4434,7 +4465,7 @@ class Ui_NetSpect(object):
 #endif // QT_CONFIG(tooltip)
         self.confirmPasswordLineEdit.setText("")
         self.confirmPasswordLineEdit.setPlaceholderText(QCoreApplication.translate("NetSpect", u"Confirm Password", None))
-        self.savePasswordErrorMessageLabel.setText(QCoreApplication.translate("NetSpect", u"<p style='line-height: 0.7;'>Show error message here</p>", None))
+        self.savePasswordErrorMessageLabel.setText(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Please fill in all the password fields before changing password.</p></body></html>", None))
 #if QT_CONFIG(tooltip)
         self.passwordPushButton.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Save your new password.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
@@ -4454,20 +4485,20 @@ class Ui_NetSpect(object):
 #if QT_CONFIG(tooltip)
         self.operationModeComboBox.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Select the applocation's opperation mode, 'Real Time Detection' for detecting attacks in real time and 'Data Collection TCP/UDP' or 'Data Collection DNS' for collecting data from current network.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
-        self.macAddressBlacklistSettingsLabel.setText(QCoreApplication.translate("NetSpect", u"Mac Address Blacklist:", None))
+        self.macAddressBlacklistSettingsLabel.setText(QCoreApplication.translate("NetSpect", u"MAC Address Blacklist:", None))
 #if QT_CONFIG(tooltip)
         self.macAddressListWidget.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Double click an item to delete it from the list.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(tooltip)
-        self.macAddressLineEdit.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Input a Mac address (eg. f7:58:15:f3:ce:22)</p></body></html>", None))
+        self.macAddressLineEdit.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Enter a MAC address (e.g., f7:58:15:f3:ce:22).</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.macAddressLineEdit.setText("")
         self.macAddressLineEdit.setPlaceholderText(QCoreApplication.translate("NetSpect", u"Enter MAC Address", None))
 #if QT_CONFIG(tooltip)
-        self.addMacAddressPushButton.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Add a Mac address to the blacklist.</p></body></html>", None))
+        self.addMacAddressPushButton.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Add a MAC address to the blacklist.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.addMacAddressPushButton.setText(QCoreApplication.translate("NetSpect", u"Add", None))
-        self.macAddressBlacklistErrorMessageLabel.setText(QCoreApplication.translate("NetSpect", u"<p style='line-height: 0.7;'>Show error message here</p>", None))
+        self.macAddressBlacklistErrorMessageLabel.setText(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Please enter a valid MAC address.</p></body></html>", None))
 #if QT_CONFIG(tooltip)
         self.clearHistoryPushButton.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Permanently clear alert history.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
@@ -4478,18 +4509,27 @@ class Ui_NetSpect(object):
         self.deleteAccoutPushButton.setText(QCoreApplication.translate("NetSpect", u"Delete Account", None))
         self.loginLabel.setText(QCoreApplication.translate("NetSpect", u"Login", None))
 #if QT_CONFIG(tooltip)
-        self.loginUsernameLineEdit.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Enter your account username. If you dont have an account click the blue text below.</p></body></html>", None))
+        self.loginUsernameLineEdit.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Enter your account username. If you don't have an account you can create one below.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.loginUsernameLineEdit.setText("")
         self.loginUsernameLineEdit.setPlaceholderText(QCoreApplication.translate("NetSpect", u"Username", None))
 #if QT_CONFIG(tooltip)
-        self.loginPasswordLineEdit.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Enter your password, if you dont remember either contact support or open a new account.</p></body></html>", None))
+        self.loginPasswordLineEdit.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Enter your password, if you forgot it you can reset it below.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.loginPasswordLineEdit.setText("")
         self.loginPasswordLineEdit.setPlaceholderText(QCoreApplication.translate("NetSpect", u"Password", None))
-        self.loginErrorMessageLabel.setText(QCoreApplication.translate("NetSpect", u"<p style='line-height: 0.7;'>Username or password is incorrect!</p>", None))
+        self.loginErrorMessageLabel.setText(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Please enter your username and password.</p></body></html>", None))
+#if QT_CONFIG(tooltip)
+        self.loginPushButton.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Log into your account.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.loginPushButton.setText(QCoreApplication.translate("NetSpect", u"Login", None))
+#if QT_CONFIG(tooltip)
+        self.moveToRegisterLabel.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Register a new account.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.moveToRegisterLabel.setText(QCoreApplication.translate("NetSpect", u"Don't have an account?", None))
+#if QT_CONFIG(tooltip)
+        self.moveToForgotPasswordLabel.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Reset your account password with account email address.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.moveToForgotPasswordLabel.setText(QCoreApplication.translate("NetSpect", u"Forgot password?", None))
         self.registerLabel.setText(QCoreApplication.translate("NetSpect", u"Register", None))
 #if QT_CONFIG(tooltip)
@@ -4498,17 +4538,28 @@ class Ui_NetSpect(object):
         self.registerEmailLineEdit.setText("")
         self.registerEmailLineEdit.setPlaceholderText(QCoreApplication.translate("NetSpect", u"Email", None))
 #if QT_CONFIG(tooltip)
-        self.registerUsernameLineEdit.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Choose a username that is at most 10 characters long.</p></body></html>", None))
+        self.registerUsernameLineEdit.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Choose a username between 4 and 16 characters.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.registerUsernameLineEdit.setText("")
         self.registerUsernameLineEdit.setPlaceholderText(QCoreApplication.translate("NetSpect", u"Username", None))
 #if QT_CONFIG(tooltip)
-        self.registerPasswordLineEdit.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Your password must have at least one uppercase letter and one digit. Minimum 6 characters and at most 20.</p></body></html>", None))
+        self.registerPasswordLineEdit.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Choose a password with at least 6 characters and include at least one uppercase letter and one digit.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.registerPasswordLineEdit.setText("")
         self.registerPasswordLineEdit.setPlaceholderText(QCoreApplication.translate("NetSpect", u"Password", None))
-        self.registerErrorMessageLabel.setText(QCoreApplication.translate("NetSpect", u"<p style='line-height: 0.7;'>Username must to have atleast one capital letter and atleast on digit</p>", None))
+#if QT_CONFIG(tooltip)
+        self.registerConfirmPasswordLineEdit.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Confirm your password by entering it again.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
+        self.registerConfirmPasswordLineEdit.setText("")
+        self.registerConfirmPasswordLineEdit.setPlaceholderText(QCoreApplication.translate("NetSpect", u"Confirm Password", None))
+        self.registerErrorMessageLabel.setText(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Please fill in all the fields.</p></body></html>", None))
+#if QT_CONFIG(tooltip)
+        self.registerPushButton.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Register a new account.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.registerPushButton.setText(QCoreApplication.translate("NetSpect", u"Register", None))
+#if QT_CONFIG(tooltip)
+        self.moveToLoginLabel.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Log into your account.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.moveToLoginLabel.setText(QCoreApplication.translate("NetSpect", u"Already have an account?", None))
         self.resetPasswordLabel.setText(QCoreApplication.translate("NetSpect", u"Reset Password", None))
 #if QT_CONFIG(tooltip)
@@ -4516,15 +4567,24 @@ class Ui_NetSpect(object):
 #endif // QT_CONFIG(tooltip)
         self.resetPasswordEmailLineEdit.setText("")
         self.resetPasswordEmailLineEdit.setPlaceholderText(QCoreApplication.translate("NetSpect", u"Email", None))
-        self.resetPasswordEmailErrorMessageLabel.setText(QCoreApplication.translate("NetSpect", u"<p style='line-height: 0.7;'>Username or password is incorrect!</p>", None))
+        self.resetPasswordEmailErrorMessageLabel.setText(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Please fill in the email field for receiving a reset code.</p></body></html>", None))
+#if QT_CONFIG(tooltip)
+        self.sendCodePushButton.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Send a reset code to account email address for reset password.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.sendCodePushButton.setText(QCoreApplication.translate("NetSpect", u"Send Code", None))
 #if QT_CONFIG(tooltip)
         self.resetPasswordCodeLineEdit.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Enter the verification code that we have sent to your provided email address. It might be in the 'Spam' folder.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.resetPasswordCodeLineEdit.setText("")
         self.resetPasswordCodeLineEdit.setPlaceholderText(QCoreApplication.translate("NetSpect", u"Received Code", None))
-        self.resetPasswordCodeErrorMessageLabel.setText(QCoreApplication.translate("NetSpect", u"<p style='line-height: 0.7;'>Username or password is incorrect!</p>", None))
+        self.resetPasswordCodeErrorMessageLabel.setText(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Please fill in the reset code field for verifying your identity.</p></body></html>", None))
+#if QT_CONFIG(tooltip)
+        self.verifyCodePushButton.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Verify reset code and reset account password.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.verifyCodePushButton.setText(QCoreApplication.translate("NetSpect", u"Verify Code", None))
+#if QT_CONFIG(tooltip)
+        self.cancelResetPasswordProcessLabel.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Cancel reset password.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.cancelResetPasswordProcessLabel.setText(QCoreApplication.translate("NetSpect", u"Cancel reset password process", None))
     # retranslateUi
 

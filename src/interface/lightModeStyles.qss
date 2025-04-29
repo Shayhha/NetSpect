@@ -688,22 +688,22 @@ QCheckBox {
 
 #networkInterfaceComboBox {
     background-color: transparent;
+    color: #151519;
     border-radius: 10px;
     border: 2px solid #899fce;	
     padding: 4px;
 	padding-left: 10px;
-    color: #151519;
 }
 
 #networkInterfaceComboBox QAbstractItemView {
     background-color: rgb(245,245,245);
     selection-background-color: rgb(214, 214, 214);
     selection-color: black;
-    color: #151519;   
+    color: #151519;
+    border: 1px solid black;
     padding: 10px;
     padding-left: 5px;
     padding-right: 5px;
-    border: 1px solid black;
 }
 
 #networkInterfaceComboBox QAbstractItemView::item:hover {
@@ -842,11 +842,11 @@ QCheckBox {
 
 #analyticsYearComboBox {
     background-color: transparent;
+    color: #151519;
     border-radius: 10px;
     border: 2px solid #899fce;	
     padding: 4px;
 	padding-left: 10px;
-    color: #151519;
 }
 
 #analyticsYearComboBoxArrow {
@@ -861,11 +861,11 @@ QCheckBox {
     background-color: rgb(245,245,245);
     selection-background-color: rgb(214, 214, 214);
     selection-color: black;
-    color: #151519;      
+    color: #151519;
+    border: 1px solid black;
     padding: 10px;
     padding-left: 5px;
     padding-right: 5px;
-    border: 1px solid black;
 }
 
 #analyticsYearComboBox QAbstractItemView::item:hover { 
@@ -1004,24 +1004,22 @@ QCheckBox {
 
 #reportDurationComboBox {
     background-color: transparent;
+    color: #151519;
     border-radius: 10px;
-    border-style: outset;
-    border-width: 2px;
-    border-color: transparent;	
+    border: 2px solid #899fce;	
     padding: 4px;
 	padding-left: 10px;
-    color: #151519;
 }
 
 #reportDurationComboBox QAbstractItemView {
     background-color: rgb(245,245,245);
     selection-background-color: rgb(214, 214, 214);
     selection-color: black;
-    color: #151519;    
+    color: #151519;
+    border: 1px solid black;
     padding: 10px;
     padding-left: 5px;
     padding-right: 5px;
-    border: 1px solid black;
 }
 
 #reportDurationComboBox QAbstractItemView::item:hover { 
@@ -1496,22 +1494,22 @@ QCheckBox {
 
 #colorModeComboBox {
     background-color: transparent;
+    color: #151519;
     border-radius: 10px;
     border: 2px solid #899fce;	
     padding: 4px;
 	padding-left: 10px;
-    color: #151519;
 }
 
 #colorModeComboBox QAbstractItemView {
     background-color: rgb(245,245,245);
     selection-background-color: rgb(214, 214, 214);
     selection-color: black;
-    color: #151519;    
+    color: #151519;
+    border: 1px solid black;
     padding: 10px;
     padding-left: 5px;
     padding-right: 5px;
-    border: 1px solid black;
 }
 
 #colorModeComboBox QAbstractItemView::item:hover { 
@@ -1652,22 +1650,22 @@ QCheckBox {
 
 #operationModeComboBox {
     background-color: transparent;
+    color: #151519;
     border-radius: 10px;
     border: 2px solid #899fce;	
     padding: 4px;
 	padding-left: 10px;
-    color: #151519;
 }
 
 #operationModeComboBox QAbstractItemView {
     background-color: rgb(245,245,245);
     selection-background-color: rgb(214, 214, 214);
     selection-color: black;
-    color: #151519;    
+    color: #151519;
+    border: 1px solid black;
     padding: 10px;
     padding-left: 5px;
     padding-right: 5px;
-    border: 1px solid black;
 }
 
 #operationModeComboBox QAbstractItemView::item:hover { 

@@ -319,11 +319,12 @@ class NetSpect(QMainWindow):
         self.ui.confirmPasswordLineEdit.textChanged.connect(lambda : UserInterfaceFunctions.NotifyInvalidLineEdit(self, self.ui.confirmPasswordLineEdit, 'confirmPasswordLineEdit', self.ui.savePasswordErrorMessageLabel))
         self.ui.macAddressLineEdit.textChanged.connect(lambda : UserInterfaceFunctions.NotifyInvalidLineEdit(self, self.ui.macAddressLineEdit, 'macAddressLineEdit', self.ui.macAddressBlacklistErrorMessageLabel))
 
+
     # method that validates that a given password matches both of our password validator regexes
     def ValidatePassword(self, password):
         simpleValidatorState= self.passwordValidator.validate(password, 0)[0]
         complexValidatorState = self.finalPasswordValidator.validate(password, 0)[0]
-        if (simpleValidatorState != QValidator.Acceptable) or (complexValidatorState != QValidator.Acceptable):
+        if simpleValidatorState != QValidator.Acceptable or complexValidatorState != QValidator.Acceptable:
             return False
         return True
 
@@ -481,12 +482,15 @@ class NetSpect(QMainWindow):
     def UpdateRunningTimeCounterLabel(self):
         # increment timer by 1 second
         self.timeElapsed += timedelta(seconds=1)
-        # extract hours, minutes, seconds directly from the timedelta object
+        # get number of total seconds passed with timedelta object
         totalSeconds = int(self.timeElapsed.total_seconds())
-        hours = totalSeconds // 3600 #get the number of full hours
+        # extract days, hours, minutes and seconds directly from the timedelta object
+        days = totalSeconds // 86400 #get the number of days
+        hours = (totalSeconds % 86400) // 3600 #get the remaining hours
         minutes = (totalSeconds % 3600) // 60 #get the remaining minutes
         seconds = totalSeconds % 60 #get the remaining seconds
-        formattedTime = f'{hours}:{minutes:02}:{seconds:02}'
+        # calcluated formatted time in our desired format
+        formattedTime = f'{f'{days}:{hours:02}' if days else hours}:{minutes:02}:{seconds:02}'
         # update label with formatted time
         self.ui.runningTimeCounter.setText(formattedTime)
 
@@ -1194,47 +1198,57 @@ class NetSpect(QMainWindow):
     # method for sending a reset password code the user's email to reset the password
     def SendCodeButtonClicked(self):
         if self.sqlThread:
-            # get user's email from line edit and get validator result
-            email = self.ui.resetPasswordEmailLineEdit.text()
-            emailState = self.emailValidator.validate(email, 0)[0]
-            
-            # check if email field is not empty
-            if not email:
-                UserInterfaceFunctions.ChangeErrorMessageText(self.ui.resetPasswordEmailErrorMessageLabel, 'Please fill in the email field for receiving a reset code.')
-            # check if user entered valid email
-            elif emailState != QValidator.Acceptable:
-                UserInterfaceFunctions.ChangeErrorMessageText(self.ui.resetPasswordEmailErrorMessageLabel, 'Please enter a valid email address into the field before receiving a reset code.')
-            # else we process the reset password request
+            # means we had detection active
+            if self.isDetection:
+                UserInterfaceFunctions.ShowMessageBox('Error In Reset Password', 'Please stop network scan before receiving a reset code.', 'Information')
+            # else we continue with reset password for user
             else:
-                # generate a 16-character reset code, timestamp and 8-character password for user and save them in resetPasswordValidator
-                self.resetPasswordValidator.update({'resetCode': NetSpect.GetResetCode(length=16), 'timestamp': NetworkInformation.GetCurrentTimestamp(), 'newPassword': NetSpect.GetPassword(length=8)})
-                self.SendLogDict(f'Main_Thread: Reset code for email {email} successfully generated.', 'INFO') #log reset code generation event
-                # send reset code to user's email
-                self.sqlThread.SendResetPasswordCode(email, self.resetPasswordValidator.get('resetCode'))
+                # get user's email from line edit and get validator result
+                email = self.ui.resetPasswordEmailLineEdit.text()
+                emailState = self.emailValidator.validate(email, 0)[0]
+                
+                # check if email field is not empty
+                if not email:
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.ui.resetPasswordEmailErrorMessageLabel, 'Please fill in the email field for receiving a reset code.')
+                # check if user entered valid email
+                elif emailState != QValidator.Acceptable:
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.ui.resetPasswordEmailErrorMessageLabel, 'Please enter a valid email address into the field before receiving a reset code.')
+                # else we process the reset password request
+                else:
+                    # generate a 16-character reset code, timestamp and 8-character password for user and save them in resetPasswordValidator
+                    self.resetPasswordValidator.update({'resetCode': NetSpect.GetResetCode(length=16), 'timestamp': NetworkInformation.GetCurrentTimestamp(), 'newPassword': NetSpect.GetPassword(length=8)})
+                    self.SendLogDict(f'Main_Thread: Reset code for email {email} successfully generated.', 'INFO') #log reset code generation event
+                    # send reset code to user's email
+                    self.sqlThread.SendResetPasswordCode(email, self.resetPasswordValidator.get('resetCode'))
 
 
     # method for verifying the reset password code from the user's email to reset the password
     def VerifyCodeButtonClicked(self):
         if self.sqlThread:
-            # get user's email and reset code from line edits
-            email = self.ui.resetPasswordEmailLineEdit.text()
-            receivedResetCode = self.ui.resetPasswordCodeLineEdit.text()
-
-            # check if reset code field is not empty
-            if not receivedResetCode:
-                UserInterfaceFunctions.ChangeErrorMessageText(self.ui.resetPasswordCodeErrorMessageLabel, 'Please fill in the reset code field for verifying your identity.')
-            # check if reset code expired, if so we show message
-            elif NetworkInformation.CompareTimepstemps(self.resetPasswordValidator.get('timestamp'), NetworkInformation.GetCurrentTimestamp(), minutes=5):
-                UserInterfaceFunctions.AccountIconClicked(self)
-                self.resetPasswordValidator.update({'resetCode': None, 'timestamp': None, 'newPassword': None}) #reset our resetPasswordValidator
-                self.SendLogDict(f'Main_Thread: Reset code for email {email} has expired.', 'INFO') #log reset code expiration event
-                UserInterfaceFunctions.ShowMessageBox('Reset Code Expired', 'The password reset code has expired, it was valid for 5 minutes. Try resetting password again.', 'Information')
-            # check if reset code does'nt match stored code
-            elif receivedResetCode != self.resetPasswordValidator.get('resetCode'):
-                UserInterfaceFunctions.ChangeErrorMessageText(self.ui.resetPasswordCodeErrorMessageLabel, 'Your given reset code is incorrect, try again.')
-            # else we process the reset password request to our sql thread
+            # means we had detection active
+            if self.isDetection:
+                UserInterfaceFunctions.ShowMessageBox('Error In Reset Code Verification', 'Please stop network scan before verifing reset code.', 'Information')
+            # else we continue verifing reset code for user
             else:
-                self.sqlThread.ResetPassword(email, NetSpect.ToSHA256(self.resetPasswordValidator.get('newPassword')))
+                # get user's email and reset code from line edits
+                email = self.ui.resetPasswordEmailLineEdit.text()
+                receivedResetCode = self.ui.resetPasswordCodeLineEdit.text()
+
+                # check if reset code field is not empty
+                if not receivedResetCode:
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.ui.resetPasswordCodeErrorMessageLabel, 'Please fill in the reset code field for verifying your identity.')
+                # check if reset code expired, if so we show message
+                elif NetworkInformation.CompareTimepstemps(self.resetPasswordValidator.get('timestamp'), NetworkInformation.GetCurrentTimestamp(), minutes=5):
+                    UserInterfaceFunctions.AccountIconClicked(self)
+                    self.resetPasswordValidator.update({'resetCode': None, 'timestamp': None, 'newPassword': None}) #reset our resetPasswordValidator
+                    self.SendLogDict(f'Main_Thread: Reset code for email {email} has expired.', 'INFO') #log reset code expiration event
+                    UserInterfaceFunctions.ShowMessageBox('Reset Code Expired', 'The password reset code has expired, it was valid for 5 minutes. Try resetting password again.', 'Information')
+                # check if reset code does'nt match stored code
+                elif receivedResetCode != self.resetPasswordValidator.get('resetCode'):
+                    UserInterfaceFunctions.ChangeErrorMessageText(self.ui.resetPasswordCodeErrorMessageLabel, 'Your given reset code is incorrect, try again.')
+                # else we process the reset password request to our sql thread
+                else:
+                    self.sqlThread.ResetPassword(email, NetSpect.ToSHA256(self.resetPasswordValidator.get('newPassword')))
 
 
     # method for deleting user account from database when user clicks the delete account button in settings page
@@ -1284,7 +1298,7 @@ class NetSpect(QMainWindow):
             if self.sqlThread and self.userData.get('userId'):
                 self.sqlThread.AddAlert(self.userData.get('userId'), alert.get('interface'), alert.get('attackType'), alert.get('srcIp'), alert.get('srcMac'), alert.get('dstIp'),
                                             alert.get('dstMac'), alert.get('protocol'), alert.get('osType'), alert.get('timestamp'))
-                
+
 
     # method for deleting all previous detected alerts of user and also updating database if user is logged in
     def DeleteAlertsButtonClicked(self):
@@ -1444,14 +1458,19 @@ class NetSpect(QMainWindow):
 
     # method for changing the operation mode of application, detection or collection
     def ChangeOperationMode(self):
-        # update the ui based on the users selection
-        UserInterfaceFunctions.ToggleOperationMode(self)
-
-        # change the value of operationMode in the database for the current user
-        if self.sqlThread and self.userData.get('userId'):
-            self.sqlThread.UpdateOperationMode(self.userData.get('userId'), self.userData.get('operationMode'))
+        # means we had detection active
+        if self.isDetection:
+            UserInterfaceFunctions.ShowMessageBox('Error Changing Operation Mode', 'Please stop network scan before attempting to change operation mode.', 'Information')
+        # else we continue changing operation mode
         else:
-            self.SendLogDict(f'Main_Thread: User has changed the operation mode preference to "{self.ui.operationModeComboBox.currentText()}".', 'INFO') #log change operation mode event
+            # update the ui based on the users selection
+            UserInterfaceFunctions.ToggleOperationMode(self)
+
+            # change the value of operationMode in the database for the current user
+            if self.sqlThread and self.userData.get('userId'):
+                self.sqlThread.UpdateOperationMode(self.userData.get('userId'), self.userData.get('operationMode'))
+            else:
+                self.SendLogDict(f'Main_Thread: User has changed the operation mode preference to "{self.ui.operationModeComboBox.currentText()}".', 'INFO') #log change operation mode event
 
 
     # method for changing the current year in analytics page for showing detection information for given year
@@ -2332,6 +2351,10 @@ class Data_Collector_Thread(QThread):
         try:
             # process packets until stop condition received
             while not self.stopFlag:
+                # start the dns process for generating dns data
+                # import subprocess, gc
+                # dnsProcess = subprocess.Popen(['python', currentDir.parent / 'utility' / 'generateDNS.py'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
                 # wait until we receive the packet batch using wait condition
                 self.mutex.lock()
                 while not self.packetBatch and not self.stopFlag:
@@ -2357,6 +2380,12 @@ class Data_Collector_Thread(QThread):
                     dnsFlows = DNSTunneling.ProcessFlows(localPacketDict) #call our dns tunneling process flows
                     collectedRows = SaveData.SaveCollectedData(dnsFlows, self.filePath, DNSTunneling.selectedColumns) #save DNS flows in CSV format
                     self.collectionResultSignal.emit(collectedRows) #emit number of rows added to main thread
+
+                # check if dns process still running
+                # if not dnsProcess.poll():
+                #     dnsProcess.terminate() #stop our dns process
+                #     dnsProcess.wait() #wait for process to finish
+                # gc.collect() #call garbage collector for cleaning memory
 
         except Exception as e: #we catch an exception if error occured
             stateDict.update({'state': False, 'message': f'An error occurred: {e}.'})

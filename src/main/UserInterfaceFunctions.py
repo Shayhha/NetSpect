@@ -11,14 +11,15 @@ currentDir = Path(__file__).resolve().parent #represents the path to the current
 
 # method for openning the left sideframe with an animation
 def OpenSideFrame(self):
-    animation = QPropertyAnimation(self.ui.sideFrame, b'minimumWidth')
-    animation.setDuration(500)
-    animation.setEasingCurve(QEasingCurve.InOutQuad)
-    animation.setStartValue(70)
-    animation.setEndValue(210)
+    # create animation for sideframe
+    self.ui.sideFrame.currentAnimation = QPropertyAnimation(self.ui.sideFrame, b'minimumWidth')
+    self.ui.sideFrame.currentAnimation.setDuration(500)
+    self.ui.sideFrame.currentAnimation.setEasingCurve(QEasingCurve.InOutQuad)
+    self.ui.sideFrame.currentAnimation.setStartValue(70)
+    self.ui.sideFrame.currentAnimation.setEndValue(210)
                 
     # start the animation
-    animation.start()
+    self.ui.sideFrame.currentAnimation.start()
 
     # show sidebar labels
     self.ui.menuIcon.hide()
@@ -28,156 +29,155 @@ def OpenSideFrame(self):
     self.ui.reportLabel.show()
     self.ui.infoLabel.show()
 
-    # store the animation reference
-    self.ui.sideFrame.currentAnimation = animation
-
 
 # method for closing the left sideframe with an animation
 def CloseSideFrame(self):
-    # create animation for minimumWidth
-    animation = QPropertyAnimation(self.ui.sideFrame, b'minimumWidth')
-    animation.setDuration(500)
-    animation.setEasingCurve(QEasingCurve.OutQuad)
-    animation.setStartValue(210)
-    animation.setEndValue(70)
+    # create animation for sideframe
+    self.ui.sideFrame.currentAnimation = QPropertyAnimation(self.ui.sideFrame, b'minimumWidth')
+    self.ui.sideFrame.currentAnimation.setDuration(500)
+    self.ui.sideFrame.currentAnimation.setEasingCurve(QEasingCurve.OutQuad)
+    self.ui.sideFrame.currentAnimation.setStartValue(210)
+    self.ui.sideFrame.currentAnimation.setEndValue(70)
     
     # start the animation
-    animation.start()
+    self.ui.sideFrame.currentAnimation.start()
 
     # add delayed animations to icons and labels
     QTimer.singleShot(100, lambda: HideSideBarLabels(self))
     QTimer.singleShot(400, lambda: ShowSideBarMenuIcon(self))
     self.ui.sideFrame.setMaximumWidth(70)
     self.ui.menuIcon.setFixedWidth(50)
-    
-    # store the animation reference
-    self.ui.sideFrame.currentAnimation = animation
 
 
-# method for opening the login/register side frame after clicking the account icon
+# method for opening the login or register sideframes after clicking the account icon
 def AccountIconClicked(self):
-    # create animation object for the frame
-    animation = QPropertyAnimation(self.ui.loginRegisterVerticalFrame, b'maximumWidth')
-    animation.setDuration(500) #duration in milliseconds (500ms = 0.5 seconds)
-    animation.setEasingCurve(QEasingCurve.InOutQuad) #smooth easing curve
+    # create animation for sideframe
+    self.ui.loginRegisterVerticalFrame.currentAnimation = QPropertyAnimation(self.ui.loginRegisterVerticalFrame, b'maximumWidth')
+    self.ui.loginRegisterVerticalFrame.currentAnimation.setDuration(500)
+    self.ui.loginRegisterVerticalFrame.currentAnimation.setEasingCurve(QEasingCurve.InOutQuad)
     
-    if self.ui.loginRegisterVerticalFrame.width() == 0: #fade in animation
-        animation.setStartValue(0)
-        animation.setEndValue(303)
+    # start fade in animation for sideframe
+    if self.ui.loginRegisterVerticalFrame.width() == 0:
+        self.ui.loginRegisterVerticalFrame.currentAnimation.setStartValue(0)
+        self.ui.loginRegisterVerticalFrame.currentAnimation.setEndValue(303)
         self.ui.loginUsernameLineEdit.setFocus() if self.ui.loginFrame.isVisible() else self.ui.registerEmailLineEdit.setFocus()
+        # check if reset passowrd is visible, if so hide it and show login
         if self.ui.resetPasswordFrame.isVisible():
-            self.ui.resetPasswordFrame.hide()
-            self.ui.loginFrame.show()
-            self.ui.loginUsernameLineEdit.setFocus()
-            ClearResetPasswordLineEdits(self)
+            ToggleLoginResetPassword(self, False)
 
-    else: #fade out animation
-        animation.setStartValue(303)
-        animation.setEndValue(0)
+    # else start fade out animation for sideframe
+    else:
+        self.ui.loginRegisterVerticalFrame.currentAnimation.setStartValue(303)
+        self.ui.loginRegisterVerticalFrame.currentAnimation.setEndValue(0)
+        ClearLoginLineEdits(self)
+        ClearRegisterLineEdits(self)
+        ClearResetPasswordLineEdits(self)
         self.ui.loginUsernameLineEdit.clearFocus()
         self.ui.registerEmailLineEdit.clearFocus()
+        self.ui.resetPasswordEmailLineEdit.clearFocus()
 
-    
-    # start the animation
-    animation.start()
+    # start the animation for openning the frame
+    self.ui.loginRegisterVerticalFrame.currentAnimation.start()
     ApplyShadowLoginRegister(self)
-
-    # keep the animation object alive by storing it
-    self.ui.loginRegisterVerticalFrame.currentAnimation = animation
 
 
 # method for changing between the login and register sideframes
 def SwitchBetweenLoginAndRegister(self, showRegister=True):
-    # first animation for closing the frame
-    anim1 = QPropertyAnimation(self.ui.loginRegisterVerticalFrame, b'maximumWidth')
-    anim1.setDuration(200)
-    anim1.setEasingCurve(QEasingCurve.InOutQuad)
+    # create first animation for closing sideframe
+    self.ui.loginRegisterVerticalFrame.currentAnimation = QPropertyAnimation(self.ui.loginRegisterVerticalFrame, b'maximumWidth')
+    self.ui.loginRegisterVerticalFrame.currentAnimation.setDuration(200)
+    self.ui.loginRegisterVerticalFrame.currentAnimation.setEasingCurve(QEasingCurve.InOutQuad)
     
-    # use the current width as the start value
+    # using the current width of sideframe as the start value
     currentWidth = self.ui.loginRegisterVerticalFrame.width()
-    anim1.setStartValue(currentWidth)
-    anim1.setEndValue(0)
+    self.ui.loginRegisterVerticalFrame.currentAnimation.setStartValue(currentWidth)
+    self.ui.loginRegisterVerticalFrame.currentAnimation.setEndValue(0)
     
     # start the first animation and chain the second animation to start after the first finishes
-    anim1.start()
-    self.ui.loginRegisterVerticalFrame.currentAnimation = anim1
-    anim1.finished.connect(lambda: ReopenRegistryFrame(self, showRegister)) 
+    self.ui.loginRegisterVerticalFrame.currentAnimation.start()
+    self.ui.loginRegisterVerticalFrame.currentAnimation.finished.connect(lambda: ToggleLoginRegister(self, showRegister)) 
 
 
 # method for changing between the login and reset password sideframes
-def SwitchBetweenLoginAndForgotPassword(self, showResetPassword):
-    # first animation for closing the frame
-    anim1 = QPropertyAnimation(self.ui.loginRegisterVerticalFrame, b'maximumWidth')
-    anim1.setDuration(200)
-    anim1.setEasingCurve(QEasingCurve.InOutQuad)
+def SwitchBetweenLoginAndForgotPassword(self, showResetPassword=True):
+    # first animation for closing sideframe
+    self.ui.loginRegisterVerticalFrame.currentAnimation = QPropertyAnimation(self.ui.loginRegisterVerticalFrame, b'maximumWidth')
+    self.ui.loginRegisterVerticalFrame.currentAnimation.setDuration(200)
+    self.ui.loginRegisterVerticalFrame.currentAnimation.setEasingCurve(QEasingCurve.InOutQuad)
     
-    # use the current width as the start value
+    # using the current width of sideframe as the start value
     currentWidth = self.ui.loginRegisterVerticalFrame.width()
-    anim1.setStartValue(currentWidth)
-    anim1.setEndValue(0)
+    self.ui.loginRegisterVerticalFrame.currentAnimation.setStartValue(currentWidth)
+    self.ui.loginRegisterVerticalFrame.currentAnimation.setEndValue(0)
     
     # start the first animation and chain the second animation to start after the first finishes
-    anim1.start()
-    self.ui.loginRegisterVerticalFrame.currentAnimation = anim1
-    anim1.finished.connect(lambda: ReopenResetPasswordFrame(self, showResetPassword)) 
+    self.ui.loginRegisterVerticalFrame.currentAnimation.start()
+    self.ui.loginRegisterVerticalFrame.currentAnimation.finished.connect(lambda: ToggleLoginResetPassword(self, showResetPassword)) 
 
 
-# method for reopening registery fram with animation
-def ReopenRegistryFrame(self, showRegister):
-    # switch visibility
+# method for toggling between login and register sideframes
+def ToggleLoginRegister(self, showRegister):
+    # means we need to switch to register sideframe
     if showRegister:
+        # clear all line edits and show register frame
+        ClearLoginLineEdits(self)
+        self.ui.loginUsernameLineEdit.clearFocus()
         self.ui.loginFrame.hide()
         self.ui.registerFrame.show()
-        self.ui.loginUsernameLineEdit.clearFocus()
         self.ui.registerEmailLineEdit.setFocus()
+    # else means we need to switch to login sideframe
     else:
+        # clear all line edits and show login frame
+        ClearRegisterLineEdits(self)
+        self.ui.registerEmailLineEdit.clearFocus()
         self.ui.registerFrame.hide()
         self.ui.loginFrame.show()
         self.ui.loginUsernameLineEdit.setFocus()
-        self.ui.registerEmailLineEdit.clearFocus()
-    
+
     # second animation for opening the frame
-    anim2 = QPropertyAnimation(self.ui.loginRegisterVerticalFrame, b'maximumWidth')
-    anim2.setDuration(375)
-    anim2.setEasingCurve(QEasingCurve.InOutQuad)
-    anim2.setStartValue(0)
-    anim2.setEndValue(303)
-    anim2.start()
-    self.ui.loginRegisterVerticalFrame.currentAnimation = anim2
+    self.ui.loginRegisterVerticalFrame.currentAnimation = QPropertyAnimation(self.ui.loginRegisterVerticalFrame, b'maximumWidth')
+    self.ui.loginRegisterVerticalFrame.currentAnimation.setDuration(375)
+    self.ui.loginRegisterVerticalFrame.currentAnimation.setEasingCurve(QEasingCurve.InOutQuad)
+    self.ui.loginRegisterVerticalFrame.currentAnimation.setStartValue(0)
+    self.ui.loginRegisterVerticalFrame.currentAnimation.setEndValue(303)
+    self.ui.loginRegisterVerticalFrame.currentAnimation.start()
 
 
-# method for reopening reset password fram with animation
-def ReopenResetPasswordFrame(self, showResetPassword):
-    # switch visibility
+# method for toggling between login and reset passowrd sideframes
+def ToggleLoginResetPassword(self, showResetPassword):
+    # means we need to switch to reset password sideframe
     if showResetPassword:
+        # clear all line edits and show reset password frame
+        ClearLoginLineEdits(self)
+        self.ui.loginUsernameLineEdit.clearFocus()
         self.ui.loginFrame.hide()
         self.ui.resetPasswordFrame.show()
-        self.ui.loginUsernameLineEdit.clearFocus()
         self.ui.resetPasswordEmailLineEdit.setFocus()
+    # else means we need to switch to login sideframe
     else:
+        # clear all line edits and show login frame
+        ClearResetPasswordLineEdits(self)
+        self.ui.resetPasswordEmailLineEdit.clearFocus()
         self.ui.resetPasswordFrame.hide()
         self.ui.loginFrame.show()
         self.ui.loginUsernameLineEdit.setFocus()
-        self.ui.resetPasswordEmailLineEdit.clearFocus()
-        ClearResetPasswordLineEdits(self)
-    
-    # show the correct line edit and push button
+
+    # show the correct line edit and push button for frame
     ToggleBetweenEmailAndCodeResetPassword(self, showResetPassword)
 
     # second animation for opening the frame
-    anim2 = QPropertyAnimation(self.ui.loginRegisterVerticalFrame, b'maximumWidth')
-    anim2.setDuration(375)
-    anim2.setEasingCurve(QEasingCurve.InOutQuad)
-    anim2.setStartValue(0)
-    anim2.setEndValue(303)
-    anim2.start()
-    self.ui.loginRegisterVerticalFrame.currentAnimation = anim2
+    self.ui.loginRegisterVerticalFrame.currentAnimation = QPropertyAnimation(self.ui.loginRegisterVerticalFrame, b'maximumWidth')
+    self.ui.loginRegisterVerticalFrame.currentAnimation.setDuration(375)
+    self.ui.loginRegisterVerticalFrame.currentAnimation.setEasingCurve(QEasingCurve.InOutQuad)
+    self.ui.loginRegisterVerticalFrame.currentAnimation.setStartValue(0)
+    self.ui.loginRegisterVerticalFrame.currentAnimation.setEndValue(303)
+    self.ui.loginRegisterVerticalFrame.currentAnimation.start()
 
 #-----------------------------------------ANIMATION-FUNCTIONS-END--------------------------------------------#
 
 #---------------------------------------------CLICK-FUNCTIONS------------------------------------------------#
 
-# method for hiding some labels
+# method for hiding side bar labels
 def HideSideBarLabels(self):
     self.ui.homePageLabel.hide()
     self.ui.analyticsLabel.hide()
@@ -185,7 +185,7 @@ def HideSideBarLabels(self):
     self.ui.infoLabel.hide()
 
 
-# method for showing some icons
+# method for showing side bar icons
 def ShowSideBarMenuIcon(self):
     self.ui.menuIcon.show()
     self.ui.closeMenuIcon.hide()
@@ -193,23 +193,22 @@ def ShowSideBarMenuIcon(self):
 
 # method for changing between enter email and enter code screens in reset password
 def ToggleBetweenEmailAndCodeResetPassword(self, isEmail=True):
+    # means we need to show reset password email frame
     if isEmail:
-        # show email section
+        # hide reset password code frame and show reset password email frame
+        self.ui.resetPasswordCodeLineEdit.hide()
+        self.ui.resetPasswordCodeErrorMessageLabel.hide()
+        self.ui.verifyCodeButtonFrame.hide()
         self.ui.resetPasswordEmailLineEdit.show()
         self.ui.resetPasswordEmailErrorMessageLabel.hide()
         self.ui.sendCodeButtonFrame.show()
 
-        # hide the email section
-        self.ui.resetPasswordCodeLineEdit.hide()
-        self.ui.resetPasswordCodeErrorMessageLabel.hide()
-        self.ui.verifyCodeButtonFrame.hide()
+    # means we need to show reset password code frame
     else:
-        # hide email section
+        # hide reset password email frame and show reset password code frame
         self.ui.resetPasswordEmailLineEdit.hide()
         self.ui.resetPasswordEmailErrorMessageLabel.hide()
         self.ui.sendCodeButtonFrame.hide()
-
-        # show the email section
         self.ui.resetPasswordCodeLineEdit.show()
         self.ui.resetPasswordCodeErrorMessageLabel.hide()
         self.ui.verifyCodeButtonFrame.show()
@@ -254,10 +253,15 @@ def ToggleUserInterface(self, state=False):
         self.ui.colorModeComboBox.setCurrentIndex(0) #reset the color combobox if the user has logged out
         self.ui.operationModeComboBox.setCurrentIndex(0) #reset the operation mode combobox if the user has logged out
 
-    # clear history and report tables and blacklist
+    # clear detection counter, history and report tables, mac addresses list, sideframe and settings page
+    self.ui.numberOfDetectionsCounter.setText('0')
     self.ui.historyTableWidget.setRowCount(0)
     self.ui.reportPreviewTableModel.ClearRows()
     self.ui.macAddressListWidget.clear()
+    ClearLoginLineEdits(self)
+    ClearRegisterLineEdits(self)
+    ClearResetPasswordLineEdits(self)
+    ClearSettingsPageLineEdits(self)
 
     # reset analytics combobox with current chart data
     self.ui.analyticsYearComboBox.clear()
@@ -273,47 +277,16 @@ def ToggleUserInterface(self, state=False):
     # reset analytics cards
     ResertDataInCards(self)
 
-    #set combobox and checkboxes default state
+    # reset comboboxes, checkboxes and set default color mode for gui
     self.ui.reportDurationComboBox.setCurrentIndex(4)
     self.ui.arpSpoofingCheckBox.setChecked(True)
     self.ui.portScanningCheckBox.setChecked(True)
     self.ui.denialOfServiceCheckBox.setChecked(True)
     self.ui.dnsTunnelingCheckBox.setChecked(True)
     self.ui.machineInfoCheckBox.setChecked(False)
-    ToggleReportInterface(self, False) #reset the styles of report interface back to default state
-    ToggleColorMode(self) #reset the styles to match the selected index in the color mode combobox
-    ToggleOperationMode(self) #reset the styles to match the selected index in the operation mode combobox
-
-    # clear settings, login and register line edits and error messages and reset number of detections
-    self.ui.numberOfDetectionsCounter.setText('0')
-    self.ui.loginUsernameLineEdit.clear()
-    self.ui.loginPasswordLineEdit.clear()
-    self.ui.registerEmailLineEdit.clear()
-    self.ui.registerUsernameLineEdit.clear()
-    self.ui.registerPasswordLineEdit.clear()
-    self.ui.registerConfirmPasswordLineEdit.clear()
-    self.ui.emailLineEdit.clear()
-    self.ui.usernameLineEdit.clear()
-    self.ui.currentPasswordLineEdit.clear()
-    self.ui.newPasswordLineEdit.clear()
-    self.ui.confirmPasswordLineEdit.clear()
-    self.ui.macAddressLineEdit.clear()
-    self.ui.registerEmailLineEdit.setStyleSheet(GetDefaultLineEditStyleSheet(self, 'registerEmailLineEdit'))
-    self.ui.registerUsernameLineEdit.setStyleSheet(GetDefaultLineEditStyleSheet(self, 'registerUsernameLineEdit'))
-    self.ui.registerPasswordLineEdit.setStyleSheet(GetDefaultLineEditStyleSheet(self, 'registerPasswordLineEdit'))
-    self.ui.registerConfirmPasswordLineEdit.setStyleSheet(GetDefaultLineEditStyleSheet(self, 'registerConfirmPasswordLineEdit'))
-    self.ui.emailLineEdit.setStyleSheet(GetDefaultLineEditStyleSheet(self, 'emailLineEdit'))
-    self.ui.usernameLineEdit.setStyleSheet(GetDefaultLineEditStyleSheet(self, 'usernameLineEdit'))
-    self.ui.currentPasswordLineEdit.setStyleSheet(GetDefaultLineEditStyleSheet(self, 'currentPasswordLineEdit'))
-    self.ui.newPasswordLineEdit.setStyleSheet(GetDefaultLineEditStyleSheet(self, 'newPasswordLineEdit'))
-    self.ui.confirmPasswordLineEdit.setStyleSheet(GetDefaultLineEditStyleSheet(self, 'confirmPasswordLineEdit'))
-    self.ui.macAddressLineEdit.setStyleSheet(GetDefaultLineEditStyleSheet(self, 'macAddressLineEdit'))
-    ClearErrorMessageText(self.ui.loginErrorMessageLabel)
-    ClearErrorMessageText(self.ui.registerErrorMessageLabel)
-    ClearErrorMessageText(self.ui.saveEmailErrorMessageLabel)
-    ClearErrorMessageText(self.ui.saveUsernameErrorMessageLabel)
-    ClearErrorMessageText(self.ui.savePasswordErrorMessageLabel)
-    ClearErrorMessageText(self.ui.macAddressBlacklistErrorMessageLabel)
+    ToggleReportInterface(self, False)
+    ToggleColorMode(self)
+    ToggleOperationMode(self)
 
 
 # method for showing and hiding report interface
@@ -346,16 +319,19 @@ def ToggleOperationMode(self):
         self.ui.trayIcon.toggleDetectionAction.setText('Start Collection')
 
 
-# method for chaning the current page index on the stack widget
+# method for changing the current page index on the stack widget
 def ChangePageIndex(self, index):
-    # clear focus from all line edits
-    self.ui.emailLineEdit.clearFocus()
-    self.ui.usernameLineEdit.clearFocus()
-    self.ui.currentPasswordLineEdit.clearFocus()
-    self.ui.newPasswordLineEdit.clearFocus()
-    self.ui.confirmPasswordLineEdit.clearFocus()
-    self.ui.macAddressLineEdit.clearFocus()
-    self.ui.stackedWidget.setCurrentIndex(index)
+    # if index is different from our current index we change to desired page index
+    if self.ui.stackedWidget.currentIndex() != index:
+        # clear settings page line edits, error messages and clear focus
+        ClearSettingsPageLineEdits(self)
+        self.ui.emailLineEdit.clearFocus()
+        self.ui.usernameLineEdit.clearFocus()
+        self.ui.currentPasswordLineEdit.clearFocus()
+        self.ui.newPasswordLineEdit.clearFocus()
+        self.ui.confirmPasswordLineEdit.clearFocus()
+        self.ui.macAddressLineEdit.clearFocus()
+        self.ui.stackedWidget.setCurrentIndex(index)
 
 
 # method for initializing eye buttons for password line edits in gui
@@ -516,32 +492,71 @@ def ToggleColorMode(self):
 
 #---------------------------------------------OTHER-FUNCTIONS------------------------------------------------#
 
-# method for clearing the reset password line edits end error messages
-def ClearResetPasswordLineEdits(self):
-    self.ui.resetPasswordEmailLineEdit.clear()
-    self.ui.resetPasswordCodeLineEdit.clear()
-    self.ui.resetPasswordEmailErrorMessageLabel.clear()
-    self.ui.resetPasswordCodeErrorMessageLabel.clear()
-
-
-# method for adding a box shadow to the login/register side popup frame
+# method for adding a box shadow to the login and register sideframes
 def ApplyShadowLoginRegister(self):
     shadow = QGraphicsDropShadowEffect()
-    shadow.setBlurRadius(15) #no blur, sharp shadow (like blur: 0 in CSS)
-    shadow.setXOffset(-8) #horizontal offset: -15px (left)
-    shadow.setYOffset(0) #vertical offset: 10px (down)
-    shadow.setColor(QColor(0, 0, 0, 85)) #RGBA(56, 60, 170, 0.5) -> alpha 0.5 = 128/255
+    shadow.setBlurRadius(15)
+    shadow.setXOffset(-8)
+    shadow.setYOffset(0)
+    shadow.setColor(QColor(0, 0, 0, 85))
     self.ui.loginRegisterVerticalFrame.setGraphicsEffect(shadow)
 
 
 # method for adding a box shadow to the left side bar
 def ApplyShadowSidebar(self):
     shadow = QGraphicsDropShadowEffect()
-    shadow.setBlurRadius(5) # No blur, sharp shadow (like blur: 0 in CSS)
-    shadow.setXOffset(5) # Horizontal offset: -15px (left)
-    shadow.setYOffset(0) # Vertical offset: 10px (down)
-    shadow.setColor(QColor(0, 0, 0, 50)) # RGBA(56, 60, 170, 0.5) -> alpha 0.5 = 128/255
+    shadow.setBlurRadius(5)
+    shadow.setXOffset(5)
+    shadow.setYOffset(0)
+    shadow.setColor(QColor(0, 0, 0, 50))
     self.ui.sideFrame.setGraphicsEffect(shadow)
+
+
+# method for clearing login line edits and error message
+def ClearLoginLineEdits(self):
+    # clear login line edits and error messages
+    self.ui.loginUsernameLineEdit.clear()
+    self.ui.loginPasswordLineEdit.clear()
+    ClearErrorMessageText(self.ui.loginErrorMessageLabel)
+
+
+# method for clearing register line edits and error messag
+def ClearRegisterLineEdits(self):
+    # clear register line edits and error messages
+    self.ui.registerEmailLineEdit.clear()
+    self.ui.registerUsernameLineEdit.clear()
+    self.ui.registerPasswordLineEdit.clear()
+    self.ui.registerConfirmPasswordLineEdit.clear()
+    ClearErrorMessageText(self.ui.registerErrorMessageLabel)
+
+
+# method for clearing the reset password line edits and error messages
+def ClearResetPasswordLineEdits(self):
+    # clear reset password line edits and error messages
+    self.ui.resetPasswordEmailLineEdit.clear()
+    self.ui.resetPasswordCodeLineEdit.clear()
+    ClearErrorMessageText(self.ui.resetPasswordEmailErrorMessageLabel)
+    ClearErrorMessageText(self.ui.resetPasswordCodeErrorMessageLabel)
+
+
+# method for clearing all pages line edits end error messages
+def ClearSettingsPageLineEdits(self):
+    # clear settings page line edits and clear error messages
+    self.ui.emailLineEdit.clear()
+    self.ui.usernameLineEdit.clear()
+    self.ui.currentPasswordLineEdit.clear()
+    self.ui.newPasswordLineEdit.clear()
+    self.ui.confirmPasswordLineEdit.clear()
+    self.ui.macAddressLineEdit.clear()
+    ClearErrorMessageText(self.ui.saveEmailErrorMessageLabel)
+    ClearErrorMessageText(self.ui.saveUsernameErrorMessageLabel)
+    ClearErrorMessageText(self.ui.savePasswordErrorMessageLabel)
+    ClearErrorMessageText(self.ui.macAddressBlacklistErrorMessageLabel)
+
+    # check if user is logged in, if so we set his email and username back to the line edits
+    if self.userData.get('userId'):
+        self.ui.emailLineEdit.setText(self.userData.get('email')) #set email of user in settings page
+        self.ui.usernameLineEdit.setText(self.userData.get('userName')) #set username of user in settings page
 
 
 # method that shows right-click menu for copying and deleting items for widget objects
@@ -1315,7 +1330,6 @@ def UpdateHistogramChartAfterAttack(self, attackType):
                 # detach the series from the chart and axes
                 self.ui.histogramChart.series()[0].detachAxis(self.ui.histogramAxisY)
                 self.ui.histogramChart.series()[0].detachAxis(self.ui.histogramAxisX)
-                self.ui.histogramChart.removeSeries(self.ui.histogramChart.series()[0])
                 self.ui.histogramChart.removeAxis(self.ui.histogramAxisY)
 
                 # create a new Y-axis
@@ -1334,7 +1348,6 @@ def UpdateHistogramChartAfterAttack(self, attackType):
 
                 # attach the new axis and series back to the chart
                 self.ui.histogramChart.addAxis(self.ui.histogramAxisY, Qt.AlignLeft)
-                self.ui.histogramChart.addSeries(self.ui.histogramChart.series()[0])
                 self.ui.histogramChart.series()[0].attachAxis(self.ui.histogramAxisX)
                 self.ui.histogramChart.series()[0].attachAxis(self.ui.histogramAxisY)
 
@@ -1625,7 +1638,6 @@ def UpdateBarChartAfterAttack(self, attackType):
                 # detach the series from the chart and axes
                 self.ui.barChart.series()[0].detachAxis(self.ui.barChartAxisY)
                 self.ui.barChart.series()[0].detachAxis(self.ui.barChartAxisX)
-                self.ui.barChart.removeSeries(self.ui.barChart.series()[0])
                 self.ui.barChart.removeAxis(self.ui.barChartAxisX)
 
                 # create a new X-axis
@@ -1644,7 +1656,6 @@ def UpdateBarChartAfterAttack(self, attackType):
 
                 # attach the new axis and series back to the chart
                 self.ui.barChart.addAxis(self.ui.barChartAxisX, Qt.AlignBottom)
-                self.ui.barChart.addSeries(self.ui.barChart.series()[0])
                 self.ui.barChart.series()[0].attachAxis(self.ui.barChartAxisX)
                 self.ui.barChart.series()[0].attachAxis(self.ui.barChartAxisY)
 

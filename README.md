@@ -91,7 +91,7 @@ NetSpect cleverly employs a **multi-threaded architecture** to distribute tasks 
   Runs in the background and shows native tray notifications upon attack detection.
 
 -  **Cross-Platform**  
-  Compatible with Windows, Linux, and macOS thanks to Python 3.12 and PyQt.
+  Compatible with Windows, Linux, and macOS thanks to Python 3.12 and PySide6.
 
 <br>  
 
@@ -176,14 +176,14 @@ The following screenshots showcase the application's interface, functionality, a
 Our application relies of the following requirements in order to work properly:
 > You can install them via the requirements.txt file as mentioned in [Installation & Setup](#installation--setup)
 
-- joblib
+- PySide6
+- scapy
 - numpy
 - pandas
-- PySide6
+- joblib
+- scikit-learn
 - python-dotenv
 - pyodbc
-- scapy
-- scikit-learn
 
 
 **Important** 
@@ -208,6 +208,9 @@ Our application relies of the following requirements in order to work properly:
 
 ## License
 
-NetSpect is licensed under the MIT License - see the [LICENSE](LICENSE.txt) file for details.
+**NetSpect** is open-source software licensed under the **GNU General Public License v3.0 (GPLv3)**.  
+For full terms and conditions, please refer to the [LICENSE](LICENSE.txt) file.
 
-© All rights reserved to Shay Hahiashvili and Maxim Subotin.
+© All rights to the original code, algorithms, and intellectual property are **reserved** and **owned exclusively** <br> by **Shay Hahiashvili and Maxim Subotin**.
+
+By using or modifying this software, you agree to comply with the terms of the GPLv3 license.

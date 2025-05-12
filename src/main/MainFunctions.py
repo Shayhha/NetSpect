@@ -13,16 +13,16 @@ currentDir = Path(__file__).resolve().parent #represents the path to the current
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))) #ensures that when the main.py file is ran it will run from the src folder in the terminal (this allows the import of ui class from interface folder)
 
 #----------------------------------------------Default_Packet------------------------------------------------#
-# abstarct class for default packet
+# abstract class that represents default packet
 class Default_Packet(ABC):
     protocol = None #represents the packet protocol (TCP, UDP, etc)
     packet = None #represents the packet object itself for our use later
     packetType = None #represents the packet type based on scapy known types
-    srcIp = None #represents source ip of packet 
     srcMac = None #represents the source mac address
-    dstIp = None #represents destination ip of packet
     dstMac = None #represents the destination mac address
-    srcPort = None #represents source port of packet 
+    srcIp = None #represents source ip of packet
+    dstIp = None #represents destination ip of packet
+    srcPort = None #represents source port of packet
     dstPort = None #represents destination port of packet
     ipParam = None #represents IPv4 / IPv6 fields as tuple (ttl, dscp) / (hopLimit, trafficClass)
     packetLen = None #size of packet (including headers, IP and payload)
@@ -31,43 +31,48 @@ class Default_Packet(ABC):
     ipFlagDict = {} #represents ip flags
     time = None #timestamp of packet
 
-    # constructor for default packet 
+    # constructor for default packet
     def __init__(self, protocol=None, packet=None):
-        self.protocol = protocol
-        self.packet = packet
-        self.srcMac = self.packet.src
-        self.dstMac = self.packet.dst
-        self.packetLen = len(self.packet)
-        self.headerLen = 0
-        self.payloadLen = len(self.packet[Raw].load) if Raw in self.packet else 0
-        self.time = packet.time
+        self.protocol = protocol #set protocol of packet
+        self.packet = packet #set the packet object
+        self.srcMac = self.packet.src #set source mac address
+        self.dstMac = self.packet.dst #set destination mac address
+        self.packetLen = len(self.packet) #set length of packet
+        self.headerLen = 0 #set default header length of packet
+        self.payloadLen = len(self.packet[Raw].load) if Raw in self.packet else 0 #set payload length of packet
+        self.time = packet.time #set the timestamp of packet
         self.IpInfo() #initialize ip info
 
 
-    # method for ip configuration capture
-    def IpInfo(self): 
-        if self.packet.haslayer(TCP) or self.packet.haslayer(UDP): #if packet is TCP or UDP it has port
+    # method for initializing ip information for packet
+    def IpInfo(self):
+        # we check if packet is TCP or UDP, if so we set source and destination ports
+        if self.packet.haslayer(TCP) or self.packet.haslayer(UDP):
             self.srcPort = self.packet.sport #set source port
             self.dstPort = self.packet.dport #set destination port
-        if self.packet.haslayer(IP): #if packet has ip layer
-            self.srcIp = self.packet[IP].src #represents the source ip
-            self.dstIp = self.packet[IP].dst #represents the destination ip
+
+        # we check if packet has ipv4 layer
+        if self.packet.haslayer(IP):
+            self.srcIp = self.packet[IP].src #set source ip address
+            self.dstIp = self.packet[IP].dst #set destination ip address
             ttl = self.packet[IP].ttl #represents ttl parameter in packet
             dscp = self.packet[IP].tos #represents dscp parameter in packet
-            self.ipParam = (ttl, dscp) #save both as tuple
+            self.ipParam = (ttl, dscp) #save both parameters as tuple
             # we extract the binary number that represents the ipv4 flags
             ipFlags = self.packet[IP].flags #represents flags of ip
             self.ipFlagDict = {
-                'MF': (ipFlags & 0x1) != 0, #More Fragments flag
-                'DF': (ipFlags & 0x2) != 0, #Don't Fragment flag
-                'EVIL': (ipFlags & 0x4) != 0, #Evil flag
+                'MF': (ipFlags & 0x01) != 0, #we extract MF flag with '&' operator with 0x01(0001 in binary)
+                'DF': (ipFlags & 0x02) != 0, #we extract DF flag with '&' operator with 0x02(0010 in binary)
+                'EVIL': (ipFlags & 0x04) != 0, #we extract Evil flag with '&' operator with 0x04(0100 in binary)
             }
-        elif self.packet.haslayer(IPv6): #if packet has ipv6 layer
-            self.srcIp = self.packet[IPv6].src #represents the source ip
-            self.dstIp = self.packet[IPv6].dst #represents the destination ip
-            hopLimit = self.packet[IPv6].hlim #represents the hop limit parameter in packet
-            trafficClass = self.packet[IPv6].tc #represnets the traffic class in packet
-            self.ipParam = (hopLimit, trafficClass) #save both as tuple
+
+        # else we check if packet has ipv6 layer
+        elif self.packet.haslayer(IPv6):
+            self.srcIp = self.packet[IPv6].src #set source ip address
+            self.dstIp = self.packet[IPv6].dst #set destination ip address
+            hopLimit = self.packet[IPv6].hlim #represents hop limit parameter in packet
+            trafficClass = self.packet[IPv6].tc #represnets traffic class in packet
+            self.ipParam = (hopLimit, trafficClass) #save both parameters as tuple
 
 
     # method to return a normalized flow representation of a packet
@@ -77,7 +82,7 @@ class Default_Packet(ABC):
         # extract flow tuple from packet
         srcIp, srcMac, dstIp, dstMac, protocol = self.srcIp, self.srcMac, self.dstIp, self.dstMac, self.protocol
 
-        #we create the flow tuple based on lexicographic order if it does not contain host ip address to ensure consistency
+        # we create the flow tuple based on lexicographic order if it does not contain host ip address to ensure consistency
         if (dstIp in currentInterface.get('ipv4Addrs')) or (dstIp in currentInterface.get('ipv6Addrs')): #check if dst ip is our ip address
             return (srcIp, srcMac, dstIp, dstMac, protocol) #return the flow tuple of packet with host ip as dst ip in tuple
 
@@ -89,36 +94,36 @@ class Default_Packet(ABC):
 #--------------------------------------------Default_Packet-END----------------------------------------------#
 
 #----------------------------------------------------TCP-----------------------------------------------------#
+# class that represents TCP packet
 class TCP_Packet(Default_Packet):
-    srcPort = None
-    dstPort = None
-    seqNum = None
-    ackNum = None
-    segmentSize = None
-    windowSize = None
-    flagDict = {}
-    optionDict = {}
+    seqNum = None #represents sequence number of tcp packet
+    ackNum = None #represents acknowledgment number of tcp packet
+    segmentSize = None #represents the tcp segment size of tcp packet
+    windowSize = None #represents window size of tcp packet
+    flagDict = {} #represents the flags dictionary of tcp packet
+    optionDict = {} #represents the option dictionary of tcp packet
 
-    # constructor for TCP packet 
+    # constructor for TCP packet
     def __init__(self, packet=None):
         super().__init__('TCP', packet) #call parent ctor
         if packet.haslayer(TCP): #checks if packet is TCP
             self.packetType = TCP #specify the packet type
-            self.headerLen = len(self.packet[TCP]) #add header len of tcp
-            self.segmentSize = len(self.packet[TCP].payload) #add segment size of tcp
+            self.headerLen = len(self.packet[TCP]) #set header len of tcp
+            self.segmentSize = len(self.packet[TCP].payload) #set segment size of tcp
             self.InitTCP() #call method to initialize tcp specific params
 
 
     # method for TCP packet information
     def InitTCP(self): 
-        if self.packet.haslayer(TCP):
-            self.seqNum = self.packet.seq #add sequence number 
-            self.ackNum = self.packet.ack #add acknowledgment number 
-            self.windowSize = self.packet.window #add window size 
+        if self.packet.haslayer(TCP): #checks if packet is TCP
+            self.seqNum = self.packet.seq #set sequence number 
+            self.ackNum = self.packet.ack #set acknowledgment number 
+            self.windowSize = self.packet.window #set window size 
 
-            #TCP has flags, we extract the binary number that represents the flags
+            # TCP has flags, we extract the binary number that represents the flags
             flags = self.packet[self.packetType].flags
-            self.flagDict = { #we add to a dictionary all the flags of tcp
+            # we add to a dictionary all the flags of tcp
+            self.flagDict = {
                 'FIN': (flags & 0x01) != 0, #we extract FIN flag with '&' operator with 0x01(0001 in binary)
                 'SYN': (flags & 0x02) != 0, #we extract SYS flag with '&' operator with 0x02(0010 in binary)
                 'RST': (flags & 0x04) != 0, #we extract RST flag with '&' operator with 0x04(0100 in binary)
@@ -126,93 +131,104 @@ class TCP_Packet(Default_Packet):
                 'ACK': (flags & 0x10) != 0, #we extract ACK flag with '&' operator with 0x10(0001 0000 in binary)
                 'URG': (flags & 0x20) != 0, #we extract URG flag with '&' operator with 0x20(0010 0000 in binary)
             }
-            
-            #add TCP Options (if available)
+
+            # check if TCP options is available
             if self.packet[self.packetType].options:
                 self.optionDict = {} #initialize an empty dictionary to store TCP options
-                for option in self.packet[self.packetType].options: #iterate over the options list
-                    optionType = option[0]
-                    optionValue = option[1]
-                    self.optionDict[optionType] = optionValue #add option type with its matcing value to optionDict
+                # iterate over the options list
+                for option in self.packet[self.packetType].options:
+                    optionType = option[0] #represents option type
+                    optionValue = option[1] #represents option value
+                    self.optionDict[optionType] = optionValue #set option type with its matching value to optionDict
 
 #---------------------------------------------------TCP-END--------------------------------------------------#
 
 #-----------------------------------------------------UDP----------------------------------------------------#
+# class that represents UDP packet
 class UDP_Packet(Default_Packet):
-    def __init__(self, packet=None): #ctor 
+    # constructor for UDP packet
+    def __init__(self, packet=None):
         super().__init__('UDP', packet) #call parent ctor
         if packet.haslayer(UDP): #checks if packet is UDP
-            self.packetType = UDP #add packet type
-            self.headerLen = len(self.packet[UDP]) #add header len of udp
+            self.packetType = UDP #set packet type
+            self.headerLen = len(self.packet[UDP]) #set header len of udp
 
 #---------------------------------------------------UDP-END--------------------------------------------------#
 
 #----------------------------------------------------DNS-----------------------------------------------------#
+# class that represents DNS packet
 class DNS_Packet(Default_Packet):
-    dnsType = None
-    dnsSubType = None
-    dnsClass = None
-    dnsDomainName = None
-    dnsNumOfReqOrRes = None
-    dnsData = None
+    dnsType = None #represents type of dns packet, request or response
+    dnsSubType = None #represents sub type of dns packet
+    dnsClass = None #represents class of dns packet
+    dnsDomainName = None #represents dns domain name of dns packet
+    dnsNumOfReqOrRes = None #represents number of requests or responses in dns packet
+    dnsData = None #represents the dns data payload for response dns packets
 
+    # constructor for DNS packet
     def __init__(self, packet=None):
         super().__init__('DNS', packet) #call parent ctor
         if packet.haslayer(DNS): #checks if packet is DNS
-            self.packetType = DNS #add packet type
-            self.headerLen = len(self.packet[DNS]) #add header len of dns
+            self.packetType = DNS #set packet type
+            self.headerLen = len(self.packet[DNS]) #set header len of dns
             self.InitDNS() #call method to initialize dns specific params
 
-    #method for packet information
+
+    # method for packet information
     def InitDNS(self):
-        if self.packet.haslayer(DNS): #if packet has DNS layer
+        if self.packet.haslayer(DNS): #checks if packet is DNS
             dnsPacket = self.packet[DNS] #save the dns packet in parameter
-            if dnsPacket.qr == 1: #means its a response packet
-                if dnsPacket.an: #if dns packet is response packet
-                    self.dnsType = 'Response' #add type of packet to output
-                    self.dnsDomainName = dnsPacket.an.rrname #add repsonse name 
-                    self.dnsSubType = dnsPacket.an.type  #add response type 
-                    self.dnsClass = dnsPacket.an.rclass #add response class 
-                    self.dnsNumOfReqOrRes = len(dnsPacket.an) #add number of responses 
+            # check if its a response packet
+            if dnsPacket.qr == 1:
+                if dnsPacket.an: #check that dns packet has response data
+                    self.dnsType = 'Response' #set type of dns packet
+                    self.dnsDomainName = dnsPacket.an.rrname #set repsonse name 
+                    self.dnsSubType = dnsPacket.an.type #set response type 
+                    self.dnsClass = dnsPacket.an.rclass #set response class 
+                    self.dnsNumOfReqOrRes = len(dnsPacket.an) #set number of responses 
                     if hasattr(dnsPacket.an, 'rdata'): #check if rdata attribute exists
                         self.dnsData = dnsPacket.an.rdata #specify the rdata parameter
-            else: #means its a request packet
-                if dnsPacket.qd:
-                    self.dnsType = 'Request' #add type of packet to output
-                    self.dnsDomainName = dnsPacket.qd.qname #add request name to output
-                    self.dnsSubType = dnsPacket.qd.qtype #add request type to output
-                    self.dnsClass = dnsPacket.qd.qclass #add request class to output
-                    self.dnsNumOfReqOrRes = len(dnsPacket.qd) #add num of requests to output
+
+            # else its a request packet
+            else: 
+                if dnsPacket.qd: #check that dns packet has request data
+                    self.dnsType = 'Request' #set type of dns packet
+                    self.dnsDomainName = dnsPacket.qd.qname #set request name
+                    self.dnsSubType = dnsPacket.qd.qtype #set request type
+                    self.dnsClass = dnsPacket.qd.qclass #set request class
+                    self.dnsNumOfReqOrRes = len(dnsPacket.qd) #set num of requests
     
 #--------------------------------------------------DNS-END---------------------------------------------------#
 
 # ---------------------------------------------------ARP-----------------------------------------------------#
+# class that represents ARP packet
 class ARP_Packet(Default_Packet):
-    arpType = None
-    hwType = None
-    pType = None
-    hwLen = None
-    pLen = None
+    arpType = None #represents type of arp packet, request or response
+    hwType = None #represents hardware type of arp packet
+    pType = None #represents protocol type of arp packet
+    hwLen = None #represents hardware length of arp packet
+    pLen = None #represents protocol length of arp packet
 
+    # constructor for ARP packet
     def __init__(self, packet=None):
         super().__init__('ARP', packet) #call parent ctor
         if packet.haslayer(ARP): #checks if packet is ARP
-            self.packetType = ARP #add packet type
-            self.headerLen = len(self.packet[ARP]) #add header len of arp
+            self.packetType = ARP #set packet type
+            self.headerLen = len(self.packet[ARP]) #set header len of arp
             self.InitARP() #call method to initialize ARP specific params
 
     # method for ARP packet information
     def InitARP(self):
-        if self.packet.haslayer(ARP): #if packet has layer of ARP
-            self.srcIp = self.packet[ARP].psrc #add ARP source ip address
-            self.srcMac = self.packet[ARP].hwsrc #add ARP source mac address
-            self.dstIp = self.packet[ARP].pdst #add ARP destination ip address
-            self.dstMac = self.packet[ARP].hwdst #add ARP destination mac address
-            self.arpType = 'Request' if self.packet[ARP].op == 1 else 'Reply' #add the ARP type
-            self.hwType = self.packet[ARP].hwtype #add the hardware type
-            self.pType = self.packet[ARP].ptype #add protocol type to output
-            self.hwLen = self.packet[ARP].hwlen #add hardware length to output
-            self.pLen = self.packet[ARP].plen #add protocol length to output
+        if self.packet.haslayer(ARP): #checks if packet is ARP
+            self.srcMac = self.packet[ARP].hwsrc #set source mac address
+            self.dstMac = self.packet[ARP].hwdst #set destination mac address
+            self.srcIp = self.packet[ARP].psrc #set source ip address
+            self.dstIp = self.packet[ARP].pdst #set destination ip address
+            self.arpType = 'Request' if self.packet[ARP].op == 1 else 'Response' #set type of arp packet
+            self.hwType = self.packet[ARP].hwtype #set the hardware type
+            self.pType = self.packet[ARP].ptype #set protocol type
+            self.hwLen = self.packet[ARP].hwlen #set hardware length
+            self.pLen = self.packet[ARP].plen #set protocol length
 
 #--------------------------------------------------ARP-END---------------------------------------------------#
 
@@ -223,14 +239,15 @@ class NetworkInformation(ABC):
     supportedInterfaces = ['eth', 'wlan', 'en', 'enp', 'wlp', 'Ethernet', 'Wi-Fi', 'lo', '\\Device\\NPF_Loopback']
     systemInfo = None #represents a dictionary with all system information about the users machine
     networkInfo = None #represents a dict of dicts where each inner dict represents an available network interface
-    selectedInterface = None #represents user-selected interface name: 'Ethernet' / 'en6'
-    previousInterface = None #represents previous interfcae used for network analysis
+    selectedInterface = None #represents user-selected interface name for network analysis
+    previousInterface = None #represents previous interface used for network analysis
 
     # function for initializing the dict of data about all available interfaces
     @staticmethod
     def InitNetworkInfo():
-        NetworkInformation.networkInfo = NetworkInformation.GetNetworkInterfaces() #find all available network interface and collect all data about these interfaces
-        #return all available interface names for the user to select in sorted order
+        # find all available network interface and collect all data about these interfaces
+        NetworkInformation.networkInfo = NetworkInformation.GetNetworkInterfaces()
+        # return all available interface names for the user to select in sorted order
         return sorted(NetworkInformation.networkInfo, key=lambda x: (next((i for i, prefix 
                 in enumerate(NetworkInformation.supportedInterfaces) if x.startswith(prefix)), len(NetworkInformation.supportedInterfaces)), x))
 
@@ -388,7 +405,7 @@ class ArpSpoofingException(Exception):
 
     # str representation of ARP spoofing exception for showing results
     def __str__(self):
-        details = '\n##### ARP SPOOFING ATTACK ######\n'
+        details = '\n##### ARP SPOOFING ATTACK #####\n'
         if self.type == 1:
             details += '\n'.join([
                 f'[*] IP: {ip} ==> Source IP: {entry.get('srcIp')}, '
@@ -429,7 +446,7 @@ class ArpTable():
 
         # send the ARP request and capture the responses
         # srp function retunes tuple (response packet, received device)
-        answeredList = srp(arpRequestBroadcast, timeout=0.75, verbose=False)[0]
+        answeredList = srp(x=arpRequestBroadcast, iface=NetworkInformation.selectedInterface, timeout=0.75, multi=True, verbose=False)[0]
 
         # iterate over all devices that answered to our ARP request packet and add them to our table
         for device in answeredList:
@@ -659,8 +676,8 @@ class PortScanDoSException(Exception):
         attackName = 'PortScan' if self.type == 1 else 'DoS'
         if self.type == 3:
             attackName = 'PortScan and DoS'
-        details = f'\n##### {attackName.upper()} ATTACK ######\n'
-        details += '\n'.join([f'''[*] Source IP: {flow[0]} , Source Mac: {flow[1]} , Destination IP: {flow[2]}, Destination Mac: {flow[3]} , Protocol: {flow[4]} , Attack: {attackName}'''
+        details = f'\n##### {attackName.upper()} ATTACK #####\n'
+        details += '\n'.join([f'[*] Source IP: {flow[0]}, Source MAC: {flow[1]}, Destination IP: {flow[2]}, Destination MAC: {flow[3]}, Protocol: {flow[4]}, Attack: {attackName}'
                         for flow in self.attackDict])
         return f'{self.args[0]}\nDetails:\n{details}\n'
 
@@ -716,7 +733,7 @@ class PortScanDoS(ABC):
 
             # iterate over each packet in flow
             for packet in packetList:
-                #append packet length to list
+                # append packet length to list
                 packetLengths.append(packet.packetLen)
 
                 # append each packet timestemp to our list for IAT
@@ -733,29 +750,36 @@ class PortScanDoS(ABC):
                     if packet.flagDict.get('RST'):
                         rstFlags += 1
 
-                if packet.srcIp == flow[0]: #means forward packet
+                # means forward packets
+                if packet.srcIp == flow[0]:
                     # add forward packet lengths
                     fwdLengths.append(packet.headerLen)
 
-                    #add forward segment size for tcp packets
+                    # add forward segment size for tcp packets
                     if isinstance(packet, TCP_Packet):
                         fwdSegmentLengths.append(packet.segmentSize)
 
-                    # check for unique destination ports and add it if new port
+                    # check if destination port is not in our set
                     if packet.dstPort not in uniquePorts:
                         uniquePorts.add(packet.dstPort) #add the port to the set
-                    
-                    # count subflows in forward packets using counters and timestamps
+
+                    # check if first packet in forward flow, if so set subflow timestamp
                     if subflowLastPacketTS == -1:
                         subflowLastPacketTS = packet.time
-                    if (packet.time - subflowLastPacketTS) > 1.0: #check that timestamp difference is greater than 1 sec
+
+                    # check if subflow timestamp difference is greater than 1 sec
+                    if (packet.time - subflowLastPacketTS) > 1.0:
                         subflowCount += 1
 
-                else: #else means backward packets
+                    # update subflow timestamp with last seen packet in forward flow
+                    subflowLastPacketTS = packet.time
+
+                # else means backward packets
+                else:
                     # add backward packets lengths
                     bwdLengths.append(packet.headerLen)
 
-                    #add backward segment size for tcp packets
+                    # add backward segment size for tcp packets
                     if isinstance(packet, TCP_Packet):
                         bwdSegmentLengths.append(packet.segmentSize)
 
@@ -765,7 +789,7 @@ class PortScanDoS(ABC):
 
             # calculate the value dictionary for the current flow and insert it into the featuresDict
             flowParametes = {
-                'Number of Ports': len(uniquePorts), #represents number of unique destination ports
+                'Number of Ports': len(uniquePorts) if uniquePorts else 0, #represents number of unique destination ports
                 'Average Packet Length': np.mean(packetLengths) if packetLengths else 0, #represents average packet length
                 'Packet Length Min': np.min(packetLengths) if packetLengths else 0, #represents min packet length
                 'Packet Length Max': np.max(packetLengths) if packetLengths else 0, #represents max packet length
@@ -879,8 +903,9 @@ class DNSTunnelingException(Exception):
 
     # str representation of dns tunneling exception for showing results
     def __str__(self):
-        details = '\n##### DNS Tunneling ATTACK ######\n'
-        details += '\n'.join([f'''[*] Source IP: {flow[0]} , Source Mac: {flow[1]} , Destination IP: {flow[2]}, Destination Mac: {flow[3]} , Protocol: {flow[4]}'''
+        attackName = 'DNS Tunneling'
+        details = f'\n##### {attackName.upper()} ATTACK #####\n'
+        details += '\n'.join([f'[*] Source IP: {flow[0]}, Source MAC: {flow[1]}, Destination IP: {flow[2]}, Destination MAC: {flow[3]}, Protocol: {flow[4]}, Attack: {attackName}'
                         for flow in self.attackDict])
         return f'{self.args[0]}\nDetails:\n{details}\n'
 
@@ -930,8 +955,8 @@ class DNSTunneling(ABC):
             TxtRecordCount = 0 #represennts number of TXT record packets in flow
             MXRecordCount = 0 #represents number of MX record packets in flow
             ipDfFlags = 0 #represents DF flag of ip header
-            uniqueDomainNames = set() #represents unique domian names in packetes
-            uniqueSubDomainNames = set() #represents unique sub domian names in packetes
+            uniqueDomainNames = set() #represents unique domian names in packets
+            uniqueSubDomainNames = set() #represents unique sub domian names in packets
             domainNameLengths = [] #represents the domian name lengths
             subDomainLengths = [] #represents the sub domain name lengths
             responseDataLengths = [] #represents the response data lengths
@@ -949,7 +974,7 @@ class DNSTunneling(ABC):
                     # append each packet timestemp to our list for IAT
                     if packet.time:
                         timestamps.append(packet.time)
-                    
+
                     # check the dns sub type and increment the correct counter
                     if packet.dnsSubType == 1: #means A record
                         ARecordCount += 1
@@ -965,36 +990,41 @@ class DNSTunneling(ABC):
                     # check DF flag in ipv4 and increment counter if set
                     if packet.ipFlagDict.get('DF'):
                         ipDfFlags += 1
-                    
-                    if packet.srcIp == flow[0]: #means forward packet
+
+                    # means forward packets
+                    if packet.srcIp == flow[0]:
                         # add forward packet lengths
                         fwdLengths.append(packet.headerLen)
-                        if packet.dnsType == 'Response': #means response packet
+
+                        # check if dns response packet
+                        if packet.dnsType == 'Response':
                             # add response data to response data list
                             if packet.dnsData:
-                                totalLength = len(packet.dnsData) #represents total length of packets
-                                if isinstance(packet.dnsData, list): #if data is list we convert it
+                                totalLength = len(packet.dnsData) #represents total length of response data
+                                # if response data is list sum all responses in list
+                                if isinstance(packet.dnsData, list):
                                     totalLength = np.sum([len(response) for response in packet.dnsData])
-                                elif isinstance(packet.dnsData, dict): #if data is dict we convert it
-                                    totalLength = np.sum([len(value) for value in packet.dnsData.values()])
                                 responseDataLengths.append(totalLength) #add the total length to our list
 
-                    else: #else means backward packets
+                    # else means backward packets
+                    else:
                         # add backward packet lengths
                         bwdLengths.append(packet.headerLen)
-                        if packet.dnsType == 'Request': #means request packet
-                            domainNameLengths.append(len(packet.dnsDomainName)) #add domian name length
-                            subdomains = str(packet.dnsDomainName).split('.') #get all subdomain names
-                            subDomainLengths.append(np.mean([len(subdomain) for subdomain in subdomains])) 
 
-                            #check if request domain name is unique and not in our set
+                        # check if dns request packet
+                        if packet.dnsType == 'Request':
+                            domainNameLengths.append(len(packet.dnsDomainName)) #add domian name length
+                            subDomains = str(packet.dnsDomainName).split('.') #get list of all sub domain names
+                            subDomainLengths.append(np.mean([len(subDomain) for subDomain in subDomains])) #add the average sub domain length
+
+                            # check if the domain name is unique and not in our set
                             if packet.dnsDomainName not in uniqueDomainNames:
                                 uniqueDomainNames.add(packet.dnsDomainName) #add domain name to set
-                            
-                            # check if the subdomains are unique and not in our set
-                            for subdomain in subdomains:
-                                if subdomain not in uniqueDomainNames:
-                                    uniqueSubDomainNames.add(subdomain)
+
+                            # check if the sub domains are unique and not in our set
+                            for subDomain in subDomains:
+                                if subDomain not in uniqueSubDomainNames:
+                                    uniqueSubDomainNames.add(subDomain) #add sub domain name to set
 
             # calculate inter-arrival time features (IAT) and flow duration
             interArrivalTimes = [t2 - t1 for t1, t2 in zip(timestamps[:-1], timestamps[1:])]
@@ -1121,9 +1151,11 @@ class SaveData(ABC):
     def SaveFlowsInFile(flows, filePath='detected_flows.txt'):
         # write result of flows captured in txt file
         with open(filePath, 'w', encoding='utf-8') as file:
+
             # iterate ove reach flow in flows dictionary
             for flow, features in flows.items():
                 file.write(f'Flow: {flow}\n') #write flow info
+
                 # iterate over each feature of flow
                 for feature, value in features.items():
                     file.write(f' {feature}: {value}\n') #write flow's feature

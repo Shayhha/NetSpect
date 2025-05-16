@@ -664,7 +664,7 @@ def EnableContextMenuHistoryTableWidget(self):
    # add a context menu to the history table widget and disbale editing
     self.ui.historyTableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) #stretch columns
     self.ui.historyTableWidget.verticalHeader().setSectionResizeMode(QHeaderView.Fixed) #fix row heights
-    self.ui.historyTableWidget.setSelectionMode(QTableWidget.SingleSelection) #set single selection for copy
+    self.ui.historyTableWidget.setSelectionMode(QTableWidget.NoSelection) #set no selection
     self.ui.historyTableWidget.setEditTriggers(QTableWidget.NoEditTriggers) #set not editable
     self.ui.historyTableWidget.setSortingEnabled(False) #no sorting, comes sorted from database
     self.ui.historyTableWidget.setFocusPolicy(Qt.NoFocus) #set no focus
@@ -724,16 +724,17 @@ def NotifyInvalidLineEdit(self, lineEditWidget, lineEditName, errorMessageLabel=
 
 # custom message box class that will be used to show error messages to the user at certain times
 class CustomMessageBox(QDialog):
-    isMessageBox = False #represents flag for indicating if messagebox already exists
+    isMessageBox = False #represents flag for indicating if message box already exists
 
     # constructor of custom message box class
-    def __init__(self, title, message, iconType, isSelectable=False):
-        super().__init__()
+    def __init__(self, title, message, iconType, isSelectable=False, parent=None):
+        super().__init__(parent)
 
         # set the message box window title and icon
         self.setWindowTitle(title)
+        self.setObjectName('customMessageBox') #set object name for message box
         self.setWindowIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'NetSpectIconTransparent.png')))
-        self.setFont(QFont('Cairo', 13)) #set font size for messagebox
+        self.setFont(QFont('Cairo', 13)) #set font size for message box
 
         # create the main vertical layout
         layout = QVBoxLayout()
@@ -800,20 +801,20 @@ class CustomMessageBox(QDialog):
 
         # set custom stylesheet
         self.setStyleSheet('''
-            QDialog {
+            #customMessageBox {
                 background-color: #f3f3f3;
             }
                         
-            QLabel {
+            #customMessageBox QLabel {
                 color: black;
                 font-family: 'Cairo';
             }
 
-            QLabel[alignment='Qt::AlignVCenter|Qt::AlignLeft'] {
+            #customMessageBox QLabel[alignment='Qt::AlignVCenter|Qt::AlignLeft'] {
                 margin-left: 10px;
             }
                         
-            QPushButton {
+            #customMessageBox QPushButton {
                 background-color: #3a8e32;
                 border: 1px solid black;
                 border-radius: 10px;
@@ -824,15 +825,15 @@ class CustomMessageBox(QDialog):
                 min-width: 80px;
             }
                            
-            QPushButton:hover {
+            #customMessageBox QPushButton:hover {
                 background-color: #4d9946;
             }
                            
-            QPushButton:pressed {
+            #customMessageBox QPushButton:pressed {
                 background-color: #2e7128;
             }
                         
-            QPushButton[text='No'] {
+            #customMessageBox QPushButton[text='No'] {
                 background-color: #d84f4f;
                 border: 1px solid black;
                 border-radius: 10px;
@@ -843,15 +844,15 @@ class CustomMessageBox(QDialog):
                 min-width: 80px;
             }
                            
-            QPushButton[text='No']:hover {
+            #customMessageBox QPushButton[text='No']:hover {
                 background-color: #db6060;
             }
                            
-            QPushButton[text='No']:pressed {
+            #customMessageBox QPushButton[text='No']:pressed {
                 background-color: #ac3f3f;
             }
         ''')
-    
+
         # set dialog properties non-resizable but sized to content
         self.setMinimumSize(350, 150) #set a reasonable minimum size
         self.adjustSize() #adjust the size based on content
@@ -873,7 +874,7 @@ class CustomMessageBox(QDialog):
     # method for mapping the iconType to the appropriate StandardPixmap icon
     def GetMessageBoxIcon(self, iconType):
         if iconType == 'Warning':
-            QApplication.style().standardIcon(QStyle.StandardPixmap.SP_MessageBoxWarning)
+            return QApplication.style().standardIcon(QStyle.StandardPixmap.SP_MessageBoxWarning)
         elif iconType == 'Critical':
             return QApplication.style().standardIcon(QStyle.StandardPixmap.SP_MessageBoxCritical)
         elif iconType == 'Question':
@@ -883,11 +884,11 @@ class CustomMessageBox(QDialog):
 
 # method for showing message box window
 def ShowMessageBox(title, message, iconType='Information', isSelectable=False):
-    # iconType options can be Information, Warning, Critical, Question, NoIcon
+    # iconType options can be Information, Warning, Critical, Question
     if not CustomMessageBox.isMessageBox:
         messageBox = CustomMessageBox(title, message, iconType, isSelectable)
 
-        # set isMessageBox and show messag ebox
+        # set isMessageBox and show message box
         CustomMessageBox.isMessageBox = True
         result = messageBox.exec()
 
@@ -1018,7 +1019,7 @@ def UpdatePieChartAfterAttack(self, attackType):
         self.userData['pieChartData'][attackType] += 1
 
     except Exception as e:
-        ShowMessageBox('Error Updating Pie Chart', 'Error occurred while updating pie chart, try again later.', 'Critical')
+        ShowMessageBox('Error Updating Pie Chart', 'Error occurred while updating pie chart after attack, try again later.', 'Critical')
 
 
 # method for updating the text of the pie chart legends and slice labels
@@ -1041,7 +1042,7 @@ def UpdatePieChartLegendsAndSlices(self):
             legendLabelObject.setText(legendLabelText)
 
     except Exception as e:
-        ShowMessageBox('Error Updating Pie Chart', 'Error occurred while updating pie chart, try again later.', 'Critical')
+        ShowMessageBox('Error Updating Pie Chart Legends', 'Error occurred while updating pie chart legends, try again later.', 'Critical')
 
 
 # method for updating the pie chart after user login with data from database
@@ -1074,7 +1075,7 @@ def UpdatePieChartAfterLogin(self, pieChartData):
             UpdatePieChartLegendsAndSlices(self)
 
     except Exception as e:
-        ShowMessageBox('Error Updating Pie Chart', 'Error occurred while updating pie chart, try again later.', 'Critical')
+        ShowMessageBox('Error Updating Pie Chart', 'Error occurred while updating pie chart after login, try again later.', 'Critical')
 
 
 # method for updating pie chart color mode based on chosen color mode in ui
@@ -1134,50 +1135,54 @@ class AnalyticsHistogramChart():
 
     # method for initializing the histogram chart
     def InitAnalyticsHistogramChart(self):
-        # create the chart object and set fonts and colors
-        self.ui.histogramChart = QChart()
-        self.ui.histogramChart.legend().setVisible(True)
-        self.ui.histogramChart.legend().setFont(QFont('Cairo', 9, QFont.Bold))
-        self.ui.histogramChart.legend().setContentsMargins(0, 0, 0, 0)
-        self.ui.histogramChart.legend().layout().setContentsMargins(0, 0, 0, 0)
-        self.ui.histogramChart.legend().setBackgroundVisible(False)
-        self.ui.histogramChart.legend().setAlignment(Qt.AlignTop)
-        self.ui.histogramChart.legend().setLabelColor(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
-        self.ui.histogramChart.layout().setContentsMargins(0, 0, 0, 0)
-        self.ui.histogramChart.setMargins(QMargins(0, 0, 0, 0))
-        self.ui.histogramChart.setBackgroundRoundness(0)
-        self.ui.histogramChart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
-        self.ui.histogramChart.setTitle('No Data To Display...')
-        self.ui.histogramChart.setTitleFont(QFont('Cairo', 18, QFont.Bold, False))
-        self.ui.histogramChart.setTitleBrush(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
-        self.ui.histogramChart.setAnimationOptions(QChart.SeriesAnimations)
+        try:
+            # create the chart object and set fonts and colors
+            self.ui.histogramChart = QChart()
+            self.ui.histogramChart.legend().setVisible(True)
+            self.ui.histogramChart.legend().setFont(QFont('Cairo', 9, QFont.Bold))
+            self.ui.histogramChart.legend().setContentsMargins(0, 0, 0, 0)
+            self.ui.histogramChart.legend().layout().setContentsMargins(0, 0, 0, 0)
+            self.ui.histogramChart.legend().setBackgroundVisible(False)
+            self.ui.histogramChart.legend().setAlignment(Qt.AlignTop)
+            self.ui.histogramChart.legend().setLabelColor(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
+            self.ui.histogramChart.layout().setContentsMargins(0, 0, 0, 0)
+            self.ui.histogramChart.setMargins(QMargins(0, 0, 0, 0))
+            self.ui.histogramChart.setBackgroundRoundness(0)
+            self.ui.histogramChart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
+            self.ui.histogramChart.setTitle('No Data To Display...')
+            self.ui.histogramChart.setTitleFont(QFont('Cairo', 18, QFont.Bold, False))
+            self.ui.histogramChart.setTitleBrush(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
+            self.ui.histogramChart.setAnimationOptions(QChart.SeriesAnimations)
 
-        # create a separate QLabel for the title (will be visible when there is no data to display)
-        self.ui.histogramChartTitleLabel = QLabel('No Data To Display...')
-        self.ui.histogramChartTitleLabel.setAlignment(Qt.AlignCenter)
-        self.ui.histogramChartTitleLabel.setFont(QFont('Cairo', 18, QFont.Bold))
-        self.ui.histogramChartTitleLabel.setObjectName('histogramChartTitleLabel')
-        self.ui.histogramChartTitleLabel.setAlignment(Qt.AlignHCenter)  # Start centered
-        self.ui.histogramChartTitleLabel.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+            # create a separate QLabel for the title (will be visible when there is no data to display)
+            self.ui.histogramChartTitleLabel = QLabel('No Data To Display...')
+            self.ui.histogramChartTitleLabel.setAlignment(Qt.AlignCenter)
+            self.ui.histogramChartTitleLabel.setFont(QFont('Cairo', 18, QFont.Bold))
+            self.ui.histogramChartTitleLabel.setObjectName('histogramChartTitleLabel')
+            self.ui.histogramChartTitleLabel.setAlignment(Qt.AlignHCenter)  # Start centered
+            self.ui.histogramChartTitleLabel.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
 
-        # create the chartView object
-        self.ui.histogramChartView = QChartView(self.ui.histogramChart)
-        self.ui.histogramChartView.setRenderHint(QPainter.Antialiasing)
+            # create the chartView object
+            self.ui.histogramChartView = QChartView(self.ui.histogramChart)
+            self.ui.histogramChartView.setRenderHint(QPainter.Antialiasing)
 
-        # create a VBoxLayout that the histogram chart and title will sit in
-        VBoxLayout = QVBoxLayout()
-        VBoxLayout.setSpacing(0)
-        VBoxLayout.setContentsMargins(6, 6, 6, 6)
-        VBoxLayout.addWidget(self.ui.histogramChartTitleLabel) #adding title
-        VBoxLayout.addWidget(self.ui.histogramChartView) #adding histogram chart
+            # create a VBoxLayout that the histogram chart and title will sit in
+            VBoxLayout = QVBoxLayout()
+            VBoxLayout.setSpacing(0)
+            VBoxLayout.setContentsMargins(6, 6, 6, 6)
+            VBoxLayout.addWidget(self.ui.histogramChartTitleLabel) #adding title
+            VBoxLayout.addWidget(self.ui.histogramChartView) #adding histogram chart
 
-        # add the VBoxLayout to the ui frame
-        self.ui.histogramChartVerticalFrame.setLayout(VBoxLayout)
-        self.ui.histogramChartVerticalFrame.update()
+            # add the VBoxLayout to the ui frame
+            self.ui.histogramChartVerticalFrame.setLayout(VBoxLayout)
+            self.ui.histogramChartVerticalFrame.update()
 
-        # hide the chart and show the title
-        self.ui.histogramChartTitleLabel.show()
-        self.ui.histogramChartView.hide()
+            # hide the chart and show the title
+            self.ui.histogramChartTitleLabel.show()
+            self.ui.histogramChartView.hide()
+
+        except Exception as e:
+            ShowMessageBox('Error In Histogram Chart Initialization', 'Error occurred in histogram chart initialization, try again later.', 'Critical')
 
 
     # method for showing a tooltip on each bar of the histogram chart when the user hovers it with the mouse
@@ -1192,18 +1197,22 @@ class AnalyticsHistogramChart():
 
 # method for updating the grid lines and ticks based on the given maximum value in histogram chart
 def UpdateHistogramChartLines(self, newValue):
-    # set desired lines to be five lines for fixed uniform look
-    desiredLines = 5 #set to five lines in total
-    intervals = desiredLines - 1 #set intervals based on number of lines
+    try:
+        # set desired lines to be five lines for fixed uniform look
+        desiredLines = 5 #set to five lines in total
+        intervals = desiredLines - 1 #set intervals based on number of lines
 
-    # use ceiling division to get the smallest step that will cover newValue
-    step = ((newValue + 2) + (intervals - 1)) // intervals
-    adjustedMax = step * intervals
+        # use ceiling division to get the smallest step that will cover newValue
+        step = ((newValue + 2) + (intervals - 1)) // intervals
+        adjustedMax = step * intervals
 
-    # set the tick interval for histogram Y-axis
-    self.ui.histogramAxisY.setRange(0, adjustedMax)
-    self.ui.histogramAxisY.setTickInterval(step)
-    self.ui.histogramAxisY.setTickCount(desiredLines)
+        # set the tick interval for histogram Y-axis
+        self.ui.histogramAxisY.setRange(0, adjustedMax)
+        self.ui.histogramAxisY.setTickInterval(step)
+        self.ui.histogramAxisY.setTickCount(desiredLines)
+
+    except Exception as e:
+        ShowMessageBox('Error Updating Histogram Chart Lines', 'Error occurred while updating histogram chart lines, try again later.', 'Critical')
 
 
 # method for creating the histogram chart data, axies and bars using the diven data dict, if data dict is None then create an empty histogram chart
@@ -1358,7 +1367,7 @@ def UpdateHistogramChartAfterAttack(self, attackType):
         self.userData['analyticsChartData']['histogramChartData'][yearComboboxSelection][datetime.now().month][attackType] += 1
 
     except Exception as e:
-        ShowMessageBox('Error Updating Histogram Chart', 'Error occurred while updating histogram chart after an attack, try again later.', 'Critical')
+        ShowMessageBox('Error Updating Histogram Chart', 'Error occurred while updating histogram chart after attack, try again later.', 'Critical')
 
 
 # method for updating the histogram chart after user login with data from database
@@ -1371,7 +1380,7 @@ def UpdateHistogramChartAfterLogin(self, histogramChartData):
             ResetHistogramChartToDefault(self)
 
     except Exception as e:
-        ShowMessageBox('Error Updating Histogram Chart', 'Error occurred while updating histogram chart, try again later.', 'Critical')
+        ShowMessageBox('Error Updating Histogram Chart', 'Error occurred while updating histogram chart after login, try again later.', 'Critical')
 
 
 # method for updating histogram chart color mode based on chosen color mode in ui
@@ -1461,50 +1470,54 @@ class AnalyticsBarChart():
 
     # method for initializing the hhorizontal bar chart
     def InitAnalyticsBarChart(self):
-        # create the chart object and set fonts and colors
-        self.ui.barChart = QChart()
-        self.ui.barChart.legend().setVisible(True)
-        self.ui.barChart.legend().setFont(QFont('Cairo', 9, QFont.Bold))
-        self.ui.barChart.legend().setContentsMargins(0, 0, 0, 0)
-        self.ui.barChart.legend().layout().setContentsMargins(0, 0, 0, 0)
-        self.ui.barChart.legend().setBackgroundVisible(False)
-        self.ui.barChart.legend().setAlignment(Qt.AlignTop)
-        self.ui.barChart.legend().setLabelColor(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
-        self.ui.barChart.layout().setContentsMargins(0, 0, 0, 0)
-        self.ui.barChart.setMargins(QMargins(0, 0, 0, 0))
-        self.ui.barChart.setBackgroundRoundness(0)
-        self.ui.barChart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
-        self.ui.barChart.setTitle('No Data To Display...')
-        self.ui.barChart.setTitleFont(QFont('Cairo', 18, QFont.Bold, False))
-        self.ui.barChart.setTitleBrush(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
-        self.ui.barChart.setAnimationOptions(QChart.SeriesAnimations)
+        try:
+            # create the chart object and set fonts and colors
+            self.ui.barChart = QChart()
+            self.ui.barChart.legend().setVisible(True)
+            self.ui.barChart.legend().setFont(QFont('Cairo', 9, QFont.Bold))
+            self.ui.barChart.legend().setContentsMargins(0, 0, 0, 0)
+            self.ui.barChart.legend().layout().setContentsMargins(0, 0, 0, 0)
+            self.ui.barChart.legend().setBackgroundVisible(False)
+            self.ui.barChart.legend().setAlignment(Qt.AlignTop)
+            self.ui.barChart.legend().setLabelColor(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
+            self.ui.barChart.layout().setContentsMargins(0, 0, 0, 0)
+            self.ui.barChart.setMargins(QMargins(0, 0, 0, 0))
+            self.ui.barChart.setBackgroundRoundness(0)
+            self.ui.barChart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#ebeff7'))
+            self.ui.barChart.setTitle('No Data To Display...')
+            self.ui.barChart.setTitleFont(QFont('Cairo', 18, QFont.Bold, False))
+            self.ui.barChart.setTitleBrush(QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519'))
+            self.ui.barChart.setAnimationOptions(QChart.SeriesAnimations)
 
-        # create a separate QLabel for the title (will be visible when there is no data to display)
-        self.ui.barChartTitleLabel = QLabel('No Data To Display...')
-        self.ui.barChartTitleLabel.setAlignment(Qt.AlignCenter)
-        self.ui.barChartTitleLabel.setFont(QFont('Cairo', 18, QFont.Bold))
-        self.ui.barChartTitleLabel.setObjectName('barChartTitleLabel')
-        self.ui.barChartTitleLabel.setAlignment(Qt.AlignHCenter)  # Start centered
-        self.ui.barChartTitleLabel.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+            # create a separate QLabel for the title (will be visible when there is no data to display)
+            self.ui.barChartTitleLabel = QLabel('No Data To Display...')
+            self.ui.barChartTitleLabel.setAlignment(Qt.AlignCenter)
+            self.ui.barChartTitleLabel.setFont(QFont('Cairo', 18, QFont.Bold))
+            self.ui.barChartTitleLabel.setObjectName('barChartTitleLabel')
+            self.ui.barChartTitleLabel.setAlignment(Qt.AlignHCenter)  # Start centered
+            self.ui.barChartTitleLabel.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
 
-        # create the chartView object
-        self.ui.barChartView  = QChartView(self.ui.barChart)
-        self.ui.barChartView.setRenderHint(QPainter.Antialiasing)
+            # create the chartView object
+            self.ui.barChartView  = QChartView(self.ui.barChart)
+            self.ui.barChartView.setRenderHint(QPainter.Antialiasing)
 
-        # create a VBoxLayout that the bar chart and title will sit in
-        VBoxLayout = QVBoxLayout()
-        VBoxLayout.setSpacing(0)
-        VBoxLayout.setContentsMargins(6, 6, 6, 6)
-        VBoxLayout.addWidget(self.ui.barChartTitleLabel) #adding title
-        VBoxLayout.addWidget(self.ui.barChartView) #adding bar chart
-        
-        # add the VBoxLayout to the ui frame
-        self.ui.barChartVerticalFrame.setLayout(VBoxLayout)
-        self.ui.barChartVerticalFrame.update()
+            # create a VBoxLayout that the bar chart and title will sit in
+            VBoxLayout = QVBoxLayout()
+            VBoxLayout.setSpacing(0)
+            VBoxLayout.setContentsMargins(6, 6, 6, 6)
+            VBoxLayout.addWidget(self.ui.barChartTitleLabel) #adding title
+            VBoxLayout.addWidget(self.ui.barChartView) #adding bar chart
+            
+            # add the VBoxLayout to the ui frame
+            self.ui.barChartVerticalFrame.setLayout(VBoxLayout)
+            self.ui.barChartVerticalFrame.update()
 
-        # hide the chart and show the title
-        self.ui.barChartTitleLabel.show()
-        self.ui.barChartView.hide()
+            # hide the chart and show the title
+            self.ui.barChartTitleLabel.show()
+            self.ui.barChartView.hide()
+
+        except Exception as e:
+            ShowMessageBox('Error In Bar Chart Initialization', 'Error occurred in bar chart initialization, try again later.', 'Critical')
 
 
     # method for showing a tooltip on each bar of the bar chart when the user hovers it with the mouse
@@ -1518,18 +1531,22 @@ class AnalyticsBarChart():
 
 # method for updating the grid lines and ticks based on the given maximum value in bar chart
 def UpdateBarChartLines(self, newValue):
-    # set desired lines to be five lines for fixed uniform look
-    desiredLines = 5 #set to five lines in total
-    intervals = desiredLines - 1 #set intervals based on number of lines
+    try:
+        # set desired lines to be five lines for fixed uniform look
+        desiredLines = 5 #set to five lines in total
+        intervals = desiredLines - 1 #set intervals based on number of lines
 
-    # use ceiling division to get the smallest step that will cover newValue
-    step = ((newValue + 2) + (intervals - 1)) // intervals
-    adjustedMax = step * intervals
+        # use ceiling division to get the smallest step that will cover newValue
+        step = ((newValue + 2) + (intervals - 1)) // intervals
+        adjustedMax = step * intervals
 
-    # set the tick interval for bar chart X-axis
-    self.ui.barChartAxisX.setRange(0, adjustedMax)
-    self.ui.barChartAxisX.setTickInterval(step)
-    self.ui.barChartAxisX.setTickCount(desiredLines)
+        # set the tick interval for bar chart X-axis
+        self.ui.barChartAxisX.setRange(0, adjustedMax)
+        self.ui.barChartAxisX.setTickInterval(step)
+        self.ui.barChartAxisX.setTickCount(desiredLines)
+
+    except Exception as e:
+        ShowMessageBox('Error Updating Bar Chart Lines', 'Error occurred while updating bar chart lines, try again later.', 'Critical')
 
 
 # method for creating the bar chart data, axies and bars using the diven data dict, if data dict is None then create an empty bar chart
@@ -1666,7 +1683,7 @@ def UpdateBarChartAfterAttack(self, attackType):
         self.userData['analyticsChartData']['barChartData'][yearComboboxSelection][attackType] += 1
 
     except Exception as e:
-        ShowMessageBox('Error Updating Bar Chart', 'Error occurred while updating bar chart after an attack, try again later.', 'Critical')
+        ShowMessageBox('Error Updating Bar Chart', 'Error occurred while updating bar chart after attack, try again later.', 'Critical')
 
 
 # method for updating the bar chart after user login with data from database
@@ -1679,7 +1696,7 @@ def UpdateBarChartAfterLogin(self, barChartData):
             ResetBarChartToDefault(self)
 
     except Exception as e:
-        ShowMessageBox('Error Updating Bar Chart', 'Error occurred while updating bar chart, try again later.', 'Critical')
+        ShowMessageBox('Error Updating Bar Chart', 'Error occurred while updating bar chart after login, try again later.', 'Critical')
 
 
 # method for updating bar chart color mode based on chosen color mode in ui
@@ -1793,7 +1810,7 @@ def UpdateDataInCardsAfterAttack(self):
             SetDataIntoCards(self)
 
     except Exception as e:
-        ShowMessageBox('Error Setting Cards Data', 'Error occurred while setting data into analytics cards, try again later.', 'Critical')
+        ShowMessageBox('Error Updating Cards Data', 'Error occurred while updating analytics cards after attack, try again later.', 'Critical')
 
 
 # method for resetting the data in the cards section to the default values
@@ -2040,7 +2057,7 @@ def InitReportTableView(self):
     self.ui.reportPreviewTableView.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) #stretch columns
     self.ui.reportPreviewTableView.verticalHeader().setSectionResizeMode(QHeaderView.Fixed) #fix row heights
     self.ui.reportPreviewTableView.verticalHeader().setStretchLastSection(False) #don't stretch last row
-    self.ui.reportPreviewTableView.setSelectionMode(QTableWidget.SingleSelection) #set single selection for copy
+    self.ui.reportPreviewTableView.setSelectionMode(QTableWidget.NoSelection) #set no selection
     self.ui.reportPreviewTableView.setEditTriggers(QTableWidget.NoEditTriggers) #set not editable
     self.ui.reportPreviewTableView.setSortingEnabled(False) #no sorting, comes sorted from database
     self.ui.reportPreviewTableView.setFocusPolicy(Qt.NoFocus) #set no focus

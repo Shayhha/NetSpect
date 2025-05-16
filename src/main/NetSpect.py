@@ -462,6 +462,12 @@ class NetSpect(QMainWindow):
             self.ui.numberOfDetectionsCounter.setText(str(self.userData.get('numberOfDetections')))
 
 
+    # method for toggling message box visability state
+    def ToggleMessageBox(self, state):
+        # set the custom message box visability flag
+        UserInterfaceFunctions.CustomMessageBox.isMessageBox = state
+
+
     # method for sending logs to logger thread for writing logs
     @Slot(str, str)
     def SendLogDict(self, message, level='INFO'):
@@ -1167,16 +1173,16 @@ class NetSpect(QMainWindow):
                 if not email or not username or not password or not confirmPassword:
                     UserInterfaceFunctions.ChangeErrorMessageText(self.ui.registerErrorMessageLabel, 'Please fill in all the fields.')
                 # means email, username and password fields are invalid
-                elif emailState != QValidator.Acceptable and usernameState != QValidator.Acceptable and (passwordState != QValidator.Acceptable or confirmPasswordState != QValidator.Acceptable):
+                elif emailState != QValidator.Acceptable and usernameState != QValidator.Acceptable and (not passwordState or not confirmPasswordState):
                     UserInterfaceFunctions.ChangeErrorMessageText(self.ui.registerErrorMessageLabel, 'Please enter a valid email address, username and passowrd into the fields.')
                 # means email and username fields are invalid
                 elif emailState != QValidator.Acceptable and usernameState != QValidator.Acceptable:
                     UserInterfaceFunctions.ChangeErrorMessageText(self.ui.registerErrorMessageLabel, 'Please enter a valid email address and username into the fields.')
                 # means email and password fields are invalid
-                elif emailState != QValidator.Acceptable and (passwordState != QValidator.Acceptable or confirmPasswordState != QValidator.Acceptable):
+                elif emailState != QValidator.Acceptable and (not passwordState or not confirmPasswordState):
                     UserInterfaceFunctions.ChangeErrorMessageText(self.ui.registerErrorMessageLabel, 'Please enter a valid email address and password into the fields.')
                 # means username and password fields are invalid
-                elif usernameState != QValidator.Acceptable and (passwordState != QValidator.Acceptable or confirmPasswordState != QValidator.Acceptable):
+                elif usernameState != QValidator.Acceptable and (not passwordState or not confirmPasswordState):
                     UserInterfaceFunctions.ChangeErrorMessageText(self.ui.registerErrorMessageLabel, 'Please enter a valid username and password into the fields.')
                 # means email address field is invalid
                 elif emailState != QValidator.Acceptable:
@@ -1185,7 +1191,7 @@ class NetSpect(QMainWindow):
                 elif usernameState != QValidator.Acceptable:
                     UserInterfaceFunctions.ChangeErrorMessageText(self.ui.registerErrorMessageLabel, 'Please enter a valid username into the field.')
                 # means password field is invalid
-                elif passwordState != QValidator.Acceptable or confirmPasswordState != QValidator.Acceptable:
+                elif not passwordState or not confirmPasswordState:
                     UserInterfaceFunctions.ChangeErrorMessageText(self.ui.registerErrorMessageLabel, 'Please enter a valid password into the field.')
                 # means password and confirm password do not match
                 elif password != confirmPassword:
@@ -1431,10 +1437,10 @@ class NetSpect(QMainWindow):
             if not currentPassword or not newPassword or not confirmPassword:
                 UserInterfaceFunctions.ChangeErrorMessageText(self.ui.savePasswordErrorMessageLabel ,'Please fill in all the password fields before changing password.')
             # means current passowrd is not correct
-            elif currectPasswordState != QValidator.Acceptable:
+            elif not currectPasswordState:
                 UserInterfaceFunctions.ChangeErrorMessageText(self.ui.savePasswordErrorMessageLabel ,'Please enter the correct current password.')
             # means new password or confirmation are not correct
-            elif newPasswordState != QValidator.Acceptable or confirmPasswordState != QValidator.Acceptable:
+            elif not newPasswordState or not confirmPasswordState:
                 UserInterfaceFunctions.ChangeErrorMessageText(self.ui.savePasswordErrorMessageLabel ,'Please enter a valid new password.')
             # means new password and confirmation do not match
             elif newPassword != confirmPassword:

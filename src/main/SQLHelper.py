@@ -219,7 +219,7 @@ class SQL_Thread(QThread):
             # emit registration signal to main thread
             self.registrationResultSignal.emit(resultDict)
 
-    
+
     # method for changing user's email in Users table
     @Slot(int, str)
     def ChangeEmail(self, userId, newEmail):
@@ -239,7 +239,7 @@ class SQL_Thread(QThread):
                 self.cursor.execute(query, (newEmail, userId))
             
                 if self.cursor.rowcount > 0:
-                    self.connection.commit() #commit the transaction for update
+                    self.connection.commit() #commit transaction
                     resultDict['message'] = 'Changed email successfully.'
                     resultDict['state'] = True
                 else:
@@ -274,7 +274,7 @@ class SQL_Thread(QThread):
         result = self.cursor.fetchone()
         return result[0] if result else None
 
-    
+
     # method for changing user's username in Users table
     @Slot(int, str)
     def ChangeUserName(self, userId, newUsername):
@@ -294,7 +294,7 @@ class SQL_Thread(QThread):
                 self.cursor.execute(query, (newUsername, userId))
             
                 if self.cursor.rowcount > 0:
-                    self.connection.commit() #commit the transaction for update
+                    self.connection.commit() #commit transaction
                     resultDict['message'] = 'Changed username successfully.'
                     resultDict['state'] = True
                 else:
@@ -348,7 +348,7 @@ class SQL_Thread(QThread):
                 self.cursor.execute(query, (newPassword, userId))
                 
                 if self.cursor.rowcount > 0:
-                    self.connection.commit() #commit the transaction for the update
+                    self.connection.commit() #commit transaction
                     resultDict['message'] = 'Password updated successfully.'
                     resultDict['state'] = True
                 else:
@@ -411,14 +411,14 @@ class SQL_Thread(QThread):
 
         result = self.cursor.fetchone()
         return result[0] if result else None
-    
 
-    # method for deleting user account from Users table
+
+    # method for deleting user account from Users and Alerts tables
     @Slot(int)
     def DeleteAccount(self, userId):
         resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
         try:
-            # set autocommit to false for executing both queires together
+            # set autocommit to false for executing both queries together
             self.connection.autocommit = False
 
             # delete all alerts for user in Alerts table
@@ -429,7 +429,7 @@ class SQL_Thread(QThread):
                 '''
             self.cursor.execute(alertsQuery, (userId,))
 
-            # delete given user from Users table by userId
+            # delete given user from Users table
             usersQuery = '''
                 UPDATE Users SET 
                 isDeleted = 1 
@@ -438,7 +438,7 @@ class SQL_Thread(QThread):
             self.cursor.execute(usersQuery, (userId,))
             
             if self.cursor.rowcount > 0:
-                self.connection.commit() #commit the transaction for the update
+                self.connection.commit() #commit transaction
                 resultDict['message'] = 'User account deleted successfully.'
                 resultDict['state'] = True
             else:
@@ -447,6 +447,53 @@ class SQL_Thread(QThread):
         except Exception as e:
             self.connection.rollback() #rollback on error
             resultDict['message'] = f'Error deleting user account: {e}.'
+            resultDict['error'] = True
+        finally:
+            # set autocommit back to true for next queries
+            self.connection.autocommit = True
+            # emit delete account signal to main thread
+            self.deleteAccountResultSignal.emit(resultDict)
+
+
+    # method for permanently deleting user account from Users, Alerts and Blacklist tables
+    @Slot(int)
+    def HardDeleteAccount(self, userId):
+        resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
+        try:
+            # set autocommit to false for executing all queries together
+            self.connection.autocommit = False
+
+            # hard delete all blacklisted mac addresses for user in Blacklist table
+            blacklistQuery = '''
+                DELETE FROM Blacklist
+                WHERE userId = ?
+            '''
+            self.cursor.execute(blacklistQuery, (userId,))
+
+            # hard delete all alerts for user in Alerts table
+            alertsQuery = '''
+                DELETE FROM Alerts
+                WHERE userId = ?
+            '''
+            self.cursor.execute(alertsQuery, (userId,))
+
+             # hard delete given user from Users table
+            usersQuery = '''
+                DELETE FROM Users
+                WHERE userId = ?
+            '''
+            self.cursor.execute(usersQuery, (userId,))
+
+            if self.cursor.rowcount > 0:
+                self.connection.commit() #commit transaction
+                resultDict['message'] = 'User account permanently deleted successfully.'
+                resultDict['state'] = True
+            else:
+                resultDict['message'] = 'Failed permanently deleting user account.'
+
+        except Exception as e:
+            self.connection.rollback() #rollback on error
+            resultDict['message'] = f'Error permanently deleting user account: {e}.'
             resultDict['error'] = True
         finally:
             # set autocommit back to true for next queries
@@ -488,7 +535,7 @@ class SQL_Thread(QThread):
 
         # return list of alerts for user
         return alertsList
-    
+
 
     # method for getting number of attacks from each type in Alerts table for pie chart
     @Slot(int)
@@ -594,7 +641,7 @@ class SQL_Thread(QThread):
                                         destinationIp, destinationMac, protocol, osType, timestamp))
             
             if self.cursor.rowcount > 0:
-                self.connection.commit()
+                self.connection.commit() #commit transaction
                 resultDict['message'] = 'Added alert successfully.'
                 resultDict['state'] = True
             else:
@@ -621,7 +668,7 @@ class SQL_Thread(QThread):
                 WHERE userId = ?
                 '''
             self.cursor.execute(query, (userId,))
-            self.connection.commit()
+            self.connection.commit() #commit transaction
 
             if self.cursor.rowcount > 0:
                 resultDict['message'] = 'All alerts deleted successfully.'
@@ -650,24 +697,24 @@ class SQL_Thread(QThread):
         blacklistMacsResult = self.cursor.fetchall()
         blacklistMacs = [] #represents our blacklist of mac addresses
 
-        # check if we received blacklist mac addresses from query
+        # check if we received blacklisted mac addresses from query
         if blacklistMacsResult:
-            # create list of blacklist mac addresses with given result
+            # create list of blacklisted mac addresses with given result
             blacklistMacs = [row[0] for row in blacklistMacsResult]
 
-        # return blacklist macs for user
+        # return blacklisted mac addresses for user
         return blacklistMacs
-    
 
-    # Method for adding a MAC address to the blacklist for a given user
+
+    # method for adding a mac address to the blacklist for a given user
     @Slot(int, str)
     def AddBlacklistMac(self, userId, macAddress):
         resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
         try:
-            # first, get the existing blacklist for the given user
+            # we first get the existing blacklist for the given user
             existingBlacklistMacs = self.GetBlacklistMacs(userId)
             
-            # check if the MAC address already exists in the blacklist
+            # check if the mac address already exists in the blacklist
             if macAddress in existingBlacklistMacs:
                 resultDict['message'] = 'MAC address is already blacklisted for this user.'
             else:
@@ -678,7 +725,7 @@ class SQL_Thread(QThread):
                 self.cursor.execute(query, (userId, macAddress))
 
                 if self.cursor.rowcount > 0:
-                    self.connection.commit()
+                    self.connection.commit() #commit transaction
                     resultDict['message'] = 'Blacklist MAC added successfully.'
                     resultDict['state'] = True
                 else:
@@ -690,7 +737,7 @@ class SQL_Thread(QThread):
         finally:
             # emit add blacklist mac address signal to main thread
             self.addBlacklistMacResultSignal.emit(resultDict)
-        
+
 
     # method for deleting specific mac address for user in Blacklist table
     @Slot(int, str)
@@ -705,7 +752,7 @@ class SQL_Thread(QThread):
             self.cursor.execute(query, (userId, macAddress))
             
             if self.cursor.rowcount > 0:
-                self.connection.commit()
+                self.connection.commit() #commit transaction
                 resultDict['message'] = 'Blacklist MAC deleted successfully.'
                 resultDict['state'] = True
             else:
@@ -717,7 +764,7 @@ class SQL_Thread(QThread):
         finally:
             # emit delete blacklist mac address signal to main thread
             self.deleteBlacklistMacResultSignal.emit(resultDict)
-    
+
 
     # method for updating value of light mode for given user in Users table
     @Slot(int, int)
@@ -733,7 +780,7 @@ class SQL_Thread(QThread):
             self.cursor.execute(query, (lightMode, userId))
             
             if self.cursor.rowcount > 0:
-                self.connection.commit()
+                self.connection.commit() #commit transaction
                 resultDict['message'] = 'Updated light mode status.'
                 resultDict['state'] = True
             else:
@@ -762,7 +809,7 @@ class SQL_Thread(QThread):
             self.cursor.execute(query, (operationMode, userId))
             
             if self.cursor.rowcount > 0:
-                self.connection.commit()
+                self.connection.commit() #commit transaction
                 resultDict['message'] = 'Updated operation mode status.'
                 resultDict['state'] = True
             else:

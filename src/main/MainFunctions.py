@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 currentDir = Path(__file__).resolve().parent #represents the path to the current working direcotry where this file is located
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))) #ensures that when the main.py file is ran it will run from the src folder in the terminal (this allows the import of ui class from interface folder)
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))) #ensures that when the main.py file is ran it will run from the src folder in the terminal
 
 #----------------------------------------------Default_Packet------------------------------------------------#
 # abstract class that represents default packet
@@ -162,7 +162,7 @@ class DNS_Packet(Default_Packet):
     dnsSubType = None #represents sub type of dns packet
     dnsClass = None #represents class of dns packet
     dnsDomainName = None #represents dns domain name of dns packet
-    dnsNumOfReqOrRes = None #represents number of requests or responses in dns packet
+    dnsReqOrResCount = None #represents number of requests or responses in dns packet
     dnsData = None #represents the dns data payload for response dns packets
 
     # constructor for DNS packet
@@ -180,24 +180,24 @@ class DNS_Packet(Default_Packet):
             dnsPacket = self.packet[DNS] #save the dns packet in parameter
             # check if its a response packet
             if dnsPacket.qr == 1:
-                if dnsPacket.an: #check that dns packet has response data
+                if dnsPacket.an and dnsPacket.ancount > 0: #check that dns packet has response data
                     self.dnsType = 'Response' #set type of dns packet
-                    self.dnsDomainName = dnsPacket.an.rrname #set repsonse name 
-                    self.dnsSubType = dnsPacket.an.type #set response type 
-                    self.dnsClass = dnsPacket.an.rclass #set response class 
-                    self.dnsNumOfReqOrRes = len(dnsPacket.an) #set number of responses 
-                    if hasattr(dnsPacket.an, 'rdata'): #check if rdata attribute exists
-                        self.dnsData = dnsPacket.an.rdata #specify the rdata parameter
+                    self.dnsDomainName = dnsPacket.an[0].rrname #set repsonse name 
+                    self.dnsSubType = dnsPacket.an[0].type #set response type 
+                    self.dnsClass = dnsPacket.an[0].rclass #set response class 
+                    self.dnsReqOrResCount = dnsPacket.ancount #set number of responses 
+                    if hasattr(dnsPacket.an[0], 'rdata'): #check if rdata attribute exists
+                        self.dnsData = dnsPacket.an[0].rdata #specify the rdata parameter
 
             # else its a request packet
             else: 
-                if dnsPacket.qd: #check that dns packet has request data
+                if dnsPacket.qd and dnsPacket.qdcount > 0: #check that dns packet has request data
                     self.dnsType = 'Request' #set type of dns packet
-                    self.dnsDomainName = dnsPacket.qd.qname #set request name
-                    self.dnsSubType = dnsPacket.qd.qtype #set request type
-                    self.dnsClass = dnsPacket.qd.qclass #set request class
-                    self.dnsNumOfReqOrRes = len(dnsPacket.qd) #set num of requests
-    
+                    self.dnsDomainName = dnsPacket.qd[0].qname #set request name
+                    self.dnsSubType = dnsPacket.qd[0].qtype #set request type
+                    self.dnsClass = dnsPacket.qd[0].qclass #set request class
+                    self.dnsReqOrResCount = dnsPacket.qdcount #set number of requests
+
 #--------------------------------------------------DNS-END---------------------------------------------------#
 
 # ---------------------------------------------------ARP-----------------------------------------------------#
@@ -389,7 +389,7 @@ class NetworkInformation(ABC):
         # convert strings to datetime objects
         timeOld = datetime.strptime(timestampOld, '%H:%M:%S %d/%m/%y')
         timeNew = datetime.strptime(timestampNew, '%H:%M:%S %d/%m/%y')
-        timeDifference = abs(timeNew - timeOld) # calculate the absolute time difference
+        timeDifference = abs(timeNew - timeOld) #calculate the absolute time difference
 
         return timeDifference >= timedelta(minutes=minutes)
      

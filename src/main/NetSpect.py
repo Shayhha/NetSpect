@@ -1742,9 +1742,9 @@ class NetSpect(QMainWindow):
             self.ui.confirmPasswordLineEdit.clear()
 
             # for each password input field we want to and reset the border to light gray
-            self.ui.currentPasswordLineEdit.setStyleSheet(UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits(self, 'currentPasswordLineEdit'))
-            self.ui.newPasswordLineEdit.setStyleSheet(UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits(self, 'newPasswordLineEdit'))
-            self.ui.confirmPasswordLineEdit.setStyleSheet(UserInterfaceFunctions.GetDefaultStyleSheetSettingsLineEdits(self, 'confirmPasswordLineEdit'))
+            self.ui.currentPasswordLineEdit.setStyleSheet(UserInterfaceFunctions.GetDefaultLineEditStyleSheet(self, 'currentPasswordLineEdit'))
+            self.ui.newPasswordLineEdit.setStyleSheet(UserInterfaceFunctions.GetDefaultLineEditStyleSheet(self, 'newPasswordLineEdit'))
+            self.ui.confirmPasswordLineEdit.setStyleSheet(UserInterfaceFunctions.GetDefaultLineEditStyleSheet(self, 'confirmPasswordLineEdit'))
             UserInterfaceFunctions.ShowMessageBox('Password Changed Successfullly', 'Your password has changed successfully.', 'Information')
 
 

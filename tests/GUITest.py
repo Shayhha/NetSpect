@@ -180,3 +180,316 @@ def testStartStopScan(NetSpectWindow, qtbot):
     # check if we reached timeout, if so show print error message
     except TimeoutError:
         assert False, 'Operaton did not start within timeout.'
+
+
+# test step function for testing change user network interface positive scenario
+def testChangeNetworkInterfacePositive(NetSpectWindow, qtbot):
+    # get current network interface
+    currentInterface = NetSpectWindow.ui.networkInterfaceComboBox.currentText()
+
+    # check current network interface in info page
+    NetSpectWindow.ui.stackedWidget.setCurrentIndex(3)
+    assert NetSpectWindow.ui.connectedInterfaceInfoLabel.text() == currentInterface, f'Current network interface in Info Page is invalid. Expected: {currentInterface}, Found: {NetSpectWindow.ui.connectedInterfaceInfoLabel.text()}.'
+
+    # change selected network interface
+    NetSpectWindow.ui.stackedWidget.setCurrentIndex(0)
+    NetSpectWindow.ui.networkInterfaceComboBox.setCurrentIndex(1)
+    currentInterface = NetSpectWindow.ui.networkInterfaceComboBox.currentText()
+
+    # go to info page
+    NetSpectWindow.ui.stackedWidget.setCurrentIndex(3)
+    assert NetSpectWindow.ui.connectedInterfaceInfoLabel.text() == currentInterface, f'Current network interface in Info Page is invalid. Expected: {currentInterface}, Found: {NetSpectWindow.ui.connectedInterfaceInfoLabel.text()}.'
+
+        
+# test step function for testing change email positive scenarios
+@pytest.mark.parametrize('email', ['newEmail@gmail.com', 'USERNAME@something.com', 'email123@test.co.il'])
+def testChangeEmailPositive(NetSpectWindow, qtbot, email):
+    # save the default email and login
+    defaultEmail = 'user@user.com'
+
+    # fill login form
+    qtbot.keyClicks(NetSpectWindow.ui.loginUsernameLineEdit, 'User')
+    qtbot.keyClicks(NetSpectWindow.ui.loginPasswordLineEdit, 'User123')
+
+    # click login button
+    time.sleep(1)
+    qtbot.mouseClick(NetSpectWindow.ui.loginPushButton, Qt.LeftButton)
+
+    # wait until login process finishes
+    WaitCondition(qtbot, NetSpectWindow.userData.get('userId') != None)
+
+    # assert login was successful
+    userId = NetSpectWindow.userData.get('userId')
+    assert isinstance(userId, int) and userId > 0, 'Failed logging into User account.'
+
+    # go to settings page
+    NetSpectWindow.ui.stackedWidget.setCurrentIndex(4)
+
+    # clear existing input and fill new email
+    NetSpectWindow.ui.emailLineEdit.clear()
+    qtbot.keyClicks(NetSpectWindow.ui.emailLineEdit, email)
+
+    # click save email button
+    time.sleep(1)
+    qtbot.mouseClick(NetSpectWindow.ui.emailPushButton, Qt.LeftButton)
+
+    # assert no error message appeared
+    errorMessage = NetSpectWindow.ui.saveEmailErrorMessageLabel.text()
+    assert NetSpectWindow.ui.saveEmailErrorMessageLabel.isVisible() == False, f'Error message is visible after changing the email. Error: {errorMessage}'
+    assert errorMessage == '', f'Error message exists after changing the email. Error: {errorMessage}'
+
+    # change email back to default, first clear existing input and fill default email
+    NetSpectWindow.ui.emailLineEdit.clear()
+    qtbot.keyClicks(NetSpectWindow.ui.emailLineEdit, defaultEmail)
+
+    # click save email button
+    time.sleep(1)
+    qtbot.mouseClick(NetSpectWindow.ui.emailPushButton, Qt.LeftButton)
+
+    
+# test step function for testing change email negative scenarios
+@pytest.mark.parametrize('email', ['new)(*&@gmail.com', 'USERNAME@something', 'email123test.co.il'])
+def testChangeEmailNegative(NetSpectWindow, qtbot, email):
+    # save the default email and login
+    defaultEmail = 'User'
+
+    # fill login form
+    qtbot.keyClicks(NetSpectWindow.ui.loginUsernameLineEdit, 'User')
+    qtbot.keyClicks(NetSpectWindow.ui.loginPasswordLineEdit, 'User123')
+
+    # click login button
+    time.sleep(1)
+    qtbot.mouseClick(NetSpectWindow.ui.loginPushButton, Qt.LeftButton)
+
+    # wait until login process finishes
+    WaitCondition(qtbot, NetSpectWindow.userData.get('userId') != None)
+
+    # assert login was successful
+    userId = NetSpectWindow.userData.get('userId')
+    assert isinstance(userId, int) and userId > 0, 'Failed logging into User account.'
+
+    # go to settings page
+    NetSpectWindow.ui.stackedWidget.setCurrentIndex(4)
+
+    # clear existing input and fill new email
+    NetSpectWindow.ui.emailLineEdit.clear()
+    qtbot.keyClicks(NetSpectWindow.ui.emailLineEdit, email)
+
+    # click save email button
+    time.sleep(1)
+    qtbot.mouseClick(NetSpectWindow.ui.emailPushButton, Qt.LeftButton)
+
+    # assert error message appeared (check if it appeared, if not change the email back to default and fail the test)
+    if NetSpectWindow.ui.saveEmailErrorMessageLabel.isVisible() == False or NetSpectWindow.ui.saveEmailErrorMessageLabel.text() == '':
+        # change email back to default, first clear existing input and fill default email
+        NetSpectWindow.ui.emailLineEdit.clear()
+        qtbot.keyClicks(NetSpectWindow.ui.emailLineEdit, defaultEmail)
+
+        # click save email button
+        time.sleep(1)
+        qtbot.mouseClick(NetSpectWindow.ui.emailPushButton, Qt.LeftButton)
+
+        assert True == False, f'Error message is not visible after changing the email to an invalid one. Change email does not work correctly.'
+
+
+# test step function for testing change username positive scenarios
+@pytest.mark.parametrize('username', ['TestName', 'testname', 'testName!', 'Testname123'])
+def testChangeUsernamePositive(NetSpectWindow, qtbot, username):
+    # save the default username and login
+    defaultUsername = 'User'
+
+    # fill login form
+    qtbot.keyClicks(NetSpectWindow.ui.loginUsernameLineEdit, 'User')
+    qtbot.keyClicks(NetSpectWindow.ui.loginPasswordLineEdit, 'User123')
+
+    # click login button
+    time.sleep(1)
+    qtbot.mouseClick(NetSpectWindow.ui.loginPushButton, Qt.LeftButton)
+
+    # wait until login process finishes
+    WaitCondition(qtbot, NetSpectWindow.userData.get('userId') != None)
+
+    # assert login was successful
+    userId = NetSpectWindow.userData.get('userId')
+    assert isinstance(userId, int) and userId > 0, 'Failed logging into User account.'
+
+    # go to settings page
+    NetSpectWindow.ui.stackedWidget.setCurrentIndex(4)
+
+    # clear existing input and fill new username
+    NetSpectWindow.ui.usernameLineEdit.clear()
+    qtbot.keyClicks(NetSpectWindow.ui.usernameLineEdit, username)
+
+    # click save username button
+    time.sleep(1)
+    qtbot.mouseClick(NetSpectWindow.ui.usernamePushButton, Qt.LeftButton)
+
+    # assert no error message appeared
+    errorMessage = NetSpectWindow.ui.saveUsernameErrorMessageLabel.text()
+    assert NetSpectWindow.ui.saveUsernameErrorMessageLabel.isVisible() == False, f'Error message is visible after changing the username. Error: {errorMessage}'
+    assert errorMessage == '', f'Error message exists after changing the username. Error: {errorMessage}'
+
+    # change username back to default, first clear existing input and fill default username
+    NetSpectWindow.ui.usernameLineEdit.clear()
+    qtbot.keyClicks(NetSpectWindow.ui.usernameLineEdit, defaultUsername)
+
+    # click save username button
+    time.sleep(1)
+    qtbot.mouseClick(NetSpectWindow.ui.usernamePushButton, Qt.LeftButton)
+
+    
+# test step function for testing change username negative scenarios
+@pytest.mark.parametrize('username', ['A', 'new', '1234'])
+def testChangeUsernameNegative(NetSpectWindow, qtbot, username):
+    # save the default username and login
+    defaultUsername = 'User'
+
+    # fill login form
+    qtbot.keyClicks(NetSpectWindow.ui.loginUsernameLineEdit, 'User')
+    qtbot.keyClicks(NetSpectWindow.ui.loginPasswordLineEdit, 'User123')
+
+    # click login button
+    time.sleep(1)
+    qtbot.mouseClick(NetSpectWindow.ui.loginPushButton, Qt.LeftButton)
+
+    # wait until login process finishes
+    WaitCondition(qtbot, NetSpectWindow.userData.get('userId') != None)
+
+    # assert login was successful
+    userId = NetSpectWindow.userData.get('userId')
+    assert isinstance(userId, int) and userId > 0, 'Failed logging into User account.'
+
+    # go to settings page
+    NetSpectWindow.ui.stackedWidget.setCurrentIndex(4)
+
+    # clear existing input and fill new username
+    NetSpectWindow.ui.usernameLineEdit.clear()
+    qtbot.keyClicks(NetSpectWindow.ui.usernameLineEdit, username)
+
+    # click save username button
+    time.sleep(1)
+    qtbot.mouseClick(NetSpectWindow.ui.usernamePushButton, Qt.LeftButton)
+
+    # assert error message appeared (check if it appeared, if not change the username back to default and fail the test)
+    if NetSpectWindow.ui.saveUsernameErrorMessageLabel.isVisible() == False or NetSpectWindow.ui.saveUsernameErrorMessageLabel.text() == '':
+        # change username back to default, first clear existing input and fill default username
+        NetSpectWindow.ui.usernameLineEdit.clear()
+        qtbot.keyClicks(NetSpectWindow.ui.usernameLineEdit, defaultUsername)
+
+        # click save username button
+        time.sleep(1)
+        qtbot.mouseClick(NetSpectWindow.ui.usernamePushButton, Qt.LeftButton)
+
+        assert True == False, f'Error message is not visible after changing the username to an invalid one. Change username does not work correctly.'
+
+
+# test step function for testing change password positive scenarios
+@pytest.mark.parametrize('passwords', [('User123', 'User1234', 'User1234'), ('User123', '1234Abcd', '1234Abcd'), ('User123', '12!@#aB', '12!@#aB')])
+def testChangePasswordPositive(NetSpectWindow, qtbot, passwords):
+    # save the default password and login
+    defaultPassword = 'User123'
+
+    # fill login form
+    qtbot.keyClicks(NetSpectWindow.ui.loginUsernameLineEdit, 'User')
+    qtbot.keyClicks(NetSpectWindow.ui.loginPasswordLineEdit, 'User123')
+
+    # click login button
+    time.sleep(1)
+    qtbot.mouseClick(NetSpectWindow.ui.loginPushButton, Qt.LeftButton)
+
+    # wait until login process finishes
+    WaitCondition(qtbot, NetSpectWindow.userData.get('userId') != None)
+
+    # assert login was successful
+    userId = NetSpectWindow.userData.get('userId')
+    assert isinstance(userId, int) and userId > 0, 'Failed logging into User account.'
+
+    # go to settings page
+    NetSpectWindow.ui.stackedWidget.setCurrentIndex(4)
+    
+    # clear existing input and fill new passwords
+    NetSpectWindow.ui.currentPasswordLineEdit.clear()
+    NetSpectWindow.ui.newPasswordLineEdit.clear()
+    NetSpectWindow.ui.confirmPasswordLineEdit.clear()
+    qtbot.keyClicks(NetSpectWindow.ui.currentPasswordLineEdit, passwords[0])
+    qtbot.keyClicks(NetSpectWindow.ui.newPasswordLineEdit, passwords[1])
+    qtbot.keyClicks(NetSpectWindow.ui.confirmPasswordLineEdit, passwords[2])
+
+    # click save password button
+    time.sleep(1)
+    qtbot.mouseClick(NetSpectWindow.ui.passwordPushButton, Qt.LeftButton)
+
+    # assert no error message appeared
+    errorMessage = NetSpectWindow.ui.savePasswordErrorMessageLabel.text()
+    assert NetSpectWindow.ui.savePasswordErrorMessageLabel.isVisible() == False, f'Error message is visible after changing the password. Error: {errorMessage}'
+    assert errorMessage == '', f'Error message exists after changing the password. Error: {errorMessage}'
+
+    # change password back to default, first clear existing input and fill default passwords
+    NetSpectWindow.ui.currentPasswordLineEdit.clear()
+    NetSpectWindow.ui.newPasswordLineEdit.clear()
+    NetSpectWindow.ui.confirmPasswordLineEdit.clear()
+    qtbot.keyClicks(NetSpectWindow.ui.currentPasswordLineEdit, passwords[1])
+    qtbot.keyClicks(NetSpectWindow.ui.newPasswordLineEdit, defaultPassword)
+    qtbot.keyClicks(NetSpectWindow.ui.confirmPasswordLineEdit, defaultPassword)
+
+    # click save password button
+    time.sleep(1)
+    qtbot.mouseClick(NetSpectWindow.ui.passwordPushButton, Qt.LeftButton)
+
+    
+# test step function for testing change password negative scenarios
+@pytest.mark.parametrize('passwords', [('User123', 'User123', 'User12'), ('User1234', 'User1234', 'User1234'), ('User123', 'U2', 'U2')])
+def testChangePasswordNegative(NetSpectWindow, qtbot, passwords):
+    # save the default password and login
+    defaultPassword = 'User123'
+
+    # fill login form
+    qtbot.keyClicks(NetSpectWindow.ui.loginUsernameLineEdit, 'User')
+    qtbot.keyClicks(NetSpectWindow.ui.loginPasswordLineEdit, 'User123')
+
+    # click login button
+    time.sleep(1)
+    qtbot.mouseClick(NetSpectWindow.ui.loginPushButton, Qt.LeftButton)
+
+    # wait until login process finishes
+    WaitCondition(qtbot, NetSpectWindow.userData.get('userId') != None)
+
+    # assert login was successful
+    userId = NetSpectWindow.userData.get('userId')
+    assert isinstance(userId, int) and userId > 0, 'Failed logging into User account.'
+
+    # go to settings page
+    NetSpectWindow.ui.stackedWidget.setCurrentIndex(4)
+
+    # clear existing input and fill new password
+    NetSpectWindow.ui.currentPasswordLineEdit.clear()
+    NetSpectWindow.ui.newPasswordLineEdit.clear()
+    NetSpectWindow.ui.confirmPasswordLineEdit.clear()
+    qtbot.keyClicks(NetSpectWindow.ui.currentPasswordLineEdit, passwords[0])
+    qtbot.keyClicks(NetSpectWindow.ui.newPasswordLineEdit, passwords[1])
+    qtbot.keyClicks(NetSpectWindow.ui.confirmPasswordLineEdit, passwords[2])
+
+    # click save password button
+    time.sleep(1)
+    qtbot.mouseClick(NetSpectWindow.ui.passwordPushButton, Qt.LeftButton)
+
+    # assert error message appeared (check if it appeared, if not change the password back to default and fail the test)
+    if NetSpectWindow.ui.savePasswordErrorMessageLabel.isVisible() == False or NetSpectWindow.ui.savePasswordErrorMessageLabel.text() == '':
+        # change password back to default, first clear existing input and fill default password
+        NetSpectWindow.ui.currentPasswordLineEdit.clear()
+        NetSpectWindow.ui.newPasswordLineEdit.clear()
+        NetSpectWindow.ui.confirmPasswordLineEdit.clear()
+        qtbot.keyClicks(NetSpectWindow.ui.currentPasswordLineEdit, passwords[1])
+        qtbot.keyClicks(NetSpectWindow.ui.newPasswordLineEdit, defaultPassword)
+        qtbot.keyClicks(NetSpectWindow.ui.confirmPasswordLineEdit, defaultPassword)
+
+        # click save password button
+        time.sleep(1)
+        qtbot.mouseClick(NetSpectWindow.ui.passwordPushButton, Qt.LeftButton)
+
+        assert True == False, f'Error message is not visible after changing the password to an invalid one. Change password does not work correctly.'
+
+
+# main function for running the tests
+if __name__ == '__main__':
+    pytest.main(['-v', __file__])

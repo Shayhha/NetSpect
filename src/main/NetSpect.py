@@ -332,10 +332,10 @@ class NetSpect(QMainWindow):
     # method that sets the text in the info page with the system information of the users machine
     def InitSystemInfo(self, systemDict):
         # initialize system information section (left side)
-        self.ui.OSTypeInfoLabel.setText(systemDict.get('osType'))
-        self.ui.OSVersionInfoLabel.setText(systemDict.get('osVersion'))
-        self.ui.architectureInfoLabel.setText(systemDict.get('architecture'))
-        self.ui.hostNameInfoLabel.setText(systemDict.get('hostName'))
+        self.ui.OSTypeInfoLabel.setText(systemDict.get('osType')[:15])
+        self.ui.OSVersionInfoLabel.setText(systemDict.get('osVersion')[:15])
+        self.ui.architectureInfoLabel.setText(systemDict.get('architecture')[:15])
+        self.ui.hostNameInfoLabel.setText(systemDict.get('hostName')[:15])
 
 
     # method for updating network interface from combobox in gui
@@ -572,7 +572,7 @@ class NetSpect(QMainWindow):
             self.dnsTimer.start(self.dnsTimout) #resetting timer
             self.SendDnsDict() #call our method to send packets for analysis
 
-    
+
     # method for extracting packet batches from arp list and sending to thread for analysis from main thread
     @Slot()
     def SendArpList(self):
@@ -581,15 +581,15 @@ class NetSpect(QMainWindow):
             arpBatch = [] #represents list of extracted packets
 
             # calculate the number of packets to extract for batch
-            batchSize = min(len(self.arpList), 20) #max 20 arp packets in batch
+            batchSize = min(self.arpThreshold, len(self.arpList)) #represents batch size for arp batch
             if batchSize > 0:
-                # Extract the packets into arp batch
+                # extract packets into arp batch
                 arpBatch = self.arpList[:batchSize] #get first batchSize packets out of arp list
 
-                # remove the extracted packets from arp list
+                # remove extracted packets from arp list
                 del self.arpList[:batchSize] #remove the first batchSize packets from arp list
 
-                # Send the extracted batch to the worker thread
+                # send arp batch to arp thread for analysis
                 self.arpCounter -= len(arpBatch) #update arp counter
                 if not self.dataCollectorThread and self.ui.operationModeComboBox.currentIndex() == 0:
                     self.arpThread.ReceiveArpBatch(arpBatch) #send batch to arp thread
@@ -618,19 +618,19 @@ class NetSpect(QMainWindow):
                         continue
 
                     # calculate the batch size for each flow and add it to our batch
-                    batchSize = min(self.portScanDosThreshold - totalPackets, len(packetList), 500) #max packets in each iteration is 500
-                    portScanDosBatch.setdefault(flow, []).extend(self.portScanDosDict[flow][:batchSize]) #add batch packets to portScanDos dict
+                    batchSize = min(self.portScanDosThreshold - totalPackets, len(packetList), 500) #represents batch size for portScanDos batch
+                    portScanDosBatch.setdefault(flow, []).extend(self.portScanDosDict[flow][:batchSize]) #add batch packets to portScanDosBatch dict
 
-                    # remove extracted packets from flow's list
+                    # remove extracted packets from flows list
                     del self.portScanDosDict[flow][:batchSize]
 
                     totalPackets += batchSize #add batchSize to our total packets
 
-                # remove empty flows dns dict
+                # remove empty flows from portScanDos dict
                 for flow in emptyFlows:
                     del self.portScanDosDict[flow]
 
-            # send packets batch only if batch isn't empty
+            # send portScanDos batch only if batch isn't empty
             if totalPackets > 0:
                 self.tcpUdpCounter -= totalPackets #update tcp udp counter
                 # means we send batch to portScanDos thread for analysis
@@ -665,19 +665,19 @@ class NetSpect(QMainWindow):
                         continue
 
                     # calculate the batch size for each flow and add it to our batch
-                    batchSize = min(self.dnsThreshold - totalPackets, len(packetList), 50) #max packets in each iteration is 50
+                    batchSize = min(self.dnsThreshold - totalPackets, len(packetList), 50) #represents batch size for dns batch
                     dnsBatch.setdefault(flow, []).extend(self.dnsDict[flow][:batchSize]) #add batch packets to dnsBatch dict
 
-                    # remove extracted packets from flow's list
+                    # remove extracted packets from flows list
                     del self.dnsDict[flow][:batchSize]
 
                     totalPackets += batchSize #add batchSize to our total packets
 
-                # remove empty flows dns dict
+                # remove empty flows from dns dict
                 for flow in emptyFlows:
                     del self.dnsDict[flow]
-            
-            # send packets batch only if batch isn't empty
+
+            # send dns batch only if batch isn't empty
             if totalPackets > 0:
                 self.dnsCounter -= totalPackets #update dns counter
                 # means we send batch to dns thread for analysis
@@ -1284,7 +1284,7 @@ class NetSpect(QMainWindow):
                 'dstIp': dstIp,
                 'dstMac': dstMac,
                 'protocol': protocol,
-                'osType': NetworkInformation.systemInfo.get('osType'),
+                'osType': NetworkInformation.systemInfo.get('osType')[:15],
                 'timestamp': timestamp
             }
             self.userData.setdefault('alertList', []).append(alert)
@@ -2094,7 +2094,7 @@ class Report_Thread(QThread):
     # represents our system info and table formats
     systemInfoFormat = '{:<15} {:<50}\n'
     
-    tableFormat = '{:<13} {:<15} {:<40} {:<20} {:<40} {:<20} {:<10} {:<13} {}\n'
+    tableFormat = '{:<15} {:<15} {:<40} {:<20} {:<40} {:<20} {:<10} {:<15} {}\n'
 
     # define signals for interacting with main gui thread
     updateProgressBarSignal = Signal(int)
@@ -2168,7 +2168,7 @@ class Report_Thread(QThread):
 
                 # write table headers
                 file.write(self.tableFormat.format(*self.tableHeaders))
-                file.write('=' * 196 + '\n')
+                file.write('=' * 200 + '\n')
                 
                 # iterate over alert list and add each alert into txt file
                 for i, alert in enumerate(self.alertList, start=1):

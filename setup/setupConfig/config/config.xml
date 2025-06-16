@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>NetSpect</Name>
+    <Version>1.0.0</Version>
+    <Title>NetSpect Installer</Title>
+    <Publisher>NetSpect Team</Publisher>
+    <StartMenuDir>NetSpect</StartMenuDir>
+    <TargetDir>@HomeDir@\NetSpect</TargetDir>
+</Installer>
+
+

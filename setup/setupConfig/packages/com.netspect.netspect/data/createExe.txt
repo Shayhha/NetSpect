@@ -1,0 +1,39 @@
+@echo off
+echo Creating NetSpect Executable...
+
+python -m PyInstaller ^
+  --noconfirm --onedir ^
+  --windowed ^
+  --name NetSpect ^
+  --icon=src/interface/Icons/NetSpectIconTransparent.ico ^
+  --paths=src ^
+  --hidden-import=interface.UserInterfaceFunctions ^
+  --hidden-import=interface.ui_NetSpect ^
+  --hidden-import=interface.MainFunctions ^
+  --hidden-import=database.SQLHelper ^
+  --hidden-import=PySide6 ^
+  --hidden-import=scapy ^
+  --hidden-import=numpy ^
+  --hidden-import=pandas ^
+  --hidden-import=joblib ^
+  --hidden-import=sklearn ^
+  --hidden-import=pyodbc ^
+  --hidden-import=dotenv ^
+  --add-data="src/interface/Icons;interface/Icons" ^
+  --add-data="src/interface/Fonts;interface/Fonts" ^
+  --add-data="src/interface/darkModeStyles.qss;interface" ^
+  --add-data="src/interface/lightModeStyles.qss;interface" ^
+  --add-data="src/interface/ui_NetSpect.py;interface" ^
+  --add-data="src/database/.env;database" ^
+  --add-data="src/database/NetSpectDatabaseConfig.sql;database" ^
+  --add-data="src/logs;logs" ^
+  --add-data="src/models/port_scan_dos_svm_model.pkl;models" ^
+  --add-data="src/models/port_scan_dos_scaler.pkl;models" ^
+  --add-data="src/models/dns_svm_model.pkl;models" ^
+  --add-data="src/models/dns_scaler.pkl;models" ^
+  --add-data="src/utility/flaskServerHTTP.py;utility" ^
+  --add-data="src/utility/generateDNS.py;utility" ^
+  src/main/NetSpect.py
+
+echo Executable Creation Complete.
+pause

@@ -225,13 +225,15 @@ QToolTip {
          <property name="font">
           <font>
            <family>Days One</family>
-           <pointsize>26</pointsize>
+           <pointsize>-1</pointsize>
           </font>
          </property>
          <property name="styleSheet">
           <string notr="true">#logoLabel {
 	background-color: transparent;
   	color: #f3f3f3;
+    font-size: 35px;
+    font-family: Days One;
 }</string>
          </property>
          <property name="text">
@@ -269,13 +271,15 @@ QToolTip {
          <property name="font">
           <font>
            <family>Cairo</family>
-           <pointsize>14</pointsize>
+           <pointsize>-1</pointsize>
           </font>
          </property>
          <property name="styleSheet">
           <string notr="true">#welcomeLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
 }</string>
          </property>
          <property name="text">
@@ -310,7 +314,7 @@ QToolTip {
           <cursorShape>PointingHandCursor</cursorShape>
          </property>
          <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Logout&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Logout.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="styleSheet">
           <string notr="true">#logoutIcon {
@@ -346,7 +350,7 @@ QToolTip {
           <cursorShape>PointingHandCursor</cursorShape>
          </property>
          <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Login or Register&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Login or Register.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="styleSheet">
           <string notr="true">#accountIcon {
@@ -382,7 +386,7 @@ QToolTip {
           <cursorShape>PointingHandCursor</cursorShape>
          </property>
          <property name="toolTip">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Settings Page&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Settings Page.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="styleSheet">
           <string notr="true">#settingsIcon {
@@ -484,7 +488,7 @@ QToolTip {
 
 </string>
             </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_23">
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
              <property name="spacing">
               <number>0</number>
              </property>
@@ -518,7 +522,7 @@ QToolTip {
                 <cursorShape>PointingHandCursor</cursorShape>
                </property>
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Expand Side Menu&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Expand Side Menu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="styleSheet">
                 <string notr="true">#menuIcon {
@@ -537,7 +541,7 @@ QToolTip {
               </widget>
              </item>
              <item>
-              <spacer name="horizontalSpacer_18">
+              <spacer name="horizontalSpacer_2">
                <property name="orientation">
                 <enum>Qt::Orientation::Horizontal</enum>
                </property>
@@ -565,6 +569,9 @@ QToolTip {
                </property>
                <property name="cursor">
                 <cursorShape>PointingHandCursor</cursorShape>
+               </property>
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Collapse Side Menu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="styleSheet">
                 <string notr="true">#closeMenuIcon {
@@ -595,7 +602,7 @@ QToolTip {
 	background-color: #2d2e36;
 }</string>
             </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_20">
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
              <property name="spacing">
               <number>22</number>
              </property>
@@ -629,7 +636,7 @@ QToolTip {
                 <cursorShape>PointingHandCursor</cursorShape>
                </property>
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Home Page&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Home Page.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="styleSheet">
                 <string notr="true">#homePageIcon {
@@ -665,7 +672,7 @@ QToolTip {
                <property name="font">
                 <font>
                  <family>Cairo</family>
-                 <pointsize>16</pointsize>
+                 <pointsize>-1</pointsize>
                  <bold>true</bold>
                 </font>
                </property>
@@ -674,8 +681,10 @@ QToolTip {
                </property>
                <property name="styleSheet">
                 <string notr="true">#homePageLabel {
-	color: #f3f3f3;
 	background-color: #2d2e36;
+	color: #f3f3f3;
+    font-size: 21px;
+    font-family: Cairo;
 }</string>
                </property>
                <property name="text">
@@ -690,7 +699,7 @@ QToolTip {
               </widget>
              </item>
              <item>
-              <spacer name="horizontalSpacer_19">
+              <spacer name="horizontalSpacer_3">
                <property name="orientation">
                 <enum>Qt::Orientation::Horizontal</enum>
                </property>
@@ -712,7 +721,7 @@ QToolTip {
 	background-color: #2d2e36;
 }</string>
             </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_35">
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
              <property name="spacing">
               <number>32</number>
              </property>
@@ -746,7 +755,7 @@ QToolTip {
                 <cursorShape>PointingHandCursor</cursorShape>
                </property>
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Analytics Page&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Analytics Page.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="styleSheet">
                 <string notr="true">#analyticsIcon {
@@ -782,7 +791,7 @@ QToolTip {
                <property name="font">
                 <font>
                  <family>Cairo</family>
-                 <pointsize>16</pointsize>
+                 <pointsize>-1</pointsize>
                  <bold>true</bold>
                 </font>
                </property>
@@ -791,8 +800,10 @@ QToolTip {
                </property>
                <property name="styleSheet">
                 <string notr="true">#analyticsLabel {
-	color: #f3f3f3;
 	background-color: #2d2e36;
+	color: #f3f3f3;
+    font-size: 21px;
+    font-family: Cairo;
 }</string>
                </property>
                <property name="text">
@@ -807,7 +818,7 @@ QToolTip {
               </widget>
              </item>
              <item>
-              <spacer name="horizontalSpacer_25">
+              <spacer name="horizontalSpacer_4">
                <property name="orientation">
                 <enum>Qt::Orientation::Horizontal</enum>
                </property>
@@ -832,7 +843,7 @@ QToolTip {
 	background-color: #2d2e36;
 }</string>
             </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_21">
+            <layout class="QHBoxLayout" name="horizontalLayout_5">
              <property name="spacing">
               <number>38</number>
              </property>
@@ -866,7 +877,7 @@ QToolTip {
                 <cursorShape>PointingHandCursor</cursorShape>
                </property>
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Report Page&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Report Page.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="styleSheet">
                 <string notr="true">#reportIcon {
@@ -901,7 +912,7 @@ QToolTip {
                <property name="font">
                 <font>
                  <family>Cairo</family>
-                 <pointsize>16</pointsize>
+                 <pointsize>-1</pointsize>
                  <bold>true</bold>
                 </font>
                </property>
@@ -910,8 +921,10 @@ QToolTip {
                </property>
                <property name="styleSheet">
                 <string notr="true">#reportLabel {
-	color: #f3f3f3;
 	background-color: #2d2e36;
+	color: #f3f3f3;
+    font-size: 21px;
+    font-family: Cairo;
 
 }</string>
                </property>
@@ -927,7 +940,7 @@ QToolTip {
               </widget>
              </item>
              <item>
-              <spacer name="horizontalSpacer_20">
+              <spacer name="horizontalSpacer_5">
                <property name="orientation">
                 <enum>Qt::Orientation::Horizontal</enum>
                </property>
@@ -952,7 +965,7 @@ QToolTip {
 	background-color: #2d2e36;
 }</string>
             </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_22">
+            <layout class="QHBoxLayout" name="horizontalLayout_6">
              <property name="spacing">
               <number>22</number>
              </property>
@@ -986,7 +999,7 @@ QToolTip {
                 <cursorShape>PointingHandCursor</cursorShape>
                </property>
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Information Page&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Information Page.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="layoutDirection">
                 <enum>Qt::LayoutDirection::LeftToRight</enum>
@@ -1024,7 +1037,7 @@ QToolTip {
                <property name="font">
                 <font>
                  <family>Cairo</family>
-                 <pointsize>16</pointsize>
+                 <pointsize>-1</pointsize>
                  <bold>true</bold>
                 </font>
                </property>
@@ -1033,8 +1046,10 @@ QToolTip {
                </property>
                <property name="styleSheet">
                 <string notr="true">#infoLabel {
-	color: #f3f3f3;
 	background-color: #2d2e36;
+	color: #f3f3f3;
+    font-size: 21px;
+    font-family: Cairo;
 
 }</string>
                </property>
@@ -1050,7 +1065,7 @@ QToolTip {
               </widget>
              </item>
              <item>
-              <spacer name="horizontalSpacer_21">
+              <spacer name="horizontalSpacer_6">
                <property name="orientation">
                 <enum>Qt::Orientation::Horizontal</enum>
                </property>
@@ -1066,7 +1081,7 @@ QToolTip {
            </widget>
           </item>
           <item>
-           <spacer name="verticalSpacer_2">
+           <spacer name="verticalSpacer">
             <property name="orientation">
              <enum>Qt::Orientation::Vertical</enum>
             </property>
@@ -1123,7 +1138,7 @@ QToolTip {
                <height>660</height>
               </size>
              </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <layout class="QHBoxLayout" name="horizontalLayout_7">
               <property name="spacing">
                <number>10</number>
               </property>
@@ -1153,7 +1168,7 @@ QToolTip {
                   <height>620</height>
                  </size>
                 </property>
-                <layout class="QVBoxLayout" name="verticalLayout_3">
+                <layout class="QVBoxLayout" name="verticalLayout_2">
                  <property name="spacing">
                   <number>10</number>
                  </property>
@@ -1194,7 +1209,7 @@ QToolTip {
    padding: 4px;
 }</string>
                    </property>
-                   <layout class="QVBoxLayout" name="verticalLayout_2">
+                   <layout class="QVBoxLayout" name="verticalLayout_3">
                     <property name="leftMargin">
                      <number>0</number>
                     </property>
@@ -1224,7 +1239,7 @@ QToolTip {
                       <property name="font">
                        <font>
                         <family>Cairo</family>
-                        <pointsize>18</pointsize>
+                        <pointsize>-1</pointsize>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -1232,6 +1247,9 @@ QToolTip {
                        <string notr="true">#initiateDefenceLabel {
 	background-color: transparent;
 	color: black;
+    font-size: 24px;
+    font-family: Cairo;
+    font-weight: bold;
 	padding-top: 5px;
 	padding-left: 5px;
 }</string>
@@ -1255,7 +1273,7 @@ QToolTip {
    color: black;
 }</string>
                       </property>
-                      <layout class="QHBoxLayout" name="horizontalLayout_3">
+                      <layout class="QHBoxLayout" name="horizontalLayout_8">
                        <property name="spacing">
                         <number>15</number>
                        </property>
@@ -1269,7 +1287,7 @@ QToolTip {
                         <number>10</number>
                        </property>
                        <item>
-                        <spacer name="horizontalSpacer_16">
+                        <spacer name="horizontalSpacer_7">
                          <property name="orientation">
                           <enum>Qt::Orientation::Horizontal</enum>
                          </property>
@@ -1284,7 +1302,7 @@ QToolTip {
                        <item>
                         <widget class="QPushButton" name="startStopPushButton">
                          <property name="sizePolicy">
-                          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                            <horstretch>0</horstretch>
                            <verstretch>0</verstretch>
                           </sizepolicy>
@@ -1304,7 +1322,7 @@ QToolTip {
                          <property name="font">
                           <font>
                            <family>Cairo</family>
-                           <pointsize>14</pointsize>
+                           <pointsize>-1</pointsize>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -1312,14 +1330,16 @@ QToolTip {
                           <cursorShape>PointingHandCursor</cursorShape>
                          </property>
                          <property name="toolTip">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Start/Stop Scanning&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Start/Stop network scan.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                          <property name="styleSheet">
                           <string notr="true">#startStopPushButton {
-    border-radius: 60px;
     background-color: #3a8e32;
     border: 1px solid black;
+    border-radius: 60px;
     color: black;
+    font-size: 19px;
+    font-family: Cairo;
     font-weight: bold;
 }
 
@@ -1337,6 +1357,19 @@ QToolTip {
                         </widget>
                        </item>
                        <item>
+                        <spacer name="horizontalSpacer_8">
+                         <property name="orientation">
+                          <enum>Qt::Orientation::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item>
                         <widget class="QFrame" name="startInfoVerticalFrame">
                          <property name="styleSheet">
                           <string notr="true">#startInfoVerticalFrame {
@@ -1344,7 +1377,7 @@ QToolTip {
 	color: #f3f3f3;
 }</string>
                          </property>
-                         <layout class="QVBoxLayout" name="verticalLayout_5">
+                         <layout class="QVBoxLayout" name="verticalLayout_4">
                           <property name="spacing">
                            <number>20</number>
                           </property>
@@ -1361,7 +1394,7 @@ QToolTip {
                            <number>0</number>
                           </property>
                           <item>
-                           <spacer name="verticalSpacer">
+                           <spacer name="verticalSpacer_2">
                             <property name="orientation">
                              <enum>Qt::Orientation::Vertical</enum>
                             </property>
@@ -1396,7 +1429,7 @@ QToolTip {
 	color: #f3f3f3;
 }</string>
                             </property>
-                            <layout class="QHBoxLayout" name="horizontalLayout_19">
+                            <layout class="QHBoxLayout" name="horizontalLayout_9">
                              <property name="spacing">
                               <number>6</number>
                              </property>
@@ -1429,7 +1462,7 @@ QToolTip {
                                <property name="font">
                                 <font>
                                  <family>Cairo</family>
-                                 <pointsize>14</pointsize>
+                                 <pointsize>-1</pointsize>
                                  <bold>false</bold>
                                 </font>
                                </property>
@@ -1437,6 +1470,8 @@ QToolTip {
                                 <string notr="true">#networkInterfaceLabel {
 	background-color: transparent;
 	color: black;
+    font-size: 19px;
+    font-family: Cairo;
 }</string>
                                </property>
                                <property name="text">
@@ -1556,19 +1591,21 @@ QToolTip {
                                 <property name="font">
                                  <font>
                                   <family>Cairo</family>
-                                  <pointsize>12</pointsize>
+                                  <pointsize>-1</pointsize>
                                  </font>
                                 </property>
                                 <property name="cursor">
                                  <cursorShape>PointingHandCursor</cursorShape>
                                 </property>
                                 <property name="toolTip">
-                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose your network interface&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose your network interface.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                 </property>
                                 <property name="styleSheet">
                                  <string notr="true">#networkInterfaceComboBox  {
     background-color: transparent;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
     border: 2px outset transparent;
     border-radius: 10px;
     padding: 4px;
@@ -1626,7 +1663,7 @@ QToolTip {
                               </widget>
                              </item>
                              <item>
-                              <spacer name="horizontalSpacer_13">
+                              <spacer name="horizontalSpacer_9">
                                <property name="orientation">
                                 <enum>Qt::Orientation::Horizontal</enum>
                                </property>
@@ -1664,7 +1701,7 @@ QToolTip {
 	color: #f3f3f3;
 }</string>
                             </property>
-                            <layout class="QHBoxLayout" name="horizontalLayout_4">
+                            <layout class="QHBoxLayout" name="horizontalLayout_10">
                              <property name="spacing">
                               <number>0</number>
                              </property>
@@ -1697,7 +1734,7 @@ QToolTip {
                                <property name="font">
                                 <font>
                                  <family>Cairo</family>
-                                 <pointsize>14</pointsize>
+                                 <pointsize>-1</pointsize>
                                  <bold>false</bold>
                                 </font>
                                </property>
@@ -1705,6 +1742,8 @@ QToolTip {
                                 <string notr="true">#runningTimeLabel {
 	background-color: transparent;
 	color: black;
+    font-size: 19px;
+    font-family: Cairo;
 }</string>
                                </property>
                                <property name="text">
@@ -1738,17 +1777,19 @@ QToolTip {
                                <property name="font">
                                 <font>
                                  <family>Cairo</family>
-                                 <pointsize>14</pointsize>
+                                 <pointsize>-1</pointsize>
                                  <bold>false</bold>
                                 </font>
                                </property>
                                <property name="toolTip">
-                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Elapsed time since scan started&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Time passed since scan started.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                </property>
                                <property name="styleSheet">
                                 <string notr="true">#runningTimeCounter {
 	background-color: transparent;
 	color: black;
+    font-size: 19px;
+    font-family: Cairo;
 }</string>
                                </property>
                                <property name="text">
@@ -1766,7 +1807,7 @@ QToolTip {
                               </widget>
                              </item>
                              <item>
-                              <spacer name="horizontalSpacer_2">
+                              <spacer name="horizontalSpacer_10">
                                <property name="orientation">
                                 <enum>Qt::Orientation::Horizontal</enum>
                                </property>
@@ -1801,7 +1842,7 @@ QToolTip {
 	color: #f3f3f3;
 }</string>
                             </property>
-                            <layout class="QHBoxLayout" name="horizontalLayout_5">
+                            <layout class="QHBoxLayout" name="horizontalLayout_11">
                              <property name="spacing">
                               <number>0</number>
                              </property>
@@ -1834,7 +1875,7 @@ QToolTip {
                                <property name="font">
                                 <font>
                                  <family>Cairo</family>
-                                 <pointsize>14</pointsize>
+                                 <pointsize>-1</pointsize>
                                  <bold>false</bold>
                                 </font>
                                </property>
@@ -1842,6 +1883,8 @@ QToolTip {
                                 <string notr="true">#numberOfDetectionsLabel {
 	background-color: transparent;
 	color: black;
+    font-size: 19px;
+    font-family: Cairo;
 }</string>
                                </property>
                                <property name="text">
@@ -1875,17 +1918,19 @@ QToolTip {
                                <property name="font">
                                 <font>
                                  <family>Cairo</family>
-                                 <pointsize>14</pointsize>
+                                 <pointsize>-1</pointsize>
                                  <bold>false</bold>
                                 </font>
                                </property>
                                <property name="toolTip">
-                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Number of detected attacks&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Number of detected attacks.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                </property>
                                <property name="styleSheet">
                                 <string notr="true">#numberOfDetectionsCounter {
 	background-color: transparent;
 	color: black;
+    font-size: 19px;
+    font-family: Cairo;
 }</string>
                                </property>
                                <property name="text">
@@ -1903,7 +1948,7 @@ QToolTip {
                               </widget>
                              </item>
                              <item>
-                              <spacer name="horizontalSpacer_3">
+                              <spacer name="horizontalSpacer_11">
                                <property name="orientation">
                                 <enum>Qt::Orientation::Horizontal</enum>
                                </property>
@@ -1935,7 +1980,7 @@ QToolTip {
                         </widget>
                        </item>
                        <item>
-                        <spacer name="horizontalSpacer_17">
+                        <spacer name="horizontalSpacer_12">
                          <property name="orientation">
                           <enum>Qt::Orientation::Horizontal</enum>
                          </property>
@@ -1955,6 +2000,12 @@ QToolTip {
                  </item>
                  <item>
                   <widget class="QFrame" name="chartVerticalFrame">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>0</height>
+                    </size>
+                   </property>
                    <property name="styleSheet">
                     <string notr="true">#chartVerticalFrame {
    background-color: rgba(204, 204, 204, 0.6);
@@ -2002,7 +2053,7 @@ QToolTip {
    border-color: black;	
 }</string>
                 </property>
-                <layout class="QVBoxLayout" name="verticalLayout_4">
+                <layout class="QVBoxLayout" name="verticalLayout_5">
                  <property name="spacing">
                   <number>20</number>
                  </property>
@@ -2038,7 +2089,7 @@ QToolTip {
                    <property name="font">
                     <font>
                      <family>Cairo</family>
-                     <pointsize>18</pointsize>
+                     <pointsize>-1</pointsize>
                      <bold>true</bold>
                     </font>
                    </property>
@@ -2046,6 +2097,9 @@ QToolTip {
                     <string notr="true">#historyLabel {
 	background-color: transparent;
 	color: black;
+    font-size: 24px;
+    font-family: Cairo;
+    font-weight: bold;
 	padding-top: 5px;
 	padding-left: 5px;
 }</string>
@@ -2078,7 +2132,7 @@ QToolTip {
                    <property name="font">
                     <font>
                      <family>Cairo</family>
-                     <pointsize>10</pointsize>
+                     <pointsize>-1</pointsize>
                     </font>
                    </property>
                    <property name="mouseTracking">
@@ -2095,6 +2149,8 @@ QToolTip {
     border-radius: 8px;
     background-color: transparent;
     color: black;
+    font-size: 13px;
+    font-family: Cairo;
     gridline-color: black;
     border: none;
 }
@@ -2257,7 +2313,7 @@ QToolTip {
           </layout>
          </widget>
          <widget class="QWidget" name="analyticsPage">
-          <layout class="QGridLayout" name="gridLayout_9">
+          <layout class="QGridLayout" name="gridLayout_3">
            <property name="leftMargin">
             <number>0</number>
            </property>
@@ -2287,7 +2343,7 @@ QToolTip {
                <pointsize>12</pointsize>
               </font>
              </property>
-             <layout class="QVBoxLayout" name="verticalLayout_30">
+             <layout class="QVBoxLayout" name="verticalLayout_6">
               <property name="spacing">
                <number>0</number>
               </property>
@@ -2317,7 +2373,7 @@ QToolTip {
                   <height>45</height>
                  </size>
                 </property>
-                <layout class="QHBoxLayout" name="horizontalLayout_33">
+                <layout class="QHBoxLayout" name="horizontalLayout_12">
                  <property name="spacing">
                   <number>5</number>
                  </property>
@@ -2350,14 +2406,17 @@ QToolTip {
                    <property name="font">
                     <font>
                      <family>Cairo</family>
-                     <pointsize>16</pointsize>
+                     <pointsize>-1</pointsize>
                      <bold>true</bold>
                     </font>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">#selectYearSelectionLabel {
+                    <string notr="true">#analyticsYearSelectionLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 21px;
+    font-family: Cairo;
+    font-weight: bold;
 }</string>
                    </property>
                    <property name="text">
@@ -2476,7 +2535,7 @@ QToolTip {
                     <property name="font">
                      <font>
                       <family>Cairo</family>
-                      <pointsize>12</pointsize>
+                      <pointsize>-1</pointsize>
                      </font>
                     </property>
                     <property name="cursor">
@@ -2489,6 +2548,8 @@ QToolTip {
                      <string notr="true">#analyticsYearComboBox {
     background-color: transparent;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
     border: 2px outset transparent;
     border-radius: 10px;
     padding: 4px;
@@ -2539,7 +2600,7 @@ QToolTip {
                   </widget>
                  </item>
                  <item>
-                  <spacer name="analyticsYearHorizontalSpacer">
+                  <spacer name="horizontalSpacer_13">
                    <property name="orientation">
                     <enum>Qt::Orientation::Horizontal</enum>
                    </property>
@@ -2562,7 +2623,7 @@ QToolTip {
                   <height>550</height>
                  </size>
                 </property>
-                <layout class="QHBoxLayout" name="horizontalLayout_15">
+                <layout class="QHBoxLayout" name="horizontalLayout_13">
                  <property name="spacing">
                   <number>0</number>
                  </property>
@@ -2592,7 +2653,7 @@ QToolTip {
                      <height>16777215</height>
                     </size>
                    </property>
-                   <layout class="QHBoxLayout" name="horizontalLayout_29">
+                   <layout class="QHBoxLayout" name="horizontalLayout_14">
                     <property name="spacing">
                      <number>10</number>
                     </property>
@@ -2624,7 +2685,7 @@ QToolTip {
 	color: black;
 }</string>
                       </property>
-                      <layout class="QVBoxLayout" name="verticalLayout_29">
+                      <layout class="QVBoxLayout" name="verticalLayout_7">
                        <property name="spacing">
                         <number>0</number>
                        </property>
@@ -2641,7 +2702,7 @@ QToolTip {
                         <number>0</number>
                        </property>
                        <item>
-                        <spacer name="verticalSpacer_18">
+                        <spacer name="verticalSpacer_4">
                          <property name="orientation">
                           <enum>Qt::Orientation::Vertical</enum>
                          </property>
@@ -2670,7 +2731,7 @@ QToolTip {
                          <property name="font">
                           <font>
                            <family>Cairo</family>
-                           <pointsize>16</pointsize>
+                           <pointsize>-1</pointsize>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -2678,6 +2739,9 @@ QToolTip {
                           <string notr="true">#attacksPerMonthTitleLabel {
 	background-color: transparent;
 	color: black;
+    font-size: 21px;
+    font-family: Cairo;
+    font-weight: bold;
 }</string>
                          </property>
                          <property name="text">
@@ -2692,7 +2756,7 @@ QToolTip {
                         </widget>
                        </item>
                        <item>
-                        <spacer name="verticalSpacer_24">
+                        <spacer name="verticalSpacer_5">
                          <property name="orientation">
                           <enum>Qt::Orientation::Vertical</enum>
                          </property>
@@ -2727,10 +2791,12 @@ QToolTip {
                          </property>
                          <property name="styleSheet">
                           <string notr="true">#attacksPerMonthValueLabel {
-	font-size: 60px;
-	margin: 10px;
 	background-color: transparent;
 	color: black;
+	font-size: 60px;
+    font-family: Days One;
+    font-weight: bold;
+	margin: 10px;
 }</string>
                          </property>
                          <property name="text">
@@ -2745,7 +2811,7 @@ QToolTip {
                         </widget>
                        </item>
                        <item>
-                        <spacer name="verticalSpacer_4">
+                        <spacer name="verticalSpacer_6">
                          <property name="orientation">
                           <enum>Qt::Orientation::Vertical</enum>
                          </property>
@@ -2758,7 +2824,7 @@ QToolTip {
                         </spacer>
                        </item>
                        <item>
-                        <spacer name="verticalSpacer_21">
+                        <spacer name="verticalSpacer_7">
                          <property name="orientation">
                           <enum>Qt::Orientation::Vertical</enum>
                          </property>
@@ -2789,7 +2855,7 @@ QToolTip {
 	color: black;
 }</string>
                       </property>
-                      <layout class="QVBoxLayout" name="verticalLayout_33">
+                      <layout class="QVBoxLayout" name="verticalLayout_8">
                        <property name="spacing">
                         <number>0</number>
                        </property>
@@ -2806,7 +2872,7 @@ QToolTip {
                         <number>0</number>
                        </property>
                        <item>
-                        <spacer name="verticalSpacer_19">
+                        <spacer name="verticalSpacer_8">
                          <property name="orientation">
                           <enum>Qt::Orientation::Vertical</enum>
                          </property>
@@ -2835,7 +2901,7 @@ QToolTip {
                          <property name="font">
                           <font>
                            <family>Cairo</family>
-                           <pointsize>16</pointsize>
+                           <pointsize>-1</pointsize>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -2843,6 +2909,9 @@ QToolTip {
                           <string notr="true">#totalNumOfAttacksTitleLabel {
 	background-color: transparent;
 	color: black;
+    font-size: 21px;
+    font-family: Cairo;
+    font-weight: bold;
 }</string>
                          </property>
                          <property name="text">
@@ -2857,7 +2926,7 @@ QToolTip {
                         </widget>
                        </item>
                        <item>
-                        <spacer name="verticalSpacer_25">
+                        <spacer name="verticalSpacer_9">
                          <property name="orientation">
                           <enum>Qt::Orientation::Vertical</enum>
                          </property>
@@ -2898,10 +2967,12 @@ QToolTip {
                          </property>
                          <property name="styleSheet">
                           <string notr="true">#totalNumOfAttacksValueLabel {
-	font-size: 60px;
-	margin: 10px;
 	background-color: transparent;
 	color: black;
+	font-size: 60px;
+    font-family: Days One;
+    font-weight: bold;
+	margin: 10px;
 }</string>
                          </property>
                          <property name="text">
@@ -2922,7 +2993,7 @@ QToolTip {
                         </widget>
                        </item>
                        <item>
-                        <spacer name="verticalSpacer_22">
+                        <spacer name="verticalSpacer_10">
                          <property name="orientation">
                           <enum>Qt::Orientation::Vertical</enum>
                          </property>
@@ -2935,7 +3006,7 @@ QToolTip {
                         </spacer>
                        </item>
                        <item>
-                        <spacer name="verticalSpacer_5">
+                        <spacer name="verticalSpacer_11">
                          <property name="orientation">
                           <enum>Qt::Orientation::Vertical</enum>
                          </property>
@@ -2966,7 +3037,7 @@ QToolTip {
 	color: black;
 }</string>
                       </property>
-                      <layout class="QVBoxLayout" name="verticalLayout_34">
+                      <layout class="QVBoxLayout" name="verticalLayout_9">
                        <property name="spacing">
                         <number>0</number>
                        </property>
@@ -2983,7 +3054,7 @@ QToolTip {
                         <number>0</number>
                        </property>
                        <item>
-                        <spacer name="verticalSpacer_20">
+                        <spacer name="verticalSpacer_12">
                          <property name="orientation">
                           <enum>Qt::Orientation::Vertical</enum>
                          </property>
@@ -3012,7 +3083,7 @@ QToolTip {
                          <property name="font">
                           <font>
                            <family>Cairo</family>
-                           <pointsize>16</pointsize>
+                           <pointsize>-1</pointsize>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -3020,7 +3091,9 @@ QToolTip {
                           <string notr="true">#mostPopularAttackTitleLabel {
 	background-color: transparent;
 	color: black;
-	margin-top: 5px;
+    font-size: 21px;
+    font-family: Cairo;
+    font-weight: bold;
 }</string>
                          </property>
                          <property name="text">
@@ -3035,7 +3108,7 @@ QToolTip {
                         </widget>
                        </item>
                        <item>
-                        <spacer name="verticalSpacer_26">
+                        <spacer name="verticalSpacer_13">
                          <property name="orientation">
                           <enum>Qt::Orientation::Vertical</enum>
                          </property>
@@ -3064,16 +3137,19 @@ QToolTip {
                          <property name="font">
                           <font>
                            <family>Days One</family>
-                           <pointsize>17</pointsize>
+                           <pointsize>-1</pointsize>
                            <bold>true</bold>
                           </font>
                          </property>
                          <property name="styleSheet">
                           <string notr="true">#mostPopularAttackValueLabel {
-	margin: 10px;
-	margin-top: 0px;
 	background-color: transparent;
 	color: black;
+	font-size: 23px;
+    font-family: Days One;
+    font-weight: bold;
+	margin: 10px;
+    margin-top: 0px;
 }</string>
                          </property>
                          <property name="text">
@@ -3088,7 +3164,7 @@ QToolTip {
                         </widget>
                        </item>
                        <item>
-                        <spacer name="verticalSpacer_6">
+                        <spacer name="verticalSpacer_14">
                          <property name="orientation">
                           <enum>Qt::Orientation::Vertical</enum>
                          </property>
@@ -3101,7 +3177,7 @@ QToolTip {
                         </spacer>
                        </item>
                        <item>
-                        <spacer name="verticalSpacer_23">
+                        <spacer name="verticalSpacer_15">
                          <property name="orientation">
                           <enum>Qt::Orientation::Vertical</enum>
                          </property>
@@ -3172,7 +3248,7 @@ QToolTip {
           </layout>
          </widget>
          <widget class="QWidget" name="reportPage">
-          <layout class="QGridLayout" name="gridLayout_3">
+          <layout class="QGridLayout" name="gridLayout_4">
            <property name="leftMargin">
             <number>0</number>
            </property>
@@ -3196,7 +3272,7 @@ QToolTip {
                <height>660</height>
               </size>
              </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_8">
+             <layout class="QHBoxLayout" name="horizontalLayout_15">
               <property name="spacing">
                <number>0</number>
               </property>
@@ -3226,7 +3302,7 @@ QToolTip {
                   <height>16777215</height>
                  </size>
                 </property>
-                <layout class="QVBoxLayout" name="verticalLayout_16">
+                <layout class="QVBoxLayout" name="verticalLayout_10">
                  <property name="spacing">
                   <number>15</number>
                  </property>
@@ -3259,7 +3335,7 @@ QToolTip {
                    <property name="font">
                     <font>
                      <family>Cairo</family>
-                     <pointsize>18</pointsize>
+                     <pointsize>-1</pointsize>
                      <bold>true</bold>
                     </font>
                    </property>
@@ -3267,6 +3343,9 @@ QToolTip {
                     <string notr="true">#reportSelectionLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 24px;
+    font-family: Cairo;
+    font-weight: bold;
 }</string>
                    </property>
                    <property name="text">
@@ -3418,7 +3497,7 @@ QToolTip {
                        <property name="font">
                         <font>
                          <family>Cairo</family>
-                         <pointsize>12</pointsize>
+                         <pointsize>-1</pointsize>
                         </font>
                        </property>
                        <property name="cursor">
@@ -3431,6 +3510,8 @@ QToolTip {
                         <string notr="true">#reportDurationComboBox {
     background-color: transparent;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
     border: 2px outset transparent;
     border-radius: 10px;
     padding: 4px;
@@ -3530,7 +3611,7 @@ QToolTip {
                       <property name="font">
                        <font>
                         <family>Cairo</family>
-                        <pointsize>13</pointsize>
+                        <pointsize>-1</pointsize>
                        </font>
                       </property>
                       <property name="cursor">
@@ -3540,24 +3621,26 @@ QToolTip {
                        <string notr="true">#arpSpoofingCheckBox {
     spacing: 10px;
     color: #f3f3f3;
+    font-size: 17px;
+    font-family: Cairo;
 }
 
-QCheckBox::indicator {
+#arpSpoofingCheckBox::indicator {
     width: 16px;
     height: 16px;
 }
 
-QCheckBox::indicator:checked {
+#arpSpoofingCheckBox::indicator:checked {
     background-color: #3a8e32;
     border: 2px solid #2e7128;
 }
 
-QCheckBox::indicator:unchecked {
+#arpSpoofingCheckBox::indicator:unchecked {
     background-color: white;
     border: 2px solid lightgray;
 }
 
-QCheckBox::indicator:hover {
+#arpSpoofingCheckBox::indicator:hover {
     border: 2px solid #4d9946;
 }</string>
                       </property>
@@ -3580,7 +3663,7 @@ QCheckBox::indicator:hover {
                       <property name="font">
                        <font>
                         <family>Cairo</family>
-                        <pointsize>13</pointsize>
+                        <pointsize>-1</pointsize>
                        </font>
                       </property>
                       <property name="cursor">
@@ -3590,24 +3673,26 @@ QCheckBox::indicator:hover {
                        <string notr="true">#portScanningCheckBox {
     spacing: 10px;
     color: #f3f3f3;
+    font-size: 17px;
+    font-family: Cairo;
 }
 
-QCheckBox::indicator {
+#portScanningCheckBox::indicator {
     width: 16px;
     height: 16px;
 }
 
-QCheckBox::indicator:checked {
+#portScanningCheckBox::indicator:checked {
     background-color: #3a8e32;
     border: 2px solid #2e7128;
 }
 
-QCheckBox::indicator:unchecked {
+#portScanningCheckBox::indicator:unchecked {
     background-color: white;
     border: 2px solid lightgray;
 }
 
-QCheckBox::indicator:hover {
+#portScanningCheckBox::indicator:hover {
     border: 2px solid #4d9946;
 }</string>
                       </property>
@@ -3630,7 +3715,7 @@ QCheckBox::indicator:hover {
                       <property name="font">
                        <font>
                         <family>Cairo</family>
-                        <pointsize>13</pointsize>
+                        <pointsize>-1</pointsize>
                        </font>
                       </property>
                       <property name="cursor">
@@ -3640,24 +3725,26 @@ QCheckBox::indicator:hover {
                        <string notr="true">#denialOfServiceCheckBox {
     spacing: 10px;
     color: #f3f3f3;
+    font-size: 17px;
+    font-family: Cairo;
 }
 
-QCheckBox::indicator {
+#denialOfServiceCheckBox::indicator {
     width: 16px;
     height: 16px;
 }
 
-QCheckBox::indicator:checked {
+#denialOfServiceCheckBox::indicator:checked {
     background-color: #3a8e32;
     border: 2px solid #2e7128;
 }
 
-QCheckBox::indicator:unchecked {
+#denialOfServiceCheckBox::indicator:unchecked {
     background-color: white;
     border: 2px solid lightgray;
 }
 
-QCheckBox::indicator:hover {
+#denialOfServiceCheckBox::indicator:hover {
     border: 2px solid #4d9946;
 }</string>
                       </property>
@@ -3680,7 +3767,7 @@ QCheckBox::indicator:hover {
                       <property name="font">
                        <font>
                         <family>Cairo</family>
-                        <pointsize>13</pointsize>
+                        <pointsize>-1</pointsize>
                        </font>
                       </property>
                       <property name="cursor">
@@ -3690,24 +3777,26 @@ QCheckBox::indicator:hover {
                        <string notr="true">#dnsTunnelingCheckBox {
     spacing: 10px;
     color: #f3f3f3;
+    font-size: 17px;
+    font-family: Cairo;
 }
 
-QCheckBox::indicator {
+#dnsTunnelingCheckBox::indicator {
     width: 16px;
     height: 16px;
 }
 
-QCheckBox::indicator:checked {
+#dnsTunnelingCheckBox::indicator:checked {
     background-color: #3a8e32;
     border: 2px solid #2e7128;
 }
 
-QCheckBox::indicator:unchecked {
+#dnsTunnelingCheckBox::indicator:unchecked {
     background-color: white;
     border: 2px solid lightgray;
 }
 
-QCheckBox::indicator:hover {
+#dnsTunnelingCheckBox::indicator:hover {
     border: 2px solid #4d9946;
 }</string>
                       </property>
@@ -3729,7 +3818,7 @@ QCheckBox::indicator:hover {
                       </property>
                       <property name="styleSheet">
                        <string notr="true">#horizontalLine2 {
- color: #f3f3f3
+	color: #f3f3f3;
 }</string>
                       </property>
                       <property name="frameShadow">
@@ -3754,34 +3843,36 @@ QCheckBox::indicator:hover {
                       <property name="font">
                        <font>
                         <family>Cairo</family>
-                        <pointsize>13</pointsize>
+                        <pointsize>-1</pointsize>
                        </font>
                       </property>
                       <property name="cursor">
                        <cursorShape>PointingHandCursor</cursorShape>
                       </property>
                       <property name="styleSheet">
-                       <string notr="true">QCheckBox::indicator {
+                       <string notr="true">#machineInfoCheckBox {
+    spacing: 10px;
+    color: #f3f3f3;
+    font-size: 17px;
+    font-family: Cairo;
+}
+
+#machineInfoCheckBox::indicator {
     width: 16px;
     height: 16px;
 }
 
-QCheckBox {
-    spacing: 10px;
-    color: #f3f3f3;
-}
-
-QCheckBox::indicator:checked {
+#machineInfoCheckBox::indicator:checked {
     background-color: #3a8e32;
     border: 2px solid #2e7128;
 }
 
-QCheckBox::indicator:unchecked {
+#machineInfoCheckBox::indicator:unchecked {
     background-color: white;
     border: 2px solid lightgray;
 }
 
-QCheckBox::indicator:hover {
+#machineInfoCheckBox::indicator:hover {
     border: 2px solid #4d9946;
 }</string>
                       </property>
@@ -3801,7 +3892,7 @@ QCheckBox::indicator:hover {
                       <property name="layoutDirection">
                        <enum>Qt::LayoutDirection::LeftToRight</enum>
                       </property>
-                      <layout class="QVBoxLayout" name="verticalLayout_26">
+                      <layout class="QVBoxLayout" name="verticalLayout_12">
                        <property name="spacing">
                         <number>10</number>
                        </property>
@@ -3822,6 +3913,12 @@ QCheckBox::indicator:hover {
                        </property>
                        <item>
                         <widget class="QPushButton" name="downloadReportPushButton">
+                         <property name="minimumSize">
+                          <size>
+                           <width>160</width>
+                           <height>31</height>
+                          </size>
+                         </property>
                          <property name="maximumSize">
                           <size>
                            <width>160</width>
@@ -3831,7 +3928,7 @@ QCheckBox::indicator:hover {
                          <property name="font">
                           <font>
                            <family>Cairo</family>
-                           <pointsize>11</pointsize>
+                           <pointsize>-1</pointsize>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -3843,21 +3940,23 @@ QCheckBox::indicator:hover {
                          </property>
                          <property name="styleSheet">
                           <string notr="true">#downloadReportPushButton  {
-    background-color: #4E4F5A; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                  
-    color: #f3f3f3;       
+    background-color: #4e4f5a;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 5px;
+    color: #f3f3f3;
+    font-size: 15px;
+    font-family: Cairo;
 }
 
 #downloadReportPushButton:hover {
     background-color: #464751; 
-	border-color: #D7D7D7;
+	border-color: #d7d7d7;
 }
 
 #downloadReportPushButton:pressed {
     background-color: #383840; 
-	border-color:#D7D7D7;
+	border-color:#d7d7d7;
 }</string>
                          </property>
                          <property name="text">
@@ -3867,6 +3966,12 @@ QCheckBox::indicator:hover {
                        </item>
                        <item>
                         <widget class="QPushButton" name="cancelReportPushButton">
+                         <property name="minimumSize">
+                          <size>
+                           <width>160</width>
+                           <height>31</height>
+                          </size>
+                         </property>
                          <property name="maximumSize">
                           <size>
                            <width>160</width>
@@ -3876,7 +3981,7 @@ QCheckBox::indicator:hover {
                          <property name="font">
                           <font>
                            <family>Cairo</family>
-                           <pointsize>11</pointsize>
+                           <pointsize>-1</pointsize>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -3888,19 +3993,21 @@ QCheckBox::indicator:hover {
                          </property>
                          <property name="styleSheet">
                           <string notr="true">#cancelReportPushButton  {
-    background-color: #D84F4F; 
-    border: 1px solid black;  
-    border-radius: 10px;         
-    padding: 5px;                       
-    color: black;       
+    background-color: #d84f4f;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 5px;
+    color: black; 
+    font-size: 15px;
+    font-family: Cairo;
 }
 
 #cancelReportPushButton:hover {
-     background-color: #DB6060;
+     background-color: #db6060;
 }
 
  #cancelReportPushButton:pressed {
-    background-color: #AC3f3F;
+    background-color: #ac3f3f;
 }</string>
                          </property>
                          <property name="text">
@@ -3916,6 +4023,12 @@ QCheckBox::indicator:hover {
                            <verstretch>0</verstretch>
                           </sizepolicy>
                          </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>160</width>
+                           <height>26</height>
+                          </size>
+                         </property>
                          <property name="maximumSize">
                           <size>
                            <width>160</width>
@@ -3925,7 +4038,7 @@ QCheckBox::indicator:hover {
                          <property name="font">
                           <font>
                            <family>Cairo</family>
-                           <pointsize>11</pointsize>
+                           <pointsize>-1</pointsize>
                            <bold>true</bold>
                           </font>
                          </property>
@@ -3937,9 +4050,11 @@ QCheckBox::indicator:hover {
     border: 2px solid #d3d3d3;
     border-radius: 10px;
     background-color: #f3f3f3;
-    text-align: center;         
+    text-align: center;
+    color: black; 
+    font-size: 15px;
+    font-family: Cairo;
     font-weight: bold;
-    color: black;
 }
 
 #reportProgressBar::chunk {
@@ -3957,7 +4072,7 @@ QCheckBox::indicator:hover {
                      </widget>
                     </item>
                     <item>
-                     <spacer name="ReportVerticalSpacer">
+                     <spacer name="verticalSpacer_16">
                       <property name="orientation">
                        <enum>Qt::Orientation::Vertical</enum>
                       </property>
@@ -3977,7 +4092,7 @@ QCheckBox::indicator:hover {
               </item>
               <item>
                <widget class="QFrame" name="reportPreviewVerticalFrame">
-                <layout class="QVBoxLayout" name="verticalLayout_14">
+                <layout class="QVBoxLayout" name="verticalLayout_13">
                  <property name="spacing">
                   <number>15</number>
                  </property>
@@ -4010,7 +4125,7 @@ QCheckBox::indicator:hover {
                    <property name="font">
                     <font>
                      <family>Cairo</family>
-                     <pointsize>18</pointsize>
+                     <pointsize>-1</pointsize>
                      <bold>true</bold>
                     </font>
                    </property>
@@ -4018,6 +4133,9 @@ QCheckBox::indicator:hover {
                     <string notr="true">#reportPreviewLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 24px;
+    font-family: Cairo;
+    font-weight: bold;
 }</string>
                    </property>
                    <property name="text">
@@ -4043,7 +4161,7 @@ QCheckBox::indicator:hover {
    border-color: black;	
 }</string>
                    </property>
-                   <layout class="QVBoxLayout" name="verticalLayout_12">
+                   <layout class="QVBoxLayout" name="verticalLayout_14">
                     <property name="spacing">
                      <number>10</number>
                     </property>
@@ -4070,7 +4188,7 @@ QCheckBox::indicator:hover {
                       <property name="font">
                        <font>
                         <family>Cairo</family>
-                        <pointsize>10</pointsize>
+                        <pointsize>-1</pointsize>
                        </font>
                       </property>
                       <property name="styleSheet">
@@ -4078,6 +4196,8 @@ QCheckBox::indicator:hover {
     border-radius: 8px;
     background-color: transparent;
     color: black;
+    font-size: 13px;
+    font-family: Cairo;
     gridline-color: black;
 }
 
@@ -4197,7 +4317,7 @@ QCheckBox::indicator:hover {
           </layout>
          </widget>
          <widget class="QWidget" name="infoPage">
-          <layout class="QGridLayout" name="gridLayout_4">
+          <layout class="QGridLayout" name="gridLayout_5">
            <property name="leftMargin">
             <number>0</number>
            </property>
@@ -4227,7 +4347,7 @@ QCheckBox::indicator:hover {
                <pointsize>12</pointsize>
               </font>
              </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_9">
+             <layout class="QHBoxLayout" name="horizontalLayout_16">
               <property name="spacing">
                <number>10</number>
               </property>
@@ -4245,7 +4365,7 @@ QCheckBox::indicator:hover {
               </property>
               <item>
                <widget class="QFrame" name="machineInfoVerticalFrameOutside">
-                <layout class="QVBoxLayout" name="verticalLayout_13">
+                <layout class="QVBoxLayout" name="verticalLayout_15">
                  <property name="spacing">
                   <number>0</number>
                  </property>
@@ -4278,7 +4398,7 @@ QCheckBox::indicator:hover {
                    <property name="font">
                     <font>
                      <family>Cairo</family>
-                     <pointsize>18</pointsize>
+                     <pointsize>-1</pointsize>
                      <bold>true</bold>
                     </font>
                    </property>
@@ -4286,6 +4406,9 @@ QCheckBox::indicator:hover {
                     <string notr="true">#machineInformationLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 24px;
+    font-family: Cairo;
+    font-weight: bold;
 }</string>
                    </property>
                    <property name="text">
@@ -4301,7 +4424,7 @@ QCheckBox::indicator:hover {
                  </item>
                  <item>
                   <widget class="QFrame" name="machineInfoVerticalFrameInside">
-                   <layout class="QVBoxLayout" name="verticalLayout_15">
+                   <layout class="QVBoxLayout" name="verticalLayout_16">
                     <property name="spacing">
                      <number>6</number>
                     </property>
@@ -4337,7 +4460,7 @@ QCheckBox::indicator:hover {
 	color: #f3f3f3;
 }</string>
                       </property>
-                      <layout class="QHBoxLayout" name="horizontalLayout_12">
+                      <layout class="QHBoxLayout" name="horizontalLayout_17">
                        <property name="leftMargin">
                         <number>0</number>
                        </property>
@@ -4367,13 +4490,15 @@ QCheckBox::indicator:hover {
                          <property name="font">
                           <font>
                            <family>Cairo</family>
-                           <pointsize>14</pointsize>
+                           <pointsize>-1</pointsize>
                           </font>
                          </property>
                          <property name="styleSheet">
                           <string notr="true">#OSTypeLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
 }</string>
                          </property>
                          <property name="text">
@@ -4413,13 +4538,15 @@ QCheckBox::indicator:hover {
                          <property name="font">
                           <font>
                            <family>Cairo</family>
-                           <pointsize>14</pointsize>
+                           <pointsize>-1</pointsize>
                           </font>
                          </property>
                          <property name="styleSheet">
                           <string notr="true">#OSTypeInfoLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo
 }</string>
                          </property>
                          <property name="text">
@@ -4437,7 +4564,7 @@ QCheckBox::indicator:hover {
                         </widget>
                        </item>
                        <item>
-                        <spacer name="horizontalSpacer_7">
+                        <spacer name="horizontalSpacer_14">
                          <property name="orientation">
                           <enum>Qt::Orientation::Horizontal</enum>
                          </property>
@@ -4472,7 +4599,7 @@ QCheckBox::indicator:hover {
 	color: #f3f3f3;
 }</string>
                       </property>
-                      <layout class="QHBoxLayout" name="horizontalLayout_10">
+                      <layout class="QHBoxLayout" name="horizontalLayout_18">
                        <property name="leftMargin">
                         <number>0</number>
                        </property>
@@ -4502,13 +4629,15 @@ QCheckBox::indicator:hover {
                          <property name="font">
                           <font>
                            <family>Cairo</family>
-                           <pointsize>14</pointsize>
+                           <pointsize>-1</pointsize>
                           </font>
                          </property>
                          <property name="styleSheet">
                           <string notr="true">#OSVersionLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo
 }</string>
                          </property>
                          <property name="text">
@@ -4548,13 +4677,15 @@ QCheckBox::indicator:hover {
                          <property name="font">
                           <font>
                            <family>Cairo</family>
-                           <pointsize>14</pointsize>
+                           <pointsize>-1</pointsize>
                           </font>
                          </property>
                          <property name="styleSheet">
                           <string notr="true">#OSVersionInfoLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo
 }</string>
                          </property>
                          <property name="text">
@@ -4572,7 +4703,7 @@ QCheckBox::indicator:hover {
                         </widget>
                        </item>
                        <item>
-                        <spacer name="horizontalSpacer_5">
+                        <spacer name="horizontalSpacer_15">
                          <property name="orientation">
                           <enum>Qt::Orientation::Horizontal</enum>
                          </property>
@@ -4607,7 +4738,7 @@ QCheckBox::indicator:hover {
 	color: #f3f3f3;
 }</string>
                       </property>
-                      <layout class="QHBoxLayout" name="horizontalLayout_11">
+                      <layout class="QHBoxLayout" name="horizontalLayout_19">
                        <property name="leftMargin">
                         <number>0</number>
                        </property>
@@ -4637,13 +4768,15 @@ QCheckBox::indicator:hover {
                          <property name="font">
                           <font>
                            <family>Cairo</family>
-                           <pointsize>14</pointsize>
+                           <pointsize>-1</pointsize>
                           </font>
                          </property>
                          <property name="styleSheet">
                           <string notr="true">#architectureLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo
 }</string>
                          </property>
                          <property name="text">
@@ -4683,13 +4816,15 @@ QCheckBox::indicator:hover {
                          <property name="font">
                           <font>
                            <family>Cairo</family>
-                           <pointsize>14</pointsize>
+                           <pointsize>-1</pointsize>
                           </font>
                          </property>
                          <property name="styleSheet">
                           <string notr="true">#architectureInfoLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo
 }</string>
                          </property>
                          <property name="text">
@@ -4707,7 +4842,7 @@ QCheckBox::indicator:hover {
                         </widget>
                        </item>
                        <item>
-                        <spacer name="horizontalSpacer_10">
+                        <spacer name="horizontalSpacer_16">
                          <property name="orientation">
                           <enum>Qt::Orientation::Horizontal</enum>
                          </property>
@@ -4742,7 +4877,7 @@ QCheckBox::indicator:hover {
 	color: #f3f3f3;
 }</string>
                       </property>
-                      <layout class="QHBoxLayout" name="horizontalLayout_13">
+                      <layout class="QHBoxLayout" name="horizontalLayout_20">
                        <property name="leftMargin">
                         <number>0</number>
                        </property>
@@ -4772,13 +4907,15 @@ QCheckBox::indicator:hover {
                          <property name="font">
                           <font>
                            <family>Cairo</family>
-                           <pointsize>14</pointsize>
+                           <pointsize>-1</pointsize>
                           </font>
                          </property>
                          <property name="styleSheet">
                           <string notr="true">#hostNameLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo
 }</string>
                          </property>
                          <property name="text">
@@ -4818,13 +4955,15 @@ QCheckBox::indicator:hover {
                          <property name="font">
                           <font>
                            <family>Cairo</family>
-                           <pointsize>14</pointsize>
+                           <pointsize>-1</pointsize>
                           </font>
                          </property>
                          <property name="styleSheet">
                           <string notr="true">#hostNameInfoLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo
 }</string>
                          </property>
                          <property name="text">
@@ -4842,7 +4981,7 @@ QCheckBox::indicator:hover {
                         </widget>
                        </item>
                        <item>
-                        <spacer name="horizontalSpacer_6">
+                        <spacer name="horizontalSpacer_17">
                          <property name="orientation">
                           <enum>Qt::Orientation::Horizontal</enum>
                          </property>
@@ -4858,7 +4997,7 @@ QCheckBox::indicator:hover {
                      </widget>
                     </item>
                     <item>
-                     <spacer name="verticalSpacer_12">
+                     <spacer name="verticalSpacer_17">
                       <property name="orientation">
                        <enum>Qt::Orientation::Vertical</enum>
                       </property>
@@ -4890,7 +5029,7 @@ QCheckBox::indicator:hover {
                    <property name="font">
                     <font>
                      <family>Cairo</family>
-                     <pointsize>18</pointsize>
+                     <pointsize>-1</pointsize>
                      <bold>true</bold>
                     </font>
                    </property>
@@ -4898,6 +5037,9 @@ QCheckBox::indicator:hover {
                     <string notr="true">#programInformationLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 24px;
+    font-family: Cairo;
+    font-weight: bold;
 }</string>
                    </property>
                    <property name="text">
@@ -4913,7 +5055,7 @@ QCheckBox::indicator:hover {
                  </item>
                  <item>
                   <widget class="QFrame" name="programInformationVerticalFrame">
-                   <layout class="QVBoxLayout" name="verticalLayout_9">
+                   <layout class="QVBoxLayout" name="verticalLayout_17">
                     <property name="leftMargin">
                      <number>30</number>
                     </property>
@@ -4927,7 +5069,7 @@ QCheckBox::indicator:hover {
                      <number>0</number>
                     </property>
                     <item>
-                     <widget class="QFrame" name="OSVersionFrame_2">
+                     <widget class="QFrame" name="netspectVersionFrame">
                       <property name="minimumSize">
                        <size>
                         <width>0</width>
@@ -4941,12 +5083,12 @@ QCheckBox::indicator:hover {
                        </size>
                       </property>
                       <property name="styleSheet">
-                       <string notr="true">#OSVersionFrame {
+                       <string notr="true">#netspectVersionFrame {
 	background-color: transparent;
 	color: #f3f3f3;
 }</string>
                       </property>
-                      <layout class="QHBoxLayout" name="horizontalLayout_17">
+                      <layout class="QHBoxLayout" name="horizontalLayout_21">
                        <property name="leftMargin">
                         <number>0</number>
                        </property>
@@ -4976,13 +5118,15 @@ QCheckBox::indicator:hover {
                          <property name="font">
                           <font>
                            <family>Cairo</family>
-                           <pointsize>14</pointsize>
+                           <pointsize>-1</pointsize>
                           </font>
                          </property>
                          <property name="styleSheet">
                           <string notr="true">#netspectVersionLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo
 }</string>
                          </property>
                          <property name="text">
@@ -5022,13 +5166,15 @@ QCheckBox::indicator:hover {
                          <property name="font">
                           <font>
                            <family>Cairo</family>
-                           <pointsize>14</pointsize>
+                           <pointsize>-1</pointsize>
                           </font>
                          </property>
                          <property name="styleSheet">
                           <string notr="true">#netspectVersionInfoLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo
 }</string>
                          </property>
                          <property name="text">
@@ -5046,7 +5192,7 @@ QCheckBox::indicator:hover {
                         </widget>
                        </item>
                        <item>
-                        <spacer name="horizontalSpacer_9">
+                        <spacer name="horizontalSpacer_18">
                          <property name="orientation">
                           <enum>Qt::Orientation::Horizontal</enum>
                          </property>
@@ -5062,7 +5208,7 @@ QCheckBox::indicator:hover {
                      </widget>
                     </item>
                     <item>
-                     <widget class="QFrame" name="architectureFrame_2">
+                     <widget class="QFrame" name="githubFrame">
                       <property name="minimumSize">
                        <size>
                         <width>0</width>
@@ -5076,11 +5222,11 @@ QCheckBox::indicator:hover {
                        </size>
                       </property>
                       <property name="styleSheet">
-                       <string notr="true">#architectureFrame {
+                       <string notr="true">#githubFrame {
 	background-color: transparent;
 }</string>
                       </property>
-                      <layout class="QHBoxLayout" name="horizontalLayout_18">
+                      <layout class="QHBoxLayout" name="horizontalLayout_22">
                        <property name="leftMargin">
                         <number>0</number>
                        </property>
@@ -5097,7 +5243,7 @@ QCheckBox::indicator:hover {
                         <widget class="QLabel" name="githubLabel">
                          <property name="minimumSize">
                           <size>
-                           <width>60</width>
+                           <width>65</width>
                            <height>40</height>
                           </size>
                          </property>
@@ -5110,17 +5256,19 @@ QCheckBox::indicator:hover {
                          <property name="font">
                           <font>
                            <family>Cairo</family>
-                           <pointsize>14</pointsize>
+                           <pointsize>-1</pointsize>
                           </font>
                          </property>
                          <property name="styleSheet">
                           <string notr="true">#githubLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo
 }</string>
                          </property>
                          <property name="text">
-                          <string>Github:</string>
+                          <string>GitHub:</string>
                          </property>
                          <property name="alignment">
                           <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
@@ -5153,13 +5301,18 @@ QCheckBox::indicator:hover {
                          <property name="font">
                           <font>
                            <family>Cairo</family>
-                           <pointsize>14</pointsize>
+                           <pointsize>-1</pointsize>
                           </font>
+                         </property>
+                         <property name="toolTip">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Visit NetSpect on GitHub.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                          </property>
                          <property name="styleSheet">
                           <string notr="true">#githubInfoLabel {
-    background-color: transparent;
-    color: #f3f3f3;
+	background-color: transparent;
+	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo
 }
 </string>
                          </property>
@@ -5178,7 +5331,7 @@ QCheckBox::indicator:hover {
                         </widget>
                        </item>
                        <item>
-                        <spacer name="horizontalSpacer_12">
+                        <spacer name="horizontalSpacer_19">
                          <property name="orientation">
                           <enum>Qt::Orientation::Horizontal</enum>
                          </property>
@@ -5194,7 +5347,7 @@ QCheckBox::indicator:hover {
                      </widget>
                     </item>
                     <item>
-                     <spacer name="verticalSpacer_14">
+                     <spacer name="verticalSpacer_18">
                       <property name="orientation">
                        <enum>Qt::Orientation::Vertical</enum>
                       </property>
@@ -5210,7 +5363,7 @@ QCheckBox::indicator:hover {
                   </widget>
                  </item>
                  <item>
-                  <spacer name="verticalSpacer_10">
+                  <spacer name="verticalSpacer_19">
                    <property name="orientation">
                     <enum>Qt::Orientation::Vertical</enum>
                    </property>
@@ -5227,7 +5380,7 @@ QCheckBox::indicator:hover {
               </item>
               <item>
                <widget class="QFrame" name="ProgramInfoVerticalFrameOutside">
-                <layout class="QVBoxLayout" name="verticalLayout_17">
+                <layout class="QVBoxLayout" name="verticalLayout_18">
                  <property name="spacing">
                   <number>0</number>
                  </property>
@@ -5245,7 +5398,7 @@ QCheckBox::indicator:hover {
                  </property>
                  <item>
                   <widget class="QFrame" name="ProgramInfoVerticalFrameInside">
-                   <layout class="QVBoxLayout" name="verticalLayout_18">
+                   <layout class="QVBoxLayout" name="verticalLayout_19">
                     <property name="spacing">
                      <number>0</number>
                     </property>
@@ -5278,7 +5431,7 @@ QCheckBox::indicator:hover {
                       <property name="font">
                        <font>
                         <family>Cairo</family>
-                        <pointsize>18</pointsize>
+                        <pointsize>-1</pointsize>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -5286,6 +5439,9 @@ QCheckBox::indicator:hover {
                        <string notr="true">#networkInterfaceInformationLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 24px;
+    font-family: Cairo;
+    font-weight: bold;
 }</string>
                       </property>
                       <property name="text">
@@ -5301,7 +5457,7 @@ QCheckBox::indicator:hover {
                     </item>
                     <item>
                      <widget class="QFrame" name="netowrkInterfaceInformationFrame">
-                      <layout class="QVBoxLayout" name="verticalLayout_10">
+                      <layout class="QVBoxLayout" name="verticalLayout_20">
                        <property name="spacing">
                         <number>6</number>
                        </property>
@@ -5337,7 +5493,7 @@ QCheckBox::indicator:hover {
 	color: #f3f3f3;
 }</string>
                          </property>
-                         <layout class="QHBoxLayout" name="horizontalLayout_14">
+                         <layout class="QHBoxLayout" name="horizontalLayout_23">
                           <property name="leftMargin">
                            <number>0</number>
                           </property>
@@ -5367,13 +5523,15 @@ QCheckBox::indicator:hover {
                             <property name="font">
                              <font>
                               <family>Cairo</family>
-                              <pointsize>14</pointsize>
+                              <pointsize>-1</pointsize>
                              </font>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#connectedInterfaceLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo
 }</string>
                             </property>
                             <property name="text">
@@ -5413,13 +5571,15 @@ QCheckBox::indicator:hover {
                             <property name="font">
                              <font>
                               <family>Cairo</family>
-                              <pointsize>14</pointsize>
+                              <pointsize>-1</pointsize>
                              </font>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#connectedInterfaceInfoLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo
 }</string>
                             </property>
                             <property name="text">
@@ -5437,7 +5597,7 @@ QCheckBox::indicator:hover {
                            </widget>
                           </item>
                           <item>
-                           <spacer name="horizontalSpacer_8">
+                           <spacer name="horizontalSpacer_20">
                             <property name="orientation">
                              <enum>Qt::Orientation::Horizontal</enum>
                             </property>
@@ -5472,7 +5632,7 @@ QCheckBox::indicator:hover {
 	color: #f3f3f3;
 }</string>
                          </property>
-                         <layout class="QHBoxLayout" name="horizontalLayout_31">
+                         <layout class="QHBoxLayout" name="horizontalLayout_24">
                           <property name="leftMargin">
                            <number>0</number>
                           </property>
@@ -5502,13 +5662,15 @@ QCheckBox::indicator:hover {
                             <property name="font">
                              <font>
                               <family>Cairo</family>
-                              <pointsize>14</pointsize>
+                              <pointsize>-1</pointsize>
                              </font>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#macAddressLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo
 }</string>
                             </property>
                             <property name="text">
@@ -5548,13 +5710,15 @@ QCheckBox::indicator:hover {
                             <property name="font">
                              <font>
                               <family>Cairo</family>
-                              <pointsize>14</pointsize>
+                              <pointsize>-1</pointsize>
                              </font>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#macAddressInfoLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo
 }</string>
                             </property>
                             <property name="text">
@@ -5572,7 +5736,7 @@ QCheckBox::indicator:hover {
                            </widget>
                           </item>
                           <item>
-                           <spacer name="horizontalSpacer_27">
+                           <spacer name="horizontalSpacer_21">
                             <property name="orientation">
                              <enum>Qt::Orientation::Horizontal</enum>
                             </property>
@@ -5637,13 +5801,15 @@ QCheckBox::indicator:hover {
                             <property name="font">
                              <font>
                               <family>Cairo</family>
-                              <pointsize>14</pointsize>
+                              <pointsize>-1</pointsize>
                              </font>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#descriptionLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo
 }</string>
                             </property>
                             <property name="text">
@@ -5683,13 +5849,15 @@ QCheckBox::indicator:hover {
                             <property name="font">
                              <font>
                               <family>Cairo</family>
-                              <pointsize>14</pointsize>
+                              <pointsize>-1</pointsize>
                              </font>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#descriptionInfoLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo
 }</string>
                             </property>
                             <property name="text">
@@ -5707,7 +5875,7 @@ QCheckBox::indicator:hover {
                            </widget>
                           </item>
                           <item>
-                           <spacer name="horizontalSpacer_24">
+                           <spacer name="horizontalSpacer_22">
                             <property name="orientation">
                              <enum>Qt::Orientation::Horizontal</enum>
                             </property>
@@ -5742,7 +5910,7 @@ QCheckBox::indicator:hover {
 	color: #f3f3f3;
 }</string>
                          </property>
-                         <layout class="QHBoxLayout" name="horizontalLayout_30">
+                         <layout class="QHBoxLayout" name="horizontalLayout_26">
                           <property name="leftMargin">
                            <number>0</number>
                           </property>
@@ -5772,13 +5940,15 @@ QCheckBox::indicator:hover {
                             <property name="font">
                              <font>
                               <family>Cairo</family>
-                              <pointsize>14</pointsize>
+                              <pointsize>-1</pointsize>
                              </font>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#maxTransmitionUnitLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo
 }</string>
                             </property>
                             <property name="text">
@@ -5818,13 +5988,15 @@ QCheckBox::indicator:hover {
                             <property name="font">
                              <font>
                               <family>Cairo</family>
-                              <pointsize>14</pointsize>
+                              <pointsize>-1</pointsize>
                              </font>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#maxTransmitionUnitInfoLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo
 }</string>
                             </property>
                             <property name="text">
@@ -5842,7 +6014,7 @@ QCheckBox::indicator:hover {
                            </widget>
                           </item>
                           <item>
-                           <spacer name="horizontalSpacer_26">
+                           <spacer name="horizontalSpacer_23">
                             <property name="orientation">
                              <enum>Qt::Orientation::Horizontal</enum>
                             </property>
@@ -5858,7 +6030,7 @@ QCheckBox::indicator:hover {
                         </widget>
                        </item>
                        <item>
-                        <spacer name="verticalSpacer_9">
+                        <spacer name="verticalSpacer_20">
                          <property name="orientation">
                           <enum>Qt::Orientation::Vertical</enum>
                          </property>
@@ -5890,7 +6062,7 @@ QCheckBox::indicator:hover {
                       <property name="font">
                        <font>
                         <family>Cairo</family>
-                        <pointsize>18</pointsize>
+                        <pointsize>-1</pointsize>
                         <bold>true</bold>
                        </font>
                       </property>
@@ -5898,6 +6070,9 @@ QCheckBox::indicator:hover {
                        <string notr="true">#myIpAddressesLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 24px;
+    font-family: Cairo;
+    font-weight: bold;
 }</string>
                       </property>
                       <property name="text">
@@ -5913,7 +6088,7 @@ QCheckBox::indicator:hover {
                     </item>
                     <item>
                      <widget class="QFrame" name="myIpAddressesFrameOutside">
-                      <layout class="QVBoxLayout" name="verticalLayout_23">
+                      <layout class="QVBoxLayout" name="verticalLayout_21">
                        <property name="spacing">
                         <number>0</number>
                        </property>
@@ -5949,7 +6124,7 @@ QCheckBox::indicator:hover {
 	color: #f3f3f3;
 }</string>
                          </property>
-                         <layout class="QHBoxLayout" name="horizontalLayout_16">
+                         <layout class="QHBoxLayout" name="horizontalLayout_27">
                           <property name="spacing">
                            <number>0</number>
                           </property>
@@ -5970,29 +6145,30 @@ QCheckBox::indicator:hover {
                             <property name="minimumSize">
                              <size>
                               <width>400</width>
-                              <height>140</height>
+                              <height>180</height>
                              </size>
                             </property>
                             <property name="maximumSize">
                              <size>
                               <width>400</width>
-                              <height>160</height>
+                              <height>180</height>
                              </size>
                             </property>
                             <property name="font">
                              <font>
                               <family>Cairo</family>
-                              <pointsize>13</pointsize>
+                              <pointsize>-1</pointsize>
                              </font>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#ipAddressesListWidget {
     background-color: rgba(198, 198, 198, 0.6);
     border-radius: 15px;
-    border-style: outset;
-    border-width: 2px;
-    border-color: black;
+    border: 2px solid black;
     padding: 4px;
+    color: black;
+    font-size: 17px;
+    font-family: Cairo;
 }
 
 #ipAddressesListWidget::item {
@@ -6060,7 +6236,7 @@ QCheckBox::indicator:hover {
                            </widget>
                           </item>
                           <item>
-                           <spacer name="horizontalSpacer_11">
+                           <spacer name="horizontalSpacer_24">
                             <property name="orientation">
                              <enum>Qt::Orientation::Horizontal</enum>
                             </property>
@@ -6076,7 +6252,7 @@ QCheckBox::indicator:hover {
                         </widget>
                        </item>
                        <item>
-                        <spacer name="verticalSpacer_8">
+                        <spacer name="verticalSpacer_21">
                          <property name="orientation">
                           <enum>Qt::Orientation::Vertical</enum>
                          </property>
@@ -6092,7 +6268,7 @@ QCheckBox::indicator:hover {
                      </widget>
                     </item>
                     <item>
-                     <spacer name="verticalSpacer_15">
+                     <spacer name="verticalSpacer_22">
                       <property name="orientation">
                        <enum>Qt::Orientation::Vertical</enum>
                       </property>
@@ -6111,7 +6287,7 @@ QCheckBox::indicator:hover {
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_15">
+               <spacer name="horizontalSpacer_25">
                 <property name="orientation">
                  <enum>Qt::Orientation::Horizontal</enum>
                 </property>
@@ -6129,7 +6305,7 @@ QCheckBox::indicator:hover {
           </layout>
          </widget>
          <widget class="QWidget" name="settingsPage">
-          <layout class="QGridLayout" name="gridLayout_5">
+          <layout class="QGridLayout" name="gridLayout_6">
            <property name="leftMargin">
             <number>0</number>
            </property>
@@ -6153,7 +6329,7 @@ QCheckBox::indicator:hover {
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_6">
+             <layout class="QHBoxLayout" name="horizontalLayout_28">
               <property name="spacing">
                <number>0</number>
               </property>
@@ -6183,7 +6359,7 @@ QCheckBox::indicator:hover {
                   <height>16777215</height>
                  </size>
                 </property>
-                <layout class="QVBoxLayout" name="verticalLayout_8">
+                <layout class="QVBoxLayout" name="verticalLayout_22">
                  <property name="spacing">
                   <number>20</number>
                  </property>
@@ -6210,7 +6386,7 @@ QCheckBox::indicator:hover {
                    <property name="font">
                     <font>
                      <family>Cairo</family>
-                     <pointsize>18</pointsize>
+                     <pointsize>-1</pointsize>
                      <bold>true</bold>
                     </font>
                    </property>
@@ -6220,6 +6396,9 @@ QCheckBox::indicator:hover {
                    <property name="styleSheet">
                     <string notr="true">#userSettingsLabel {
     color: #f3f3f3;
+    font-size: 24px;
+    font-family: Cairo;
+    font-weight: bold;
 }</string>
                    </property>
                    <property name="text">
@@ -6235,7 +6414,7 @@ QCheckBox::indicator:hover {
                      <verstretch>0</verstretch>
                     </sizepolicy>
                    </property>
-                   <layout class="QHBoxLayout" name="horizontalLayout_7">
+                   <layout class="QHBoxLayout" name="horizontalLayout_29">
                     <property name="spacing">
                      <number>20</number>
                     </property>
@@ -6262,7 +6441,7 @@ QCheckBox::indicator:hover {
                       <property name="styleSheet">
                        <string notr="true"/>
                       </property>
-                      <layout class="QVBoxLayout" name="verticalLayout_7">
+                      <layout class="QVBoxLayout" name="verticalLayout_23">
                        <property name="spacing">
                         <number>0</number>
                        </property>
@@ -6280,7 +6459,7 @@ QCheckBox::indicator:hover {
                        </property>
                        <item>
                         <widget class="QFrame" name="settingsChangeInsideVerticalFrame">
-                         <layout class="QVBoxLayout" name="verticalLayout_6">
+                         <layout class="QVBoxLayout" name="verticalLayout_24">
                           <property name="spacing">
                            <number>0</number>
                           </property>
@@ -6307,13 +6486,16 @@ QCheckBox::indicator:hover {
                             <property name="font">
                              <font>
                               <family>Cairo</family>
-                              <pointsize>14</pointsize>
+                              <pointsize>-1</pointsize>
                               <bold>true</bold>
                              </font>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#changeEmailLabel {
     color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
+    font-weight: bold;
 }</string>
                             </property>
                             <property name="text">
@@ -6332,7 +6514,7 @@ QCheckBox::indicator:hover {
                             <property name="font">
                              <font>
                               <family>Cairo</family>
-                              <pointsize>11</pointsize>
+                              <pointsize>-1</pointsize>
                               <bold>false</bold>
                              </font>
                             </property>
@@ -6346,6 +6528,8 @@ QCheckBox::indicator:hover {
     border-radius: 10px;
     padding: 0px 5px;
     color: black;
+    font-size: 15px;
+    font-family: Cairo;
 }</string>
                             </property>
                             <property name="text">
@@ -6379,7 +6563,7 @@ QCheckBox::indicator:hover {
                             <property name="font">
                              <font>
                               <family>Cairo</family>
-                              <pointsize>10</pointsize>
+                              <pointsize>-1</pointsize>
                               <bold>true</bold>
                               <strikeout>false</strikeout>
                               <kerning>true</kerning>
@@ -6387,8 +6571,10 @@ QCheckBox::indicator:hover {
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#saveEmailErrorMessageLabel {
-	color: #D84F4F;
-	background-color: #3C3D4A;
+	background-color: #3c3d4a;
+	color: #d84f4f;
+    font-size: 13px;
+    font-family: Cairo;
 	border: none;
 }</string>
                             </property>
@@ -6432,7 +6618,7 @@ QCheckBox::indicator:hover {
                               <height>16777215</height>
                              </size>
                             </property>
-                            <layout class="QHBoxLayout" name="emailButonHorizontalLayout">
+                            <layout class="QHBoxLayout" name="horizontalLayout_30">
                              <property name="topMargin">
                               <number>9</number>
                              </property>
@@ -6440,20 +6626,20 @@ QCheckBox::indicator:hover {
                               <widget class="QPushButton" name="emailPushButton">
                                <property name="minimumSize">
                                 <size>
-                                 <width>0</width>
+                                 <width>145</width>
                                  <height>31</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
                                  <width>145</width>
-                                 <height>16777215</height>
+                                 <height>31</height>
                                 </size>
                                </property>
                                <property name="font">
                                 <font>
                                  <family>Cairo</family>
-                                 <pointsize>12</pointsize>
+                                 <pointsize>-1</pointsize>
                                  <bold>true</bold>
                                 </font>
                                </property>
@@ -6465,22 +6651,24 @@ QCheckBox::indicator:hover {
                                </property>
                                <property name="styleSheet">
                                 <string notr="true">#emailPushButton  {
-    background-color: #4E4F5A; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                      
-    color: #f3f3f3;       
+    background-color: #4e4f5a;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 5px;
+    color: #f3f3f3;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 
 #emailPushButton:hover {
     background-color: #464751; 
-	border-color: #D7D7D7;
+	border-color: #d7d7d7;
 }
 
 #emailPushButton:pressed {
     background-color: #383840; 
-	border-color:#D7D7D7;
+	border-color:#d7d7d7;
 }</string>
                                </property>
                                <property name="text">
@@ -6492,7 +6680,7 @@ QCheckBox::indicator:hover {
                            </widget>
                           </item>
                           <item>
-                           <spacer name="verticalSpacer_16">
+                           <spacer name="verticalSpacer_23">
                             <property name="orientation">
                              <enum>Qt::Orientation::Vertical</enum>
                             </property>
@@ -6515,13 +6703,16 @@ QCheckBox::indicator:hover {
                             <property name="font">
                              <font>
                               <family>Cairo</family>
-                              <pointsize>14</pointsize>
+                              <pointsize>-1</pointsize>
                               <bold>true</bold>
                              </font>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#changeUsernameLabel {
     color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
+    font-weight: bold;
 }</string>
                             </property>
                             <property name="text">
@@ -6540,7 +6731,7 @@ QCheckBox::indicator:hover {
                             <property name="font">
                              <font>
                               <family>Cairo</family>
-                              <pointsize>11</pointsize>
+                              <pointsize>-1</pointsize>
                              </font>
                             </property>
                             <property name="toolTip">
@@ -6553,6 +6744,8 @@ QCheckBox::indicator:hover {
     border-radius: 10px; 
     padding: 0px 5px;
     color: black;
+    font-size: 15px;
+    font-family: Cairo;
 }</string>
                             </property>
                             <property name="text">
@@ -6586,14 +6779,17 @@ QCheckBox::indicator:hover {
                             <property name="font">
                              <font>
                               <family>Cairo</family>
-                              <pointsize>10</pointsize>
+                              <pointsize>-1</pointsize>
                               <bold>true</bold>
                              </font>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#saveUsernameErrorMessageLabel {
-	color: #D84F4F;
-	background-color: #3C3D4A;
+	background-color: #3c3d4a;
+	color: #d84f4f;
+    font-size: 13px;
+    font-family: Cairo;
+	border: none;
 }</string>
                             </property>
                             <property name="text">
@@ -6621,25 +6817,25 @@ QCheckBox::indicator:hover {
                               <height>16777215</height>
                              </size>
                             </property>
-                            <layout class="QHBoxLayout" name="usernameButtonHorizontalLayout">
+                            <layout class="QHBoxLayout" name="horizontalLayout_31">
                              <item>
                               <widget class="QPushButton" name="usernamePushButton">
                                <property name="minimumSize">
                                 <size>
-                                 <width>0</width>
+                                 <width>145</width>
                                  <height>31</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
                                  <width>145</width>
-                                 <height>16777215</height>
+                                 <height>31</height>
                                 </size>
                                </property>
                                <property name="font">
                                 <font>
                                  <family>Cairo</family>
-                                 <pointsize>12</pointsize>
+                                 <pointsize>-1</pointsize>
                                  <bold>true</bold>
                                 </font>
                                </property>
@@ -6651,21 +6847,23 @@ QCheckBox::indicator:hover {
                                </property>
                                <property name="styleSheet">
                                 <string notr="true">#usernamePushButton  {
-    background-color: #4E4F5A; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                     
-    color: #f3f3f3;       
+    background-color: #4e4f5a;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 5px;
+    color: #f3f3f3;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #usernamePushButton:hover {
     background-color: #464751; 
-	border-color: #D7D7D7;
+	border-color: #d7d7d7;
 }
 
 #usernamePushButton:pressed {
     background-color: #383840; 
-	border-color:#D7D7D7;
+	border-color:#d7d7d7;
 }</string>
                                </property>
                                <property name="text">
@@ -6677,7 +6875,7 @@ QCheckBox::indicator:hover {
                            </widget>
                           </item>
                           <item>
-                           <spacer name="verticalSpacer_17">
+                           <spacer name="verticalSpacer_24">
                             <property name="orientation">
                              <enum>Qt::Orientation::Vertical</enum>
                             </property>
@@ -6700,13 +6898,16 @@ QCheckBox::indicator:hover {
                             <property name="font">
                              <font>
                               <family>Cairo</family>
-                              <pointsize>14</pointsize>
+                              <pointsize>-1</pointsize>
                               <bold>true</bold>
                              </font>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#changePasswordLabel {
     color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
+    font-weight: bold;
 }</string>
                             </property>
                             <property name="text">
@@ -6743,7 +6944,7 @@ QCheckBox::indicator:hover {
                                <property name="font">
                                 <font>
                                  <family>Cairo</family>
-                                 <pointsize>11</pointsize>
+                                 <pointsize>-1</pointsize>
                                 </font>
                                </property>
                                <property name="toolTip">
@@ -6756,6 +6957,8 @@ QCheckBox::indicator:hover {
     border-radius: 10px;
     padding: 0px 5px;
     color: black;
+    font-size: 15px;
+    font-family: Cairo;
 }</string>
                                </property>
                                <property name="text">
@@ -6780,7 +6983,7 @@ QCheckBox::indicator:hover {
                                <property name="font">
                                 <font>
                                  <family>Cairo</family>
-                                 <pointsize>11</pointsize>
+                                 <pointsize>-1</pointsize>
                                 </font>
                                </property>
                                <property name="toolTip">
@@ -6793,6 +6996,8 @@ QCheckBox::indicator:hover {
     border-radius: 10px;
     padding: 0px 5px;
     color: black;
+    font-size: 15px;
+    font-family: Cairo;
 }</string>
                                </property>
                                <property name="text">
@@ -6817,7 +7022,7 @@ QCheckBox::indicator:hover {
                                <property name="font">
                                 <font>
                                  <family>Cairo</family>
-                                 <pointsize>11</pointsize>
+                                 <pointsize>-1</pointsize>
                                 </font>
                                </property>
                                <property name="toolTip">
@@ -6830,6 +7035,8 @@ QCheckBox::indicator:hover {
     border-radius: 10px;
     padding: 0px 5px;
     color: black;
+    font-size: 15px;
+    font-family: Cairo;
 }</string>
                                </property>
                                <property name="text">
@@ -6869,14 +7076,17 @@ QCheckBox::indicator:hover {
                             <property name="font">
                              <font>
                               <family>Cairo</family>
-                              <pointsize>10</pointsize>
+                              <pointsize>-1</pointsize>
                               <bold>true</bold>
                              </font>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#savePasswordErrorMessageLabel {
-	color: #D84F4F;
-	background-color: #3C3D4A;
+	background-color: #3c3d4a;
+	color: #d84f4f;
+    font-size: 13px;
+    font-family: Cairo;
+	border: none;
 	line-height: 50%;
 }</string>
                             </property>
@@ -6902,25 +7112,25 @@ QCheckBox::indicator:hover {
                               <height>16777215</height>
                              </size>
                             </property>
-                            <layout class="QHBoxLayout" name="passwordButtonHorizontalLayout">
+                            <layout class="QHBoxLayout" name="horizontalLayout_32">
                              <item>
                               <widget class="QPushButton" name="passwordPushButton">
                                <property name="minimumSize">
                                 <size>
-                                 <width>0</width>
+                                 <width>145</width>
                                  <height>31</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
                                  <width>145</width>
-                                 <height>16777215</height>
+                                 <height>31</height>
                                 </size>
                                </property>
                                <property name="font">
                                 <font>
                                  <family>Cairo</family>
-                                 <pointsize>12</pointsize>
+                                 <pointsize>-1</pointsize>
                                  <bold>true</bold>
                                 </font>
                                </property>
@@ -6932,21 +7142,23 @@ QCheckBox::indicator:hover {
                                </property>
                                <property name="styleSheet">
                                 <string notr="true">#passwordPushButton  {
-    background-color: #4E4F5A; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                   
-    color: #f3f3f3;       
+    background-color: #4e4f5a;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 5px;
+    color: #f3f3f3;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #passwordPushButton:hover {
     background-color: #464751; 
-	border-color: #D7D7D7;
+	border-color: #d7d7d7;
 }
 
 #passwordPushButton:pressed {
     background-color: #383840; 
-	border-color:#D7D7D7;
+	border-color:#d7d7d7;
 }</string>
                                </property>
                                <property name="text">
@@ -6961,7 +7173,7 @@ QCheckBox::indicator:hover {
                         </widget>
                        </item>
                        <item>
-                        <spacer name="verticalSpacer_11">
+                        <spacer name="verticalSpacer_25">
                          <property name="orientation">
                           <enum>Qt::Orientation::Vertical</enum>
                          </property>
@@ -6987,7 +7199,7 @@ QCheckBox::indicator:hover {
                       <property name="styleSheet">
                        <string notr="true"/>
                       </property>
-                      <layout class="QVBoxLayout" name="verticalLayout_22">
+                      <layout class="QVBoxLayout" name="verticalLayout_25">
                        <property name="spacing">
                         <number>25</number>
                        </property>
@@ -7005,7 +7217,7 @@ QCheckBox::indicator:hover {
                        </property>
                        <item>
                         <widget class="QFrame" name="interfaceSettingsHorizontalFrame">
-                         <layout class="QHBoxLayout" name="horizontalLayout_28">
+                         <layout class="QHBoxLayout" name="horizontalLayout_33">
                           <property name="spacing">
                            <number>0</number>
                           </property>
@@ -7022,8 +7234,8 @@ QCheckBox::indicator:hover {
                            <number>0</number>
                           </property>
                           <item>
-                           <widget class="QFrame" name="verticalFrame_3">
-                            <layout class="QVBoxLayout" name="verticalLayout_25">
+                           <widget class="QFrame" name="interfaceSettingsVerticalFrame">
+                            <layout class="QVBoxLayout" name="verticalLayout_26">
                              <property name="spacing">
                               <number>0</number>
                              </property>
@@ -7040,7 +7252,7 @@ QCheckBox::indicator:hover {
                               <number>0</number>
                              </property>
                              <item>
-                              <widget class="QLabel" name="interfaceSettingsLabel">
+                              <widget class="QLabel" name="interfaceColorModeLabel">
                                <property name="minimumSize">
                                 <size>
                                  <width>185</width>
@@ -7050,13 +7262,16 @@ QCheckBox::indicator:hover {
                                <property name="font">
                                 <font>
                                  <family>Cairo</family>
-                                 <pointsize>14</pointsize>
+                                 <pointsize>-1</pointsize>
                                  <bold>true</bold>
                                 </font>
                                </property>
                                <property name="styleSheet">
-                                <string notr="true">#interfaceSettingsLabel {
+                                <string notr="true">#interfaceColorModeLabel {
     color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
+    font-weight: bold;
 }</string>
                                </property>
                                <property name="text">
@@ -7169,7 +7384,7 @@ QCheckBox::indicator:hover {
                                 <property name="font">
                                  <font>
                                   <family>Cairo</family>
-                                  <pointsize>12</pointsize>
+                                  <pointsize>-1</pointsize>
                                  </font>
                                 </property>
                                 <property name="cursor">
@@ -7182,6 +7397,8 @@ QCheckBox::indicator:hover {
                                  <string notr="true">#colorModeComboBox {
     background-color: transparent;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
     border: 2px outset transparent;
     border-radius: 10px;
     padding: 4px;
@@ -7232,7 +7449,7 @@ QCheckBox::indicator:hover {
                            </widget>
                           </item>
                           <item>
-                           <spacer name="horizontalSpacer_23">
+                           <spacer name="horizontalSpacer_26">
                             <property name="orientation">
                              <enum>Qt::Orientation::Horizontal</enum>
                             </property>
@@ -7249,7 +7466,7 @@ QCheckBox::indicator:hover {
                        </item>
                        <item>
                         <widget class="QFrame" name="opperationModeHorizontalFrame">
-                         <layout class="QHBoxLayout" name="horizontalLayout_32">
+                         <layout class="QHBoxLayout" name="horizontalLayout_34">
                           <property name="spacing">
                            <number>0</number>
                           </property>
@@ -7266,7 +7483,7 @@ QCheckBox::indicator:hover {
                            <number>0</number>
                           </property>
                           <item>
-                           <widget class="QFrame" name="verticalFrame_4">
+                           <widget class="QFrame" name="opperationModeVerticalFrame">
                             <layout class="QVBoxLayout" name="verticalLayout_27">
                              <property name="spacing">
                               <number>0</number>
@@ -7294,13 +7511,16 @@ QCheckBox::indicator:hover {
                                <property name="font">
                                 <font>
                                  <family>Cairo</family>
-                                 <pointsize>14</pointsize>
+                                 <pointsize>-1</pointsize>
                                  <bold>true</bold>
                                 </font>
                                </property>
                                <property name="styleSheet">
                                 <string notr="true">#operationModeLabel {
     color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
+    font-weight: bold;
 }</string>
                                </property>
                                <property name="text">
@@ -7413,19 +7633,21 @@ QCheckBox::indicator:hover {
                                 <property name="font">
                                  <font>
                                   <family>Cairo</family>
-                                  <pointsize>12</pointsize>
+                                  <pointsize>-1</pointsize>
                                  </font>
                                 </property>
                                 <property name="cursor">
                                  <cursorShape>PointingHandCursor</cursorShape>
                                 </property>
                                 <property name="toolTip">
-                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the applocation's opperation mode, 'Real Time Detection' for detecting attacks in real time and 'Data Collection TCP/UDP' or 'Data Collection DNS' for collecting data from current network.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select the application's operation mode, 'Real Time Detection' for detecting attacks in real time and 'Data Collection TCP/UDP' or 'Data Collection DNS' for collecting data from current network.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                                 </property>
                                 <property name="styleSheet">
                                  <string notr="true">#operationModeComboBox {
     background-color: transparent;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
     border: 2px outset transparent;
     border-radius: 10px;
     padding: 4px;
@@ -7481,7 +7703,7 @@ QCheckBox::indicator:hover {
                            </widget>
                           </item>
                           <item>
-                           <spacer name="horizontalSpacer_28">
+                           <spacer name="horizontalSpacer_27">
                             <property name="orientation">
                              <enum>Qt::Orientation::Horizontal</enum>
                             </property>
@@ -7513,7 +7735,7 @@ QCheckBox::indicator:hover {
                          <property name="styleSheet">
                           <string notr="true"/>
                          </property>
-                         <layout class="QHBoxLayout" name="horizontalLayout_26">
+                         <layout class="QHBoxLayout" name="horizontalLayout_35">
                           <property name="spacing">
                            <number>0</number>
                           </property>
@@ -7530,14 +7752,14 @@ QCheckBox::indicator:hover {
                            <number>0</number>
                           </property>
                           <item>
-                           <widget class="QFrame" name="verticalFrame_2">
+                           <widget class="QFrame" name="macAddressBlacklistVerticalFrame">
                             <property name="minimumSize">
                              <size>
                               <width>0</width>
                               <height>0</height>
                              </size>
                             </property>
-                            <layout class="QVBoxLayout" name="verticalLayout_24">
+                            <layout class="QVBoxLayout" name="verticalLayout_28">
                              <property name="spacing">
                               <number>0</number>
                              </property>
@@ -7554,7 +7776,7 @@ QCheckBox::indicator:hover {
                               <number>0</number>
                              </property>
                              <item>
-                              <widget class="QLabel" name="macAddressBlacklistSettingsLabel">
+                              <widget class="QLabel" name="macAddressBlacklistLabel">
                                <property name="minimumSize">
                                 <size>
                                  <width>185</width>
@@ -7564,13 +7786,16 @@ QCheckBox::indicator:hover {
                                <property name="font">
                                 <font>
                                  <family>Cairo</family>
-                                 <pointsize>14</pointsize>
+                                 <pointsize>-1</pointsize>
                                  <bold>true</bold>
                                 </font>
                                </property>
                                <property name="styleSheet">
-                                <string notr="true">#macAddressBlacklistSettingsLabel {
+                                <string notr="true">#macAddressBlacklistLabel {
     color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
+    font-weight: bold;
 }</string>
                                </property>
                                <property name="text">
@@ -7595,7 +7820,7 @@ QCheckBox::indicator:hover {
                                <property name="font">
                                 <font>
                                  <family>Cairo</family>
-                                 <pointsize>13</pointsize>
+                                 <pointsize>-1</pointsize>
                                 </font>
                                </property>
                                <property name="toolTip">
@@ -7603,13 +7828,13 @@ QCheckBox::indicator:hover {
                                </property>
                                <property name="styleSheet">
                                 <string notr="true">#macAddressListWidget {
-   background-color: #f3f3f3;
-   color: black;
-   border-radius: 15px;
-   border-style: outset;
-   border-width: 2px;
-   border-color: lightgray;
-   padding: 5px;
+    background-color: #f3f3f3;
+    border-radius: 15px;
+    border: 2px solid lightgray;
+    padding: 5px;
+    color: black;
+    font-size: 17px;
+    font-family: Cairo;
 }
 
 #macAddressListWidget::item {
@@ -7681,14 +7906,14 @@ QCheckBox::indicator:hover {
                               </widget>
                              </item>
                              <item>
-                              <widget class="QFrame" name="frame_2">
+                              <widget class="QFrame" name="macAddressLineEditHorizontalFrame">
                                <property name="maximumSize">
                                 <size>
                                  <width>375</width>
                                  <height>42</height>
                                 </size>
                                </property>
-                               <layout class="QHBoxLayout" name="horizontalLayout_27">
+                               <layout class="QHBoxLayout" name="horizontalLayout_36">
                                 <property name="spacing">
                                  <number>7</number>
                                 </property>
@@ -7715,7 +7940,7 @@ QCheckBox::indicator:hover {
                                   <property name="font">
                                    <font>
                                     <family>Cairo</family>
-                                    <pointsize>11</pointsize>
+                                    <pointsize>-1</pointsize>
                                    </font>
                                   </property>
                                   <property name="toolTip">
@@ -7728,6 +7953,8 @@ QCheckBox::indicator:hover {
     border-radius: 10px;
     padding: 0px 5px;
     color: black;
+    font-size: 15px;
+    font-family: Cairo;
 }</string>
                                   </property>
                                   <property name="text">
@@ -7758,7 +7985,7 @@ QCheckBox::indicator:hover {
                                   <property name="font">
                                    <font>
                                     <family>Cairo</family>
-                                    <pointsize>12</pointsize>
+                                    <pointsize>-1</pointsize>
                                     <bold>true</bold>
                                    </font>
                                   </property>
@@ -7770,19 +7997,21 @@ QCheckBox::indicator:hover {
                                   </property>
                                   <property name="styleSheet">
                                    <string notr="true">#addMacAddressPushButton  {
-    background-color: #3a8e32; 
-    border: 1px solid black;  
-    border-radius: 10px;         
-    padding: 5px;                        
-    color: black;       
+    background-color: #3a8e32;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 5px;
+    color: black;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #addMacAddressPushButton:hover {
-     background-color: #4D9946;
+     background-color: #4d9946;
  }
 
 #addMacAddressPushButton:pressed {
-    background-color: #2E7128;
+    background-color: #2e7128;
 }</string>
                                   </property>
                                   <property name="text">
@@ -7816,14 +8045,17 @@ QCheckBox::indicator:hover {
                                <property name="font">
                                 <font>
                                  <family>Cairo</family>
-                                 <pointsize>10</pointsize>
+                                 <pointsize>-1</pointsize>
                                  <bold>true</bold>
                                 </font>
                                </property>
                                <property name="styleSheet">
                                 <string notr="true">#macAddressBlacklistErrorMessageLabel {
-	color: #D84F4F;
-	background-color: #3C3D4A;
+	background-color: #3c3d4a;
+	color: #d84f4f;
+    font-size: 13px;
+    font-family: Cairo;
+	border: none;
 }</string>
                                </property>
                                <property name="text">
@@ -7844,7 +8076,7 @@ QCheckBox::indicator:hover {
                            </widget>
                           </item>
                           <item>
-                           <spacer name="horizontalSpacer_14">
+                           <spacer name="horizontalSpacer_28">
                             <property name="orientation">
                              <enum>Qt::Orientation::Horizontal</enum>
                             </property>
@@ -7860,7 +8092,7 @@ QCheckBox::indicator:hover {
                         </widget>
                        </item>
                        <item>
-                        <spacer name="verticalSpacer_7">
+                        <spacer name="verticalSpacer_26">
                          <property name="orientation">
                           <enum>Qt::Orientation::Vertical</enum>
                          </property>
@@ -7874,7 +8106,7 @@ QCheckBox::indicator:hover {
                        </item>
                        <item>
                         <widget class="QFrame" name="settingsButtonsHorizontalFrame">
-                         <layout class="QHBoxLayout" name="horizontalLayout_24">
+                         <layout class="QHBoxLayout" name="horizontalLayout_37">
                           <property name="spacing">
                            <number>10</number>
                           </property>
@@ -7891,7 +8123,7 @@ QCheckBox::indicator:hover {
                            <number>0</number>
                           </property>
                           <item>
-                           <spacer name="horizontalSpacer_22">
+                           <spacer name="horizontalSpacer_29">
                             <property name="orientation">
                              <enum>Qt::Orientation::Horizontal</enum>
                             </property>
@@ -7920,7 +8152,7 @@ QCheckBox::indicator:hover {
                             <property name="font">
                              <font>
                               <family>Cairo</family>
-                              <pointsize>12</pointsize>
+                              <pointsize>-1</pointsize>
                               <bold>true</bold>
                              </font>
                             </property>
@@ -7928,23 +8160,25 @@ QCheckBox::indicator:hover {
                              <cursorShape>PointingHandCursor</cursorShape>
                             </property>
                             <property name="toolTip">
-                             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Permanently clear alert history.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Permanently clear your alert history.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#clearHistoryPushButton  {
-    background-color: #D84F4F; 
-    border: 1px solid black;  
-    border-radius: 10px;         
-    padding: 5px;                      
-    color: black;       
+    background-color: #d84f4f;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 5px;
+    color: black;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #clearHistoryPushButton:hover {
-     background-color: #DB6060;
+     background-color: #db6060;
 }
 
  #clearHistoryPushButton:pressed {
-    background-color: #AC3f3F;
+    background-color: #ac3f3f;
 }</string>
                             </property>
                             <property name="text">
@@ -7969,7 +8203,7 @@ QCheckBox::indicator:hover {
                             <property name="font">
                              <font>
                               <family>Cairo</family>
-                              <pointsize>12</pointsize>
+                              <pointsize>-1</pointsize>
                               <bold>true</bold>
                              </font>
                             </property>
@@ -7981,20 +8215,22 @@ QCheckBox::indicator:hover {
                             </property>
                             <property name="styleSheet">
                              <string notr="true">#deleteAccoutPushButton  {
-    background-color: #D84F4F; 
-    border: 1px solid black;  
-    border-radius: 10px;         
-    padding: 5px;                      
-    color: black;       
+    background-color: #d84f4f;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 5px;
+    color: black;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 
 #deleteAccoutPushButton:hover {
-    background-color: #DB6060;
+    background-color: #db6060;
 }
 
 #deleteAccoutPushButton:pressed {
-    background-color: #AC3f3F;
+    background-color: #ac3f3f;
 }</string>
                             </property>
                             <property name="text">
@@ -8034,7 +8270,7 @@ QCheckBox::indicator:hover {
     background-color: #2d2e36;
 }</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_19">
+         <layout class="QVBoxLayout" name="verticalLayout_29">
           <property name="spacing">
            <number>10</number>
           </property>
@@ -8079,7 +8315,7 @@ QCheckBox::indicator:hover {
             <property name="frameShadow">
              <enum>QFrame::Shadow::Raised</enum>
             </property>
-            <layout class="QGridLayout" name="gridLayout_6">
+            <layout class="QGridLayout" name="gridLayout_7">
              <property name="leftMargin">
               <number>0</number>
              </property>
@@ -8127,7 +8363,7 @@ QCheckBox::indicator:hover {
 	border: none;
 }</string>
                </property>
-               <layout class="QVBoxLayout" name="verticalLayout_20">
+               <layout class="QVBoxLayout" name="verticalLayout_30">
                 <property name="spacing">
                  <number>5</number>
                 </property>
@@ -8160,14 +8396,16 @@ QCheckBox::indicator:hover {
                   <property name="font">
                    <font>
                     <family>Cairo</family>
-                    <pointsize>20</pointsize>
+                    <pointsize>-1</pointsize>
                     <bold>true</bold>
                    </font>
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#loginLabel {
-	color: #f3f3f3;
 	background-color: #2d2e36;
+	color: #f3f3f3;
+    font-size: 27px;
+    font-family: Cairo;
 }</string>
                   </property>
                   <property name="text">
@@ -8201,7 +8439,7 @@ QCheckBox::indicator:hover {
 	border: none;
 }</string>
                   </property>
-                  <layout class="QVBoxLayout" name="verticalLayout_38">
+                  <layout class="QVBoxLayout" name="verticalLayout_31">
                    <property name="spacing">
                     <number>5</number>
                    </property>
@@ -8240,7 +8478,7 @@ QCheckBox::indicator:hover {
                      <property name="font">
                       <font>
                        <family>Cairo</family>
-                       <pointsize>12</pointsize>
+                       <pointsize>-1</pointsize>
                       </font>
                      </property>
                      <property name="toolTip">
@@ -8253,6 +8491,8 @@ QCheckBox::indicator:hover {
     border-radius: 10px; 
     padding: 0px 5px;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
 }</string>
                      </property>
                      <property name="text">
@@ -8286,7 +8526,7 @@ QCheckBox::indicator:hover {
                      <property name="font">
                       <font>
                        <family>Cairo</family>
-                       <pointsize>12</pointsize>
+                       <pointsize>-1</pointsize>
                        <bold>false</bold>
                       </font>
                      </property>
@@ -8300,6 +8540,8 @@ QCheckBox::indicator:hover {
     border-radius: 10px;
     padding: 0px 5px;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 </string>
@@ -8341,14 +8583,16 @@ QCheckBox::indicator:hover {
                   <property name="font">
                    <font>
                     <family>Cairo</family>
-                    <pointsize>10</pointsize>
+                    <pointsize>-1</pointsize>
                     <bold>true</bold>
                    </font>
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#loginErrorMessageLabel {
-	color: #d84f4f;
 	background-color: #2d2e36;
+	color: #d84f4f;
+    font-size: 13px;
+    font-family: Cairo;
 }</string>
                   </property>
                   <property name="text">
@@ -8378,7 +8622,7 @@ QCheckBox::indicator:hover {
 	background-color: #2d2e36;
 }</string>
                   </property>
-                  <layout class="QHBoxLayout" name="loginButtonHorizontalLayout">
+                  <layout class="QHBoxLayout" name="horizontalLayout_38">
                    <property name="spacing">
                     <number>0</number>
                    </property>
@@ -8405,7 +8649,7 @@ QCheckBox::indicator:hover {
                      <property name="font">
                       <font>
                        <family>Cairo</family>
-                       <pointsize>12</pointsize>
+                       <pointsize>-1</pointsize>
                        <bold>true</bold>
                       </font>
                      </property>
@@ -8418,10 +8662,12 @@ QCheckBox::indicator:hover {
                      <property name="styleSheet">
                       <string notr="true">#loginPushButton  {
     background-color: #4e4f5a;
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                      
-    color: #f3f3f3;       
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 5px;
+    color: #f3f3f3;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #loginPushButton:hover {
@@ -8465,7 +8711,7 @@ QCheckBox::indicator:hover {
                   <property name="font">
                    <font>
                     <family>Cairo</family>
-                    <pointsize>12</pointsize>
+                    <pointsize>-1</pointsize>
                     <bold>false</bold>
                    </font>
                   </property>
@@ -8477,8 +8723,10 @@ QCheckBox::indicator:hover {
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#moveToRegisterLabel {
-	color: #6ba6fd;
 	background-color: #2d2e36;
+	color: #6ba6fd;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #moveToRegisterLabel:hover {
@@ -8517,7 +8765,7 @@ QCheckBox::indicator:hover {
                   <property name="font">
                    <font>
                     <family>Cairo</family>
-                    <pointsize>12</pointsize>
+                    <pointsize>-1</pointsize>
                     <bold>false</bold>
                    </font>
                   </property>
@@ -8529,8 +8777,10 @@ QCheckBox::indicator:hover {
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#moveToForgotPasswordLabel {
-	color: #6ba6fd;
 	background-color: #2d2e36;
+	color: #6ba6fd;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #moveToForgotPasswordLabel:hover {
@@ -8581,7 +8831,7 @@ QCheckBox::indicator:hover {
             <property name="frameShadow">
              <enum>QFrame::Shadow::Raised</enum>
             </property>
-            <layout class="QGridLayout" name="gridLayout_7">
+            <layout class="QGridLayout" name="gridLayout_8">
              <property name="leftMargin">
               <number>0</number>
              </property>
@@ -8617,7 +8867,7 @@ QCheckBox::indicator:hover {
 	border: none;
 }</string>
                </property>
-               <layout class="QVBoxLayout" name="verticalLayout_21">
+               <layout class="QVBoxLayout" name="verticalLayout_32">
                 <property name="spacing">
                  <number>5</number>
                 </property>
@@ -8650,14 +8900,16 @@ QCheckBox::indicator:hover {
                   <property name="font">
                    <font>
                     <family>Cairo</family>
-                    <pointsize>20</pointsize>
+                    <pointsize>-1</pointsize>
                     <bold>true</bold>
                    </font>
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#registerLabel {
+	background-color: #2d2e36;
 	color: #f3f3f3;
-	background-color: #2D2E36;
+    font-size: 27px;
+    font-family: Cairo;
 }</string>
                   </property>
                   <property name="text">
@@ -8691,7 +8943,7 @@ QCheckBox::indicator:hover {
 	border: none;
 }</string>
                   </property>
-                  <layout class="QVBoxLayout" name="verticalLayout_37">
+                  <layout class="QVBoxLayout" name="verticalLayout_33">
                    <property name="spacing">
                     <number>5</number>
                    </property>
@@ -8736,7 +8988,7 @@ QCheckBox::indicator:hover {
                      <property name="font">
                       <font>
                        <family>Cairo</family>
-                       <pointsize>12</pointsize>
+                       <pointsize>-1</pointsize>
                       </font>
                      </property>
                      <property name="toolTip">
@@ -8749,6 +9001,8 @@ QCheckBox::indicator:hover {
     border-radius: 10px; 
     padding: 0px 5px;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
 }</string>
                      </property>
                      <property name="text">
@@ -8788,7 +9042,7 @@ QCheckBox::indicator:hover {
                      <property name="font">
                       <font>
                        <family>Cairo</family>
-                       <pointsize>12</pointsize>
+                       <pointsize>-1</pointsize>
                       </font>
                      </property>
                      <property name="toolTip">
@@ -8801,6 +9055,8 @@ QCheckBox::indicator:hover {
     border-radius: 10px; 
     padding: 0px 5px;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
 }</string>
                      </property>
                      <property name="text">
@@ -8840,7 +9096,7 @@ QCheckBox::indicator:hover {
                      <property name="font">
                       <font>
                        <family>Cairo</family>
-                       <pointsize>12</pointsize>
+                       <pointsize>-1</pointsize>
                       </font>
                      </property>
                      <property name="toolTip">
@@ -8856,6 +9112,8 @@ QCheckBox::indicator:hover {
     border-radius: 10px; 
     padding: 0px 5px;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 </string>
@@ -8900,7 +9158,7 @@ QCheckBox::indicator:hover {
                      <property name="font">
                       <font>
                        <family>Cairo</family>
-                       <pointsize>12</pointsize>
+                       <pointsize>-1</pointsize>
                       </font>
                      </property>
                      <property name="toolTip">
@@ -8916,6 +9174,8 @@ QCheckBox::indicator:hover {
     border-radius: 10px; 
     padding: 0px 5px;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
 }
 </string>
                      </property>
@@ -8956,14 +9216,16 @@ QCheckBox::indicator:hover {
                   <property name="font">
                    <font>
                     <family>Cairo</family>
-                    <pointsize>10</pointsize>
+                    <pointsize>-1</pointsize>
                     <bold>true</bold>
                    </font>
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#registerErrorMessageLabel {
-	color: #d84f4f;
 	background-color: #2d2e36;
+	color: #d84f4f;
+    font-size: 13px;
+    font-family: Cairo;
 }</string>
                   </property>
                   <property name="text">
@@ -8993,7 +9255,7 @@ QCheckBox::indicator:hover {
 	background-color: #2d2e36;
 }</string>
                   </property>
-                  <layout class="QHBoxLayout" name="registerButtonHorizontalLayout">
+                  <layout class="QHBoxLayout" name="horizontalLayout_39">
                    <property name="spacing">
                     <number>0</number>
                    </property>
@@ -9020,7 +9282,7 @@ QCheckBox::indicator:hover {
                      <property name="font">
                       <font>
                        <family>Cairo</family>
-                       <pointsize>12</pointsize>
+                       <pointsize>-1</pointsize>
                        <bold>true</bold>
                       </font>
                      </property>
@@ -9033,10 +9295,12 @@ QCheckBox::indicator:hover {
                      <property name="styleSheet">
                       <string notr="true">#registerPushButton  {
     background-color: #4e4f5a;
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                     
-    color: #f3f3f3;       
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 5px;
+    color: #f3f3f3;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #registerPushButton:hover {
@@ -9080,7 +9344,7 @@ QCheckBox::indicator:hover {
                   <property name="font">
                    <font>
                     <family>Cairo</family>
-                    <pointsize>12</pointsize>
+                    <pointsize>-1</pointsize>
                     <bold>false</bold>
                    </font>
                   </property>
@@ -9092,8 +9356,10 @@ QCheckBox::indicator:hover {
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#moveToLoginLabel {
-	color: #6ba6fd;
 	background-color: #2d2e36;
+	color: #6ba6fd;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #moveToLoginLabel:hover {
@@ -9132,7 +9398,7 @@ QCheckBox::indicator:hover {
             <property name="frameShadow">
              <enum>QFrame::Shadow::Raised</enum>
             </property>
-            <layout class="QGridLayout" name="gridLayout_8">
+            <layout class="QGridLayout" name="gridLayout_9">
              <property name="leftMargin">
               <number>0</number>
              </property>
@@ -9183,7 +9449,7 @@ QCheckBox::indicator:hover {
                <property name="frameShape">
                 <enum>QFrame::Shape::StyledPanel</enum>
                </property>
-               <layout class="QVBoxLayout" name="verticalLayout_28">
+               <layout class="QVBoxLayout" name="verticalLayout_34">
                 <property name="spacing">
                  <number>5</number>
                 </property>
@@ -9216,14 +9482,16 @@ QCheckBox::indicator:hover {
                   <property name="font">
                    <font>
                     <family>Cairo</family>
-                    <pointsize>20</pointsize>
+                    <pointsize>-1</pointsize>
                     <bold>true</bold>
                    </font>
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#resetPasswordLabel {
-	color: #f3f3f3;
 	background-color: #2d2e36;
+	color: #f3f3f3;
+    font-size: 27px;
+    font-family: Cairo;
 }</string>
                   </property>
                   <property name="text">
@@ -9260,7 +9528,7 @@ QCheckBox::indicator:hover {
                   <property name="font">
                    <font>
                     <family>Cairo</family>
-                    <pointsize>12</pointsize>
+                    <pointsize>-1</pointsize>
                    </font>
                   </property>
                   <property name="toolTip">
@@ -9273,6 +9541,8 @@ QCheckBox::indicator:hover {
     border-radius: 10px; 
     padding: 0px 5px;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
 }</string>
                   </property>
                   <property name="text">
@@ -9306,14 +9576,16 @@ QCheckBox::indicator:hover {
                   <property name="font">
                    <font>
                     <family>Cairo</family>
-                    <pointsize>10</pointsize>
+                    <pointsize>-1</pointsize>
                     <bold>true</bold>
                    </font>
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#resetPasswordEmailErrorMessageLabel {
-	color: #d84f4f;
 	background-color: #2d2e36;
+	color: #d84f4f;
+    font-size: 13px;
+    font-family: Cairo;
 }</string>
                   </property>
                   <property name="text">
@@ -9343,7 +9615,7 @@ QCheckBox::indicator:hover {
 	background-color: #2d2e36;
 }</string>
                   </property>
-                  <layout class="QHBoxLayout" name="sendCodeButtonHorizontalLayout">
+                  <layout class="QHBoxLayout" name="horizontalLayout_40">
                    <property name="spacing">
                     <number>0</number>
                    </property>
@@ -9370,7 +9642,7 @@ QCheckBox::indicator:hover {
                      <property name="font">
                       <font>
                        <family>Cairo</family>
-                       <pointsize>12</pointsize>
+                       <pointsize>-1</pointsize>
                        <bold>true</bold>
                       </font>
                      </property>
@@ -9382,11 +9654,13 @@ QCheckBox::indicator:hover {
                      </property>
                      <property name="styleSheet">
                       <string notr="true">#sendCodePushButton  {
-    background-color: #4e4f5a; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                      
-    color: #f3f3f3;       
+    background-color: #4e4f5a;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 5px;
+    color: #f3f3f3;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #sendCodePushButton:hover {
@@ -9430,7 +9704,7 @@ QCheckBox::indicator:hover {
                   <property name="font">
                    <font>
                     <family>Cairo</family>
-                    <pointsize>12</pointsize>
+                    <pointsize>-1</pointsize>
                     <bold>false</bold>
                    </font>
                   </property>
@@ -9444,6 +9718,8 @@ QCheckBox::indicator:hover {
     border-radius: 10px; 
     padding: 0px 5px;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 </string>
@@ -9482,14 +9758,16 @@ QCheckBox::indicator:hover {
                   <property name="font">
                    <font>
                     <family>Cairo</family>
-                    <pointsize>10</pointsize>
+                    <pointsize>-1</pointsize>
                     <bold>true</bold>
                    </font>
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#resetPasswordCodeErrorMessageLabel {
-	color: #d84f4f;
 	background-color: #2d2e36;
+	color: #d84f4f;
+    font-size: 13px;
+    font-family: Cairo;
 }</string>
                   </property>
                   <property name="text">
@@ -9519,7 +9797,7 @@ QCheckBox::indicator:hover {
 	background-color: #2d2e36;
 }</string>
                   </property>
-                  <layout class="QHBoxLayout" name="verifyCodeButtonHorizontalLayout">
+                  <layout class="QHBoxLayout" name="horizontalLayout_41">
                    <property name="spacing">
                     <number>0</number>
                    </property>
@@ -9546,7 +9824,7 @@ QCheckBox::indicator:hover {
                      <property name="font">
                       <font>
                        <family>Cairo</family>
-                       <pointsize>12</pointsize>
+                       <pointsize>-1</pointsize>
                        <bold>true</bold>
                       </font>
                      </property>
@@ -9558,11 +9836,13 @@ QCheckBox::indicator:hover {
                      </property>
                      <property name="styleSheet">
                       <string notr="true">#verifyCodePushButton  {
-    background-color: #4e4f5a; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                      
-    color: #f3f3f3;       
+    background-color: #4e4f5a;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 5px;
+    color: #f3f3f3;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #verifyCodePushButton:hover {
@@ -9606,7 +9886,7 @@ QCheckBox::indicator:hover {
                   <property name="font">
                    <font>
                     <family>Cairo</family>
-                    <pointsize>12</pointsize>
+                    <pointsize>-1</pointsize>
                     <bold>false</bold>
                    </font>
                   </property>
@@ -9618,8 +9898,10 @@ QCheckBox::indicator:hover {
                   </property>
                   <property name="styleSheet">
                    <string notr="true">#cancelResetPasswordProcessLabel {
-	color: #6ba6fd;
 	background-color: #2d2e36;
+	color: #6ba6fd;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #cancelResetPasswordProcessLabel:hover {
@@ -9642,7 +9924,7 @@ QCheckBox::indicator:hover {
            </widget>
           </item>
           <item>
-           <spacer name="verticalSpacer_13">
+           <spacer name="verticalSpacer_27">
             <property name="orientation">
              <enum>Qt::Orientation::Vertical</enum>
             </property>

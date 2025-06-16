@@ -178,11 +178,12 @@ class Ui_NetSpect(object):
         self.logoLabel.setMaximumSize(QSize(16777215, 16777215))
         font2 = QFont()
         font2.setFamilies([u"Days One"])
-        font2.setPointSize(26)
         self.logoLabel.setFont(font2)
         self.logoLabel.setStyleSheet(u"#logoLabel {\n"
 "	background-color: transparent;\n"
 "  	color: #f3f3f3;\n"
+"    font-size: 35px;\n"
+"    font-family: Days One;\n"
 "}")
 
         self.horizontalLayout.addWidget(self.logoLabel)
@@ -197,11 +198,12 @@ class Ui_NetSpect(object):
         self.welcomeLabel.setMaximumSize(QSize(300, 40))
         font3 = QFont()
         font3.setFamilies([u"Cairo"])
-        font3.setPointSize(14)
         self.welcomeLabel.setFont(font3)
         self.welcomeLabel.setStyleSheet(u"#welcomeLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo;\n"
 "}")
         self.welcomeLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.welcomeLabel.setWordWrap(False)
@@ -285,10 +287,10 @@ class Ui_NetSpect(object):
 "}\n"
 "\n"
 "")
-        self.horizontalLayout_23 = QHBoxLayout(self.menuIconHorizontalFrame)
-        self.horizontalLayout_23.setSpacing(0)
-        self.horizontalLayout_23.setObjectName(u"horizontalLayout_23")
-        self.horizontalLayout_23.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_2 = QHBoxLayout(self.menuIconHorizontalFrame)
+        self.horizontalLayout_2.setSpacing(0)
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.menuIcon = QLabel(self.menuIconHorizontalFrame)
         self.menuIcon.setObjectName(u"menuIcon")
         self.menuIcon.setMinimumSize(QSize(50, 50))
@@ -300,11 +302,11 @@ class Ui_NetSpect(object):
         self.menuIcon.setPixmap(QPixmap(u"Icons/BulletedMenuLight.png"))
         self.menuIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.horizontalLayout_23.addWidget(self.menuIcon)
+        self.horizontalLayout_2.addWidget(self.menuIcon)
 
-        self.horizontalSpacer_18 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_23.addItem(self.horizontalSpacer_18)
+        self.horizontalLayout_2.addItem(self.horizontalSpacer_2)
 
         self.closeMenuIcon = QLabel(self.menuIconHorizontalFrame)
         self.closeMenuIcon.setObjectName(u"closeMenuIcon")
@@ -317,7 +319,7 @@ class Ui_NetSpect(object):
         self.closeMenuIcon.setPixmap(QPixmap(u"Icons/BulletedMenuRotatedLight.png"))
         self.closeMenuIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.horizontalLayout_23.addWidget(self.closeMenuIcon)
+        self.horizontalLayout_2.addWidget(self.closeMenuIcon)
 
 
         self.verticalLayout.addWidget(self.menuIconHorizontalFrame)
@@ -328,10 +330,10 @@ class Ui_NetSpect(object):
         self.homePageIconHorizontalFrame.setStyleSheet(u"#homePageIconHorizontalFrame {\n"
 "	background-color: #2d2e36;\n"
 "}")
-        self.horizontalLayout_20 = QHBoxLayout(self.homePageIconHorizontalFrame)
-        self.horizontalLayout_20.setSpacing(22)
-        self.horizontalLayout_20.setObjectName(u"horizontalLayout_20")
-        self.horizontalLayout_20.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_3 = QHBoxLayout(self.homePageIconHorizontalFrame)
+        self.horizontalLayout_3.setSpacing(22)
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.homePageIcon = QLabel(self.homePageIconHorizontalFrame)
         self.homePageIcon.setObjectName(u"homePageIcon")
         self.homePageIcon.setMinimumSize(QSize(50, 50))
@@ -344,7 +346,7 @@ class Ui_NetSpect(object):
         self.homePageIcon.setPixmap(QPixmap(u"Icons/WorkstationLight.png"))
         self.homePageIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.horizontalLayout_20.addWidget(self.homePageIcon)
+        self.horizontalLayout_3.addWidget(self.homePageIcon)
 
         self.homePageLabel = QLabel(self.homePageIconHorizontalFrame)
         self.homePageLabel.setObjectName(u"homePageLabel")
@@ -352,22 +354,23 @@ class Ui_NetSpect(object):
         self.homePageLabel.setMaximumSize(QSize(16777215, 50))
         font4 = QFont()
         font4.setFamilies([u"Cairo"])
-        font4.setPointSize(16)
         font4.setBold(True)
         self.homePageLabel.setFont(font4)
         self.homePageLabel.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.homePageLabel.setStyleSheet(u"#homePageLabel {\n"
-"	color: #f3f3f3;\n"
 "	background-color: #2d2e36;\n"
+"	color: #f3f3f3;\n"
+"    font-size: 21px;\n"
+"    font-family: Cairo;\n"
 "}")
         self.homePageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.homePageLabel.setMargin(0)
 
-        self.horizontalLayout_20.addWidget(self.homePageLabel)
+        self.horizontalLayout_3.addWidget(self.homePageLabel)
 
-        self.horizontalSpacer_19 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_20.addItem(self.horizontalSpacer_19)
+        self.horizontalLayout_3.addItem(self.horizontalSpacer_3)
 
 
         self.verticalLayout.addWidget(self.homePageIconHorizontalFrame)
@@ -377,10 +380,10 @@ class Ui_NetSpect(object):
         self.analyticsIconHorizontalFrame.setStyleSheet(u"#analyticsIconHorizontalFrame {\n"
 "	background-color: #2d2e36;\n"
 "}")
-        self.horizontalLayout_35 = QHBoxLayout(self.analyticsIconHorizontalFrame)
-        self.horizontalLayout_35.setSpacing(32)
-        self.horizontalLayout_35.setObjectName(u"horizontalLayout_35")
-        self.horizontalLayout_35.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_4 = QHBoxLayout(self.analyticsIconHorizontalFrame)
+        self.horizontalLayout_4.setSpacing(32)
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.analyticsIcon = QLabel(self.analyticsIconHorizontalFrame)
         self.analyticsIcon.setObjectName(u"analyticsIcon")
         self.analyticsIcon.setMinimumSize(QSize(50, 50))
@@ -393,7 +396,7 @@ class Ui_NetSpect(object):
         self.analyticsIcon.setPixmap(QPixmap(u"Icons/AnalyticsLight.png"))
         self.analyticsIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.horizontalLayout_35.addWidget(self.analyticsIcon)
+        self.horizontalLayout_4.addWidget(self.analyticsIcon)
 
         self.analyticsLabel = QLabel(self.analyticsIconHorizontalFrame)
         self.analyticsLabel.setObjectName(u"analyticsLabel")
@@ -402,17 +405,19 @@ class Ui_NetSpect(object):
         self.analyticsLabel.setFont(font4)
         self.analyticsLabel.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.analyticsLabel.setStyleSheet(u"#analyticsLabel {\n"
-"	color: #f3f3f3;\n"
 "	background-color: #2d2e36;\n"
+"	color: #f3f3f3;\n"
+"    font-size: 21px;\n"
+"    font-family: Cairo;\n"
 "}")
         self.analyticsLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.analyticsLabel.setMargin(0)
 
-        self.horizontalLayout_35.addWidget(self.analyticsLabel)
+        self.horizontalLayout_4.addWidget(self.analyticsLabel)
 
-        self.horizontalSpacer_25 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_35.addItem(self.horizontalSpacer_25)
+        self.horizontalLayout_4.addItem(self.horizontalSpacer_4)
 
 
         self.verticalLayout.addWidget(self.analyticsIconHorizontalFrame)
@@ -423,10 +428,10 @@ class Ui_NetSpect(object):
         self.reportIconHorizontalFrame.setStyleSheet(u"#reportIconHorizontalFrame {\n"
 "	background-color: #2d2e36;\n"
 "}")
-        self.horizontalLayout_21 = QHBoxLayout(self.reportIconHorizontalFrame)
-        self.horizontalLayout_21.setSpacing(38)
-        self.horizontalLayout_21.setObjectName(u"horizontalLayout_21")
-        self.horizontalLayout_21.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_5 = QHBoxLayout(self.reportIconHorizontalFrame)
+        self.horizontalLayout_5.setSpacing(38)
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.horizontalLayout_5.setContentsMargins(0, 0, 0, 0)
         self.reportIcon = QLabel(self.reportIconHorizontalFrame)
         self.reportIcon.setObjectName(u"reportIcon")
         self.reportIcon.setMinimumSize(QSize(50, 50))
@@ -438,7 +443,7 @@ class Ui_NetSpect(object):
         self.reportIcon.setPixmap(QPixmap(u"Icons/DocumentLight.png"))
         self.reportIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.horizontalLayout_21.addWidget(self.reportIcon)
+        self.horizontalLayout_5.addWidget(self.reportIcon)
 
         self.reportLabel = QLabel(self.reportIconHorizontalFrame)
         self.reportLabel.setObjectName(u"reportLabel")
@@ -447,18 +452,20 @@ class Ui_NetSpect(object):
         self.reportLabel.setFont(font4)
         self.reportLabel.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.reportLabel.setStyleSheet(u"#reportLabel {\n"
-"	color: #f3f3f3;\n"
 "	background-color: #2d2e36;\n"
+"	color: #f3f3f3;\n"
+"    font-size: 21px;\n"
+"    font-family: Cairo;\n"
 "\n"
 "}")
         self.reportLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.reportLabel.setMargin(0)
 
-        self.horizontalLayout_21.addWidget(self.reportLabel)
+        self.horizontalLayout_5.addWidget(self.reportLabel)
 
-        self.horizontalSpacer_20 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_21.addItem(self.horizontalSpacer_20)
+        self.horizontalLayout_5.addItem(self.horizontalSpacer_5)
 
 
         self.verticalLayout.addWidget(self.reportIconHorizontalFrame)
@@ -469,10 +476,10 @@ class Ui_NetSpect(object):
         self.infoIconHorizontalFrame.setStyleSheet(u"#infoIconHorizontalFrame {\n"
 "	background-color: #2d2e36;\n"
 "}")
-        self.horizontalLayout_22 = QHBoxLayout(self.infoIconHorizontalFrame)
-        self.horizontalLayout_22.setSpacing(22)
-        self.horizontalLayout_22.setObjectName(u"horizontalLayout_22")
-        self.horizontalLayout_22.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_6 = QHBoxLayout(self.infoIconHorizontalFrame)
+        self.horizontalLayout_6.setSpacing(22)
+        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
+        self.horizontalLayout_6.setContentsMargins(0, 0, 0, 0)
         self.infoIcon = QLabel(self.infoIconHorizontalFrame)
         self.infoIcon.setObjectName(u"infoIcon")
         self.infoIcon.setMinimumSize(QSize(50, 50))
@@ -485,7 +492,7 @@ class Ui_NetSpect(object):
         self.infoIcon.setPixmap(QPixmap(u"Icons/InfoLight.png"))
         self.infoIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.horizontalLayout_22.addWidget(self.infoIcon)
+        self.horizontalLayout_6.addWidget(self.infoIcon)
 
         self.infoLabel = QLabel(self.infoIconHorizontalFrame)
         self.infoLabel.setObjectName(u"infoLabel")
@@ -494,25 +501,27 @@ class Ui_NetSpect(object):
         self.infoLabel.setFont(font4)
         self.infoLabel.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.infoLabel.setStyleSheet(u"#infoLabel {\n"
-"	color: #f3f3f3;\n"
 "	background-color: #2d2e36;\n"
+"	color: #f3f3f3;\n"
+"    font-size: 21px;\n"
+"    font-family: Cairo;\n"
 "\n"
 "}")
         self.infoLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.infoLabel.setMargin(0)
 
-        self.horizontalLayout_22.addWidget(self.infoLabel)
+        self.horizontalLayout_6.addWidget(self.infoLabel)
 
-        self.horizontalSpacer_21 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_6 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_22.addItem(self.horizontalSpacer_21)
+        self.horizontalLayout_6.addItem(self.horizontalSpacer_6)
 
 
         self.verticalLayout.addWidget(self.infoIconHorizontalFrame)
 
-        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout.addItem(self.verticalSpacer_2)
+        self.verticalLayout.addItem(self.verticalSpacer)
 
 
         self.mainHorizontalFrame.addWidget(self.sideFrame)
@@ -531,10 +540,10 @@ class Ui_NetSpect(object):
         self.homepageFrame = QFrame(self.homePage)
         self.homepageFrame.setObjectName(u"homepageFrame")
         self.homepageFrame.setMinimumSize(QSize(0, 660))
-        self.horizontalLayout_2 = QHBoxLayout(self.homepageFrame)
-        self.horizontalLayout_2.setSpacing(10)
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.horizontalLayout_2.setContentsMargins(15, 10, 10, 10)
+        self.horizontalLayout_7 = QHBoxLayout(self.homepageFrame)
+        self.horizontalLayout_7.setSpacing(10)
+        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
+        self.horizontalLayout_7.setContentsMargins(15, 10, 10, 10)
         self.leftVerticalFrame = QFrame(self.homepageFrame)
         self.leftVerticalFrame.setObjectName(u"leftVerticalFrame")
         sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
@@ -543,10 +552,10 @@ class Ui_NetSpect(object):
         sizePolicy1.setHeightForWidth(self.leftVerticalFrame.sizePolicy().hasHeightForWidth())
         self.leftVerticalFrame.setSizePolicy(sizePolicy1)
         self.leftVerticalFrame.setMinimumSize(QSize(0, 620))
-        self.verticalLayout_3 = QVBoxLayout(self.leftVerticalFrame)
-        self.verticalLayout_3.setSpacing(10)
-        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_2 = QVBoxLayout(self.leftVerticalFrame)
+        self.verticalLayout_2.setSpacing(10)
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.startVerticalFrame = QFrame(self.leftVerticalFrame)
         self.startVerticalFrame.setObjectName(u"startVerticalFrame")
         self.startVerticalFrame.setMinimumSize(QSize(440, 260))
@@ -560,28 +569,27 @@ class Ui_NetSpect(object):
 "   border-color: black;	\n"
 "   padding: 4px;\n"
 "}")
-        self.verticalLayout_2 = QVBoxLayout(self.startVerticalFrame)
-        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_3 = QVBoxLayout(self.startVerticalFrame)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.initiateDefenceLabel = QLabel(self.startVerticalFrame)
         self.initiateDefenceLabel.setObjectName(u"initiateDefenceLabel")
         self.initiateDefenceLabel.setMinimumSize(QSize(200, 30))
         self.initiateDefenceLabel.setMaximumSize(QSize(16777215, 16777215))
-        font5 = QFont()
-        font5.setFamilies([u"Cairo"])
-        font5.setPointSize(18)
-        font5.setBold(True)
-        self.initiateDefenceLabel.setFont(font5)
+        self.initiateDefenceLabel.setFont(font4)
         self.initiateDefenceLabel.setStyleSheet(u"#initiateDefenceLabel {\n"
 "	background-color: transparent;\n"
 "	color: black;\n"
+"    font-size: 24px;\n"
+"    font-family: Cairo;\n"
+"    font-weight: bold;\n"
 "	padding-top: 5px;\n"
 "	padding-left: 5px;\n"
 "}")
         self.initiateDefenceLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.initiateDefenceLabel.setWordWrap(False)
 
-        self.verticalLayout_2.addWidget(self.initiateDefenceLabel)
+        self.verticalLayout_3.addWidget(self.initiateDefenceLabel)
 
         self.startHorizontalFrame = QFrame(self.startVerticalFrame)
         self.startHorizontalFrame.setObjectName(u"startHorizontalFrame")
@@ -589,34 +597,29 @@ class Ui_NetSpect(object):
 "   background-color: transparent;\n"
 "   color: black;\n"
 "}")
-        self.horizontalLayout_3 = QHBoxLayout(self.startHorizontalFrame)
-        self.horizontalLayout_3.setSpacing(15)
-        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.horizontalLayout_3.setContentsMargins(6, -1, 6, 10)
-        self.horizontalSpacer_16 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalLayout_8 = QHBoxLayout(self.startHorizontalFrame)
+        self.horizontalLayout_8.setSpacing(15)
+        self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
+        self.horizontalLayout_8.setContentsMargins(6, -1, 6, 10)
+        self.horizontalSpacer_7 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_3.addItem(self.horizontalSpacer_16)
+        self.horizontalLayout_8.addItem(self.horizontalSpacer_7)
 
         self.startStopPushButton = QPushButton(self.startHorizontalFrame)
         self.startStopPushButton.setObjectName(u"startStopPushButton")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.startStopPushButton.sizePolicy().hasHeightForWidth())
-        self.startStopPushButton.setSizePolicy(sizePolicy2)
+        sizePolicy.setHeightForWidth(self.startStopPushButton.sizePolicy().hasHeightForWidth())
+        self.startStopPushButton.setSizePolicy(sizePolicy)
         self.startStopPushButton.setMinimumSize(QSize(120, 120))
         self.startStopPushButton.setMaximumSize(QSize(120, 120))
-        font6 = QFont()
-        font6.setFamilies([u"Cairo"])
-        font6.setPointSize(14)
-        font6.setBold(True)
-        self.startStopPushButton.setFont(font6)
+        self.startStopPushButton.setFont(font4)
         self.startStopPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.startStopPushButton.setStyleSheet(u"#startStopPushButton {\n"
-"    border-radius: 60px;\n"
 "    background-color: #3a8e32;\n"
 "    border: 1px solid black;\n"
+"    border-radius: 60px;\n"
 "    color: black;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo;\n"
 "    font-weight: bold;\n"
 "}\n"
 "\n"
@@ -628,7 +631,11 @@ class Ui_NetSpect(object):
 "     background-color: #2e7128;\n"
 "}")
 
-        self.horizontalLayout_3.addWidget(self.startStopPushButton)
+        self.horizontalLayout_8.addWidget(self.startStopPushButton)
+
+        self.horizontalSpacer_8 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_8.addItem(self.horizontalSpacer_8)
 
         self.startInfoVerticalFrame = QFrame(self.startHorizontalFrame)
         self.startInfoVerticalFrame.setObjectName(u"startInfoVerticalFrame")
@@ -636,13 +643,13 @@ class Ui_NetSpect(object):
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
 "}")
-        self.verticalLayout_5 = QVBoxLayout(self.startInfoVerticalFrame)
-        self.verticalLayout_5.setSpacing(20)
-        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
-        self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalLayout_4 = QVBoxLayout(self.startInfoVerticalFrame)
+        self.verticalLayout_4.setSpacing(20)
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_5.addItem(self.verticalSpacer)
+        self.verticalLayout_4.addItem(self.verticalSpacer_2)
 
         self.networlInterfaceHorizontalFrame = QFrame(self.startInfoVerticalFrame)
         self.networlInterfaceHorizontalFrame.setObjectName(u"networlInterfaceHorizontalFrame")
@@ -653,37 +660,38 @@ class Ui_NetSpect(object):
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
 "}")
-        self.horizontalLayout_19 = QHBoxLayout(self.networlInterfaceHorizontalFrame)
-        self.horizontalLayout_19.setSpacing(6)
-        self.horizontalLayout_19.setObjectName(u"horizontalLayout_19")
-        self.horizontalLayout_19.setContentsMargins(0, 0, 0, 4)
+        self.horizontalLayout_9 = QHBoxLayout(self.networlInterfaceHorizontalFrame)
+        self.horizontalLayout_9.setSpacing(6)
+        self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
+        self.horizontalLayout_9.setContentsMargins(0, 0, 0, 4)
         self.networkInterfaceLabel = QLabel(self.networlInterfaceHorizontalFrame)
         self.networkInterfaceLabel.setObjectName(u"networkInterfaceLabel")
         self.networkInterfaceLabel.setMinimumSize(QSize(160, 30))
         self.networkInterfaceLabel.setMaximumSize(QSize(16777215, 30))
-        font7 = QFont()
-        font7.setFamilies([u"Cairo"])
-        font7.setPointSize(14)
-        font7.setBold(False)
-        self.networkInterfaceLabel.setFont(font7)
+        font5 = QFont()
+        font5.setFamilies([u"Cairo"])
+        font5.setBold(False)
+        self.networkInterfaceLabel.setFont(font5)
         self.networkInterfaceLabel.setStyleSheet(u"#networkInterfaceLabel {\n"
 "	background-color: transparent;\n"
 "	color: black;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo;\n"
 "}")
         self.networkInterfaceLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.networkInterfaceLabel.setWordWrap(False)
         self.networkInterfaceLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.horizontalLayout_19.addWidget(self.networkInterfaceLabel)
+        self.horizontalLayout_9.addWidget(self.networkInterfaceLabel)
 
         self.networkInterfaceComboBoxFrame = QFrame(self.networlInterfaceHorizontalFrame)
         self.networkInterfaceComboBoxFrame.setObjectName(u"networkInterfaceComboBoxFrame")
         self.networkInterfaceComboBoxFrame.setMinimumSize(QSize(120, 32))
         self.networkInterfaceComboBoxFrame.setMaximumSize(QSize(120, 32))
-        font8 = QFont()
-        font8.setFamilies([u"Cairo"])
-        font8.setPointSize(12)
-        self.networkInterfaceComboBoxFrame.setFont(font8)
+        font6 = QFont()
+        font6.setFamilies([u"Cairo"])
+        font6.setPointSize(12)
+        self.networkInterfaceComboBoxFrame.setFont(font6)
         self.networkInterfaceComboBoxFrame.setStyleSheet(u"#networkInterfaceComboBoxFrame {\n"
 "    background-color: #f3f3f3;\n"
 "    color: black;\n"
@@ -699,7 +707,7 @@ class Ui_NetSpect(object):
         self.networkInterfaceComboBoxFrameArrow.setGeometry(QRect(95, 0, 24, 32))
         self.networkInterfaceComboBoxFrameArrow.setMinimumSize(QSize(24, 32))
         self.networkInterfaceComboBoxFrameArrow.setMaximumSize(QSize(22, 32))
-        self.networkInterfaceComboBoxFrameArrow.setFont(font8)
+        self.networkInterfaceComboBoxFrameArrow.setFont(font6)
         self.networkInterfaceComboBoxFrameArrow.setStyleSheet(u"#networkInterfaceComboBoxFrameArrow {\n"
 "    background-color: lightgray;\n"
 "    color: black;\n"
@@ -718,11 +726,13 @@ class Ui_NetSpect(object):
         self.networkInterfaceComboBox.setGeometry(QRect(0, 0, 120, 32))
         self.networkInterfaceComboBox.setMinimumSize(QSize(120, 32))
         self.networkInterfaceComboBox.setMaximumSize(QSize(120, 32))
-        self.networkInterfaceComboBox.setFont(font8)
+        self.networkInterfaceComboBox.setFont(font3)
         self.networkInterfaceComboBox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.networkInterfaceComboBox.setStyleSheet(u"#networkInterfaceComboBox  {\n"
 "    background-color: transparent;\n"
 "    color: black;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "    border: 2px outset transparent;\n"
 "    border-radius: 10px;\n"
 "    padding: 4px;\n"
@@ -756,14 +766,14 @@ class Ui_NetSpect(object):
 "    outline: 0px;\n"
 "}")
 
-        self.horizontalLayout_19.addWidget(self.networkInterfaceComboBoxFrame)
+        self.horizontalLayout_9.addWidget(self.networkInterfaceComboBoxFrame)
 
-        self.horizontalSpacer_13 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_9 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_19.addItem(self.horizontalSpacer_13)
+        self.horizontalLayout_9.addItem(self.horizontalSpacer_9)
 
 
-        self.verticalLayout_5.addWidget(self.networlInterfaceHorizontalFrame)
+        self.verticalLayout_4.addWidget(self.networlInterfaceHorizontalFrame)
 
         self.runningTimeHorizontalFrame = QFrame(self.startInfoVerticalFrame)
         self.runningTimeHorizontalFrame.setObjectName(u"runningTimeHorizontalFrame")
@@ -774,46 +784,50 @@ class Ui_NetSpect(object):
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
 "}")
-        self.horizontalLayout_4 = QHBoxLayout(self.runningTimeHorizontalFrame)
-        self.horizontalLayout_4.setSpacing(0)
-        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.horizontalLayout_4.setContentsMargins(0, 0, 0, 3)
+        self.horizontalLayout_10 = QHBoxLayout(self.runningTimeHorizontalFrame)
+        self.horizontalLayout_10.setSpacing(0)
+        self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
+        self.horizontalLayout_10.setContentsMargins(0, 0, 0, 3)
         self.runningTimeLabel = QLabel(self.runningTimeHorizontalFrame)
         self.runningTimeLabel.setObjectName(u"runningTimeLabel")
         self.runningTimeLabel.setMinimumSize(QSize(135, 30))
         self.runningTimeLabel.setMaximumSize(QSize(16777215, 30))
-        self.runningTimeLabel.setFont(font7)
+        self.runningTimeLabel.setFont(font5)
         self.runningTimeLabel.setStyleSheet(u"#runningTimeLabel {\n"
 "	background-color: transparent;\n"
 "	color: black;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo;\n"
 "}")
         self.runningTimeLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.runningTimeLabel.setWordWrap(False)
         self.runningTimeLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.horizontalLayout_4.addWidget(self.runningTimeLabel)
+        self.horizontalLayout_10.addWidget(self.runningTimeLabel)
 
         self.runningTimeCounter = QLabel(self.runningTimeHorizontalFrame)
         self.runningTimeCounter.setObjectName(u"runningTimeCounter")
         self.runningTimeCounter.setMinimumSize(QSize(120, 30))
         self.runningTimeCounter.setMaximumSize(QSize(120, 30))
-        self.runningTimeCounter.setFont(font7)
+        self.runningTimeCounter.setFont(font5)
         self.runningTimeCounter.setStyleSheet(u"#runningTimeCounter {\n"
 "	background-color: transparent;\n"
 "	color: black;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo;\n"
 "}")
         self.runningTimeCounter.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.runningTimeCounter.setWordWrap(False)
         self.runningTimeCounter.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.horizontalLayout_4.addWidget(self.runningTimeCounter)
+        self.horizontalLayout_10.addWidget(self.runningTimeCounter)
 
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_10 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_4.addItem(self.horizontalSpacer_2)
+        self.horizontalLayout_10.addItem(self.horizontalSpacer_10)
 
 
-        self.verticalLayout_5.addWidget(self.runningTimeHorizontalFrame)
+        self.verticalLayout_4.addWidget(self.runningTimeHorizontalFrame)
 
         self.numberOfDetectionsHorizontalFrame = QFrame(self.startInfoVerticalFrame)
         self.numberOfDetectionsHorizontalFrame.setObjectName(u"numberOfDetectionsHorizontalFrame")
@@ -823,66 +837,71 @@ class Ui_NetSpect(object):
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
 "}")
-        self.horizontalLayout_5 = QHBoxLayout(self.numberOfDetectionsHorizontalFrame)
-        self.horizontalLayout_5.setSpacing(0)
-        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
-        self.horizontalLayout_5.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_11 = QHBoxLayout(self.numberOfDetectionsHorizontalFrame)
+        self.horizontalLayout_11.setSpacing(0)
+        self.horizontalLayout_11.setObjectName(u"horizontalLayout_11")
+        self.horizontalLayout_11.setContentsMargins(0, 0, 0, 0)
         self.numberOfDetectionsLabel = QLabel(self.numberOfDetectionsHorizontalFrame)
         self.numberOfDetectionsLabel.setObjectName(u"numberOfDetectionsLabel")
         self.numberOfDetectionsLabel.setMinimumSize(QSize(190, 30))
         self.numberOfDetectionsLabel.setMaximumSize(QSize(16777215, 30))
-        self.numberOfDetectionsLabel.setFont(font7)
+        self.numberOfDetectionsLabel.setFont(font5)
         self.numberOfDetectionsLabel.setStyleSheet(u"#numberOfDetectionsLabel {\n"
 "	background-color: transparent;\n"
 "	color: black;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo;\n"
 "}")
         self.numberOfDetectionsLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.numberOfDetectionsLabel.setWordWrap(False)
         self.numberOfDetectionsLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.horizontalLayout_5.addWidget(self.numberOfDetectionsLabel)
+        self.horizontalLayout_11.addWidget(self.numberOfDetectionsLabel)
 
         self.numberOfDetectionsCounter = QLabel(self.numberOfDetectionsHorizontalFrame)
         self.numberOfDetectionsCounter.setObjectName(u"numberOfDetectionsCounter")
         self.numberOfDetectionsCounter.setMinimumSize(QSize(60, 30))
         self.numberOfDetectionsCounter.setMaximumSize(QSize(60, 30))
-        self.numberOfDetectionsCounter.setFont(font7)
+        self.numberOfDetectionsCounter.setFont(font5)
         self.numberOfDetectionsCounter.setStyleSheet(u"#numberOfDetectionsCounter {\n"
 "	background-color: transparent;\n"
 "	color: black;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo;\n"
 "}")
         self.numberOfDetectionsCounter.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.numberOfDetectionsCounter.setWordWrap(False)
         self.numberOfDetectionsCounter.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.horizontalLayout_5.addWidget(self.numberOfDetectionsCounter)
+        self.horizontalLayout_11.addWidget(self.numberOfDetectionsCounter)
 
-        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_11 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_5.addItem(self.horizontalSpacer_3)
+        self.horizontalLayout_11.addItem(self.horizontalSpacer_11)
 
 
-        self.verticalLayout_5.addWidget(self.numberOfDetectionsHorizontalFrame)
+        self.verticalLayout_4.addWidget(self.numberOfDetectionsHorizontalFrame)
 
         self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_5.addItem(self.verticalSpacer_3)
+        self.verticalLayout_4.addItem(self.verticalSpacer_3)
 
 
-        self.horizontalLayout_3.addWidget(self.startInfoVerticalFrame)
+        self.horizontalLayout_8.addWidget(self.startInfoVerticalFrame)
 
-        self.horizontalSpacer_17 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_12 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_3.addItem(self.horizontalSpacer_17)
-
-
-        self.verticalLayout_2.addWidget(self.startHorizontalFrame)
+        self.horizontalLayout_8.addItem(self.horizontalSpacer_12)
 
 
-        self.verticalLayout_3.addWidget(self.startVerticalFrame)
+        self.verticalLayout_3.addWidget(self.startHorizontalFrame)
+
+
+        self.verticalLayout_2.addWidget(self.startVerticalFrame)
 
         self.chartVerticalFrame = QFrame(self.leftVerticalFrame)
         self.chartVerticalFrame.setObjectName(u"chartVerticalFrame")
+        self.chartVerticalFrame.setMinimumSize(QSize(0, 0))
         self.chartVerticalFrame.setStyleSheet(u"#chartVerticalFrame {\n"
 "   background-color: rgba(204, 204, 204, 0.6);\n"
 "   color: black;\n"
@@ -896,18 +915,18 @@ class Ui_NetSpect(object):
         self.chartVerticalFrame.setFrameShape(QFrame.Shape.StyledPanel)
         self.chartVerticalFrame.setFrameShadow(QFrame.Shadow.Raised)
 
-        self.verticalLayout_3.addWidget(self.chartVerticalFrame)
+        self.verticalLayout_2.addWidget(self.chartVerticalFrame)
 
 
-        self.horizontalLayout_2.addWidget(self.leftVerticalFrame)
+        self.horizontalLayout_7.addWidget(self.leftVerticalFrame)
 
         self.rightVerticalFrame = QFrame(self.homepageFrame)
         self.rightVerticalFrame.setObjectName(u"rightVerticalFrame")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
-        sizePolicy3.setHorizontalStretch(2)
-        sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.rightVerticalFrame.sizePolicy().hasHeightForWidth())
-        self.rightVerticalFrame.setSizePolicy(sizePolicy3)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        sizePolicy2.setHorizontalStretch(2)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.rightVerticalFrame.sizePolicy().hasHeightForWidth())
+        self.rightVerticalFrame.setSizePolicy(sizePolicy2)
         self.rightVerticalFrame.setMinimumSize(QSize(0, 0))
         self.rightVerticalFrame.setStyleSheet(u"#rightVerticalFrame {\n"
 "   background-color: rgba(204, 204, 204, 0.6);\n"
@@ -917,26 +936,29 @@ class Ui_NetSpect(object):
 "   border-width: 2px;\n"
 "   border-color: black;	\n"
 "}")
-        self.verticalLayout_4 = QVBoxLayout(self.rightVerticalFrame)
-        self.verticalLayout_4.setSpacing(20)
-        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.verticalLayout_4.setSizeConstraint(QLayout.SizeConstraint.SetNoConstraint)
-        self.verticalLayout_4.setContentsMargins(1, 5, 1, 7)
+        self.verticalLayout_5 = QVBoxLayout(self.rightVerticalFrame)
+        self.verticalLayout_5.setSpacing(20)
+        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
+        self.verticalLayout_5.setSizeConstraint(QLayout.SizeConstraint.SetNoConstraint)
+        self.verticalLayout_5.setContentsMargins(1, 5, 1, 7)
         self.historyLabel = QLabel(self.rightVerticalFrame)
         self.historyLabel.setObjectName(u"historyLabel")
         self.historyLabel.setMinimumSize(QSize(165, 30))
         self.historyLabel.setMaximumSize(QSize(16777215, 34))
-        self.historyLabel.setFont(font5)
+        self.historyLabel.setFont(font4)
         self.historyLabel.setStyleSheet(u"#historyLabel {\n"
 "	background-color: transparent;\n"
 "	color: black;\n"
+"    font-size: 24px;\n"
+"    font-family: Cairo;\n"
+"    font-weight: bold;\n"
 "	padding-top: 5px;\n"
 "	padding-left: 5px;\n"
 "}")
         self.historyLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.historyLabel.setWordWrap(False)
 
-        self.verticalLayout_4.addWidget(self.historyLabel)
+        self.verticalLayout_5.addWidget(self.historyLabel)
 
         self.historyTableWidget = QTableWidget(self.rightVerticalFrame)
         if (self.historyTableWidget.columnCount() < 6):
@@ -957,10 +979,7 @@ class Ui_NetSpect(object):
         sizePolicy.setHeightForWidth(self.historyTableWidget.sizePolicy().hasHeightForWidth())
         self.historyTableWidget.setSizePolicy(sizePolicy)
         self.historyTableWidget.setMinimumSize(QSize(550, 570))
-        font9 = QFont()
-        font9.setFamilies([u"Cairo"])
-        font9.setPointSize(10)
-        self.historyTableWidget.setFont(font9)
+        self.historyTableWidget.setFont(font3)
         self.historyTableWidget.setMouseTracking(True)
         self.historyTableWidget.setTabletTracking(True)
         self.historyTableWidget.setToolTipDuration(-1)
@@ -968,6 +987,8 @@ class Ui_NetSpect(object):
 "    border-radius: 8px;\n"
 "    background-color: transparent;\n"
 "    color: black;\n"
+"    font-size: 13px;\n"
+"    font-family: Cairo;\n"
 "    gridline-color: black;\n"
 "    border: none;\n"
 "}\n"
@@ -1003,9 +1024,9 @@ class Ui_NetSpect(object):
 "}\n"
 "\n"
 "#historyTableWidget QScrollBar:vertical, #historyTableWidget QScrollBar:horizontal {\n"
-"    background-color: rgb(250, 250, 250);\n"
-"    border: 1px "
-                        "solid rgb(153, 153, 153);\n"
+"    backg"
+                        "round-color: rgb(250, 250, 250);\n"
+"    border: 1px solid rgb(153, 153, 153);\n"
 "    width: 10px;\n"
 "    height: 10px; \n"
 "    margin: 0px 0px 0px 0px;\n"
@@ -1050,10 +1071,10 @@ class Ui_NetSpect(object):
         self.historyTableWidget.verticalHeader().setProperty(u"showSortIndicator", False)
         self.historyTableWidget.verticalHeader().setStretchLastSection(False)
 
-        self.verticalLayout_4.addWidget(self.historyTableWidget)
+        self.verticalLayout_5.addWidget(self.historyTableWidget)
 
 
-        self.horizontalLayout_2.addWidget(self.rightVerticalFrame)
+        self.horizontalLayout_7.addWidget(self.rightVerticalFrame)
 
         self.rightVerticalFrame.raise_()
         self.leftVerticalFrame.raise_()
@@ -1063,45 +1084,48 @@ class Ui_NetSpect(object):
         self.stackedWidget.addWidget(self.homePage)
         self.analyticsPage = QWidget()
         self.analyticsPage.setObjectName(u"analyticsPage")
-        self.gridLayout_9 = QGridLayout(self.analyticsPage)
-        self.gridLayout_9.setSpacing(0)
-        self.gridLayout_9.setObjectName(u"gridLayout_9")
-        self.gridLayout_9.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_3 = QGridLayout(self.analyticsPage)
+        self.gridLayout_3.setSpacing(0)
+        self.gridLayout_3.setObjectName(u"gridLayout_3")
+        self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
         self.analyticsHorizontalFrame = QFrame(self.analyticsPage)
         self.analyticsHorizontalFrame.setObjectName(u"analyticsHorizontalFrame")
         self.analyticsHorizontalFrame.setMinimumSize(QSize(0, 660))
-        self.analyticsHorizontalFrame.setFont(font8)
-        self.verticalLayout_30 = QVBoxLayout(self.analyticsHorizontalFrame)
-        self.verticalLayout_30.setSpacing(0)
-        self.verticalLayout_30.setObjectName(u"verticalLayout_30")
-        self.verticalLayout_30.setContentsMargins(0, 0, 0, 0)
+        self.analyticsHorizontalFrame.setFont(font6)
+        self.verticalLayout_6 = QVBoxLayout(self.analyticsHorizontalFrame)
+        self.verticalLayout_6.setSpacing(0)
+        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
+        self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
         self.analyticsYearHorizontalFrame = QFrame(self.analyticsHorizontalFrame)
         self.analyticsYearHorizontalFrame.setObjectName(u"analyticsYearHorizontalFrame")
         self.analyticsYearHorizontalFrame.setMinimumSize(QSize(0, 45))
         self.analyticsYearHorizontalFrame.setMaximumSize(QSize(16777215, 45))
-        self.horizontalLayout_33 = QHBoxLayout(self.analyticsYearHorizontalFrame)
-        self.horizontalLayout_33.setSpacing(5)
-        self.horizontalLayout_33.setObjectName(u"horizontalLayout_33")
-        self.horizontalLayout_33.setContentsMargins(16, 10, 0, 0)
+        self.horizontalLayout_12 = QHBoxLayout(self.analyticsYearHorizontalFrame)
+        self.horizontalLayout_12.setSpacing(5)
+        self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
+        self.horizontalLayout_12.setContentsMargins(16, 10, 0, 0)
         self.analyticsYearSelectionLabel = QLabel(self.analyticsYearHorizontalFrame)
         self.analyticsYearSelectionLabel.setObjectName(u"analyticsYearSelectionLabel")
         self.analyticsYearSelectionLabel.setMinimumSize(QSize(115, 35))
         self.analyticsYearSelectionLabel.setMaximumSize(QSize(115, 16777215))
         self.analyticsYearSelectionLabel.setFont(font4)
-        self.analyticsYearSelectionLabel.setStyleSheet(u"#selectYearSelectionLabel {\n"
+        self.analyticsYearSelectionLabel.setStyleSheet(u"#analyticsYearSelectionLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 21px;\n"
+"    font-family: Cairo;\n"
+"    font-weight: bold;\n"
 "}")
         self.analyticsYearSelectionLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.analyticsYearSelectionLabel.setWordWrap(False)
 
-        self.horizontalLayout_33.addWidget(self.analyticsYearSelectionLabel)
+        self.horizontalLayout_12.addWidget(self.analyticsYearSelectionLabel)
 
         self.analyticsYearComboBoxFrame = QFrame(self.analyticsYearHorizontalFrame)
         self.analyticsYearComboBoxFrame.setObjectName(u"analyticsYearComboBoxFrame")
         self.analyticsYearComboBoxFrame.setMinimumSize(QSize(100, 32))
         self.analyticsYearComboBoxFrame.setMaximumSize(QSize(100, 32))
-        self.analyticsYearComboBoxFrame.setFont(font8)
+        self.analyticsYearComboBoxFrame.setFont(font6)
         self.analyticsYearComboBoxFrame.setStyleSheet(u"#analyticsYearComboBoxFrame {\n"
 "    background-color: #f3f3f3;\n"
 "    color: black;\n"
@@ -1116,7 +1140,7 @@ class Ui_NetSpect(object):
         self.analyticsYearComboBoxArrow.setGeometry(QRect(75, 0, 24, 32))
         self.analyticsYearComboBoxArrow.setMinimumSize(QSize(24, 32))
         self.analyticsYearComboBoxArrow.setMaximumSize(QSize(22, 32))
-        self.analyticsYearComboBoxArrow.setFont(font8)
+        self.analyticsYearComboBoxArrow.setFont(font6)
         self.analyticsYearComboBoxArrow.setStyleSheet(u"#analyticsYearComboBoxArrow {\n"
 "    background-color: lightgray;\n"
 "    color: black;\n"
@@ -1134,11 +1158,13 @@ class Ui_NetSpect(object):
         self.analyticsYearComboBox.setGeometry(QRect(0, 0, 100, 32))
         self.analyticsYearComboBox.setMinimumSize(QSize(100, 32))
         self.analyticsYearComboBox.setMaximumSize(QSize(100, 32))
-        self.analyticsYearComboBox.setFont(font8)
+        self.analyticsYearComboBox.setFont(font3)
         self.analyticsYearComboBox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.analyticsYearComboBox.setStyleSheet(u"#analyticsYearComboBox {\n"
 "    background-color: transparent;\n"
 "    color: black;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "    border: 2px outset transparent;\n"
 "    border-radius: 10px;\n"
 "    padding: 4px;\n"
@@ -1172,30 +1198,30 @@ class Ui_NetSpect(object):
 "    outline: 0px;\n"
 "}")
 
-        self.horizontalLayout_33.addWidget(self.analyticsYearComboBoxFrame)
+        self.horizontalLayout_12.addWidget(self.analyticsYearComboBoxFrame)
 
-        self.analyticsYearHorizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_13 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_33.addItem(self.analyticsYearHorizontalSpacer)
+        self.horizontalLayout_12.addItem(self.horizontalSpacer_13)
 
 
-        self.verticalLayout_30.addWidget(self.analyticsYearHorizontalFrame)
+        self.verticalLayout_6.addWidget(self.analyticsYearHorizontalFrame)
 
         self.chartsVerticalFrame = QFrame(self.analyticsHorizontalFrame)
         self.chartsVerticalFrame.setObjectName(u"chartsVerticalFrame")
         self.chartsVerticalFrame.setMaximumSize(QSize(16777215, 550))
-        self.horizontalLayout_15 = QHBoxLayout(self.chartsVerticalFrame)
-        self.horizontalLayout_15.setSpacing(0)
-        self.horizontalLayout_15.setObjectName(u"horizontalLayout_15")
-        self.horizontalLayout_15.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_13 = QHBoxLayout(self.chartsVerticalFrame)
+        self.horizontalLayout_13.setSpacing(0)
+        self.horizontalLayout_13.setObjectName(u"horizontalLayout_13")
+        self.horizontalLayout_13.setContentsMargins(0, 0, 0, 0)
         self.cardsHorizontalFrame = QFrame(self.chartsVerticalFrame)
         self.cardsHorizontalFrame.setObjectName(u"cardsHorizontalFrame")
         self.cardsHorizontalFrame.setMinimumSize(QSize(493, 307))
         self.cardsHorizontalFrame.setMaximumSize(QSize(700, 16777215))
-        self.horizontalLayout_29 = QHBoxLayout(self.cardsHorizontalFrame)
-        self.horizontalLayout_29.setSpacing(10)
-        self.horizontalLayout_29.setObjectName(u"horizontalLayout_29")
-        self.horizontalLayout_29.setContentsMargins(15, 10, 0, 10)
+        self.horizontalLayout_14 = QHBoxLayout(self.cardsHorizontalFrame)
+        self.horizontalLayout_14.setSpacing(10)
+        self.horizontalLayout_14.setObjectName(u"horizontalLayout_14")
+        self.horizontalLayout_14.setContentsMargins(15, 10, 0, 10)
         self.attacksPerMonthVerticalFrame = QFrame(self.cardsHorizontalFrame)
         self.attacksPerMonthVerticalFrame.setObjectName(u"attacksPerMonthVerticalFrame")
         self.attacksPerMonthVerticalFrame.setMinimumSize(QSize(150, 0))
@@ -1205,13 +1231,13 @@ class Ui_NetSpect(object):
 "    border: 2px solid black; \n"
 "	color: black;\n"
 "}")
-        self.verticalLayout_29 = QVBoxLayout(self.attacksPerMonthVerticalFrame)
-        self.verticalLayout_29.setSpacing(0)
-        self.verticalLayout_29.setObjectName(u"verticalLayout_29")
-        self.verticalLayout_29.setContentsMargins(0, 0, 0, 0)
-        self.verticalSpacer_18 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalLayout_7 = QVBoxLayout(self.attacksPerMonthVerticalFrame)
+        self.verticalLayout_7.setSpacing(0)
+        self.verticalLayout_7.setObjectName(u"verticalLayout_7")
+        self.verticalLayout_7.setContentsMargins(0, 0, 0, 0)
+        self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_29.addItem(self.verticalSpacer_18)
+        self.verticalLayout_7.addItem(self.verticalSpacer_4)
 
         self.attacksPerMonthTitleLabel = QLabel(self.attacksPerMonthVerticalFrame)
         self.attacksPerMonthTitleLabel.setObjectName(u"attacksPerMonthTitleLabel")
@@ -1221,45 +1247,50 @@ class Ui_NetSpect(object):
         self.attacksPerMonthTitleLabel.setStyleSheet(u"#attacksPerMonthTitleLabel {\n"
 "	background-color: transparent;\n"
 "	color: black;\n"
+"    font-size: 21px;\n"
+"    font-family: Cairo;\n"
+"    font-weight: bold;\n"
 "}")
         self.attacksPerMonthTitleLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.attacksPerMonthTitleLabel.setWordWrap(True)
 
-        self.verticalLayout_29.addWidget(self.attacksPerMonthTitleLabel)
+        self.verticalLayout_7.addWidget(self.attacksPerMonthTitleLabel)
 
-        self.verticalSpacer_24 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer_5 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_29.addItem(self.verticalSpacer_24)
+        self.verticalLayout_7.addItem(self.verticalSpacer_5)
 
         self.attacksPerMonthValueLabel = QLabel(self.attacksPerMonthVerticalFrame)
         self.attacksPerMonthValueLabel.setObjectName(u"attacksPerMonthValueLabel")
         self.attacksPerMonthValueLabel.setMinimumSize(QSize(0, 0))
         self.attacksPerMonthValueLabel.setMaximumSize(QSize(16777215, 16777215))
-        font10 = QFont()
-        font10.setFamilies([u"Days One"])
-        font10.setBold(True)
-        self.attacksPerMonthValueLabel.setFont(font10)
+        font7 = QFont()
+        font7.setFamilies([u"Days One"])
+        font7.setBold(True)
+        self.attacksPerMonthValueLabel.setFont(font7)
         self.attacksPerMonthValueLabel.setStyleSheet(u"#attacksPerMonthValueLabel {\n"
-"	font-size: 60px;\n"
-"	margin: 10px;\n"
 "	background-color: transparent;\n"
 "	color: black;\n"
+"	font-size: 60px;\n"
+"    font-family: Days One;\n"
+"    font-weight: bold;\n"
+"	margin: 10px;\n"
 "}")
         self.attacksPerMonthValueLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.attacksPerMonthValueLabel.setWordWrap(False)
 
-        self.verticalLayout_29.addWidget(self.attacksPerMonthValueLabel)
+        self.verticalLayout_7.addWidget(self.attacksPerMonthValueLabel)
 
-        self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer_6 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_29.addItem(self.verticalSpacer_4)
+        self.verticalLayout_7.addItem(self.verticalSpacer_6)
 
-        self.verticalSpacer_21 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer_7 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_29.addItem(self.verticalSpacer_21)
+        self.verticalLayout_7.addItem(self.verticalSpacer_7)
 
 
-        self.horizontalLayout_29.addWidget(self.attacksPerMonthVerticalFrame)
+        self.horizontalLayout_14.addWidget(self.attacksPerMonthVerticalFrame)
 
         self.totalNumOfAttacksVerticalFrame = QFrame(self.cardsHorizontalFrame)
         self.totalNumOfAttacksVerticalFrame.setObjectName(u"totalNumOfAttacksVerticalFrame")
@@ -1270,13 +1301,13 @@ class Ui_NetSpect(object):
 "    border: 2px solid black; \n"
 "	color: black;\n"
 "}")
-        self.verticalLayout_33 = QVBoxLayout(self.totalNumOfAttacksVerticalFrame)
-        self.verticalLayout_33.setSpacing(0)
-        self.verticalLayout_33.setObjectName(u"verticalLayout_33")
-        self.verticalLayout_33.setContentsMargins(0, 0, 0, 0)
-        self.verticalSpacer_19 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalLayout_8 = QVBoxLayout(self.totalNumOfAttacksVerticalFrame)
+        self.verticalLayout_8.setSpacing(0)
+        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
+        self.verticalLayout_8.setContentsMargins(0, 0, 0, 0)
+        self.verticalSpacer_8 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_33.addItem(self.verticalSpacer_19)
+        self.verticalLayout_8.addItem(self.verticalSpacer_8)
 
         self.totalNumOfAttacksTitleLabel = QLabel(self.totalNumOfAttacksVerticalFrame)
         self.totalNumOfAttacksTitleLabel.setObjectName(u"totalNumOfAttacksTitleLabel")
@@ -1286,15 +1317,18 @@ class Ui_NetSpect(object):
         self.totalNumOfAttacksTitleLabel.setStyleSheet(u"#totalNumOfAttacksTitleLabel {\n"
 "	background-color: transparent;\n"
 "	color: black;\n"
+"    font-size: 21px;\n"
+"    font-family: Cairo;\n"
+"    font-weight: bold;\n"
 "}")
         self.totalNumOfAttacksTitleLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.totalNumOfAttacksTitleLabel.setWordWrap(True)
 
-        self.verticalLayout_33.addWidget(self.totalNumOfAttacksTitleLabel)
+        self.verticalLayout_8.addWidget(self.totalNumOfAttacksTitleLabel)
 
-        self.verticalSpacer_25 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer_9 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_33.addItem(self.verticalSpacer_25)
+        self.verticalLayout_8.addItem(self.verticalSpacer_9)
 
         self.totalNumOfAttacksValueLabel = QLabel(self.totalNumOfAttacksVerticalFrame)
         self.totalNumOfAttacksValueLabel.setObjectName(u"totalNumOfAttacksValueLabel")
@@ -1302,30 +1336,32 @@ class Ui_NetSpect(object):
         self.totalNumOfAttacksValueLabel.setSizePolicy(sizePolicy)
         self.totalNumOfAttacksValueLabel.setMinimumSize(QSize(0, 0))
         self.totalNumOfAttacksValueLabel.setMaximumSize(QSize(16777215, 16777215))
-        self.totalNumOfAttacksValueLabel.setFont(font10)
+        self.totalNumOfAttacksValueLabel.setFont(font7)
         self.totalNumOfAttacksValueLabel.setStyleSheet(u"#totalNumOfAttacksValueLabel {\n"
-"	font-size: 60px;\n"
-"	margin: 10px;\n"
 "	background-color: transparent;\n"
 "	color: black;\n"
+"	font-size: 60px;\n"
+"    font-family: Days One;\n"
+"    font-weight: bold;\n"
+"	margin: 10px;\n"
 "}")
         self.totalNumOfAttacksValueLabel.setScaledContents(False)
         self.totalNumOfAttacksValueLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.totalNumOfAttacksValueLabel.setWordWrap(False)
         self.totalNumOfAttacksValueLabel.setMargin(0)
 
-        self.verticalLayout_33.addWidget(self.totalNumOfAttacksValueLabel)
+        self.verticalLayout_8.addWidget(self.totalNumOfAttacksValueLabel)
 
-        self.verticalSpacer_22 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer_10 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_33.addItem(self.verticalSpacer_22)
+        self.verticalLayout_8.addItem(self.verticalSpacer_10)
 
-        self.verticalSpacer_5 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer_11 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_33.addItem(self.verticalSpacer_5)
+        self.verticalLayout_8.addItem(self.verticalSpacer_11)
 
 
-        self.horizontalLayout_29.addWidget(self.totalNumOfAttacksVerticalFrame)
+        self.horizontalLayout_14.addWidget(self.totalNumOfAttacksVerticalFrame)
 
         self.mostPopularAttackVerticalFrame = QFrame(self.cardsHorizontalFrame)
         self.mostPopularAttackVerticalFrame.setObjectName(u"mostPopularAttackVerticalFrame")
@@ -1336,13 +1372,13 @@ class Ui_NetSpect(object):
 "    border: 2px solid black; \n"
 "	color: black;\n"
 "}")
-        self.verticalLayout_34 = QVBoxLayout(self.mostPopularAttackVerticalFrame)
-        self.verticalLayout_34.setSpacing(0)
-        self.verticalLayout_34.setObjectName(u"verticalLayout_34")
-        self.verticalLayout_34.setContentsMargins(0, 0, 0, 0)
-        self.verticalSpacer_20 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalLayout_9 = QVBoxLayout(self.mostPopularAttackVerticalFrame)
+        self.verticalLayout_9.setSpacing(0)
+        self.verticalLayout_9.setObjectName(u"verticalLayout_9")
+        self.verticalLayout_9.setContentsMargins(0, 0, 0, 0)
+        self.verticalSpacer_12 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_34.addItem(self.verticalSpacer_20)
+        self.verticalLayout_9.addItem(self.verticalSpacer_12)
 
         self.mostPopularAttackTitleLabel = QLabel(self.mostPopularAttackVerticalFrame)
         self.mostPopularAttackTitleLabel.setObjectName(u"mostPopularAttackTitleLabel")
@@ -1352,50 +1388,51 @@ class Ui_NetSpect(object):
         self.mostPopularAttackTitleLabel.setStyleSheet(u"#mostPopularAttackTitleLabel {\n"
 "	background-color: transparent;\n"
 "	color: black;\n"
-"	margin-top: 5px;\n"
+"    font-size: 21px;\n"
+"    font-family: Cairo;\n"
+"    font-weight: bold;\n"
 "}")
         self.mostPopularAttackTitleLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.mostPopularAttackTitleLabel.setWordWrap(True)
 
-        self.verticalLayout_34.addWidget(self.mostPopularAttackTitleLabel)
+        self.verticalLayout_9.addWidget(self.mostPopularAttackTitleLabel)
 
-        self.verticalSpacer_26 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer_13 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_34.addItem(self.verticalSpacer_26)
+        self.verticalLayout_9.addItem(self.verticalSpacer_13)
 
         self.mostPopularAttackValueLabel = QLabel(self.mostPopularAttackVerticalFrame)
         self.mostPopularAttackValueLabel.setObjectName(u"mostPopularAttackValueLabel")
         self.mostPopularAttackValueLabel.setMinimumSize(QSize(0, 97))
         self.mostPopularAttackValueLabel.setMaximumSize(QSize(16777215, 16777215))
-        font11 = QFont()
-        font11.setFamilies([u"Days One"])
-        font11.setPointSize(17)
-        font11.setBold(True)
-        self.mostPopularAttackValueLabel.setFont(font11)
+        self.mostPopularAttackValueLabel.setFont(font7)
         self.mostPopularAttackValueLabel.setStyleSheet(u"#mostPopularAttackValueLabel {\n"
-"	margin: 10px;\n"
-"	margin-top: 0px;\n"
 "	background-color: transparent;\n"
 "	color: black;\n"
+"	font-size: 23px;\n"
+"    font-family: Days One;\n"
+"    font-weight: bold;\n"
+"	margin: 10px;\n"
+"    margin-top: 0px;\n"
 "}")
         self.mostPopularAttackValueLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.mostPopularAttackValueLabel.setWordWrap(True)
 
-        self.verticalLayout_34.addWidget(self.mostPopularAttackValueLabel)
+        self.verticalLayout_9.addWidget(self.mostPopularAttackValueLabel)
 
-        self.verticalSpacer_6 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer_14 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_34.addItem(self.verticalSpacer_6)
+        self.verticalLayout_9.addItem(self.verticalSpacer_14)
 
-        self.verticalSpacer_23 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer_15 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_34.addItem(self.verticalSpacer_23)
-
-
-        self.horizontalLayout_29.addWidget(self.mostPopularAttackVerticalFrame)
+        self.verticalLayout_9.addItem(self.verticalSpacer_15)
 
 
-        self.horizontalLayout_15.addWidget(self.cardsHorizontalFrame)
+        self.horizontalLayout_14.addWidget(self.mostPopularAttackVerticalFrame)
+
+
+        self.horizontalLayout_13.addWidget(self.cardsHorizontalFrame)
 
         self.barChartVerticalFrame = QFrame(self.chartsVerticalFrame)
         self.barChartVerticalFrame.setObjectName(u"barChartVerticalFrame")
@@ -1409,10 +1446,10 @@ class Ui_NetSpect(object):
 "    color: black;\n"
 "}")
 
-        self.horizontalLayout_15.addWidget(self.barChartVerticalFrame)
+        self.horizontalLayout_13.addWidget(self.barChartVerticalFrame)
 
 
-        self.verticalLayout_30.addWidget(self.chartsVerticalFrame)
+        self.verticalLayout_6.addWidget(self.chartsVerticalFrame)
 
         self.histogramChartVerticalFrame = QFrame(self.analyticsHorizontalFrame)
         self.histogramChartVerticalFrame.setObjectName(u"histogramChartVerticalFrame")
@@ -1425,46 +1462,49 @@ class Ui_NetSpect(object):
 "    color: black;\n"
 "}")
 
-        self.verticalLayout_30.addWidget(self.histogramChartVerticalFrame)
+        self.verticalLayout_6.addWidget(self.histogramChartVerticalFrame)
 
 
-        self.gridLayout_9.addWidget(self.analyticsHorizontalFrame, 0, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.analyticsHorizontalFrame, 0, 0, 1, 1)
 
         self.stackedWidget.addWidget(self.analyticsPage)
         self.reportPage = QWidget()
         self.reportPage.setObjectName(u"reportPage")
-        self.gridLayout_3 = QGridLayout(self.reportPage)
-        self.gridLayout_3.setSpacing(0)
-        self.gridLayout_3.setObjectName(u"gridLayout_3")
-        self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_4 = QGridLayout(self.reportPage)
+        self.gridLayout_4.setSpacing(0)
+        self.gridLayout_4.setObjectName(u"gridLayout_4")
+        self.gridLayout_4.setContentsMargins(0, 0, 0, 0)
         self.reportPreviewHorizontalFrame = QFrame(self.reportPage)
         self.reportPreviewHorizontalFrame.setObjectName(u"reportPreviewHorizontalFrame")
         self.reportPreviewHorizontalFrame.setMinimumSize(QSize(0, 660))
-        self.horizontalLayout_8 = QHBoxLayout(self.reportPreviewHorizontalFrame)
-        self.horizontalLayout_8.setSpacing(0)
-        self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
-        self.horizontalLayout_8.setContentsMargins(20, 20, 10, 10)
+        self.horizontalLayout_15 = QHBoxLayout(self.reportPreviewHorizontalFrame)
+        self.horizontalLayout_15.setSpacing(0)
+        self.horizontalLayout_15.setObjectName(u"horizontalLayout_15")
+        self.horizontalLayout_15.setContentsMargins(20, 20, 10, 10)
         self.reportSelectionVerticalFrameOutside = QFrame(self.reportPreviewHorizontalFrame)
         self.reportSelectionVerticalFrameOutside.setObjectName(u"reportSelectionVerticalFrameOutside")
         self.reportSelectionVerticalFrameOutside.setMinimumSize(QSize(250, 0))
         self.reportSelectionVerticalFrameOutside.setMaximumSize(QSize(250, 16777215))
-        self.verticalLayout_16 = QVBoxLayout(self.reportSelectionVerticalFrameOutside)
-        self.verticalLayout_16.setSpacing(15)
-        self.verticalLayout_16.setObjectName(u"verticalLayout_16")
-        self.verticalLayout_16.setContentsMargins(0, 0, 10, 20)
+        self.verticalLayout_10 = QVBoxLayout(self.reportSelectionVerticalFrameOutside)
+        self.verticalLayout_10.setSpacing(15)
+        self.verticalLayout_10.setObjectName(u"verticalLayout_10")
+        self.verticalLayout_10.setContentsMargins(0, 0, 10, 20)
         self.reportSelectionLabel = QLabel(self.reportSelectionVerticalFrameOutside)
         self.reportSelectionLabel.setObjectName(u"reportSelectionLabel")
         self.reportSelectionLabel.setMinimumSize(QSize(180, 40))
         self.reportSelectionLabel.setMaximumSize(QSize(16777215, 16777215))
-        self.reportSelectionLabel.setFont(font5)
+        self.reportSelectionLabel.setFont(font4)
         self.reportSelectionLabel.setStyleSheet(u"#reportSelectionLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 24px;\n"
+"    font-family: Cairo;\n"
+"    font-weight: bold;\n"
 "}")
         self.reportSelectionLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.reportSelectionLabel.setWordWrap(False)
 
-        self.verticalLayout_16.addWidget(self.reportSelectionLabel)
+        self.verticalLayout_10.addWidget(self.reportSelectionLabel)
 
         self.reportSelectionVerticalFrameInside = QFrame(self.reportSelectionVerticalFrameOutside)
         self.reportSelectionVerticalFrameInside.setObjectName(u"reportSelectionVerticalFrameInside")
@@ -1479,7 +1519,7 @@ class Ui_NetSpect(object):
         self.reportDurationComboBoxFrame.setObjectName(u"reportDurationComboBoxFrame")
         self.reportDurationComboBoxFrame.setMinimumSize(QSize(210, 32))
         self.reportDurationComboBoxFrame.setMaximumSize(QSize(210, 32))
-        self.reportDurationComboBoxFrame.setFont(font8)
+        self.reportDurationComboBoxFrame.setFont(font6)
         self.reportDurationComboBoxFrame.setStyleSheet(u"#reportDurationComboBoxFrame {\n"
 "    background-color: #f3f3f3;\n"
 "    color: black;\n"
@@ -1494,7 +1534,7 @@ class Ui_NetSpect(object):
         self.reportDurationComboBoxArrow.setGeometry(QRect(186, 0, 24, 32))
         self.reportDurationComboBoxArrow.setMinimumSize(QSize(24, 32))
         self.reportDurationComboBoxArrow.setMaximumSize(QSize(22, 32))
-        self.reportDurationComboBoxArrow.setFont(font8)
+        self.reportDurationComboBoxArrow.setFont(font6)
         self.reportDurationComboBoxArrow.setStyleSheet(u"#reportDurationComboBoxArrow {\n"
 "    background-color: lightgray;\n"
 "    color: black;\n"
@@ -1515,11 +1555,13 @@ class Ui_NetSpect(object):
         self.reportDurationComboBox.setGeometry(QRect(0, 0, 210, 32))
         self.reportDurationComboBox.setMinimumSize(QSize(210, 32))
         self.reportDurationComboBox.setMaximumSize(QSize(210, 32))
-        self.reportDurationComboBox.setFont(font8)
+        self.reportDurationComboBox.setFont(font3)
         self.reportDurationComboBox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.reportDurationComboBox.setStyleSheet(u"#reportDurationComboBox {\n"
 "    background-color: transparent;\n"
 "    color: black;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "    border: 2px outset transparent;\n"
 "    border-radius: 10px;\n"
 "    padding: 4px;\n"
@@ -1570,32 +1612,31 @@ class Ui_NetSpect(object):
         self.arpSpoofingCheckBox = QCheckBox(self.reportSelectionVerticalFrameInside)
         self.arpSpoofingCheckBox.setObjectName(u"arpSpoofingCheckBox")
         self.arpSpoofingCheckBox.setMaximumSize(QSize(16777215, 30))
-        font12 = QFont()
-        font12.setFamilies([u"Cairo"])
-        font12.setPointSize(13)
-        self.arpSpoofingCheckBox.setFont(font12)
+        self.arpSpoofingCheckBox.setFont(font3)
         self.arpSpoofingCheckBox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.arpSpoofingCheckBox.setStyleSheet(u"#arpSpoofingCheckBox {\n"
 "    spacing: 10px;\n"
 "    color: #f3f3f3;\n"
+"    font-size: 17px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
-"QCheckBox::indicator {\n"
+"#arpSpoofingCheckBox::indicator {\n"
 "    width: 16px;\n"
 "    height: 16px;\n"
 "}\n"
 "\n"
-"QCheckBox::indicator:checked {\n"
+"#arpSpoofingCheckBox::indicator:checked {\n"
 "    background-color: #3a8e32;\n"
 "    border: 2px solid #2e7128;\n"
 "}\n"
 "\n"
-"QCheckBox::indicator:unchecked {\n"
+"#arpSpoofingCheckBox::indicator:unchecked {\n"
 "    background-color: white;\n"
 "    border: 2px solid lightgray;\n"
 "}\n"
 "\n"
-"QCheckBox::indicator:hover {\n"
+"#arpSpoofingCheckBox::indicator:hover {\n"
 "    border: 2px solid #4d9946;\n"
 "}")
         self.arpSpoofingCheckBox.setChecked(True)
@@ -1605,29 +1646,31 @@ class Ui_NetSpect(object):
         self.portScanningCheckBox = QCheckBox(self.reportSelectionVerticalFrameInside)
         self.portScanningCheckBox.setObjectName(u"portScanningCheckBox")
         self.portScanningCheckBox.setMaximumSize(QSize(16777215, 30))
-        self.portScanningCheckBox.setFont(font12)
+        self.portScanningCheckBox.setFont(font3)
         self.portScanningCheckBox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.portScanningCheckBox.setStyleSheet(u"#portScanningCheckBox {\n"
 "    spacing: 10px;\n"
 "    color: #f3f3f3;\n"
+"    font-size: 17px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
-"QCheckBox::indicator {\n"
+"#portScanningCheckBox::indicator {\n"
 "    width: 16px;\n"
 "    height: 16px;\n"
 "}\n"
 "\n"
-"QCheckBox::indicator:checked {\n"
+"#portScanningCheckBox::indicator:checked {\n"
 "    background-color: #3a8e32;\n"
 "    border: 2px solid #2e7128;\n"
 "}\n"
 "\n"
-"QCheckBox::indicator:unchecked {\n"
+"#portScanningCheckBox::indicator:unchecked {\n"
 "    background-color: white;\n"
 "    border: 2px solid lightgray;\n"
 "}\n"
 "\n"
-"QCheckBox::indicator:hover {\n"
+"#portScanningCheckBox::indicator:hover {\n"
 "    border: 2px solid #4d9946;\n"
 "}")
         self.portScanningCheckBox.setChecked(True)
@@ -1637,29 +1680,31 @@ class Ui_NetSpect(object):
         self.denialOfServiceCheckBox = QCheckBox(self.reportSelectionVerticalFrameInside)
         self.denialOfServiceCheckBox.setObjectName(u"denialOfServiceCheckBox")
         self.denialOfServiceCheckBox.setMaximumSize(QSize(16777215, 30))
-        self.denialOfServiceCheckBox.setFont(font12)
+        self.denialOfServiceCheckBox.setFont(font3)
         self.denialOfServiceCheckBox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.denialOfServiceCheckBox.setStyleSheet(u"#denialOfServiceCheckBox {\n"
 "    spacing: 10px;\n"
 "    color: #f3f3f3;\n"
+"    font-size: 17px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
-"QCheckBox::indicator {\n"
+"#denialOfServiceCheckBox::indicator {\n"
 "    width: 16px;\n"
 "    height: 16px;\n"
 "}\n"
 "\n"
-"QCheckBox::indicator:checked {\n"
+"#denialOfServiceCheckBox::indicator:checked {\n"
 "    background-color: #3a8e32;\n"
 "    border: 2px solid #2e7128;\n"
 "}\n"
 "\n"
-"QCheckBox::indicator:unchecked {\n"
+"#denialOfServiceCheckBox::indicator:unchecked {\n"
 "    background-color: white;\n"
 "    border: 2px solid lightgray;\n"
 "}\n"
 "\n"
-"QCheckBox::indicator:hover {\n"
+"#denialOfServiceCheckBox::indicator:hover {\n"
 "    border: 2px solid #4d9946;\n"
 "}")
         self.denialOfServiceCheckBox.setChecked(True)
@@ -1669,29 +1714,31 @@ class Ui_NetSpect(object):
         self.dnsTunnelingCheckBox = QCheckBox(self.reportSelectionVerticalFrameInside)
         self.dnsTunnelingCheckBox.setObjectName(u"dnsTunnelingCheckBox")
         self.dnsTunnelingCheckBox.setMaximumSize(QSize(16777215, 30))
-        self.dnsTunnelingCheckBox.setFont(font12)
+        self.dnsTunnelingCheckBox.setFont(font3)
         self.dnsTunnelingCheckBox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.dnsTunnelingCheckBox.setStyleSheet(u"#dnsTunnelingCheckBox {\n"
 "    spacing: 10px;\n"
 "    color: #f3f3f3;\n"
+"    font-size: 17px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
-"QCheckBox::indicator {\n"
+"#dnsTunnelingCheckBox::indicator {\n"
 "    width: 16px;\n"
 "    height: 16px;\n"
 "}\n"
 "\n"
-"QCheckBox::indicator:checked {\n"
+"#dnsTunnelingCheckBox::indicator:checked {\n"
 "    background-color: #3a8e32;\n"
 "    border: 2px solid #2e7128;\n"
 "}\n"
 "\n"
-"QCheckBox::indicator:unchecked {\n"
+"#dnsTunnelingCheckBox::indicator:unchecked {\n"
 "    background-color: white;\n"
 "    border: 2px solid lightgray;\n"
 "}\n"
 "\n"
-"QCheckBox::indicator:hover {\n"
+"#dnsTunnelingCheckBox::indicator:hover {\n"
 "    border: 2px solid #4d9946;\n"
 "}")
         self.dnsTunnelingCheckBox.setChecked(True)
@@ -1702,7 +1749,7 @@ class Ui_NetSpect(object):
         self.horizontalLine2.setObjectName(u"horizontalLine2")
         self.horizontalLine2.setMinimumSize(QSize(210, 40))
         self.horizontalLine2.setStyleSheet(u"#horizontalLine2 {\n"
-" color: #f3f3f3\n"
+"	color: #f3f3f3;\n"
 "}")
         self.horizontalLine2.setFrameShadow(QFrame.Shadow.Plain)
         self.horizontalLine2.setLineWidth(2)
@@ -1713,29 +1760,31 @@ class Ui_NetSpect(object):
         self.machineInfoCheckBox = QCheckBox(self.reportSelectionVerticalFrameInside)
         self.machineInfoCheckBox.setObjectName(u"machineInfoCheckBox")
         self.machineInfoCheckBox.setMaximumSize(QSize(16777215, 30))
-        self.machineInfoCheckBox.setFont(font12)
+        self.machineInfoCheckBox.setFont(font3)
         self.machineInfoCheckBox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        self.machineInfoCheckBox.setStyleSheet(u"QCheckBox::indicator {\n"
+        self.machineInfoCheckBox.setStyleSheet(u"#machineInfoCheckBox {\n"
+"    spacing: 10px;\n"
+"    color: #f3f3f3;\n"
+"    font-size: 17px;\n"
+"    font-family: Cairo;\n"
+"}\n"
+"\n"
+"#machineInfoCheckBox::indicator {\n"
 "    width: 16px;\n"
 "    height: 16px;\n"
 "}\n"
 "\n"
-"QCheckBox {\n"
-"    spacing: 10px;\n"
-"    color: #f3f3f3;\n"
-"}\n"
-"\n"
-"QCheckBox::indicator:checked {\n"
+"#machineInfoCheckBox::indicator:checked {\n"
 "    background-color: #3a8e32;\n"
 "    border: 2px solid #2e7128;\n"
 "}\n"
 "\n"
-"QCheckBox::indicator:unchecked {\n"
+"#machineInfoCheckBox::indicator:unchecked {\n"
 "    background-color: white;\n"
 "    border: 2px solid lightgray;\n"
 "}\n"
 "\n"
-"QCheckBox::indicator:hover {\n"
+"#machineInfoCheckBox::indicator:hover {\n"
 "    border: 2px solid #4d9946;\n"
 "}")
 
@@ -1745,79 +1794,84 @@ class Ui_NetSpect(object):
         self.downloadReportButtonVerticalFrame.setObjectName(u"downloadReportButtonVerticalFrame")
         self.downloadReportButtonVerticalFrame.setMaximumSize(QSize(16777215, 16777215))
         self.downloadReportButtonVerticalFrame.setLayoutDirection(Qt.LayoutDirection.LeftToRight)
-        self.verticalLayout_26 = QVBoxLayout(self.downloadReportButtonVerticalFrame)
-        self.verticalLayout_26.setSpacing(10)
-        self.verticalLayout_26.setObjectName(u"verticalLayout_26")
-        self.verticalLayout_26.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
-        self.verticalLayout_26.setContentsMargins(25, 15, 25, 9)
+        self.verticalLayout_12 = QVBoxLayout(self.downloadReportButtonVerticalFrame)
+        self.verticalLayout_12.setSpacing(10)
+        self.verticalLayout_12.setObjectName(u"verticalLayout_12")
+        self.verticalLayout_12.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
+        self.verticalLayout_12.setContentsMargins(25, 15, 25, 9)
         self.downloadReportPushButton = QPushButton(self.downloadReportButtonVerticalFrame)
         self.downloadReportPushButton.setObjectName(u"downloadReportPushButton")
+        self.downloadReportPushButton.setMinimumSize(QSize(160, 31))
         self.downloadReportPushButton.setMaximumSize(QSize(160, 31))
-        font13 = QFont()
-        font13.setFamilies([u"Cairo"])
-        font13.setPointSize(11)
-        font13.setBold(True)
-        self.downloadReportPushButton.setFont(font13)
+        self.downloadReportPushButton.setFont(font4)
         self.downloadReportPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.downloadReportPushButton.setStyleSheet(u"#downloadReportPushButton  {\n"
-"    background-color: #4E4F5A; \n"
-"    border: 2px solid lightgray;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;                  \n"
-"    color: #f3f3f3;       \n"
+"    background-color: #4e4f5a;\n"
+"    border: 2px solid lightgray;\n"
+"    border-radius: 10px;\n"
+"    padding: 5px;\n"
+"    color: #f3f3f3;\n"
+"    font-size: 15px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
 "#downloadReportPushButton:hover {\n"
 "    background-color: #464751; \n"
-"	border-color: #D7D7D7;\n"
+"	border-color: #d7d7d7;\n"
 "}\n"
 "\n"
 "#downloadReportPushButton:pressed {\n"
 "    background-color: #383840; \n"
-"	border-color:#D7D7D7;\n"
+"	border-color:#d7d7d7;\n"
 "}")
 
-        self.verticalLayout_26.addWidget(self.downloadReportPushButton)
+        self.verticalLayout_12.addWidget(self.downloadReportPushButton)
 
         self.cancelReportPushButton = QPushButton(self.downloadReportButtonVerticalFrame)
         self.cancelReportPushButton.setObjectName(u"cancelReportPushButton")
+        self.cancelReportPushButton.setMinimumSize(QSize(160, 31))
         self.cancelReportPushButton.setMaximumSize(QSize(160, 31))
-        self.cancelReportPushButton.setFont(font13)
+        self.cancelReportPushButton.setFont(font4)
         self.cancelReportPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.cancelReportPushButton.setStyleSheet(u"#cancelReportPushButton  {\n"
-"    background-color: #D84F4F; \n"
-"    border: 1px solid black;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;                       \n"
-"    color: black;       \n"
+"    background-color: #d84f4f;\n"
+"    border: 1px solid black;\n"
+"    border-radius: 10px;\n"
+"    padding: 5px;\n"
+"    color: black; \n"
+"    font-size: 15px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
 "#cancelReportPushButton:hover {\n"
-"     background-color: #DB6060;\n"
+"     background-color: #db6060;\n"
 "}\n"
 "\n"
 " #cancelReportPushButton:pressed {\n"
-"    background-color: #AC3f3F;\n"
+"    background-color: #ac3f3f;\n"
 "}")
 
-        self.verticalLayout_26.addWidget(self.cancelReportPushButton)
+        self.verticalLayout_12.addWidget(self.cancelReportPushButton)
 
         self.reportProgressBar = QProgressBar(self.downloadReportButtonVerticalFrame)
         self.reportProgressBar.setObjectName(u"reportProgressBar")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        sizePolicy4.setHorizontalStretch(0)
-        sizePolicy4.setVerticalStretch(0)
-        sizePolicy4.setHeightForWidth(self.reportProgressBar.sizePolicy().hasHeightForWidth())
-        self.reportProgressBar.setSizePolicy(sizePolicy4)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.reportProgressBar.sizePolicy().hasHeightForWidth())
+        self.reportProgressBar.setSizePolicy(sizePolicy3)
+        self.reportProgressBar.setMinimumSize(QSize(160, 26))
         self.reportProgressBar.setMaximumSize(QSize(160, 26))
-        self.reportProgressBar.setFont(font13)
+        self.reportProgressBar.setFont(font4)
         self.reportProgressBar.setStyleSheet(u"#reportProgressBar {\n"
 "    border: 2px solid #d3d3d3;\n"
 "    border-radius: 10px;\n"
 "    background-color: #f3f3f3;\n"
-"    text-align: center;         \n"
+"    text-align: center;\n"
+"    color: black; \n"
+"    font-size: 15px;\n"
+"    font-family: Cairo;\n"
 "    font-weight: bold;\n"
-"    color: black;\n"
 "}\n"
 "\n"
 "#reportProgressBar::chunk {\n"
@@ -1827,40 +1881,43 @@ class Ui_NetSpect(object):
 "")
         self.reportProgressBar.setValue(0)
 
-        self.verticalLayout_26.addWidget(self.reportProgressBar)
+        self.verticalLayout_12.addWidget(self.reportProgressBar)
 
 
         self.verticalLayout_11.addWidget(self.downloadReportButtonVerticalFrame)
 
-        self.ReportVerticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer_16 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_11.addItem(self.ReportVerticalSpacer)
-
-
-        self.verticalLayout_16.addWidget(self.reportSelectionVerticalFrameInside)
+        self.verticalLayout_11.addItem(self.verticalSpacer_16)
 
 
-        self.horizontalLayout_8.addWidget(self.reportSelectionVerticalFrameOutside)
+        self.verticalLayout_10.addWidget(self.reportSelectionVerticalFrameInside)
+
+
+        self.horizontalLayout_15.addWidget(self.reportSelectionVerticalFrameOutside)
 
         self.reportPreviewVerticalFrame = QFrame(self.reportPreviewHorizontalFrame)
         self.reportPreviewVerticalFrame.setObjectName(u"reportPreviewVerticalFrame")
-        self.verticalLayout_14 = QVBoxLayout(self.reportPreviewVerticalFrame)
-        self.verticalLayout_14.setSpacing(15)
-        self.verticalLayout_14.setObjectName(u"verticalLayout_14")
-        self.verticalLayout_14.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_13 = QVBoxLayout(self.reportPreviewVerticalFrame)
+        self.verticalLayout_13.setSpacing(15)
+        self.verticalLayout_13.setObjectName(u"verticalLayout_13")
+        self.verticalLayout_13.setContentsMargins(0, 0, 0, 0)
         self.reportPreviewLabel = QLabel(self.reportPreviewVerticalFrame)
         self.reportPreviewLabel.setObjectName(u"reportPreviewLabel")
         self.reportPreviewLabel.setMinimumSize(QSize(100, 40))
         self.reportPreviewLabel.setMaximumSize(QSize(16777215, 16777215))
-        self.reportPreviewLabel.setFont(font5)
+        self.reportPreviewLabel.setFont(font4)
         self.reportPreviewLabel.setStyleSheet(u"#reportPreviewLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 24px;\n"
+"    font-family: Cairo;\n"
+"    font-weight: bold;\n"
 "}")
         self.reportPreviewLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.reportPreviewLabel.setWordWrap(False)
 
-        self.verticalLayout_14.addWidget(self.reportPreviewLabel)
+        self.verticalLayout_13.addWidget(self.reportPreviewLabel)
 
         self.previewTableVerticalFrame = QFrame(self.reportPreviewVerticalFrame)
         self.previewTableVerticalFrame.setObjectName(u"previewTableVerticalFrame")
@@ -1872,18 +1929,20 @@ class Ui_NetSpect(object):
 "   border-width: 2px;\n"
 "   border-color: black;	\n"
 "}")
-        self.verticalLayout_12 = QVBoxLayout(self.previewTableVerticalFrame)
-        self.verticalLayout_12.setSpacing(10)
-        self.verticalLayout_12.setObjectName(u"verticalLayout_12")
-        self.verticalLayout_12.setContentsMargins(1, 7, 1, 7)
+        self.verticalLayout_14 = QVBoxLayout(self.previewTableVerticalFrame)
+        self.verticalLayout_14.setSpacing(10)
+        self.verticalLayout_14.setObjectName(u"verticalLayout_14")
+        self.verticalLayout_14.setContentsMargins(1, 7, 1, 7)
         self.reportPreviewTableView = QTableView(self.previewTableVerticalFrame)
         self.reportPreviewTableView.setObjectName(u"reportPreviewTableView")
         self.reportPreviewTableView.setMinimumSize(QSize(551, 556))
-        self.reportPreviewTableView.setFont(font9)
+        self.reportPreviewTableView.setFont(font3)
         self.reportPreviewTableView.setStyleSheet(u"#reportPreviewTableView {\n"
 "    border-radius: 8px;\n"
 "    background-color: transparent;\n"
 "    color: black;\n"
+"    font-size: 13px;\n"
+"    font-family: Cairo;\n"
 "    gridline-color: black;\n"
 "}\n"
 "\n"
@@ -1918,11 +1977,11 @@ class Ui_NetSpect(object):
 "\n"
 "#reportPreviewTableView::focus {\n"
 "    outline: none;\n"
-"}\n"
+"}"
+                        "\n"
 "\n"
 "#reportPreviewTableView::corner {\n"
-"    b"
-                        "ackground-color: #f3f3f3;\n"
+"    background-color: #f3f3f3;\n"
 "    border-top-left-radius: 8px;\n"
 "}\n"
 "\n"
@@ -1949,10 +2008,10 @@ class Ui_NetSpect(object):
 "}\n"
 "\n"
 "#reportPreviewTableView QScrollBar::sub-line:vertical, #reportPreviewTableView QScrollBar::sub-line:horizontal {\n"
-"    height: 0px;\n"
+"    h"
+                        "eight: 0px;\n"
 "    subcontrol-position: top;\n"
-"   "
-                        " subcontrol-origin: margin;\n"
+"    subcontrol-origin: margin;\n"
 "}")
         self.reportPreviewTableView.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         self.reportPreviewTableView.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
@@ -1967,58 +2026,61 @@ class Ui_NetSpect(object):
         self.reportPreviewTableView.verticalHeader().setDefaultSectionSize(32)
         self.reportPreviewTableView.verticalHeader().setStretchLastSection(True)
 
-        self.verticalLayout_12.addWidget(self.reportPreviewTableView)
+        self.verticalLayout_14.addWidget(self.reportPreviewTableView)
 
 
-        self.verticalLayout_14.addWidget(self.previewTableVerticalFrame)
+        self.verticalLayout_13.addWidget(self.previewTableVerticalFrame)
 
 
-        self.horizontalLayout_8.addWidget(self.reportPreviewVerticalFrame)
+        self.horizontalLayout_15.addWidget(self.reportPreviewVerticalFrame)
 
 
-        self.gridLayout_3.addWidget(self.reportPreviewHorizontalFrame, 0, 0, 1, 1)
+        self.gridLayout_4.addWidget(self.reportPreviewHorizontalFrame, 0, 0, 1, 1)
 
         self.stackedWidget.addWidget(self.reportPage)
         self.infoPage = QWidget()
         self.infoPage.setObjectName(u"infoPage")
-        self.gridLayout_4 = QGridLayout(self.infoPage)
-        self.gridLayout_4.setSpacing(0)
-        self.gridLayout_4.setObjectName(u"gridLayout_4")
-        self.gridLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_5 = QGridLayout(self.infoPage)
+        self.gridLayout_5.setSpacing(0)
+        self.gridLayout_5.setObjectName(u"gridLayout_5")
+        self.gridLayout_5.setContentsMargins(0, 0, 0, 0)
         self.infoHorizontalFrame = QFrame(self.infoPage)
         self.infoHorizontalFrame.setObjectName(u"infoHorizontalFrame")
         self.infoHorizontalFrame.setMinimumSize(QSize(0, 660))
-        self.infoHorizontalFrame.setFont(font8)
-        self.horizontalLayout_9 = QHBoxLayout(self.infoHorizontalFrame)
-        self.horizontalLayout_9.setSpacing(10)
-        self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
-        self.horizontalLayout_9.setContentsMargins(20, 20, 20, 20)
+        self.infoHorizontalFrame.setFont(font6)
+        self.horizontalLayout_16 = QHBoxLayout(self.infoHorizontalFrame)
+        self.horizontalLayout_16.setSpacing(10)
+        self.horizontalLayout_16.setObjectName(u"horizontalLayout_16")
+        self.horizontalLayout_16.setContentsMargins(20, 20, 20, 20)
         self.machineInfoVerticalFrameOutside = QFrame(self.infoHorizontalFrame)
         self.machineInfoVerticalFrameOutside.setObjectName(u"machineInfoVerticalFrameOutside")
-        self.verticalLayout_13 = QVBoxLayout(self.machineInfoVerticalFrameOutside)
-        self.verticalLayout_13.setSpacing(0)
-        self.verticalLayout_13.setObjectName(u"verticalLayout_13")
-        self.verticalLayout_13.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_15 = QVBoxLayout(self.machineInfoVerticalFrameOutside)
+        self.verticalLayout_15.setSpacing(0)
+        self.verticalLayout_15.setObjectName(u"verticalLayout_15")
+        self.verticalLayout_15.setContentsMargins(0, 0, 0, 0)
         self.machineInformationLabel = QLabel(self.machineInfoVerticalFrameOutside)
         self.machineInformationLabel.setObjectName(u"machineInformationLabel")
         self.machineInformationLabel.setMinimumSize(QSize(0, 40))
         self.machineInformationLabel.setMaximumSize(QSize(16777215, 16777215))
-        self.machineInformationLabel.setFont(font5)
+        self.machineInformationLabel.setFont(font4)
         self.machineInformationLabel.setStyleSheet(u"#machineInformationLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 24px;\n"
+"    font-family: Cairo;\n"
+"    font-weight: bold;\n"
 "}")
         self.machineInformationLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.machineInformationLabel.setWordWrap(False)
 
-        self.verticalLayout_13.addWidget(self.machineInformationLabel)
+        self.verticalLayout_15.addWidget(self.machineInformationLabel)
 
         self.machineInfoVerticalFrameInside = QFrame(self.machineInfoVerticalFrameOutside)
         self.machineInfoVerticalFrameInside.setObjectName(u"machineInfoVerticalFrameInside")
-        self.verticalLayout_15 = QVBoxLayout(self.machineInfoVerticalFrameInside)
-        self.verticalLayout_15.setSpacing(6)
-        self.verticalLayout_15.setObjectName(u"verticalLayout_15")
-        self.verticalLayout_15.setContentsMargins(30, 0, 30, 0)
+        self.verticalLayout_16 = QVBoxLayout(self.machineInfoVerticalFrameInside)
+        self.verticalLayout_16.setSpacing(6)
+        self.verticalLayout_16.setObjectName(u"verticalLayout_16")
+        self.verticalLayout_16.setContentsMargins(30, 0, 30, 0)
         self.OSTypeFrame = QFrame(self.machineInfoVerticalFrameInside)
         self.OSTypeFrame.setObjectName(u"OSTypeFrame")
         self.OSTypeFrame.setMinimumSize(QSize(0, 50))
@@ -2027,9 +2089,9 @@ class Ui_NetSpect(object):
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
 "}")
-        self.horizontalLayout_12 = QHBoxLayout(self.OSTypeFrame)
-        self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
-        self.horizontalLayout_12.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_17 = QHBoxLayout(self.OSTypeFrame)
+        self.horizontalLayout_17.setObjectName(u"horizontalLayout_17")
+        self.horizontalLayout_17.setContentsMargins(0, 0, 0, 0)
         self.OSTypeLabel = QLabel(self.OSTypeFrame)
         self.OSTypeLabel.setObjectName(u"OSTypeLabel")
         self.OSTypeLabel.setMinimumSize(QSize(80, 40))
@@ -2038,39 +2100,43 @@ class Ui_NetSpect(object):
         self.OSTypeLabel.setStyleSheet(u"#OSTypeLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo;\n"
 "}")
         self.OSTypeLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.OSTypeLabel.setWordWrap(False)
         self.OSTypeLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.horizontalLayout_12.addWidget(self.OSTypeLabel)
+        self.horizontalLayout_17.addWidget(self.OSTypeLabel)
 
         self.OSTypeInfoLabel = QLabel(self.OSTypeFrame)
         self.OSTypeInfoLabel.setObjectName(u"OSTypeInfoLabel")
-        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
-        sizePolicy5.setHorizontalStretch(0)
-        sizePolicy5.setVerticalStretch(0)
-        sizePolicy5.setHeightForWidth(self.OSTypeInfoLabel.sizePolicy().hasHeightForWidth())
-        self.OSTypeInfoLabel.setSizePolicy(sizePolicy5)
+        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.OSTypeInfoLabel.sizePolicy().hasHeightForWidth())
+        self.OSTypeInfoLabel.setSizePolicy(sizePolicy4)
         self.OSTypeInfoLabel.setMinimumSize(QSize(150, 40))
         self.OSTypeInfoLabel.setMaximumSize(QSize(400, 40))
         self.OSTypeInfoLabel.setFont(font3)
         self.OSTypeInfoLabel.setStyleSheet(u"#OSTypeInfoLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo\n"
 "}")
         self.OSTypeInfoLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.OSTypeInfoLabel.setWordWrap(False)
         self.OSTypeInfoLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.horizontalLayout_12.addWidget(self.OSTypeInfoLabel)
+        self.horizontalLayout_17.addWidget(self.OSTypeInfoLabel)
 
-        self.horizontalSpacer_7 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_14 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_12.addItem(self.horizontalSpacer_7)
+        self.horizontalLayout_17.addItem(self.horizontalSpacer_14)
 
 
-        self.verticalLayout_15.addWidget(self.OSTypeFrame)
+        self.verticalLayout_16.addWidget(self.OSTypeFrame)
 
         self.OSVersionFrame = QFrame(self.machineInfoVerticalFrameInside)
         self.OSVersionFrame.setObjectName(u"OSVersionFrame")
@@ -2080,9 +2146,9 @@ class Ui_NetSpect(object):
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
 "}")
-        self.horizontalLayout_10 = QHBoxLayout(self.OSVersionFrame)
-        self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
-        self.horizontalLayout_10.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_18 = QHBoxLayout(self.OSVersionFrame)
+        self.horizontalLayout_18.setObjectName(u"horizontalLayout_18")
+        self.horizontalLayout_18.setContentsMargins(0, 0, 0, 0)
         self.OSVersionLabel = QLabel(self.OSVersionFrame)
         self.OSVersionLabel.setObjectName(u"OSVersionLabel")
         self.OSVersionLabel.setMinimumSize(QSize(100, 40))
@@ -2091,36 +2157,40 @@ class Ui_NetSpect(object):
         self.OSVersionLabel.setStyleSheet(u"#OSVersionLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo\n"
 "}")
         self.OSVersionLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.OSVersionLabel.setWordWrap(False)
         self.OSVersionLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.horizontalLayout_10.addWidget(self.OSVersionLabel)
+        self.horizontalLayout_18.addWidget(self.OSVersionLabel)
 
         self.OSVersionInfoLabel = QLabel(self.OSVersionFrame)
         self.OSVersionInfoLabel.setObjectName(u"OSVersionInfoLabel")
-        sizePolicy5.setHeightForWidth(self.OSVersionInfoLabel.sizePolicy().hasHeightForWidth())
-        self.OSVersionInfoLabel.setSizePolicy(sizePolicy5)
+        sizePolicy4.setHeightForWidth(self.OSVersionInfoLabel.sizePolicy().hasHeightForWidth())
+        self.OSVersionInfoLabel.setSizePolicy(sizePolicy4)
         self.OSVersionInfoLabel.setMinimumSize(QSize(150, 40))
         self.OSVersionInfoLabel.setMaximumSize(QSize(400, 40))
         self.OSVersionInfoLabel.setFont(font3)
         self.OSVersionInfoLabel.setStyleSheet(u"#OSVersionInfoLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo\n"
 "}")
         self.OSVersionInfoLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.OSVersionInfoLabel.setWordWrap(False)
         self.OSVersionInfoLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.horizontalLayout_10.addWidget(self.OSVersionInfoLabel)
+        self.horizontalLayout_18.addWidget(self.OSVersionInfoLabel)
 
-        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_15 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_10.addItem(self.horizontalSpacer_5)
+        self.horizontalLayout_18.addItem(self.horizontalSpacer_15)
 
 
-        self.verticalLayout_15.addWidget(self.OSVersionFrame)
+        self.verticalLayout_16.addWidget(self.OSVersionFrame)
 
         self.architectureFrame = QFrame(self.machineInfoVerticalFrameInside)
         self.architectureFrame.setObjectName(u"architectureFrame")
@@ -2130,9 +2200,9 @@ class Ui_NetSpect(object):
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
 "}")
-        self.horizontalLayout_11 = QHBoxLayout(self.architectureFrame)
-        self.horizontalLayout_11.setObjectName(u"horizontalLayout_11")
-        self.horizontalLayout_11.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_19 = QHBoxLayout(self.architectureFrame)
+        self.horizontalLayout_19.setObjectName(u"horizontalLayout_19")
+        self.horizontalLayout_19.setContentsMargins(0, 0, 0, 0)
         self.architectureLabel = QLabel(self.architectureFrame)
         self.architectureLabel.setObjectName(u"architectureLabel")
         self.architectureLabel.setMinimumSize(QSize(110, 40))
@@ -2141,36 +2211,40 @@ class Ui_NetSpect(object):
         self.architectureLabel.setStyleSheet(u"#architectureLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo\n"
 "}")
         self.architectureLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.architectureLabel.setWordWrap(False)
         self.architectureLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.horizontalLayout_11.addWidget(self.architectureLabel)
+        self.horizontalLayout_19.addWidget(self.architectureLabel)
 
         self.architectureInfoLabel = QLabel(self.architectureFrame)
         self.architectureInfoLabel.setObjectName(u"architectureInfoLabel")
-        sizePolicy5.setHeightForWidth(self.architectureInfoLabel.sizePolicy().hasHeightForWidth())
-        self.architectureInfoLabel.setSizePolicy(sizePolicy5)
+        sizePolicy4.setHeightForWidth(self.architectureInfoLabel.sizePolicy().hasHeightForWidth())
+        self.architectureInfoLabel.setSizePolicy(sizePolicy4)
         self.architectureInfoLabel.setMinimumSize(QSize(150, 40))
         self.architectureInfoLabel.setMaximumSize(QSize(400, 40))
         self.architectureInfoLabel.setFont(font3)
         self.architectureInfoLabel.setStyleSheet(u"#architectureInfoLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo\n"
 "}")
         self.architectureInfoLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.architectureInfoLabel.setWordWrap(False)
         self.architectureInfoLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.horizontalLayout_11.addWidget(self.architectureInfoLabel)
+        self.horizontalLayout_19.addWidget(self.architectureInfoLabel)
 
-        self.horizontalSpacer_10 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_16 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_11.addItem(self.horizontalSpacer_10)
+        self.horizontalLayout_19.addItem(self.horizontalSpacer_16)
 
 
-        self.verticalLayout_15.addWidget(self.architectureFrame)
+        self.verticalLayout_16.addWidget(self.architectureFrame)
 
         self.hostNameFrame = QFrame(self.machineInfoVerticalFrameInside)
         self.hostNameFrame.setObjectName(u"hostNameFrame")
@@ -2180,9 +2254,9 @@ class Ui_NetSpect(object):
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
 "}")
-        self.horizontalLayout_13 = QHBoxLayout(self.hostNameFrame)
-        self.horizontalLayout_13.setObjectName(u"horizontalLayout_13")
-        self.horizontalLayout_13.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_20 = QHBoxLayout(self.hostNameFrame)
+        self.horizontalLayout_20.setObjectName(u"horizontalLayout_20")
+        self.horizontalLayout_20.setContentsMargins(0, 0, 0, 0)
         self.hostNameLabel = QLabel(self.hostNameFrame)
         self.hostNameLabel.setObjectName(u"hostNameLabel")
         self.hostNameLabel.setMinimumSize(QSize(105, 40))
@@ -2191,75 +2265,82 @@ class Ui_NetSpect(object):
         self.hostNameLabel.setStyleSheet(u"#hostNameLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo\n"
 "}")
         self.hostNameLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.hostNameLabel.setWordWrap(False)
         self.hostNameLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.horizontalLayout_13.addWidget(self.hostNameLabel)
+        self.horizontalLayout_20.addWidget(self.hostNameLabel)
 
         self.hostNameInfoLabel = QLabel(self.hostNameFrame)
         self.hostNameInfoLabel.setObjectName(u"hostNameInfoLabel")
-        sizePolicy5.setHeightForWidth(self.hostNameInfoLabel.sizePolicy().hasHeightForWidth())
-        self.hostNameInfoLabel.setSizePolicy(sizePolicy5)
+        sizePolicy4.setHeightForWidth(self.hostNameInfoLabel.sizePolicy().hasHeightForWidth())
+        self.hostNameInfoLabel.setSizePolicy(sizePolicy4)
         self.hostNameInfoLabel.setMinimumSize(QSize(150, 40))
         self.hostNameInfoLabel.setMaximumSize(QSize(400, 40))
         self.hostNameInfoLabel.setFont(font3)
         self.hostNameInfoLabel.setStyleSheet(u"#hostNameInfoLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo\n"
 "}")
         self.hostNameInfoLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.hostNameInfoLabel.setWordWrap(False)
         self.hostNameInfoLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.horizontalLayout_13.addWidget(self.hostNameInfoLabel)
+        self.horizontalLayout_20.addWidget(self.hostNameInfoLabel)
 
-        self.horizontalSpacer_6 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_17 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_13.addItem(self.horizontalSpacer_6)
-
-
-        self.verticalLayout_15.addWidget(self.hostNameFrame)
-
-        self.verticalSpacer_12 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.verticalLayout_15.addItem(self.verticalSpacer_12)
+        self.horizontalLayout_20.addItem(self.horizontalSpacer_17)
 
 
-        self.verticalLayout_13.addWidget(self.machineInfoVerticalFrameInside)
+        self.verticalLayout_16.addWidget(self.hostNameFrame)
+
+        self.verticalSpacer_17 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_16.addItem(self.verticalSpacer_17)
+
+
+        self.verticalLayout_15.addWidget(self.machineInfoVerticalFrameInside)
 
         self.programInformationLabel = QLabel(self.machineInfoVerticalFrameOutside)
         self.programInformationLabel.setObjectName(u"programInformationLabel")
         self.programInformationLabel.setMinimumSize(QSize(0, 40))
         self.programInformationLabel.setMaximumSize(QSize(16777215, 16777215))
-        self.programInformationLabel.setFont(font5)
+        self.programInformationLabel.setFont(font4)
         self.programInformationLabel.setStyleSheet(u"#programInformationLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 24px;\n"
+"    font-family: Cairo;\n"
+"    font-weight: bold;\n"
 "}")
         self.programInformationLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.programInformationLabel.setWordWrap(False)
 
-        self.verticalLayout_13.addWidget(self.programInformationLabel)
+        self.verticalLayout_15.addWidget(self.programInformationLabel)
 
         self.programInformationVerticalFrame = QFrame(self.machineInfoVerticalFrameOutside)
         self.programInformationVerticalFrame.setObjectName(u"programInformationVerticalFrame")
-        self.verticalLayout_9 = QVBoxLayout(self.programInformationVerticalFrame)
-        self.verticalLayout_9.setObjectName(u"verticalLayout_9")
-        self.verticalLayout_9.setContentsMargins(30, 0, 30, 0)
-        self.OSVersionFrame_2 = QFrame(self.programInformationVerticalFrame)
-        self.OSVersionFrame_2.setObjectName(u"OSVersionFrame_2")
-        self.OSVersionFrame_2.setMinimumSize(QSize(0, 50))
-        self.OSVersionFrame_2.setMaximumSize(QSize(16777215, 50))
-        self.OSVersionFrame_2.setStyleSheet(u"#OSVersionFrame {\n"
+        self.verticalLayout_17 = QVBoxLayout(self.programInformationVerticalFrame)
+        self.verticalLayout_17.setObjectName(u"verticalLayout_17")
+        self.verticalLayout_17.setContentsMargins(30, 0, 30, 0)
+        self.netspectVersionFrame = QFrame(self.programInformationVerticalFrame)
+        self.netspectVersionFrame.setObjectName(u"netspectVersionFrame")
+        self.netspectVersionFrame.setMinimumSize(QSize(0, 50))
+        self.netspectVersionFrame.setMaximumSize(QSize(16777215, 50))
+        self.netspectVersionFrame.setStyleSheet(u"#netspectVersionFrame {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
 "}")
-        self.horizontalLayout_17 = QHBoxLayout(self.OSVersionFrame_2)
-        self.horizontalLayout_17.setObjectName(u"horizontalLayout_17")
-        self.horizontalLayout_17.setContentsMargins(0, 0, 0, 0)
-        self.netspectVersionLabel = QLabel(self.OSVersionFrame_2)
+        self.horizontalLayout_21 = QHBoxLayout(self.netspectVersionFrame)
+        self.horizontalLayout_21.setObjectName(u"horizontalLayout_21")
+        self.horizontalLayout_21.setContentsMargins(0, 0, 0, 0)
+        self.netspectVersionLabel = QLabel(self.netspectVersionFrame)
         self.netspectVersionLabel.setObjectName(u"netspectVersionLabel")
         self.netspectVersionLabel.setMinimumSize(QSize(150, 40))
         self.netspectVersionLabel.setMaximumSize(QSize(16777215, 40))
@@ -2267,132 +2348,143 @@ class Ui_NetSpect(object):
         self.netspectVersionLabel.setStyleSheet(u"#netspectVersionLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo\n"
 "}")
         self.netspectVersionLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.netspectVersionLabel.setWordWrap(False)
         self.netspectVersionLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.horizontalLayout_17.addWidget(self.netspectVersionLabel)
+        self.horizontalLayout_21.addWidget(self.netspectVersionLabel)
 
-        self.netspectVersionInfoLabel = QLabel(self.OSVersionFrame_2)
+        self.netspectVersionInfoLabel = QLabel(self.netspectVersionFrame)
         self.netspectVersionInfoLabel.setObjectName(u"netspectVersionInfoLabel")
-        sizePolicy5.setHeightForWidth(self.netspectVersionInfoLabel.sizePolicy().hasHeightForWidth())
-        self.netspectVersionInfoLabel.setSizePolicy(sizePolicy5)
+        sizePolicy4.setHeightForWidth(self.netspectVersionInfoLabel.sizePolicy().hasHeightForWidth())
+        self.netspectVersionInfoLabel.setSizePolicy(sizePolicy4)
         self.netspectVersionInfoLabel.setMinimumSize(QSize(150, 40))
         self.netspectVersionInfoLabel.setMaximumSize(QSize(400, 40))
         self.netspectVersionInfoLabel.setFont(font3)
         self.netspectVersionInfoLabel.setStyleSheet(u"#netspectVersionInfoLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo\n"
 "}")
         self.netspectVersionInfoLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.netspectVersionInfoLabel.setWordWrap(False)
         self.netspectVersionInfoLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.horizontalLayout_17.addWidget(self.netspectVersionInfoLabel)
+        self.horizontalLayout_21.addWidget(self.netspectVersionInfoLabel)
 
-        self.horizontalSpacer_9 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_18 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_17.addItem(self.horizontalSpacer_9)
+        self.horizontalLayout_21.addItem(self.horizontalSpacer_18)
 
 
-        self.verticalLayout_9.addWidget(self.OSVersionFrame_2)
+        self.verticalLayout_17.addWidget(self.netspectVersionFrame)
 
-        self.architectureFrame_2 = QFrame(self.programInformationVerticalFrame)
-        self.architectureFrame_2.setObjectName(u"architectureFrame_2")
-        self.architectureFrame_2.setMinimumSize(QSize(0, 50))
-        self.architectureFrame_2.setMaximumSize(QSize(16777215, 50))
-        self.architectureFrame_2.setStyleSheet(u"#architectureFrame {\n"
+        self.githubFrame = QFrame(self.programInformationVerticalFrame)
+        self.githubFrame.setObjectName(u"githubFrame")
+        self.githubFrame.setMinimumSize(QSize(0, 50))
+        self.githubFrame.setMaximumSize(QSize(16777215, 50))
+        self.githubFrame.setStyleSheet(u"#githubFrame {\n"
 "	background-color: transparent;\n"
 "}")
-        self.horizontalLayout_18 = QHBoxLayout(self.architectureFrame_2)
-        self.horizontalLayout_18.setObjectName(u"horizontalLayout_18")
-        self.horizontalLayout_18.setContentsMargins(0, 0, 0, 0)
-        self.githubLabel = QLabel(self.architectureFrame_2)
+        self.horizontalLayout_22 = QHBoxLayout(self.githubFrame)
+        self.horizontalLayout_22.setObjectName(u"horizontalLayout_22")
+        self.horizontalLayout_22.setContentsMargins(0, 0, 0, 0)
+        self.githubLabel = QLabel(self.githubFrame)
         self.githubLabel.setObjectName(u"githubLabel")
-        self.githubLabel.setMinimumSize(QSize(60, 40))
+        self.githubLabel.setMinimumSize(QSize(65, 40))
         self.githubLabel.setMaximumSize(QSize(16777215, 40))
         self.githubLabel.setFont(font3)
         self.githubLabel.setStyleSheet(u"#githubLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo\n"
 "}")
         self.githubLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.githubLabel.setWordWrap(False)
 
-        self.horizontalLayout_18.addWidget(self.githubLabel)
+        self.horizontalLayout_22.addWidget(self.githubLabel)
 
-        self.githubInfoLabel = QLabel(self.architectureFrame_2)
+        self.githubInfoLabel = QLabel(self.githubFrame)
         self.githubInfoLabel.setObjectName(u"githubInfoLabel")
-        sizePolicy5.setHeightForWidth(self.githubInfoLabel.sizePolicy().hasHeightForWidth())
-        self.githubInfoLabel.setSizePolicy(sizePolicy5)
+        sizePolicy4.setHeightForWidth(self.githubInfoLabel.sizePolicy().hasHeightForWidth())
+        self.githubInfoLabel.setSizePolicy(sizePolicy4)
         self.githubInfoLabel.setMinimumSize(QSize(150, 40))
         self.githubInfoLabel.setMaximumSize(QSize(400, 40))
         self.githubInfoLabel.setFont(font3)
         self.githubInfoLabel.setStyleSheet(u"#githubInfoLabel {\n"
-"    background-color: transparent;\n"
-"    color: #f3f3f3;\n"
+"	background-color: transparent;\n"
+"	color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo\n"
 "}\n"
 "")
         self.githubInfoLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.githubInfoLabel.setWordWrap(False)
         self.githubInfoLabel.setOpenExternalLinks(True)
 
-        self.horizontalLayout_18.addWidget(self.githubInfoLabel)
+        self.horizontalLayout_22.addWidget(self.githubInfoLabel)
 
-        self.horizontalSpacer_12 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_19 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_18.addItem(self.horizontalSpacer_12)
-
-
-        self.verticalLayout_9.addWidget(self.architectureFrame_2)
-
-        self.verticalSpacer_14 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.verticalLayout_9.addItem(self.verticalSpacer_14)
+        self.horizontalLayout_22.addItem(self.horizontalSpacer_19)
 
 
-        self.verticalLayout_13.addWidget(self.programInformationVerticalFrame)
+        self.verticalLayout_17.addWidget(self.githubFrame)
 
-        self.verticalSpacer_10 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer_18 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_13.addItem(self.verticalSpacer_10)
+        self.verticalLayout_17.addItem(self.verticalSpacer_18)
 
 
-        self.horizontalLayout_9.addWidget(self.machineInfoVerticalFrameOutside)
+        self.verticalLayout_15.addWidget(self.programInformationVerticalFrame)
+
+        self.verticalSpacer_19 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_15.addItem(self.verticalSpacer_19)
+
+
+        self.horizontalLayout_16.addWidget(self.machineInfoVerticalFrameOutside)
 
         self.ProgramInfoVerticalFrameOutside = QFrame(self.infoHorizontalFrame)
         self.ProgramInfoVerticalFrameOutside.setObjectName(u"ProgramInfoVerticalFrameOutside")
-        self.verticalLayout_17 = QVBoxLayout(self.ProgramInfoVerticalFrameOutside)
-        self.verticalLayout_17.setSpacing(0)
-        self.verticalLayout_17.setObjectName(u"verticalLayout_17")
-        self.verticalLayout_17.setContentsMargins(0, 0, 10, 0)
-        self.ProgramInfoVerticalFrameInside = QFrame(self.ProgramInfoVerticalFrameOutside)
-        self.ProgramInfoVerticalFrameInside.setObjectName(u"ProgramInfoVerticalFrameInside")
-        self.verticalLayout_18 = QVBoxLayout(self.ProgramInfoVerticalFrameInside)
+        self.verticalLayout_18 = QVBoxLayout(self.ProgramInfoVerticalFrameOutside)
         self.verticalLayout_18.setSpacing(0)
         self.verticalLayout_18.setObjectName(u"verticalLayout_18")
-        self.verticalLayout_18.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_18.setContentsMargins(0, 0, 10, 0)
+        self.ProgramInfoVerticalFrameInside = QFrame(self.ProgramInfoVerticalFrameOutside)
+        self.ProgramInfoVerticalFrameInside.setObjectName(u"ProgramInfoVerticalFrameInside")
+        self.verticalLayout_19 = QVBoxLayout(self.ProgramInfoVerticalFrameInside)
+        self.verticalLayout_19.setSpacing(0)
+        self.verticalLayout_19.setObjectName(u"verticalLayout_19")
+        self.verticalLayout_19.setContentsMargins(0, 0, 0, 0)
         self.networkInterfaceInformationLabel = QLabel(self.ProgramInfoVerticalFrameInside)
         self.networkInterfaceInformationLabel.setObjectName(u"networkInterfaceInformationLabel")
         self.networkInterfaceInformationLabel.setMinimumSize(QSize(0, 40))
         self.networkInterfaceInformationLabel.setMaximumSize(QSize(16777215, 16777215))
-        self.networkInterfaceInformationLabel.setFont(font5)
+        self.networkInterfaceInformationLabel.setFont(font4)
         self.networkInterfaceInformationLabel.setStyleSheet(u"#networkInterfaceInformationLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 24px;\n"
+"    font-family: Cairo;\n"
+"    font-weight: bold;\n"
 "}")
         self.networkInterfaceInformationLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.networkInterfaceInformationLabel.setWordWrap(False)
 
-        self.verticalLayout_18.addWidget(self.networkInterfaceInformationLabel)
+        self.verticalLayout_19.addWidget(self.networkInterfaceInformationLabel)
 
         self.netowrkInterfaceInformationFrame = QFrame(self.ProgramInfoVerticalFrameInside)
         self.netowrkInterfaceInformationFrame.setObjectName(u"netowrkInterfaceInformationFrame")
-        self.verticalLayout_10 = QVBoxLayout(self.netowrkInterfaceInformationFrame)
-        self.verticalLayout_10.setSpacing(6)
-        self.verticalLayout_10.setObjectName(u"verticalLayout_10")
-        self.verticalLayout_10.setContentsMargins(30, 0, 30, 0)
+        self.verticalLayout_20 = QVBoxLayout(self.netowrkInterfaceInformationFrame)
+        self.verticalLayout_20.setSpacing(6)
+        self.verticalLayout_20.setObjectName(u"verticalLayout_20")
+        self.verticalLayout_20.setContentsMargins(30, 0, 30, 0)
         self.connectedInterfaceFrame = QFrame(self.netowrkInterfaceInformationFrame)
         self.connectedInterfaceFrame.setObjectName(u"connectedInterfaceFrame")
         self.connectedInterfaceFrame.setMinimumSize(QSize(360, 50))
@@ -2401,9 +2493,9 @@ class Ui_NetSpect(object):
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
 "}")
-        self.horizontalLayout_14 = QHBoxLayout(self.connectedInterfaceFrame)
-        self.horizontalLayout_14.setObjectName(u"horizontalLayout_14")
-        self.horizontalLayout_14.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_23 = QHBoxLayout(self.connectedInterfaceFrame)
+        self.horizontalLayout_23.setObjectName(u"horizontalLayout_23")
+        self.horizontalLayout_23.setContentsMargins(0, 0, 0, 0)
         self.connectedInterfaceLabel = QLabel(self.connectedInterfaceFrame)
         self.connectedInterfaceLabel.setObjectName(u"connectedInterfaceLabel")
         self.connectedInterfaceLabel.setMinimumSize(QSize(175, 40))
@@ -2412,36 +2504,40 @@ class Ui_NetSpect(object):
         self.connectedInterfaceLabel.setStyleSheet(u"#connectedInterfaceLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo\n"
 "}")
         self.connectedInterfaceLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.connectedInterfaceLabel.setWordWrap(False)
         self.connectedInterfaceLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.horizontalLayout_14.addWidget(self.connectedInterfaceLabel)
+        self.horizontalLayout_23.addWidget(self.connectedInterfaceLabel)
 
         self.connectedInterfaceInfoLabel = QLabel(self.connectedInterfaceFrame)
         self.connectedInterfaceInfoLabel.setObjectName(u"connectedInterfaceInfoLabel")
-        sizePolicy5.setHeightForWidth(self.connectedInterfaceInfoLabel.sizePolicy().hasHeightForWidth())
-        self.connectedInterfaceInfoLabel.setSizePolicy(sizePolicy5)
+        sizePolicy4.setHeightForWidth(self.connectedInterfaceInfoLabel.sizePolicy().hasHeightForWidth())
+        self.connectedInterfaceInfoLabel.setSizePolicy(sizePolicy4)
         self.connectedInterfaceInfoLabel.setMinimumSize(QSize(150, 40))
         self.connectedInterfaceInfoLabel.setMaximumSize(QSize(400, 40))
         self.connectedInterfaceInfoLabel.setFont(font3)
         self.connectedInterfaceInfoLabel.setStyleSheet(u"#connectedInterfaceInfoLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo\n"
 "}")
         self.connectedInterfaceInfoLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.connectedInterfaceInfoLabel.setWordWrap(False)
         self.connectedInterfaceInfoLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.horizontalLayout_14.addWidget(self.connectedInterfaceInfoLabel)
+        self.horizontalLayout_23.addWidget(self.connectedInterfaceInfoLabel)
 
-        self.horizontalSpacer_8 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_20 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_14.addItem(self.horizontalSpacer_8)
+        self.horizontalLayout_23.addItem(self.horizontalSpacer_20)
 
 
-        self.verticalLayout_10.addWidget(self.connectedInterfaceFrame)
+        self.verticalLayout_20.addWidget(self.connectedInterfaceFrame)
 
         self.macAddressFrame = QFrame(self.netowrkInterfaceInformationFrame)
         self.macAddressFrame.setObjectName(u"macAddressFrame")
@@ -2451,9 +2547,9 @@ class Ui_NetSpect(object):
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
 "}")
-        self.horizontalLayout_31 = QHBoxLayout(self.macAddressFrame)
-        self.horizontalLayout_31.setObjectName(u"horizontalLayout_31")
-        self.horizontalLayout_31.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_24 = QHBoxLayout(self.macAddressFrame)
+        self.horizontalLayout_24.setObjectName(u"horizontalLayout_24")
+        self.horizontalLayout_24.setContentsMargins(0, 0, 0, 0)
         self.macAddressLabel = QLabel(self.macAddressFrame)
         self.macAddressLabel.setObjectName(u"macAddressLabel")
         self.macAddressLabel.setMinimumSize(QSize(120, 40))
@@ -2462,36 +2558,40 @@ class Ui_NetSpect(object):
         self.macAddressLabel.setStyleSheet(u"#macAddressLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo\n"
 "}")
         self.macAddressLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.macAddressLabel.setWordWrap(False)
         self.macAddressLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.horizontalLayout_31.addWidget(self.macAddressLabel)
+        self.horizontalLayout_24.addWidget(self.macAddressLabel)
 
         self.macAddressInfoLabel = QLabel(self.macAddressFrame)
         self.macAddressInfoLabel.setObjectName(u"macAddressInfoLabel")
-        sizePolicy5.setHeightForWidth(self.macAddressInfoLabel.sizePolicy().hasHeightForWidth())
-        self.macAddressInfoLabel.setSizePolicy(sizePolicy5)
+        sizePolicy4.setHeightForWidth(self.macAddressInfoLabel.sizePolicy().hasHeightForWidth())
+        self.macAddressInfoLabel.setSizePolicy(sizePolicy4)
         self.macAddressInfoLabel.setMinimumSize(QSize(180, 40))
         self.macAddressInfoLabel.setMaximumSize(QSize(400, 40))
         self.macAddressInfoLabel.setFont(font3)
         self.macAddressInfoLabel.setStyleSheet(u"#macAddressInfoLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo\n"
 "}")
         self.macAddressInfoLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.macAddressInfoLabel.setWordWrap(False)
         self.macAddressInfoLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.horizontalLayout_31.addWidget(self.macAddressInfoLabel)
+        self.horizontalLayout_24.addWidget(self.macAddressInfoLabel)
 
-        self.horizontalSpacer_27 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_21 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_31.addItem(self.horizontalSpacer_27)
+        self.horizontalLayout_24.addItem(self.horizontalSpacer_21)
 
 
-        self.verticalLayout_10.addWidget(self.macAddressFrame)
+        self.verticalLayout_20.addWidget(self.macAddressFrame)
 
         self.descriptionFrame = QFrame(self.netowrkInterfaceInformationFrame)
         self.descriptionFrame.setObjectName(u"descriptionFrame")
@@ -2512,6 +2612,8 @@ class Ui_NetSpect(object):
         self.descriptionLabel.setStyleSheet(u"#descriptionLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo\n"
 "}")
         self.descriptionLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.descriptionLabel.setWordWrap(False)
@@ -2521,14 +2623,16 @@ class Ui_NetSpect(object):
 
         self.descriptionInfoLabel = QLabel(self.descriptionFrame)
         self.descriptionInfoLabel.setObjectName(u"descriptionInfoLabel")
-        sizePolicy5.setHeightForWidth(self.descriptionInfoLabel.sizePolicy().hasHeightForWidth())
-        self.descriptionInfoLabel.setSizePolicy(sizePolicy5)
+        sizePolicy4.setHeightForWidth(self.descriptionInfoLabel.sizePolicy().hasHeightForWidth())
+        self.descriptionInfoLabel.setSizePolicy(sizePolicy4)
         self.descriptionInfoLabel.setMinimumSize(QSize(150, 40))
         self.descriptionInfoLabel.setMaximumSize(QSize(500, 40))
         self.descriptionInfoLabel.setFont(font3)
         self.descriptionInfoLabel.setStyleSheet(u"#descriptionInfoLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo\n"
 "}")
         self.descriptionInfoLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.descriptionInfoLabel.setWordWrap(False)
@@ -2536,12 +2640,12 @@ class Ui_NetSpect(object):
 
         self.horizontalLayout_25.addWidget(self.descriptionInfoLabel)
 
-        self.horizontalSpacer_24 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_22 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_25.addItem(self.horizontalSpacer_24)
+        self.horizontalLayout_25.addItem(self.horizontalSpacer_22)
 
 
-        self.verticalLayout_10.addWidget(self.descriptionFrame)
+        self.verticalLayout_20.addWidget(self.descriptionFrame)
 
         self.maxTransmitionUnitFrame = QFrame(self.netowrkInterfaceInformationFrame)
         self.maxTransmitionUnitFrame.setObjectName(u"maxTransmitionUnitFrame")
@@ -2551,9 +2655,9 @@ class Ui_NetSpect(object):
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
 "}")
-        self.horizontalLayout_30 = QHBoxLayout(self.maxTransmitionUnitFrame)
-        self.horizontalLayout_30.setObjectName(u"horizontalLayout_30")
-        self.horizontalLayout_30.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_26 = QHBoxLayout(self.maxTransmitionUnitFrame)
+        self.horizontalLayout_26.setObjectName(u"horizontalLayout_26")
+        self.horizontalLayout_26.setContentsMargins(0, 0, 0, 0)
         self.maxTransmitionUnitLabel = QLabel(self.maxTransmitionUnitFrame)
         self.maxTransmitionUnitLabel.setObjectName(u"maxTransmitionUnitLabel")
         self.maxTransmitionUnitLabel.setMinimumSize(QSize(185, 40))
@@ -2562,64 +2666,71 @@ class Ui_NetSpect(object):
         self.maxTransmitionUnitLabel.setStyleSheet(u"#maxTransmitionUnitLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo\n"
 "}")
         self.maxTransmitionUnitLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.maxTransmitionUnitLabel.setWordWrap(False)
         self.maxTransmitionUnitLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.horizontalLayout_30.addWidget(self.maxTransmitionUnitLabel)
+        self.horizontalLayout_26.addWidget(self.maxTransmitionUnitLabel)
 
         self.maxTransmitionUnitInfoLabel = QLabel(self.maxTransmitionUnitFrame)
         self.maxTransmitionUnitInfoLabel.setObjectName(u"maxTransmitionUnitInfoLabel")
-        sizePolicy5.setHeightForWidth(self.maxTransmitionUnitInfoLabel.sizePolicy().hasHeightForWidth())
-        self.maxTransmitionUnitInfoLabel.setSizePolicy(sizePolicy5)
+        sizePolicy4.setHeightForWidth(self.maxTransmitionUnitInfoLabel.sizePolicy().hasHeightForWidth())
+        self.maxTransmitionUnitInfoLabel.setSizePolicy(sizePolicy4)
         self.maxTransmitionUnitInfoLabel.setMinimumSize(QSize(150, 40))
         self.maxTransmitionUnitInfoLabel.setMaximumSize(QSize(400, 40))
         self.maxTransmitionUnitInfoLabel.setFont(font3)
         self.maxTransmitionUnitInfoLabel.setStyleSheet(u"#maxTransmitionUnitInfoLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo\n"
 "}")
         self.maxTransmitionUnitInfoLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.maxTransmitionUnitInfoLabel.setWordWrap(False)
         self.maxTransmitionUnitInfoLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.horizontalLayout_30.addWidget(self.maxTransmitionUnitInfoLabel)
+        self.horizontalLayout_26.addWidget(self.maxTransmitionUnitInfoLabel)
 
-        self.horizontalSpacer_26 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_23 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_30.addItem(self.horizontalSpacer_26)
-
-
-        self.verticalLayout_10.addWidget(self.maxTransmitionUnitFrame)
-
-        self.verticalSpacer_9 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.verticalLayout_10.addItem(self.verticalSpacer_9)
+        self.horizontalLayout_26.addItem(self.horizontalSpacer_23)
 
 
-        self.verticalLayout_18.addWidget(self.netowrkInterfaceInformationFrame)
+        self.verticalLayout_20.addWidget(self.maxTransmitionUnitFrame)
+
+        self.verticalSpacer_20 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_20.addItem(self.verticalSpacer_20)
+
+
+        self.verticalLayout_19.addWidget(self.netowrkInterfaceInformationFrame)
 
         self.myIpAddressesLabel = QLabel(self.ProgramInfoVerticalFrameInside)
         self.myIpAddressesLabel.setObjectName(u"myIpAddressesLabel")
         self.myIpAddressesLabel.setMinimumSize(QSize(0, 20))
         self.myIpAddressesLabel.setMaximumSize(QSize(16777215, 16777215))
-        self.myIpAddressesLabel.setFont(font5)
+        self.myIpAddressesLabel.setFont(font4)
         self.myIpAddressesLabel.setStyleSheet(u"#myIpAddressesLabel {\n"
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
+"    font-size: 24px;\n"
+"    font-family: Cairo;\n"
+"    font-weight: bold;\n"
 "}")
         self.myIpAddressesLabel.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignVCenter)
         self.myIpAddressesLabel.setWordWrap(False)
 
-        self.verticalLayout_18.addWidget(self.myIpAddressesLabel)
+        self.verticalLayout_19.addWidget(self.myIpAddressesLabel)
 
         self.myIpAddressesFrameOutside = QFrame(self.ProgramInfoVerticalFrameInside)
         self.myIpAddressesFrameOutside.setObjectName(u"myIpAddressesFrameOutside")
-        self.verticalLayout_23 = QVBoxLayout(self.myIpAddressesFrameOutside)
-        self.verticalLayout_23.setSpacing(0)
-        self.verticalLayout_23.setObjectName(u"verticalLayout_23")
-        self.verticalLayout_23.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_21 = QVBoxLayout(self.myIpAddressesFrameOutside)
+        self.verticalLayout_21.setSpacing(0)
+        self.verticalLayout_21.setObjectName(u"verticalLayout_21")
+        self.verticalLayout_21.setContentsMargins(0, 0, 0, 0)
         self.myIpAddressesFrameInside = QFrame(self.myIpAddressesFrameOutside)
         self.myIpAddressesFrameInside.setObjectName(u"myIpAddressesFrameInside")
         self.myIpAddressesFrameInside.setMinimumSize(QSize(360, 50))
@@ -2628,22 +2739,23 @@ class Ui_NetSpect(object):
 "	background-color: transparent;\n"
 "	color: #f3f3f3;\n"
 "}")
-        self.horizontalLayout_16 = QHBoxLayout(self.myIpAddressesFrameInside)
-        self.horizontalLayout_16.setSpacing(0)
-        self.horizontalLayout_16.setObjectName(u"horizontalLayout_16")
-        self.horizontalLayout_16.setContentsMargins(10, 3, 0, 0)
+        self.horizontalLayout_27 = QHBoxLayout(self.myIpAddressesFrameInside)
+        self.horizontalLayout_27.setSpacing(0)
+        self.horizontalLayout_27.setObjectName(u"horizontalLayout_27")
+        self.horizontalLayout_27.setContentsMargins(10, 3, 0, 0)
         self.ipAddressesListWidget = QListWidget(self.myIpAddressesFrameInside)
         self.ipAddressesListWidget.setObjectName(u"ipAddressesListWidget")
-        self.ipAddressesListWidget.setMinimumSize(QSize(400, 140))
-        self.ipAddressesListWidget.setMaximumSize(QSize(400, 160))
-        self.ipAddressesListWidget.setFont(font12)
+        self.ipAddressesListWidget.setMinimumSize(QSize(400, 180))
+        self.ipAddressesListWidget.setMaximumSize(QSize(400, 180))
+        self.ipAddressesListWidget.setFont(font3)
         self.ipAddressesListWidget.setStyleSheet(u"#ipAddressesListWidget {\n"
 "    background-color: rgba(198, 198, 198, 0.6);\n"
 "    border-radius: 15px;\n"
-"    border-style: outset;\n"
-"    border-width: 2px;\n"
-"    border-color: black;\n"
+"    border: 2px solid black;\n"
 "    padding: 4px;\n"
+"    color: black;\n"
+"    font-size: 17px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
 "#ipAddressesListWidget::item {\n"
@@ -2676,8 +2788,8 @@ class Ui_NetSpect(object):
 "    border: 1px solid rgb(153, 153, 153);\n"
 "    width: 10px;\n"
 "    height: 10px; \n"
-"    margin: 0px 0px 0px 0px;"
-                        "\n"
+"    ma"
+                        "rgin: 0px 0px 0px 0px;\n"
 "    border-radius: 4px;\n"
 "}\n"
 "\n"
@@ -2703,143 +2815,148 @@ class Ui_NetSpect(object):
         self.ipAddressesListWidget.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.ipAddressesListWidget.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
 
-        self.horizontalLayout_16.addWidget(self.ipAddressesListWidget)
+        self.horizontalLayout_27.addWidget(self.ipAddressesListWidget)
 
-        self.horizontalSpacer_11 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_24 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_16.addItem(self.horizontalSpacer_11)
-
-
-        self.verticalLayout_23.addWidget(self.myIpAddressesFrameInside)
-
-        self.verticalSpacer_8 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.verticalLayout_23.addItem(self.verticalSpacer_8)
+        self.horizontalLayout_27.addItem(self.horizontalSpacer_24)
 
 
-        self.verticalLayout_18.addWidget(self.myIpAddressesFrameOutside)
+        self.verticalLayout_21.addWidget(self.myIpAddressesFrameInside)
 
-        self.verticalSpacer_15 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer_21 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_18.addItem(self.verticalSpacer_15)
-
-
-        self.verticalLayout_17.addWidget(self.ProgramInfoVerticalFrameInside)
+        self.verticalLayout_21.addItem(self.verticalSpacer_21)
 
 
-        self.horizontalLayout_9.addWidget(self.ProgramInfoVerticalFrameOutside)
+        self.verticalLayout_19.addWidget(self.myIpAddressesFrameOutside)
 
-        self.horizontalSpacer_15 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.verticalSpacer_22 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.horizontalLayout_9.addItem(self.horizontalSpacer_15)
+        self.verticalLayout_19.addItem(self.verticalSpacer_22)
 
 
-        self.gridLayout_4.addWidget(self.infoHorizontalFrame, 0, 0, 1, 1)
+        self.verticalLayout_18.addWidget(self.ProgramInfoVerticalFrameInside)
+
+
+        self.horizontalLayout_16.addWidget(self.ProgramInfoVerticalFrameOutside)
+
+        self.horizontalSpacer_25 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_16.addItem(self.horizontalSpacer_25)
+
+
+        self.gridLayout_5.addWidget(self.infoHorizontalFrame, 0, 0, 1, 1)
 
         self.stackedWidget.addWidget(self.infoPage)
         self.settingsPage = QWidget()
         self.settingsPage.setObjectName(u"settingsPage")
-        self.gridLayout_5 = QGridLayout(self.settingsPage)
-        self.gridLayout_5.setSpacing(0)
-        self.gridLayout_5.setObjectName(u"gridLayout_5")
-        self.gridLayout_5.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_6 = QGridLayout(self.settingsPage)
+        self.gridLayout_6.setSpacing(0)
+        self.gridLayout_6.setObjectName(u"gridLayout_6")
+        self.gridLayout_6.setContentsMargins(0, 0, 0, 0)
         self.settingsHorizontalFrame = QFrame(self.settingsPage)
         self.settingsHorizontalFrame.setObjectName(u"settingsHorizontalFrame")
-        sizePolicy6 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        sizePolicy6.setHorizontalStretch(0)
-        sizePolicy6.setVerticalStretch(0)
-        sizePolicy6.setHeightForWidth(self.settingsHorizontalFrame.sizePolicy().hasHeightForWidth())
-        self.settingsHorizontalFrame.setSizePolicy(sizePolicy6)
-        self.horizontalLayout_6 = QHBoxLayout(self.settingsHorizontalFrame)
-        self.horizontalLayout_6.setSpacing(0)
-        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
-        self.horizontalLayout_6.setContentsMargins(20, 20, 20, 20)
+        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        sizePolicy5.setHorizontalStretch(0)
+        sizePolicy5.setVerticalStretch(0)
+        sizePolicy5.setHeightForWidth(self.settingsHorizontalFrame.sizePolicy().hasHeightForWidth())
+        self.settingsHorizontalFrame.setSizePolicy(sizePolicy5)
+        self.horizontalLayout_28 = QHBoxLayout(self.settingsHorizontalFrame)
+        self.horizontalLayout_28.setSpacing(0)
+        self.horizontalLayout_28.setObjectName(u"horizontalLayout_28")
+        self.horizontalLayout_28.setContentsMargins(20, 20, 20, 20)
         self.settingsLeftVerticalFrame = QFrame(self.settingsHorizontalFrame)
         self.settingsLeftVerticalFrame.setObjectName(u"settingsLeftVerticalFrame")
-        sizePolicy6.setHeightForWidth(self.settingsLeftVerticalFrame.sizePolicy().hasHeightForWidth())
-        self.settingsLeftVerticalFrame.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.settingsLeftVerticalFrame.sizePolicy().hasHeightForWidth())
+        self.settingsLeftVerticalFrame.setSizePolicy(sizePolicy5)
         self.settingsLeftVerticalFrame.setMaximumSize(QSize(16777215, 16777215))
-        self.verticalLayout_8 = QVBoxLayout(self.settingsLeftVerticalFrame)
-        self.verticalLayout_8.setSpacing(20)
-        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
-        self.verticalLayout_8.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_22 = QVBoxLayout(self.settingsLeftVerticalFrame)
+        self.verticalLayout_22.setSpacing(20)
+        self.verticalLayout_22.setObjectName(u"verticalLayout_22")
+        self.verticalLayout_22.setContentsMargins(0, 0, 0, 0)
         self.userSettingsLabel = QLabel(self.settingsLeftVerticalFrame)
         self.userSettingsLabel.setObjectName(u"userSettingsLabel")
         self.userSettingsLabel.setMinimumSize(QSize(185, 40))
-        self.userSettingsLabel.setFont(font5)
+        self.userSettingsLabel.setFont(font4)
         self.userSettingsLabel.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.userSettingsLabel.setStyleSheet(u"#userSettingsLabel {\n"
 "    color: #f3f3f3;\n"
+"    font-size: 24px;\n"
+"    font-family: Cairo;\n"
+"    font-weight: bold;\n"
 "}")
 
-        self.verticalLayout_8.addWidget(self.userSettingsLabel)
+        self.verticalLayout_22.addWidget(self.userSettingsLabel)
 
         self.settingsLeftHorizontalFrame = QFrame(self.settingsLeftVerticalFrame)
         self.settingsLeftHorizontalFrame.setObjectName(u"settingsLeftHorizontalFrame")
-        sizePolicy6.setHeightForWidth(self.settingsLeftHorizontalFrame.sizePolicy().hasHeightForWidth())
-        self.settingsLeftHorizontalFrame.setSizePolicy(sizePolicy6)
-        self.horizontalLayout_7 = QHBoxLayout(self.settingsLeftHorizontalFrame)
-        self.horizontalLayout_7.setSpacing(20)
-        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
-        self.horizontalLayout_7.setContentsMargins(0, 0, 0, 0)
+        sizePolicy5.setHeightForWidth(self.settingsLeftHorizontalFrame.sizePolicy().hasHeightForWidth())
+        self.settingsLeftHorizontalFrame.setSizePolicy(sizePolicy5)
+        self.horizontalLayout_29 = QHBoxLayout(self.settingsLeftHorizontalFrame)
+        self.horizontalLayout_29.setSpacing(20)
+        self.horizontalLayout_29.setObjectName(u"horizontalLayout_29")
+        self.horizontalLayout_29.setContentsMargins(0, 0, 0, 0)
         self.settingsChangeVerticalFrame = QFrame(self.settingsLeftHorizontalFrame)
         self.settingsChangeVerticalFrame.setObjectName(u"settingsChangeVerticalFrame")
         self.settingsChangeVerticalFrame.setMinimumSize(QSize(474, 0))
         self.settingsChangeVerticalFrame.setStyleSheet(u"")
-        self.verticalLayout_7 = QVBoxLayout(self.settingsChangeVerticalFrame)
-        self.verticalLayout_7.setSpacing(0)
-        self.verticalLayout_7.setObjectName(u"verticalLayout_7")
-        self.verticalLayout_7.setContentsMargins(40, 10, 40, 20)
+        self.verticalLayout_23 = QVBoxLayout(self.settingsChangeVerticalFrame)
+        self.verticalLayout_23.setSpacing(0)
+        self.verticalLayout_23.setObjectName(u"verticalLayout_23")
+        self.verticalLayout_23.setContentsMargins(40, 10, 40, 20)
         self.settingsChangeInsideVerticalFrame = QFrame(self.settingsChangeVerticalFrame)
         self.settingsChangeInsideVerticalFrame.setObjectName(u"settingsChangeInsideVerticalFrame")
-        self.verticalLayout_6 = QVBoxLayout(self.settingsChangeInsideVerticalFrame)
-        self.verticalLayout_6.setSpacing(0)
-        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
-        self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_24 = QVBoxLayout(self.settingsChangeInsideVerticalFrame)
+        self.verticalLayout_24.setSpacing(0)
+        self.verticalLayout_24.setObjectName(u"verticalLayout_24")
+        self.verticalLayout_24.setContentsMargins(0, 0, 0, 0)
         self.changeEmailLabel = QLabel(self.settingsChangeInsideVerticalFrame)
         self.changeEmailLabel.setObjectName(u"changeEmailLabel")
         self.changeEmailLabel.setMinimumSize(QSize(0, 40))
-        self.changeEmailLabel.setFont(font6)
+        self.changeEmailLabel.setFont(font4)
         self.changeEmailLabel.setStyleSheet(u"#changeEmailLabel {\n"
 "    color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo;\n"
+"    font-weight: bold;\n"
 "}")
 
-        self.verticalLayout_6.addWidget(self.changeEmailLabel)
+        self.verticalLayout_24.addWidget(self.changeEmailLabel)
 
         self.emailLineEdit = QLineEdit(self.settingsChangeInsideVerticalFrame)
         self.emailLineEdit.setObjectName(u"emailLineEdit")
         self.emailLineEdit.setMaximumSize(QSize(500, 33))
-        font14 = QFont()
-        font14.setFamilies([u"Cairo"])
-        font14.setPointSize(11)
-        font14.setBold(False)
-        self.emailLineEdit.setFont(font14)
+        self.emailLineEdit.setFont(font5)
         self.emailLineEdit.setStyleSheet(u"#emailLineEdit {\n"
 "    background-color: #f3f3f3;\n"
 "    border: 2px solid lightgray;\n"
 "    border-radius: 10px;\n"
 "    padding: 0px 5px;\n"
 "    color: black;\n"
+"    font-size: 15px;\n"
+"    font-family: Cairo;\n"
 "}")
 
-        self.verticalLayout_6.addWidget(self.emailLineEdit)
+        self.verticalLayout_24.addWidget(self.emailLineEdit)
 
         self.saveEmailErrorMessageLabel = QLabel(self.settingsChangeInsideVerticalFrame)
         self.saveEmailErrorMessageLabel.setObjectName(u"saveEmailErrorMessageLabel")
-        sizePolicy6.setHeightForWidth(self.saveEmailErrorMessageLabel.sizePolicy().hasHeightForWidth())
-        self.saveEmailErrorMessageLabel.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.saveEmailErrorMessageLabel.sizePolicy().hasHeightForWidth())
+        self.saveEmailErrorMessageLabel.setSizePolicy(sizePolicy5)
         self.saveEmailErrorMessageLabel.setMinimumSize(QSize(252, 20))
         self.saveEmailErrorMessageLabel.setMaximumSize(QSize(500, 50))
-        font15 = QFont()
-        font15.setFamilies([u"Cairo"])
-        font15.setPointSize(10)
-        font15.setBold(True)
-        font15.setStrikeOut(False)
-        font15.setKerning(True)
-        self.saveEmailErrorMessageLabel.setFont(font15)
+        font8 = QFont()
+        font8.setFamilies([u"Cairo"])
+        font8.setBold(True)
+        font8.setStrikeOut(False)
+        font8.setKerning(True)
+        self.saveEmailErrorMessageLabel.setFont(font8)
         self.saveEmailErrorMessageLabel.setStyleSheet(u"#saveEmailErrorMessageLabel {\n"
-"	color: #D84F4F;\n"
-"	background-color: #3C3D4A;\n"
+"	background-color: #3c3d4a;\n"
+"	color: #d84f4f;\n"
+"    font-size: 13px;\n"
+"    font-family: Cairo;\n"
 "	border: none;\n"
 "}")
         self.saveEmailErrorMessageLabel.setLineWidth(1)
@@ -2852,148 +2969,152 @@ class Ui_NetSpect(object):
         self.saveEmailErrorMessageLabel.setIndent(-1)
         self.saveEmailErrorMessageLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.verticalLayout_6.addWidget(self.saveEmailErrorMessageLabel)
+        self.verticalLayout_24.addWidget(self.saveEmailErrorMessageLabel)
 
         self.emailPushButtonFrame = QFrame(self.settingsChangeInsideVerticalFrame)
         self.emailPushButtonFrame.setObjectName(u"emailPushButtonFrame")
         self.emailPushButtonFrame.setMaximumSize(QSize(500, 16777215))
-        self.emailButonHorizontalLayout = QHBoxLayout(self.emailPushButtonFrame)
-        self.emailButonHorizontalLayout.setObjectName(u"emailButonHorizontalLayout")
-        self.emailButonHorizontalLayout.setContentsMargins(-1, 9, -1, -1)
+        self.horizontalLayout_30 = QHBoxLayout(self.emailPushButtonFrame)
+        self.horizontalLayout_30.setObjectName(u"horizontalLayout_30")
+        self.horizontalLayout_30.setContentsMargins(-1, 9, -1, -1)
         self.emailPushButton = QPushButton(self.emailPushButtonFrame)
         self.emailPushButton.setObjectName(u"emailPushButton")
-        self.emailPushButton.setMinimumSize(QSize(0, 31))
-        self.emailPushButton.setMaximumSize(QSize(145, 16777215))
-        font16 = QFont()
-        font16.setFamilies([u"Cairo"])
-        font16.setPointSize(12)
-        font16.setBold(True)
-        self.emailPushButton.setFont(font16)
+        self.emailPushButton.setMinimumSize(QSize(145, 31))
+        self.emailPushButton.setMaximumSize(QSize(145, 31))
+        self.emailPushButton.setFont(font4)
         self.emailPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.emailPushButton.setStyleSheet(u"#emailPushButton  {\n"
-"    background-color: #4E4F5A; \n"
-"    border: 2px solid lightgray;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;                      \n"
-"    color: #f3f3f3;       \n"
+"    background-color: #4e4f5a;\n"
+"    border: 2px solid lightgray;\n"
+"    border-radius: 10px;\n"
+"    padding: 5px;\n"
+"    color: #f3f3f3;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
 "\n"
 "#emailPushButton:hover {\n"
 "    background-color: #464751; \n"
-"	border-color: #D7D7D7;\n"
+"	border-color: #d7d7d7;\n"
 "}\n"
 "\n"
 "#emailPushButton:pressed {\n"
 "    background-color: #383840; \n"
-"	border-color:#D7D7D7;\n"
+"	border-color:#d7d7d7;\n"
 "}")
 
-        self.emailButonHorizontalLayout.addWidget(self.emailPushButton)
+        self.horizontalLayout_30.addWidget(self.emailPushButton)
 
 
-        self.verticalLayout_6.addWidget(self.emailPushButtonFrame)
+        self.verticalLayout_24.addWidget(self.emailPushButtonFrame)
 
-        self.verticalSpacer_16 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer_23 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_6.addItem(self.verticalSpacer_16)
+        self.verticalLayout_24.addItem(self.verticalSpacer_23)
 
         self.changeUsernameLabel = QLabel(self.settingsChangeInsideVerticalFrame)
         self.changeUsernameLabel.setObjectName(u"changeUsernameLabel")
         self.changeUsernameLabel.setMinimumSize(QSize(0, 40))
-        self.changeUsernameLabel.setFont(font6)
+        self.changeUsernameLabel.setFont(font4)
         self.changeUsernameLabel.setStyleSheet(u"#changeUsernameLabel {\n"
 "    color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo;\n"
+"    font-weight: bold;\n"
 "}")
 
-        self.verticalLayout_6.addWidget(self.changeUsernameLabel)
+        self.verticalLayout_24.addWidget(self.changeUsernameLabel)
 
         self.usernameLineEdit = QLineEdit(self.settingsChangeInsideVerticalFrame)
         self.usernameLineEdit.setObjectName(u"usernameLineEdit")
         self.usernameLineEdit.setMaximumSize(QSize(500, 33))
-        font17 = QFont()
-        font17.setFamilies([u"Cairo"])
-        font17.setPointSize(11)
-        self.usernameLineEdit.setFont(font17)
+        self.usernameLineEdit.setFont(font3)
         self.usernameLineEdit.setStyleSheet(u"#usernameLineEdit {\n"
 "    background-color: #f3f3f3;\n"
 "    border: 2px solid lightgray;\n"
 "    border-radius: 10px; \n"
 "    padding: 0px 5px;\n"
 "    color: black;\n"
+"    font-size: 15px;\n"
+"    font-family: Cairo;\n"
 "}")
 
-        self.verticalLayout_6.addWidget(self.usernameLineEdit)
+        self.verticalLayout_24.addWidget(self.usernameLineEdit)
 
         self.saveUsernameErrorMessageLabel = QLabel(self.settingsChangeInsideVerticalFrame)
         self.saveUsernameErrorMessageLabel.setObjectName(u"saveUsernameErrorMessageLabel")
-        sizePolicy6.setHeightForWidth(self.saveUsernameErrorMessageLabel.sizePolicy().hasHeightForWidth())
-        self.saveUsernameErrorMessageLabel.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.saveUsernameErrorMessageLabel.sizePolicy().hasHeightForWidth())
+        self.saveUsernameErrorMessageLabel.setSizePolicy(sizePolicy5)
         self.saveUsernameErrorMessageLabel.setMinimumSize(QSize(252, 20))
         self.saveUsernameErrorMessageLabel.setMaximumSize(QSize(500, 50))
-        font18 = QFont()
-        font18.setFamilies([u"Cairo"])
-        font18.setPointSize(10)
-        font18.setBold(True)
-        self.saveUsernameErrorMessageLabel.setFont(font18)
+        self.saveUsernameErrorMessageLabel.setFont(font4)
         self.saveUsernameErrorMessageLabel.setStyleSheet(u"#saveUsernameErrorMessageLabel {\n"
-"	color: #D84F4F;\n"
-"	background-color: #3C3D4A;\n"
+"	background-color: #3c3d4a;\n"
+"	color: #d84f4f;\n"
+"    font-size: 13px;\n"
+"    font-family: Cairo;\n"
+"	border: none;\n"
 "}")
         self.saveUsernameErrorMessageLabel.setScaledContents(False)
         self.saveUsernameErrorMessageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.saveUsernameErrorMessageLabel.setWordWrap(True)
         self.saveUsernameErrorMessageLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.verticalLayout_6.addWidget(self.saveUsernameErrorMessageLabel)
+        self.verticalLayout_24.addWidget(self.saveUsernameErrorMessageLabel)
 
         self.usernamePushButtonFrame = QFrame(self.settingsChangeInsideVerticalFrame)
         self.usernamePushButtonFrame.setObjectName(u"usernamePushButtonFrame")
         self.usernamePushButtonFrame.setMaximumSize(QSize(500, 16777215))
-        self.usernameButtonHorizontalLayout = QHBoxLayout(self.usernamePushButtonFrame)
-        self.usernameButtonHorizontalLayout.setObjectName(u"usernameButtonHorizontalLayout")
+        self.horizontalLayout_31 = QHBoxLayout(self.usernamePushButtonFrame)
+        self.horizontalLayout_31.setObjectName(u"horizontalLayout_31")
         self.usernamePushButton = QPushButton(self.usernamePushButtonFrame)
         self.usernamePushButton.setObjectName(u"usernamePushButton")
-        self.usernamePushButton.setMinimumSize(QSize(0, 31))
-        self.usernamePushButton.setMaximumSize(QSize(145, 16777215))
-        self.usernamePushButton.setFont(font16)
+        self.usernamePushButton.setMinimumSize(QSize(145, 31))
+        self.usernamePushButton.setMaximumSize(QSize(145, 31))
+        self.usernamePushButton.setFont(font4)
         self.usernamePushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.usernamePushButton.setStyleSheet(u"#usernamePushButton  {\n"
-"    background-color: #4E4F5A; \n"
-"    border: 2px solid lightgray;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;                     \n"
-"    color: #f3f3f3;       \n"
+"    background-color: #4e4f5a;\n"
+"    border: 2px solid lightgray;\n"
+"    border-radius: 10px;\n"
+"    padding: 5px;\n"
+"    color: #f3f3f3;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
 "#usernamePushButton:hover {\n"
 "    background-color: #464751; \n"
-"	border-color: #D7D7D7;\n"
+"	border-color: #d7d7d7;\n"
 "}\n"
 "\n"
 "#usernamePushButton:pressed {\n"
 "    background-color: #383840; \n"
-"	border-color:#D7D7D7;\n"
+"	border-color:#d7d7d7;\n"
 "}")
 
-        self.usernameButtonHorizontalLayout.addWidget(self.usernamePushButton)
+        self.horizontalLayout_31.addWidget(self.usernamePushButton)
 
 
-        self.verticalLayout_6.addWidget(self.usernamePushButtonFrame)
+        self.verticalLayout_24.addWidget(self.usernamePushButtonFrame)
 
-        self.verticalSpacer_17 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer_24 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_6.addItem(self.verticalSpacer_17)
+        self.verticalLayout_24.addItem(self.verticalSpacer_24)
 
         self.changePasswordLabel = QLabel(self.settingsChangeInsideVerticalFrame)
         self.changePasswordLabel.setObjectName(u"changePasswordLabel")
         self.changePasswordLabel.setMinimumSize(QSize(0, 40))
-        self.changePasswordLabel.setFont(font6)
+        self.changePasswordLabel.setFont(font4)
         self.changePasswordLabel.setStyleSheet(u"#changePasswordLabel {\n"
 "    color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo;\n"
+"    font-weight: bold;\n"
 "}")
 
-        self.verticalLayout_6.addWidget(self.changePasswordLabel)
+        self.verticalLayout_24.addWidget(self.changePasswordLabel)
 
         self.PasswordVerticalFrame = QFrame(self.settingsChangeInsideVerticalFrame)
         self.PasswordVerticalFrame.setObjectName(u"PasswordVerticalFrame")
@@ -3004,13 +3125,15 @@ class Ui_NetSpect(object):
         self.currentPasswordLineEdit = QLineEdit(self.PasswordVerticalFrame)
         self.currentPasswordLineEdit.setObjectName(u"currentPasswordLineEdit")
         self.currentPasswordLineEdit.setMaximumSize(QSize(500, 33))
-        self.currentPasswordLineEdit.setFont(font17)
+        self.currentPasswordLineEdit.setFont(font3)
         self.currentPasswordLineEdit.setStyleSheet(u"#currentPasswordLineEdit {\n"
 "    background-color: #f3f3f3;\n"
 "    border: 2px solid lightgray;\n"
 "    border-radius: 10px;\n"
 "    padding: 0px 5px;\n"
 "    color: black;\n"
+"    font-size: 15px;\n"
+"    font-family: Cairo;\n"
 "}")
         self.currentPasswordLineEdit.setEchoMode(QLineEdit.EchoMode.Password)
 
@@ -3019,13 +3142,15 @@ class Ui_NetSpect(object):
         self.newPasswordLineEdit = QLineEdit(self.PasswordVerticalFrame)
         self.newPasswordLineEdit.setObjectName(u"newPasswordLineEdit")
         self.newPasswordLineEdit.setMaximumSize(QSize(500, 33))
-        self.newPasswordLineEdit.setFont(font17)
+        self.newPasswordLineEdit.setFont(font3)
         self.newPasswordLineEdit.setStyleSheet(u"#newPasswordLineEdit {\n"
 "    background-color: #f3f3f3;\n"
 "    border: 2px solid lightgray;\n"
 "    border-radius: 10px;\n"
 "    padding: 0px 5px;\n"
 "    color: black;\n"
+"    font-size: 15px;\n"
+"    font-family: Cairo;\n"
 "}")
         self.newPasswordLineEdit.setEchoMode(QLineEdit.EchoMode.Password)
 
@@ -3034,119 +3159,129 @@ class Ui_NetSpect(object):
         self.confirmPasswordLineEdit = QLineEdit(self.PasswordVerticalFrame)
         self.confirmPasswordLineEdit.setObjectName(u"confirmPasswordLineEdit")
         self.confirmPasswordLineEdit.setMaximumSize(QSize(500, 33))
-        self.confirmPasswordLineEdit.setFont(font17)
+        self.confirmPasswordLineEdit.setFont(font3)
         self.confirmPasswordLineEdit.setStyleSheet(u"#confirmPasswordLineEdit {\n"
 "    background-color: #f3f3f3;\n"
 "    border: 2px solid lightgray;\n"
 "    border-radius: 10px;\n"
 "    padding: 0px 5px;\n"
 "    color: black;\n"
+"    font-size: 15px;\n"
+"    font-family: Cairo;\n"
 "}")
         self.confirmPasswordLineEdit.setEchoMode(QLineEdit.EchoMode.Password)
 
         self.changePasswordVerticalFrame.addWidget(self.confirmPasswordLineEdit)
 
 
-        self.verticalLayout_6.addWidget(self.PasswordVerticalFrame)
+        self.verticalLayout_24.addWidget(self.PasswordVerticalFrame)
 
         self.savePasswordErrorMessageLabel = QLabel(self.settingsChangeInsideVerticalFrame)
         self.savePasswordErrorMessageLabel.setObjectName(u"savePasswordErrorMessageLabel")
-        sizePolicy6.setHeightForWidth(self.savePasswordErrorMessageLabel.sizePolicy().hasHeightForWidth())
-        self.savePasswordErrorMessageLabel.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.savePasswordErrorMessageLabel.sizePolicy().hasHeightForWidth())
+        self.savePasswordErrorMessageLabel.setSizePolicy(sizePolicy5)
         self.savePasswordErrorMessageLabel.setMinimumSize(QSize(252, 20))
         self.savePasswordErrorMessageLabel.setMaximumSize(QSize(500, 50))
-        self.savePasswordErrorMessageLabel.setFont(font18)
+        self.savePasswordErrorMessageLabel.setFont(font4)
         self.savePasswordErrorMessageLabel.setStyleSheet(u"#savePasswordErrorMessageLabel {\n"
-"	color: #D84F4F;\n"
-"	background-color: #3C3D4A;\n"
+"	background-color: #3c3d4a;\n"
+"	color: #d84f4f;\n"
+"    font-size: 13px;\n"
+"    font-family: Cairo;\n"
+"	border: none;\n"
 "	line-height: 50%;\n"
 "}")
         self.savePasswordErrorMessageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.savePasswordErrorMessageLabel.setWordWrap(True)
         self.savePasswordErrorMessageLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.verticalLayout_6.addWidget(self.savePasswordErrorMessageLabel)
+        self.verticalLayout_24.addWidget(self.savePasswordErrorMessageLabel)
 
         self.passwordPushButtonFrame = QFrame(self.settingsChangeInsideVerticalFrame)
         self.passwordPushButtonFrame.setObjectName(u"passwordPushButtonFrame")
         self.passwordPushButtonFrame.setMaximumSize(QSize(500, 16777215))
-        self.passwordButtonHorizontalLayout = QHBoxLayout(self.passwordPushButtonFrame)
-        self.passwordButtonHorizontalLayout.setObjectName(u"passwordButtonHorizontalLayout")
+        self.horizontalLayout_32 = QHBoxLayout(self.passwordPushButtonFrame)
+        self.horizontalLayout_32.setObjectName(u"horizontalLayout_32")
         self.passwordPushButton = QPushButton(self.passwordPushButtonFrame)
         self.passwordPushButton.setObjectName(u"passwordPushButton")
-        self.passwordPushButton.setMinimumSize(QSize(0, 31))
-        self.passwordPushButton.setMaximumSize(QSize(145, 16777215))
-        self.passwordPushButton.setFont(font16)
+        self.passwordPushButton.setMinimumSize(QSize(145, 31))
+        self.passwordPushButton.setMaximumSize(QSize(145, 31))
+        self.passwordPushButton.setFont(font4)
         self.passwordPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.passwordPushButton.setStyleSheet(u"#passwordPushButton  {\n"
-"    background-color: #4E4F5A; \n"
-"    border: 2px solid lightgray;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;                   \n"
-"    color: #f3f3f3;       \n"
+"    background-color: #4e4f5a;\n"
+"    border: 2px solid lightgray;\n"
+"    border-radius: 10px;\n"
+"    padding: 5px;\n"
+"    color: #f3f3f3;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
 "#passwordPushButton:hover {\n"
 "    background-color: #464751; \n"
-"	border-color: #D7D7D7;\n"
+"	border-color: #d7d7d7;\n"
 "}\n"
 "\n"
 "#passwordPushButton:pressed {\n"
 "    background-color: #383840; \n"
-"	border-color:#D7D7D7;\n"
+"	border-color:#d7d7d7;\n"
 "}")
 
-        self.passwordButtonHorizontalLayout.addWidget(self.passwordPushButton)
+        self.horizontalLayout_32.addWidget(self.passwordPushButton)
 
 
-        self.verticalLayout_6.addWidget(self.passwordPushButtonFrame)
+        self.verticalLayout_24.addWidget(self.passwordPushButtonFrame)
 
 
-        self.verticalLayout_7.addWidget(self.settingsChangeInsideVerticalFrame)
+        self.verticalLayout_23.addWidget(self.settingsChangeInsideVerticalFrame)
 
-        self.verticalSpacer_11 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer_25 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_7.addItem(self.verticalSpacer_11)
+        self.verticalLayout_23.addItem(self.verticalSpacer_25)
 
 
-        self.horizontalLayout_7.addWidget(self.settingsChangeVerticalFrame)
+        self.horizontalLayout_29.addWidget(self.settingsChangeVerticalFrame)
 
         self.settingsInterfaceMacButtonsVerticalFrame = QFrame(self.settingsLeftHorizontalFrame)
         self.settingsInterfaceMacButtonsVerticalFrame.setObjectName(u"settingsInterfaceMacButtonsVerticalFrame")
-        sizePolicy6.setHeightForWidth(self.settingsInterfaceMacButtonsVerticalFrame.sizePolicy().hasHeightForWidth())
-        self.settingsInterfaceMacButtonsVerticalFrame.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.settingsInterfaceMacButtonsVerticalFrame.sizePolicy().hasHeightForWidth())
+        self.settingsInterfaceMacButtonsVerticalFrame.setSizePolicy(sizePolicy5)
         self.settingsInterfaceMacButtonsVerticalFrame.setStyleSheet(u"")
-        self.verticalLayout_22 = QVBoxLayout(self.settingsInterfaceMacButtonsVerticalFrame)
-        self.verticalLayout_22.setSpacing(25)
-        self.verticalLayout_22.setObjectName(u"verticalLayout_22")
-        self.verticalLayout_22.setContentsMargins(0, 10, 0, 0)
+        self.verticalLayout_25 = QVBoxLayout(self.settingsInterfaceMacButtonsVerticalFrame)
+        self.verticalLayout_25.setSpacing(25)
+        self.verticalLayout_25.setObjectName(u"verticalLayout_25")
+        self.verticalLayout_25.setContentsMargins(0, 10, 0, 0)
         self.interfaceSettingsHorizontalFrame = QFrame(self.settingsInterfaceMacButtonsVerticalFrame)
         self.interfaceSettingsHorizontalFrame.setObjectName(u"interfaceSettingsHorizontalFrame")
-        self.horizontalLayout_28 = QHBoxLayout(self.interfaceSettingsHorizontalFrame)
-        self.horizontalLayout_28.setSpacing(0)
-        self.horizontalLayout_28.setObjectName(u"horizontalLayout_28")
-        self.horizontalLayout_28.setContentsMargins(0, 0, 0, 0)
-        self.verticalFrame_3 = QFrame(self.interfaceSettingsHorizontalFrame)
-        self.verticalFrame_3.setObjectName(u"verticalFrame_3")
-        self.verticalLayout_25 = QVBoxLayout(self.verticalFrame_3)
-        self.verticalLayout_25.setSpacing(0)
-        self.verticalLayout_25.setObjectName(u"verticalLayout_25")
-        self.verticalLayout_25.setContentsMargins(0, 0, 0, 0)
-        self.interfaceSettingsLabel = QLabel(self.verticalFrame_3)
-        self.interfaceSettingsLabel.setObjectName(u"interfaceSettingsLabel")
-        self.interfaceSettingsLabel.setMinimumSize(QSize(185, 40))
-        self.interfaceSettingsLabel.setFont(font6)
-        self.interfaceSettingsLabel.setStyleSheet(u"#interfaceSettingsLabel {\n"
+        self.horizontalLayout_33 = QHBoxLayout(self.interfaceSettingsHorizontalFrame)
+        self.horizontalLayout_33.setSpacing(0)
+        self.horizontalLayout_33.setObjectName(u"horizontalLayout_33")
+        self.horizontalLayout_33.setContentsMargins(0, 0, 0, 0)
+        self.interfaceSettingsVerticalFrame = QFrame(self.interfaceSettingsHorizontalFrame)
+        self.interfaceSettingsVerticalFrame.setObjectName(u"interfaceSettingsVerticalFrame")
+        self.verticalLayout_26 = QVBoxLayout(self.interfaceSettingsVerticalFrame)
+        self.verticalLayout_26.setSpacing(0)
+        self.verticalLayout_26.setObjectName(u"verticalLayout_26")
+        self.verticalLayout_26.setContentsMargins(0, 0, 0, 0)
+        self.interfaceColorModeLabel = QLabel(self.interfaceSettingsVerticalFrame)
+        self.interfaceColorModeLabel.setObjectName(u"interfaceColorModeLabel")
+        self.interfaceColorModeLabel.setMinimumSize(QSize(185, 40))
+        self.interfaceColorModeLabel.setFont(font4)
+        self.interfaceColorModeLabel.setStyleSheet(u"#interfaceColorModeLabel {\n"
 "    color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo;\n"
+"    font-weight: bold;\n"
 "}")
 
-        self.verticalLayout_25.addWidget(self.interfaceSettingsLabel)
+        self.verticalLayout_26.addWidget(self.interfaceColorModeLabel)
 
-        self.colorModeComboBoxFrame = QFrame(self.verticalFrame_3)
+        self.colorModeComboBoxFrame = QFrame(self.interfaceSettingsVerticalFrame)
         self.colorModeComboBoxFrame.setObjectName(u"colorModeComboBoxFrame")
         self.colorModeComboBoxFrame.setMinimumSize(QSize(195, 32))
         self.colorModeComboBoxFrame.setMaximumSize(QSize(195, 32))
-        self.colorModeComboBoxFrame.setFont(font8)
+        self.colorModeComboBoxFrame.setFont(font6)
         self.colorModeComboBoxFrame.setStyleSheet(u"#colorModeComboBoxFrame {\n"
 "    background-color: #f3f3f3;\n"
 "    color: black;\n"
@@ -3161,7 +3296,7 @@ class Ui_NetSpect(object):
         self.colorModeComboBoxArrow.setGeometry(QRect(171, 0, 24, 32))
         self.colorModeComboBoxArrow.setMinimumSize(QSize(24, 32))
         self.colorModeComboBoxArrow.setMaximumSize(QSize(22, 32))
-        self.colorModeComboBoxArrow.setFont(font8)
+        self.colorModeComboBoxArrow.setFont(font6)
         self.colorModeComboBoxArrow.setStyleSheet(u"#colorModeComboBoxArrow {\n"
 "    background-color: lightgray;\n"
 "    color: black;\n"
@@ -3179,11 +3314,13 @@ class Ui_NetSpect(object):
         self.colorModeComboBox.setGeometry(QRect(0, 0, 195, 32))
         self.colorModeComboBox.setMinimumSize(QSize(195, 32))
         self.colorModeComboBox.setMaximumSize(QSize(195, 32))
-        self.colorModeComboBox.setFont(font8)
+        self.colorModeComboBox.setFont(font3)
         self.colorModeComboBox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.colorModeComboBox.setStyleSheet(u"#colorModeComboBox {\n"
 "    background-color: transparent;\n"
 "    color: black;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "    border: 2px outset transparent;\n"
 "    border-radius: 10px;\n"
 "    padding: 4px;\n"
@@ -3217,45 +3354,48 @@ class Ui_NetSpect(object):
 "    outline: 0px;\n"
 "}")
 
-        self.verticalLayout_25.addWidget(self.colorModeComboBoxFrame)
+        self.verticalLayout_26.addWidget(self.colorModeComboBoxFrame)
 
 
-        self.horizontalLayout_28.addWidget(self.verticalFrame_3)
+        self.horizontalLayout_33.addWidget(self.interfaceSettingsVerticalFrame)
 
-        self.horizontalSpacer_23 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_26 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_28.addItem(self.horizontalSpacer_23)
+        self.horizontalLayout_33.addItem(self.horizontalSpacer_26)
 
 
-        self.verticalLayout_22.addWidget(self.interfaceSettingsHorizontalFrame)
+        self.verticalLayout_25.addWidget(self.interfaceSettingsHorizontalFrame)
 
         self.opperationModeHorizontalFrame = QFrame(self.settingsInterfaceMacButtonsVerticalFrame)
         self.opperationModeHorizontalFrame.setObjectName(u"opperationModeHorizontalFrame")
-        self.horizontalLayout_32 = QHBoxLayout(self.opperationModeHorizontalFrame)
-        self.horizontalLayout_32.setSpacing(0)
-        self.horizontalLayout_32.setObjectName(u"horizontalLayout_32")
-        self.horizontalLayout_32.setContentsMargins(0, 0, 0, 0)
-        self.verticalFrame_4 = QFrame(self.opperationModeHorizontalFrame)
-        self.verticalFrame_4.setObjectName(u"verticalFrame_4")
-        self.verticalLayout_27 = QVBoxLayout(self.verticalFrame_4)
+        self.horizontalLayout_34 = QHBoxLayout(self.opperationModeHorizontalFrame)
+        self.horizontalLayout_34.setSpacing(0)
+        self.horizontalLayout_34.setObjectName(u"horizontalLayout_34")
+        self.horizontalLayout_34.setContentsMargins(0, 0, 0, 0)
+        self.opperationModeVerticalFrame = QFrame(self.opperationModeHorizontalFrame)
+        self.opperationModeVerticalFrame.setObjectName(u"opperationModeVerticalFrame")
+        self.verticalLayout_27 = QVBoxLayout(self.opperationModeVerticalFrame)
         self.verticalLayout_27.setSpacing(0)
         self.verticalLayout_27.setObjectName(u"verticalLayout_27")
         self.verticalLayout_27.setContentsMargins(0, 0, 0, 0)
-        self.operationModeLabel = QLabel(self.verticalFrame_4)
+        self.operationModeLabel = QLabel(self.opperationModeVerticalFrame)
         self.operationModeLabel.setObjectName(u"operationModeLabel")
         self.operationModeLabel.setMinimumSize(QSize(265, 40))
-        self.operationModeLabel.setFont(font6)
+        self.operationModeLabel.setFont(font4)
         self.operationModeLabel.setStyleSheet(u"#operationModeLabel {\n"
 "    color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo;\n"
+"    font-weight: bold;\n"
 "}")
 
         self.verticalLayout_27.addWidget(self.operationModeLabel)
 
-        self.operationModeComboBoxFrame = QFrame(self.verticalFrame_4)
+        self.operationModeComboBoxFrame = QFrame(self.opperationModeVerticalFrame)
         self.operationModeComboBoxFrame.setObjectName(u"operationModeComboBoxFrame")
         self.operationModeComboBoxFrame.setMinimumSize(QSize(195, 32))
         self.operationModeComboBoxFrame.setMaximumSize(QSize(195, 32))
-        self.operationModeComboBoxFrame.setFont(font8)
+        self.operationModeComboBoxFrame.setFont(font6)
         self.operationModeComboBoxFrame.setStyleSheet(u"#operationModeComboBoxFrame {\n"
 "    background-color: #f3f3f3;\n"
 "    color: black;\n"
@@ -3270,7 +3410,7 @@ class Ui_NetSpect(object):
         self.operationModeComboBoxArrow.setGeometry(QRect(171, 0, 24, 32))
         self.operationModeComboBoxArrow.setMinimumSize(QSize(24, 32))
         self.operationModeComboBoxArrow.setMaximumSize(QSize(22, 32))
-        self.operationModeComboBoxArrow.setFont(font8)
+        self.operationModeComboBoxArrow.setFont(font6)
         self.operationModeComboBoxArrow.setStyleSheet(u"#operationModeComboBoxArrow {\n"
 "    background-color: lightgray;\n"
 "    color: black;\n"
@@ -3289,11 +3429,13 @@ class Ui_NetSpect(object):
         self.operationModeComboBox.setGeometry(QRect(0, 0, 195, 32))
         self.operationModeComboBox.setMinimumSize(QSize(195, 32))
         self.operationModeComboBox.setMaximumSize(QSize(195, 32))
-        self.operationModeComboBox.setFont(font8)
+        self.operationModeComboBox.setFont(font3)
         self.operationModeComboBox.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.operationModeComboBox.setStyleSheet(u"#operationModeComboBox {\n"
 "    background-color: transparent;\n"
 "    color: black;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "    border: 2px outset transparent;\n"
 "    border-radius: 10px;\n"
 "    padding: 4px;\n"
@@ -3330,55 +3472,58 @@ class Ui_NetSpect(object):
         self.verticalLayout_27.addWidget(self.operationModeComboBoxFrame)
 
 
-        self.horizontalLayout_32.addWidget(self.verticalFrame_4)
+        self.horizontalLayout_34.addWidget(self.opperationModeVerticalFrame)
 
-        self.horizontalSpacer_28 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_27 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_32.addItem(self.horizontalSpacer_28)
+        self.horizontalLayout_34.addItem(self.horizontalSpacer_27)
 
 
-        self.verticalLayout_22.addWidget(self.opperationModeHorizontalFrame)
+        self.verticalLayout_25.addWidget(self.opperationModeHorizontalFrame)
 
         self.macAddressBlacklistHorizontalFrame = QFrame(self.settingsInterfaceMacButtonsVerticalFrame)
         self.macAddressBlacklistHorizontalFrame.setObjectName(u"macAddressBlacklistHorizontalFrame")
-        sizePolicy6.setHeightForWidth(self.macAddressBlacklistHorizontalFrame.sizePolicy().hasHeightForWidth())
-        self.macAddressBlacklistHorizontalFrame.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.macAddressBlacklistHorizontalFrame.sizePolicy().hasHeightForWidth())
+        self.macAddressBlacklistHorizontalFrame.setSizePolicy(sizePolicy5)
         self.macAddressBlacklistHorizontalFrame.setMaximumSize(QSize(16777215, 357))
         self.macAddressBlacklistHorizontalFrame.setStyleSheet(u"")
-        self.horizontalLayout_26 = QHBoxLayout(self.macAddressBlacklistHorizontalFrame)
-        self.horizontalLayout_26.setSpacing(0)
-        self.horizontalLayout_26.setObjectName(u"horizontalLayout_26")
-        self.horizontalLayout_26.setContentsMargins(0, 0, 0, 0)
-        self.verticalFrame_2 = QFrame(self.macAddressBlacklistHorizontalFrame)
-        self.verticalFrame_2.setObjectName(u"verticalFrame_2")
-        self.verticalFrame_2.setMinimumSize(QSize(0, 0))
-        self.verticalLayout_24 = QVBoxLayout(self.verticalFrame_2)
-        self.verticalLayout_24.setSpacing(0)
-        self.verticalLayout_24.setObjectName(u"verticalLayout_24")
-        self.verticalLayout_24.setContentsMargins(0, 0, 0, 0)
-        self.macAddressBlacklistSettingsLabel = QLabel(self.verticalFrame_2)
-        self.macAddressBlacklistSettingsLabel.setObjectName(u"macAddressBlacklistSettingsLabel")
-        self.macAddressBlacklistSettingsLabel.setMinimumSize(QSize(185, 40))
-        self.macAddressBlacklistSettingsLabel.setFont(font6)
-        self.macAddressBlacklistSettingsLabel.setStyleSheet(u"#macAddressBlacklistSettingsLabel {\n"
+        self.horizontalLayout_35 = QHBoxLayout(self.macAddressBlacklistHorizontalFrame)
+        self.horizontalLayout_35.setSpacing(0)
+        self.horizontalLayout_35.setObjectName(u"horizontalLayout_35")
+        self.horizontalLayout_35.setContentsMargins(0, 0, 0, 0)
+        self.macAddressBlacklistVerticalFrame = QFrame(self.macAddressBlacklistHorizontalFrame)
+        self.macAddressBlacklistVerticalFrame.setObjectName(u"macAddressBlacklistVerticalFrame")
+        self.macAddressBlacklistVerticalFrame.setMinimumSize(QSize(0, 0))
+        self.verticalLayout_28 = QVBoxLayout(self.macAddressBlacklistVerticalFrame)
+        self.verticalLayout_28.setSpacing(0)
+        self.verticalLayout_28.setObjectName(u"verticalLayout_28")
+        self.verticalLayout_28.setContentsMargins(0, 0, 0, 0)
+        self.macAddressBlacklistLabel = QLabel(self.macAddressBlacklistVerticalFrame)
+        self.macAddressBlacklistLabel.setObjectName(u"macAddressBlacklistLabel")
+        self.macAddressBlacklistLabel.setMinimumSize(QSize(185, 40))
+        self.macAddressBlacklistLabel.setFont(font4)
+        self.macAddressBlacklistLabel.setStyleSheet(u"#macAddressBlacklistLabel {\n"
 "    color: #f3f3f3;\n"
+"    font-size: 19px;\n"
+"    font-family: Cairo;\n"
+"    font-weight: bold;\n"
 "}")
 
-        self.verticalLayout_24.addWidget(self.macAddressBlacklistSettingsLabel)
+        self.verticalLayout_28.addWidget(self.macAddressBlacklistLabel)
 
-        self.macAddressListWidget = QListWidget(self.verticalFrame_2)
+        self.macAddressListWidget = QListWidget(self.macAddressBlacklistVerticalFrame)
         self.macAddressListWidget.setObjectName(u"macAddressListWidget")
         self.macAddressListWidget.setMinimumSize(QSize(256, 170))
         self.macAddressListWidget.setMaximumSize(QSize(375, 275))
-        self.macAddressListWidget.setFont(font12)
+        self.macAddressListWidget.setFont(font3)
         self.macAddressListWidget.setStyleSheet(u"#macAddressListWidget {\n"
-"   background-color: #f3f3f3;\n"
-"   color: black;\n"
-"   border-radius: 15px;\n"
-"   border-style: outset;\n"
-"   border-width: 2px;\n"
-"   border-color: lightgray;\n"
-"   padding: 5px;\n"
+"    background-color: #f3f3f3;\n"
+"    border-radius: 15px;\n"
+"    border: 2px solid lightgray;\n"
+"    padding: 5px;\n"
+"    color: black;\n"
+"    font-size: 17px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
 "#macAddressListWidget::item {\n"
@@ -3412,8 +3557,8 @@ class Ui_NetSpect(object):
 "    border: 1px solid rgb(153, 153, 153);\n"
 "    width: 10px;\n"
 "    height: 10px; \n"
-"    m"
-                        "argin: 0px 0px 0px 0px;\n"
+""
+                        "    margin: 0px 0px 0px 0px;\n"
 "    border-radius: 4px;\n"
 "}\n"
 "\n"
@@ -3440,161 +3585,172 @@ class Ui_NetSpect(object):
         self.macAddressListWidget.setEditTriggers(QAbstractItemView.EditTrigger.DoubleClicked)
         self.macAddressListWidget.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
 
-        self.verticalLayout_24.addWidget(self.macAddressListWidget)
+        self.verticalLayout_28.addWidget(self.macAddressListWidget)
 
-        self.frame_2 = QFrame(self.verticalFrame_2)
-        self.frame_2.setObjectName(u"frame_2")
-        self.frame_2.setMaximumSize(QSize(375, 42))
-        self.horizontalLayout_27 = QHBoxLayout(self.frame_2)
-        self.horizontalLayout_27.setSpacing(7)
-        self.horizontalLayout_27.setObjectName(u"horizontalLayout_27")
-        self.horizontalLayout_27.setContentsMargins(0, 7, 0, 0)
-        self.macAddressLineEdit = QLineEdit(self.frame_2)
+        self.macAddressLineEditHorizontalFrame = QFrame(self.macAddressBlacklistVerticalFrame)
+        self.macAddressLineEditHorizontalFrame.setObjectName(u"macAddressLineEditHorizontalFrame")
+        self.macAddressLineEditHorizontalFrame.setMaximumSize(QSize(375, 42))
+        self.horizontalLayout_36 = QHBoxLayout(self.macAddressLineEditHorizontalFrame)
+        self.horizontalLayout_36.setSpacing(7)
+        self.horizontalLayout_36.setObjectName(u"horizontalLayout_36")
+        self.horizontalLayout_36.setContentsMargins(0, 7, 0, 0)
+        self.macAddressLineEdit = QLineEdit(self.macAddressLineEditHorizontalFrame)
         self.macAddressLineEdit.setObjectName(u"macAddressLineEdit")
         self.macAddressLineEdit.setMaximumSize(QSize(16777215, 33))
-        self.macAddressLineEdit.setFont(font17)
+        self.macAddressLineEdit.setFont(font3)
         self.macAddressLineEdit.setStyleSheet(u"#macAddressLineEdit {\n"
 "    background-color: #f3f3f3;\n"
 "    border: 2px solid lightgray; \n"
 "    border-radius: 10px;\n"
 "    padding: 0px 5px;\n"
 "    color: black;\n"
+"    font-size: 15px;\n"
+"    font-family: Cairo;\n"
 "}")
         self.macAddressLineEdit.setMaxLength(17)
 
-        self.horizontalLayout_27.addWidget(self.macAddressLineEdit)
+        self.horizontalLayout_36.addWidget(self.macAddressLineEdit)
 
-        self.addMacAddressPushButton = QPushButton(self.frame_2)
+        self.addMacAddressPushButton = QPushButton(self.macAddressLineEditHorizontalFrame)
         self.addMacAddressPushButton.setObjectName(u"addMacAddressPushButton")
         self.addMacAddressPushButton.setMinimumSize(QSize(70, 35))
         self.addMacAddressPushButton.setMaximumSize(QSize(70, 35))
-        self.addMacAddressPushButton.setFont(font16)
+        self.addMacAddressPushButton.setFont(font4)
         self.addMacAddressPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.addMacAddressPushButton.setStyleSheet(u"#addMacAddressPushButton  {\n"
-"    background-color: #3a8e32; \n"
-"    border: 1px solid black;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;                        \n"
-"    color: black;       \n"
+"    background-color: #3a8e32;\n"
+"    border: 1px solid black;\n"
+"    border-radius: 10px;\n"
+"    padding: 5px;\n"
+"    color: black;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
 "#addMacAddressPushButton:hover {\n"
-"     background-color: #4D9946;\n"
+"     background-color: #4d9946;\n"
 " }\n"
 "\n"
 "#addMacAddressPushButton:pressed {\n"
-"    background-color: #2E7128;\n"
+"    background-color: #2e7128;\n"
 "}")
 
-        self.horizontalLayout_27.addWidget(self.addMacAddressPushButton)
+        self.horizontalLayout_36.addWidget(self.addMacAddressPushButton)
 
 
-        self.verticalLayout_24.addWidget(self.frame_2)
+        self.verticalLayout_28.addWidget(self.macAddressLineEditHorizontalFrame)
 
-        self.macAddressBlacklistErrorMessageLabel = QLabel(self.verticalFrame_2)
+        self.macAddressBlacklistErrorMessageLabel = QLabel(self.macAddressBlacklistVerticalFrame)
         self.macAddressBlacklistErrorMessageLabel.setObjectName(u"macAddressBlacklistErrorMessageLabel")
-        sizePolicy6.setHeightForWidth(self.macAddressBlacklistErrorMessageLabel.sizePolicy().hasHeightForWidth())
-        self.macAddressBlacklistErrorMessageLabel.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.macAddressBlacklistErrorMessageLabel.sizePolicy().hasHeightForWidth())
+        self.macAddressBlacklistErrorMessageLabel.setSizePolicy(sizePolicy5)
         self.macAddressBlacklistErrorMessageLabel.setMinimumSize(QSize(252, 20))
         self.macAddressBlacklistErrorMessageLabel.setMaximumSize(QSize(375, 50))
-        self.macAddressBlacklistErrorMessageLabel.setFont(font18)
+        self.macAddressBlacklistErrorMessageLabel.setFont(font4)
         self.macAddressBlacklistErrorMessageLabel.setStyleSheet(u"#macAddressBlacklistErrorMessageLabel {\n"
-"	color: #D84F4F;\n"
-"	background-color: #3C3D4A;\n"
+"	background-color: #3c3d4a;\n"
+"	color: #d84f4f;\n"
+"    font-size: 13px;\n"
+"    font-family: Cairo;\n"
+"	border: none;\n"
 "}")
         self.macAddressBlacklistErrorMessageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.macAddressBlacklistErrorMessageLabel.setWordWrap(True)
         self.macAddressBlacklistErrorMessageLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.verticalLayout_24.addWidget(self.macAddressBlacklistErrorMessageLabel)
+        self.verticalLayout_28.addWidget(self.macAddressBlacklistErrorMessageLabel)
 
 
-        self.horizontalLayout_26.addWidget(self.verticalFrame_2)
+        self.horizontalLayout_35.addWidget(self.macAddressBlacklistVerticalFrame)
 
-        self.horizontalSpacer_14 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalSpacer_28 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_26.addItem(self.horizontalSpacer_14)
+        self.horizontalLayout_35.addItem(self.horizontalSpacer_28)
 
 
-        self.verticalLayout_22.addWidget(self.macAddressBlacklistHorizontalFrame)
+        self.verticalLayout_25.addWidget(self.macAddressBlacklistHorizontalFrame)
 
-        self.verticalSpacer_7 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer_26 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_22.addItem(self.verticalSpacer_7)
+        self.verticalLayout_25.addItem(self.verticalSpacer_26)
 
         self.settingsButtonsHorizontalFrame = QFrame(self.settingsInterfaceMacButtonsVerticalFrame)
         self.settingsButtonsHorizontalFrame.setObjectName(u"settingsButtonsHorizontalFrame")
-        self.horizontalLayout_24 = QHBoxLayout(self.settingsButtonsHorizontalFrame)
-        self.horizontalLayout_24.setSpacing(10)
-        self.horizontalLayout_24.setObjectName(u"horizontalLayout_24")
-        self.horizontalLayout_24.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_22 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.horizontalLayout_37 = QHBoxLayout(self.settingsButtonsHorizontalFrame)
+        self.horizontalLayout_37.setSpacing(10)
+        self.horizontalLayout_37.setObjectName(u"horizontalLayout_37")
+        self.horizontalLayout_37.setContentsMargins(0, 0, 0, 0)
+        self.horizontalSpacer_29 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout_24.addItem(self.horizontalSpacer_22)
+        self.horizontalLayout_37.addItem(self.horizontalSpacer_29)
 
         self.clearHistoryPushButton = QPushButton(self.settingsButtonsHorizontalFrame)
         self.clearHistoryPushButton.setObjectName(u"clearHistoryPushButton")
         self.clearHistoryPushButton.setMinimumSize(QSize(145, 31))
         self.clearHistoryPushButton.setMaximumSize(QSize(145, 31))
-        self.clearHistoryPushButton.setFont(font16)
+        self.clearHistoryPushButton.setFont(font4)
         self.clearHistoryPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.clearHistoryPushButton.setStyleSheet(u"#clearHistoryPushButton  {\n"
-"    background-color: #D84F4F; \n"
-"    border: 1px solid black;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;                      \n"
-"    color: black;       \n"
+"    background-color: #d84f4f;\n"
+"    border: 1px solid black;\n"
+"    border-radius: 10px;\n"
+"    padding: 5px;\n"
+"    color: black;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
 "#clearHistoryPushButton:hover {\n"
-"     background-color: #DB6060;\n"
+"     background-color: #db6060;\n"
 "}\n"
 "\n"
 " #clearHistoryPushButton:pressed {\n"
-"    background-color: #AC3f3F;\n"
+"    background-color: #ac3f3f;\n"
 "}")
 
-        self.horizontalLayout_24.addWidget(self.clearHistoryPushButton)
+        self.horizontalLayout_37.addWidget(self.clearHistoryPushButton)
 
         self.deleteAccoutPushButton = QPushButton(self.settingsButtonsHorizontalFrame)
         self.deleteAccoutPushButton.setObjectName(u"deleteAccoutPushButton")
         self.deleteAccoutPushButton.setMinimumSize(QSize(145, 31))
         self.deleteAccoutPushButton.setMaximumSize(QSize(145, 31))
-        self.deleteAccoutPushButton.setFont(font16)
+        self.deleteAccoutPushButton.setFont(font4)
         self.deleteAccoutPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.deleteAccoutPushButton.setStyleSheet(u"#deleteAccoutPushButton  {\n"
-"    background-color: #D84F4F; \n"
-"    border: 1px solid black;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;                      \n"
-"    color: black;       \n"
+"    background-color: #d84f4f;\n"
+"    border: 1px solid black;\n"
+"    border-radius: 10px;\n"
+"    padding: 5px;\n"
+"    color: black;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
 "\n"
 "#deleteAccoutPushButton:hover {\n"
-"    background-color: #DB6060;\n"
+"    background-color: #db6060;\n"
 "}\n"
 "\n"
 "#deleteAccoutPushButton:pressed {\n"
-"    background-color: #AC3f3F;\n"
+"    background-color: #ac3f3f;\n"
 "}")
 
-        self.horizontalLayout_24.addWidget(self.deleteAccoutPushButton)
+        self.horizontalLayout_37.addWidget(self.deleteAccoutPushButton)
 
 
-        self.verticalLayout_22.addWidget(self.settingsButtonsHorizontalFrame)
+        self.verticalLayout_25.addWidget(self.settingsButtonsHorizontalFrame)
 
 
-        self.horizontalLayout_7.addWidget(self.settingsInterfaceMacButtonsVerticalFrame)
+        self.horizontalLayout_29.addWidget(self.settingsInterfaceMacButtonsVerticalFrame)
 
 
-        self.verticalLayout_8.addWidget(self.settingsLeftHorizontalFrame)
+        self.verticalLayout_22.addWidget(self.settingsLeftHorizontalFrame)
 
 
-        self.horizontalLayout_6.addWidget(self.settingsLeftVerticalFrame)
+        self.horizontalLayout_28.addWidget(self.settingsLeftVerticalFrame)
 
 
-        self.gridLayout_5.addWidget(self.settingsHorizontalFrame, 0, 0, 1, 1)
+        self.gridLayout_6.addWidget(self.settingsHorizontalFrame, 0, 0, 1, 1)
 
         self.stackedWidget.addWidget(self.settingsPage)
 
@@ -3606,10 +3762,10 @@ class Ui_NetSpect(object):
         self.loginRegisterVerticalFrame.setStyleSheet(u"#loginRegisterVerticalFrame {\n"
 "    background-color: #2d2e36;\n"
 "}")
-        self.verticalLayout_19 = QVBoxLayout(self.loginRegisterVerticalFrame)
-        self.verticalLayout_19.setSpacing(10)
-        self.verticalLayout_19.setObjectName(u"verticalLayout_19")
-        self.verticalLayout_19.setContentsMargins(0, 30, 0, 0)
+        self.verticalLayout_29 = QVBoxLayout(self.loginRegisterVerticalFrame)
+        self.verticalLayout_29.setSpacing(10)
+        self.verticalLayout_29.setObjectName(u"verticalLayout_29")
+        self.verticalLayout_29.setContentsMargins(0, 30, 0, 0)
         self.loginFrame = QFrame(self.loginRegisterVerticalFrame)
         self.loginFrame.setObjectName(u"loginFrame")
         self.loginFrame.setEnabled(True)
@@ -3621,15 +3777,15 @@ class Ui_NetSpect(object):
 "}")
         self.loginFrame.setFrameShape(QFrame.Shape.StyledPanel)
         self.loginFrame.setFrameShadow(QFrame.Shadow.Raised)
-        self.gridLayout_6 = QGridLayout(self.loginFrame)
-        self.gridLayout_6.setSpacing(0)
-        self.gridLayout_6.setObjectName(u"gridLayout_6")
-        self.gridLayout_6.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_7 = QGridLayout(self.loginFrame)
+        self.gridLayout_7.setSpacing(0)
+        self.gridLayout_7.setObjectName(u"gridLayout_7")
+        self.gridLayout_7.setContentsMargins(0, 0, 0, 0)
         self.loginVerticalFrame = QFrame(self.loginFrame)
         self.loginVerticalFrame.setObjectName(u"loginVerticalFrame")
         self.loginVerticalFrame.setEnabled(True)
-        sizePolicy6.setHeightForWidth(self.loginVerticalFrame.sizePolicy().hasHeightForWidth())
-        self.loginVerticalFrame.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.loginVerticalFrame.sizePolicy().hasHeightForWidth())
+        self.loginVerticalFrame.setSizePolicy(sizePolicy5)
         self.loginVerticalFrame.setMinimumSize(QSize(300, 320))
         self.loginVerticalFrame.setMaximumSize(QSize(300, 320))
         self.loginVerticalFrame.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
@@ -3637,27 +3793,25 @@ class Ui_NetSpect(object):
 "	background-color: #2d2e36;\n"
 "	border: none;\n"
 "}")
-        self.verticalLayout_20 = QVBoxLayout(self.loginVerticalFrame)
-        self.verticalLayout_20.setSpacing(5)
-        self.verticalLayout_20.setObjectName(u"verticalLayout_20")
-        self.verticalLayout_20.setContentsMargins(20, 0, 15, 10)
+        self.verticalLayout_30 = QVBoxLayout(self.loginVerticalFrame)
+        self.verticalLayout_30.setSpacing(5)
+        self.verticalLayout_30.setObjectName(u"verticalLayout_30")
+        self.verticalLayout_30.setContentsMargins(20, 0, 15, 10)
         self.loginLabel = QLabel(self.loginVerticalFrame)
         self.loginLabel.setObjectName(u"loginLabel")
         self.loginLabel.setMinimumSize(QSize(0, 50))
         self.loginLabel.setMaximumSize(QSize(16777215, 70))
-        font19 = QFont()
-        font19.setFamilies([u"Cairo"])
-        font19.setPointSize(20)
-        font19.setBold(True)
-        self.loginLabel.setFont(font19)
+        self.loginLabel.setFont(font4)
         self.loginLabel.setStyleSheet(u"#loginLabel {\n"
-"	color: #f3f3f3;\n"
 "	background-color: #2d2e36;\n"
+"	color: #f3f3f3;\n"
+"    font-size: 27px;\n"
+"    font-family: Cairo;\n"
 "}")
         self.loginLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.loginLabel.setMargin(0)
 
-        self.verticalLayout_20.addWidget(self.loginLabel)
+        self.verticalLayout_30.addWidget(self.loginLabel)
 
         self.loginLineEditsVerticalFrame = QFrame(self.loginVerticalFrame)
         self.loginLineEditsVerticalFrame.setObjectName(u"loginLineEditsVerticalFrame")
@@ -3667,70 +3821,72 @@ class Ui_NetSpect(object):
 "	background-color: #2d2e36;\n"
 "	border: none;\n"
 "}")
-        self.verticalLayout_38 = QVBoxLayout(self.loginLineEditsVerticalFrame)
-        self.verticalLayout_38.setSpacing(5)
-        self.verticalLayout_38.setObjectName(u"verticalLayout_38")
-        self.verticalLayout_38.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_31 = QVBoxLayout(self.loginLineEditsVerticalFrame)
+        self.verticalLayout_31.setSpacing(5)
+        self.verticalLayout_31.setObjectName(u"verticalLayout_31")
+        self.verticalLayout_31.setContentsMargins(0, 0, 0, 0)
         self.loginUsernameLineEdit = QLineEdit(self.loginLineEditsVerticalFrame)
         self.loginUsernameLineEdit.setObjectName(u"loginUsernameLineEdit")
-        sizePolicy6.setHeightForWidth(self.loginUsernameLineEdit.sizePolicy().hasHeightForWidth())
-        self.loginUsernameLineEdit.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.loginUsernameLineEdit.sizePolicy().hasHeightForWidth())
+        self.loginUsernameLineEdit.setSizePolicy(sizePolicy5)
         self.loginUsernameLineEdit.setMinimumSize(QSize(265, 34))
         self.loginUsernameLineEdit.setMaximumSize(QSize(16777215, 34))
-        self.loginUsernameLineEdit.setFont(font8)
+        self.loginUsernameLineEdit.setFont(font3)
         self.loginUsernameLineEdit.setStyleSheet(u"#loginUsernameLineEdit {\n"
 "    background-color: #f3f3f3;\n"
 "    border: 2px solid lightgray;\n"
 "    border-radius: 10px; \n"
 "    padding: 0px 5px;\n"
 "    color: black;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "}")
 
-        self.verticalLayout_38.addWidget(self.loginUsernameLineEdit)
+        self.verticalLayout_31.addWidget(self.loginUsernameLineEdit)
 
         self.loginPasswordLineEdit = QLineEdit(self.loginLineEditsVerticalFrame)
         self.loginPasswordLineEdit.setObjectName(u"loginPasswordLineEdit")
-        sizePolicy6.setHeightForWidth(self.loginPasswordLineEdit.sizePolicy().hasHeightForWidth())
-        self.loginPasswordLineEdit.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.loginPasswordLineEdit.sizePolicy().hasHeightForWidth())
+        self.loginPasswordLineEdit.setSizePolicy(sizePolicy5)
         self.loginPasswordLineEdit.setMinimumSize(QSize(265, 34))
         self.loginPasswordLineEdit.setMaximumSize(QSize(16777215, 34))
-        font20 = QFont()
-        font20.setFamilies([u"Cairo"])
-        font20.setPointSize(12)
-        font20.setBold(False)
-        self.loginPasswordLineEdit.setFont(font20)
+        self.loginPasswordLineEdit.setFont(font5)
         self.loginPasswordLineEdit.setStyleSheet(u"#loginPasswordLineEdit {\n"
 "    background-color: #f3f3f3;\n"
 "    border: 2px solid lightgray;\n"
 "    border-radius: 10px;\n"
 "    padding: 0px 5px;\n"
 "    color: black;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
 "")
         self.loginPasswordLineEdit.setEchoMode(QLineEdit.EchoMode.Password)
 
-        self.verticalLayout_38.addWidget(self.loginPasswordLineEdit)
+        self.verticalLayout_31.addWidget(self.loginPasswordLineEdit)
 
 
-        self.verticalLayout_20.addWidget(self.loginLineEditsVerticalFrame)
+        self.verticalLayout_30.addWidget(self.loginLineEditsVerticalFrame)
 
         self.loginErrorMessageLabel = QLabel(self.loginVerticalFrame)
         self.loginErrorMessageLabel.setObjectName(u"loginErrorMessageLabel")
-        sizePolicy6.setHeightForWidth(self.loginErrorMessageLabel.sizePolicy().hasHeightForWidth())
-        self.loginErrorMessageLabel.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.loginErrorMessageLabel.sizePolicy().hasHeightForWidth())
+        self.loginErrorMessageLabel.setSizePolicy(sizePolicy5)
         self.loginErrorMessageLabel.setMinimumSize(QSize(252, 20))
         self.loginErrorMessageLabel.setMaximumSize(QSize(16777215, 50))
-        self.loginErrorMessageLabel.setFont(font18)
+        self.loginErrorMessageLabel.setFont(font4)
         self.loginErrorMessageLabel.setStyleSheet(u"#loginErrorMessageLabel {\n"
-"	color: #d84f4f;\n"
 "	background-color: #2d2e36;\n"
+"	color: #d84f4f;\n"
+"    font-size: 13px;\n"
+"    font-family: Cairo;\n"
 "}")
         self.loginErrorMessageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.loginErrorMessageLabel.setWordWrap(True)
         self.loginErrorMessageLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.verticalLayout_20.addWidget(self.loginErrorMessageLabel)
+        self.verticalLayout_30.addWidget(self.loginErrorMessageLabel)
 
         self.loginButtonFrame = QFrame(self.loginVerticalFrame)
         self.loginButtonFrame.setObjectName(u"loginButtonFrame")
@@ -3738,21 +3894,23 @@ class Ui_NetSpect(object):
         self.loginButtonFrame.setStyleSheet(u"#loginButtonFrame {\n"
 "	background-color: #2d2e36;\n"
 "}")
-        self.loginButtonHorizontalLayout = QHBoxLayout(self.loginButtonFrame)
-        self.loginButtonHorizontalLayout.setSpacing(0)
-        self.loginButtonHorizontalLayout.setObjectName(u"loginButtonHorizontalLayout")
-        self.loginButtonHorizontalLayout.setContentsMargins(0, 15, 0, 15)
+        self.horizontalLayout_38 = QHBoxLayout(self.loginButtonFrame)
+        self.horizontalLayout_38.setSpacing(0)
+        self.horizontalLayout_38.setObjectName(u"horizontalLayout_38")
+        self.horizontalLayout_38.setContentsMargins(0, 15, 0, 15)
         self.loginPushButton = QPushButton(self.loginButtonFrame)
         self.loginPushButton.setObjectName(u"loginPushButton")
         self.loginPushButton.setMaximumSize(QSize(100, 36))
-        self.loginPushButton.setFont(font16)
+        self.loginPushButton.setFont(font4)
         self.loginPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.loginPushButton.setStyleSheet(u"#loginPushButton  {\n"
 "    background-color: #4e4f5a;\n"
-"    border: 2px solid lightgray;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;                      \n"
-"    color: #f3f3f3;       \n"
+"    border: 2px solid lightgray;\n"
+"    border-radius: 10px;\n"
+"    padding: 5px;\n"
+"    color: #f3f3f3;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
 "#loginPushButton:hover {\n"
@@ -3765,22 +3923,24 @@ class Ui_NetSpect(object):
 "	border-color:#d7d7d7;\n"
 "}")
 
-        self.loginButtonHorizontalLayout.addWidget(self.loginPushButton)
+        self.horizontalLayout_38.addWidget(self.loginPushButton)
 
 
-        self.verticalLayout_20.addWidget(self.loginButtonFrame)
+        self.verticalLayout_30.addWidget(self.loginButtonFrame)
 
         self.moveToRegisterLabel = QLabel(self.loginVerticalFrame)
         self.moveToRegisterLabel.setObjectName(u"moveToRegisterLabel")
-        sizePolicy6.setHeightForWidth(self.moveToRegisterLabel.sizePolicy().hasHeightForWidth())
-        self.moveToRegisterLabel.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.moveToRegisterLabel.sizePolicy().hasHeightForWidth())
+        self.moveToRegisterLabel.setSizePolicy(sizePolicy5)
         self.moveToRegisterLabel.setMinimumSize(QSize(250, 20))
         self.moveToRegisterLabel.setMaximumSize(QSize(16777215, 20))
-        self.moveToRegisterLabel.setFont(font20)
+        self.moveToRegisterLabel.setFont(font5)
         self.moveToRegisterLabel.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.moveToRegisterLabel.setStyleSheet(u"#moveToRegisterLabel {\n"
-"	color: #6ba6fd;\n"
 "	background-color: #2d2e36;\n"
+"	color: #6ba6fd;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
 "#moveToRegisterLabel:hover {\n"
@@ -3789,19 +3949,21 @@ class Ui_NetSpect(object):
 "")
         self.moveToRegisterLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.verticalLayout_20.addWidget(self.moveToRegisterLabel)
+        self.verticalLayout_30.addWidget(self.moveToRegisterLabel)
 
         self.moveToForgotPasswordLabel = QLabel(self.loginVerticalFrame)
         self.moveToForgotPasswordLabel.setObjectName(u"moveToForgotPasswordLabel")
-        sizePolicy6.setHeightForWidth(self.moveToForgotPasswordLabel.sizePolicy().hasHeightForWidth())
-        self.moveToForgotPasswordLabel.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.moveToForgotPasswordLabel.sizePolicy().hasHeightForWidth())
+        self.moveToForgotPasswordLabel.setSizePolicy(sizePolicy5)
         self.moveToForgotPasswordLabel.setMinimumSize(QSize(250, 20))
         self.moveToForgotPasswordLabel.setMaximumSize(QSize(16777215, 20))
-        self.moveToForgotPasswordLabel.setFont(font20)
+        self.moveToForgotPasswordLabel.setFont(font5)
         self.moveToForgotPasswordLabel.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.moveToForgotPasswordLabel.setStyleSheet(u"#moveToForgotPasswordLabel {\n"
-"	color: #6ba6fd;\n"
 "	background-color: #2d2e36;\n"
+"	color: #6ba6fd;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
 "#moveToForgotPasswordLabel:hover {\n"
@@ -3810,13 +3972,13 @@ class Ui_NetSpect(object):
 "")
         self.moveToForgotPasswordLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.verticalLayout_20.addWidget(self.moveToForgotPasswordLabel)
+        self.verticalLayout_30.addWidget(self.moveToForgotPasswordLabel)
 
 
-        self.gridLayout_6.addWidget(self.loginVerticalFrame, 0, 0, 1, 1)
+        self.gridLayout_7.addWidget(self.loginVerticalFrame, 0, 0, 1, 1)
 
 
-        self.verticalLayout_19.addWidget(self.loginFrame)
+        self.verticalLayout_29.addWidget(self.loginFrame)
 
         self.registerFrame = QFrame(self.loginRegisterVerticalFrame)
         self.registerFrame.setObjectName(u"registerFrame")
@@ -3829,10 +3991,10 @@ class Ui_NetSpect(object):
 "}")
         self.registerFrame.setFrameShape(QFrame.Shape.StyledPanel)
         self.registerFrame.setFrameShadow(QFrame.Shadow.Raised)
-        self.gridLayout_7 = QGridLayout(self.registerFrame)
-        self.gridLayout_7.setSpacing(0)
-        self.gridLayout_7.setObjectName(u"gridLayout_7")
-        self.gridLayout_7.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_8 = QGridLayout(self.registerFrame)
+        self.gridLayout_8.setSpacing(0)
+        self.gridLayout_8.setObjectName(u"gridLayout_8")
+        self.gridLayout_8.setContentsMargins(0, 0, 0, 0)
         self.registerVerticalFrame = QFrame(self.registerFrame)
         self.registerVerticalFrame.setObjectName(u"registerVerticalFrame")
         self.registerVerticalFrame.setMinimumSize(QSize(300, 390))
@@ -3841,23 +4003,25 @@ class Ui_NetSpect(object):
 "	background-color: #2d2e36;\n"
 "	border: none;\n"
 "}")
-        self.verticalLayout_21 = QVBoxLayout(self.registerVerticalFrame)
-        self.verticalLayout_21.setSpacing(5)
-        self.verticalLayout_21.setObjectName(u"verticalLayout_21")
-        self.verticalLayout_21.setContentsMargins(20, 0, 15, 10)
+        self.verticalLayout_32 = QVBoxLayout(self.registerVerticalFrame)
+        self.verticalLayout_32.setSpacing(5)
+        self.verticalLayout_32.setObjectName(u"verticalLayout_32")
+        self.verticalLayout_32.setContentsMargins(20, 0, 15, 10)
         self.registerLabel = QLabel(self.registerVerticalFrame)
         self.registerLabel.setObjectName(u"registerLabel")
         self.registerLabel.setMinimumSize(QSize(0, 50))
         self.registerLabel.setMaximumSize(QSize(16777215, 70))
-        self.registerLabel.setFont(font19)
+        self.registerLabel.setFont(font4)
         self.registerLabel.setStyleSheet(u"#registerLabel {\n"
+"	background-color: #2d2e36;\n"
 "	color: #f3f3f3;\n"
-"	background-color: #2D2E36;\n"
+"    font-size: 27px;\n"
+"    font-family: Cairo;\n"
 "}")
         self.registerLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.registerLabel.setMargin(0)
 
-        self.verticalLayout_21.addWidget(self.registerLabel)
+        self.verticalLayout_32.addWidget(self.registerLabel)
 
         self.registerLineEditsVerticalFrame = QFrame(self.registerVerticalFrame)
         self.registerLineEditsVerticalFrame.setObjectName(u"registerLineEditsVerticalFrame")
@@ -3867,54 +4031,58 @@ class Ui_NetSpect(object):
 "	background-color: #2d2e36;\n"
 "	border: none;\n"
 "}")
-        self.verticalLayout_37 = QVBoxLayout(self.registerLineEditsVerticalFrame)
-        self.verticalLayout_37.setSpacing(5)
-        self.verticalLayout_37.setObjectName(u"verticalLayout_37")
-        self.verticalLayout_37.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_33 = QVBoxLayout(self.registerLineEditsVerticalFrame)
+        self.verticalLayout_33.setSpacing(5)
+        self.verticalLayout_33.setObjectName(u"verticalLayout_33")
+        self.verticalLayout_33.setContentsMargins(0, 0, 0, 0)
         self.registerEmailLineEdit = QLineEdit(self.registerLineEditsVerticalFrame)
         self.registerEmailLineEdit.setObjectName(u"registerEmailLineEdit")
-        sizePolicy6.setHeightForWidth(self.registerEmailLineEdit.sizePolicy().hasHeightForWidth())
-        self.registerEmailLineEdit.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.registerEmailLineEdit.sizePolicy().hasHeightForWidth())
+        self.registerEmailLineEdit.setSizePolicy(sizePolicy5)
         self.registerEmailLineEdit.setMinimumSize(QSize(265, 34))
         self.registerEmailLineEdit.setMaximumSize(QSize(16777215, 34))
         self.registerEmailLineEdit.setSizeIncrement(QSize(0, 0))
-        self.registerEmailLineEdit.setFont(font8)
+        self.registerEmailLineEdit.setFont(font3)
         self.registerEmailLineEdit.setStyleSheet(u"#registerEmailLineEdit {\n"
 "    background-color: #f3f3f3;\n"
 "    border: 2px solid lightgray;\n"
 "    border-radius: 10px; \n"
 "    padding: 0px 5px;\n"
 "    color: black;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "}")
 
-        self.verticalLayout_37.addWidget(self.registerEmailLineEdit)
+        self.verticalLayout_33.addWidget(self.registerEmailLineEdit)
 
         self.registerUsernameLineEdit = QLineEdit(self.registerLineEditsVerticalFrame)
         self.registerUsernameLineEdit.setObjectName(u"registerUsernameLineEdit")
-        sizePolicy6.setHeightForWidth(self.registerUsernameLineEdit.sizePolicy().hasHeightForWidth())
-        self.registerUsernameLineEdit.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.registerUsernameLineEdit.sizePolicy().hasHeightForWidth())
+        self.registerUsernameLineEdit.setSizePolicy(sizePolicy5)
         self.registerUsernameLineEdit.setMinimumSize(QSize(265, 34))
         self.registerUsernameLineEdit.setMaximumSize(QSize(16777215, 34))
         self.registerUsernameLineEdit.setSizeIncrement(QSize(0, 0))
-        self.registerUsernameLineEdit.setFont(font8)
+        self.registerUsernameLineEdit.setFont(font3)
         self.registerUsernameLineEdit.setStyleSheet(u"#registerUsernameLineEdit {\n"
 "    background-color: #f3f3f3;\n"
 "    border: 2px solid lightgray;\n"
 "    border-radius: 10px; \n"
 "    padding: 0px 5px;\n"
 "    color: black;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "}")
 
-        self.verticalLayout_37.addWidget(self.registerUsernameLineEdit)
+        self.verticalLayout_33.addWidget(self.registerUsernameLineEdit)
 
         self.registerPasswordLineEdit = QLineEdit(self.registerLineEditsVerticalFrame)
         self.registerPasswordLineEdit.setObjectName(u"registerPasswordLineEdit")
-        sizePolicy6.setHeightForWidth(self.registerPasswordLineEdit.sizePolicy().hasHeightForWidth())
-        self.registerPasswordLineEdit.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.registerPasswordLineEdit.sizePolicy().hasHeightForWidth())
+        self.registerPasswordLineEdit.setSizePolicy(sizePolicy5)
         self.registerPasswordLineEdit.setMinimumSize(QSize(265, 34))
         self.registerPasswordLineEdit.setMaximumSize(QSize(16777215, 34))
         self.registerPasswordLineEdit.setSizeIncrement(QSize(0, 0))
-        self.registerPasswordLineEdit.setFont(font8)
+        self.registerPasswordLineEdit.setFont(font3)
         self.registerPasswordLineEdit.setToolTipDuration(-1)
         self.registerPasswordLineEdit.setStyleSheet(u"#registerPasswordLineEdit {\n"
 "    background-color: #f3f3f3;\n"
@@ -3922,21 +4090,23 @@ class Ui_NetSpect(object):
 "    border-radius: 10px; \n"
 "    padding: 0px 5px;\n"
 "    color: black;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
 "")
         self.registerPasswordLineEdit.setEchoMode(QLineEdit.EchoMode.Password)
 
-        self.verticalLayout_37.addWidget(self.registerPasswordLineEdit)
+        self.verticalLayout_33.addWidget(self.registerPasswordLineEdit)
 
         self.registerConfirmPasswordLineEdit = QLineEdit(self.registerLineEditsVerticalFrame)
         self.registerConfirmPasswordLineEdit.setObjectName(u"registerConfirmPasswordLineEdit")
-        sizePolicy6.setHeightForWidth(self.registerConfirmPasswordLineEdit.sizePolicy().hasHeightForWidth())
-        self.registerConfirmPasswordLineEdit.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.registerConfirmPasswordLineEdit.sizePolicy().hasHeightForWidth())
+        self.registerConfirmPasswordLineEdit.setSizePolicy(sizePolicy5)
         self.registerConfirmPasswordLineEdit.setMinimumSize(QSize(265, 34))
         self.registerConfirmPasswordLineEdit.setMaximumSize(QSize(16777215, 34))
         self.registerConfirmPasswordLineEdit.setSizeIncrement(QSize(0, 0))
-        self.registerConfirmPasswordLineEdit.setFont(font8)
+        self.registerConfirmPasswordLineEdit.setFont(font3)
         self.registerConfirmPasswordLineEdit.setToolTipDuration(-1)
         self.registerConfirmPasswordLineEdit.setStyleSheet(u"#registerConfirmPasswordLineEdit {\n"
 "    background-color: #f3f3f3;\n"
@@ -3944,31 +4114,35 @@ class Ui_NetSpect(object):
 "    border-radius: 10px; \n"
 "    padding: 0px 5px;\n"
 "    color: black;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "")
         self.registerConfirmPasswordLineEdit.setEchoMode(QLineEdit.EchoMode.Password)
 
-        self.verticalLayout_37.addWidget(self.registerConfirmPasswordLineEdit)
+        self.verticalLayout_33.addWidget(self.registerConfirmPasswordLineEdit)
 
 
-        self.verticalLayout_21.addWidget(self.registerLineEditsVerticalFrame)
+        self.verticalLayout_32.addWidget(self.registerLineEditsVerticalFrame)
 
         self.registerErrorMessageLabel = QLabel(self.registerVerticalFrame)
         self.registerErrorMessageLabel.setObjectName(u"registerErrorMessageLabel")
-        sizePolicy6.setHeightForWidth(self.registerErrorMessageLabel.sizePolicy().hasHeightForWidth())
-        self.registerErrorMessageLabel.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.registerErrorMessageLabel.sizePolicy().hasHeightForWidth())
+        self.registerErrorMessageLabel.setSizePolicy(sizePolicy5)
         self.registerErrorMessageLabel.setMinimumSize(QSize(252, 20))
         self.registerErrorMessageLabel.setMaximumSize(QSize(16777215, 50))
-        self.registerErrorMessageLabel.setFont(font18)
+        self.registerErrorMessageLabel.setFont(font4)
         self.registerErrorMessageLabel.setStyleSheet(u"#registerErrorMessageLabel {\n"
-"	color: #d84f4f;\n"
 "	background-color: #2d2e36;\n"
+"	color: #d84f4f;\n"
+"    font-size: 13px;\n"
+"    font-family: Cairo;\n"
 "}")
         self.registerErrorMessageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.registerErrorMessageLabel.setWordWrap(True)
         self.registerErrorMessageLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.verticalLayout_21.addWidget(self.registerErrorMessageLabel)
+        self.verticalLayout_32.addWidget(self.registerErrorMessageLabel)
 
         self.registerButtonFrame = QFrame(self.registerVerticalFrame)
         self.registerButtonFrame.setObjectName(u"registerButtonFrame")
@@ -3976,21 +4150,23 @@ class Ui_NetSpect(object):
         self.registerButtonFrame.setStyleSheet(u"#registerButtonFrame {\n"
 "	background-color: #2d2e36;\n"
 "}")
-        self.registerButtonHorizontalLayout = QHBoxLayout(self.registerButtonFrame)
-        self.registerButtonHorizontalLayout.setSpacing(0)
-        self.registerButtonHorizontalLayout.setObjectName(u"registerButtonHorizontalLayout")
-        self.registerButtonHorizontalLayout.setContentsMargins(0, 15, 0, 15)
+        self.horizontalLayout_39 = QHBoxLayout(self.registerButtonFrame)
+        self.horizontalLayout_39.setSpacing(0)
+        self.horizontalLayout_39.setObjectName(u"horizontalLayout_39")
+        self.horizontalLayout_39.setContentsMargins(0, 15, 0, 15)
         self.registerPushButton = QPushButton(self.registerButtonFrame)
         self.registerPushButton.setObjectName(u"registerPushButton")
         self.registerPushButton.setMaximumSize(QSize(100, 36))
-        self.registerPushButton.setFont(font16)
+        self.registerPushButton.setFont(font4)
         self.registerPushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.registerPushButton.setStyleSheet(u"#registerPushButton  {\n"
 "    background-color: #4e4f5a;\n"
-"    border: 2px solid lightgray;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;                     \n"
-"    color: #f3f3f3;       \n"
+"    border: 2px solid lightgray;\n"
+"    border-radius: 10px;\n"
+"    padding: 5px;\n"
+"    color: #f3f3f3;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
 "#registerPushButton:hover {\n"
@@ -4003,22 +4179,24 @@ class Ui_NetSpect(object):
 "	border-color:#d7d7d7;\n"
 "}")
 
-        self.registerButtonHorizontalLayout.addWidget(self.registerPushButton)
+        self.horizontalLayout_39.addWidget(self.registerPushButton)
 
 
-        self.verticalLayout_21.addWidget(self.registerButtonFrame)
+        self.verticalLayout_32.addWidget(self.registerButtonFrame)
 
         self.moveToLoginLabel = QLabel(self.registerVerticalFrame)
         self.moveToLoginLabel.setObjectName(u"moveToLoginLabel")
-        sizePolicy6.setHeightForWidth(self.moveToLoginLabel.sizePolicy().hasHeightForWidth())
-        self.moveToLoginLabel.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.moveToLoginLabel.sizePolicy().hasHeightForWidth())
+        self.moveToLoginLabel.setSizePolicy(sizePolicy5)
         self.moveToLoginLabel.setMinimumSize(QSize(250, 20))
         self.moveToLoginLabel.setMaximumSize(QSize(16777215, 20))
-        self.moveToLoginLabel.setFont(font20)
+        self.moveToLoginLabel.setFont(font5)
         self.moveToLoginLabel.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.moveToLoginLabel.setStyleSheet(u"#moveToLoginLabel {\n"
-"	color: #6ba6fd;\n"
 "	background-color: #2d2e36;\n"
+"	color: #6ba6fd;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
 "#moveToLoginLabel:hover {\n"
@@ -4027,23 +4205,23 @@ class Ui_NetSpect(object):
 "")
         self.moveToLoginLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.verticalLayout_21.addWidget(self.moveToLoginLabel)
+        self.verticalLayout_32.addWidget(self.moveToLoginLabel)
 
 
-        self.gridLayout_7.addWidget(self.registerVerticalFrame, 0, 0, 1, 1)
+        self.gridLayout_8.addWidget(self.registerVerticalFrame, 0, 0, 1, 1)
 
 
-        self.verticalLayout_19.addWidget(self.registerFrame)
+        self.verticalLayout_29.addWidget(self.registerFrame)
 
         self.resetPasswordFrame = QFrame(self.loginRegisterVerticalFrame)
         self.resetPasswordFrame.setObjectName(u"resetPasswordFrame")
         self.resetPasswordFrame.setMinimumSize(QSize(300, 250))
         self.resetPasswordFrame.setMaximumSize(QSize(300, 250))
         self.resetPasswordFrame.setFrameShadow(QFrame.Shadow.Raised)
-        self.gridLayout_8 = QGridLayout(self.resetPasswordFrame)
-        self.gridLayout_8.setSpacing(0)
-        self.gridLayout_8.setObjectName(u"gridLayout_8")
-        self.gridLayout_8.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_9 = QGridLayout(self.resetPasswordFrame)
+        self.gridLayout_9.setSpacing(0)
+        self.gridLayout_9.setObjectName(u"gridLayout_9")
+        self.gridLayout_9.setContentsMargins(0, 0, 0, 0)
         self.resetPasswordVerticalFrame = QFrame(self.resetPasswordFrame)
         self.resetPasswordVerticalFrame.setObjectName(u"resetPasswordVerticalFrame")
         self.resetPasswordVerticalFrame.setEnabled(True)
@@ -4057,57 +4235,63 @@ class Ui_NetSpect(object):
 "	border: none;\n"
 "}")
         self.resetPasswordVerticalFrame.setFrameShape(QFrame.Shape.StyledPanel)
-        self.verticalLayout_28 = QVBoxLayout(self.resetPasswordVerticalFrame)
-        self.verticalLayout_28.setSpacing(5)
-        self.verticalLayout_28.setObjectName(u"verticalLayout_28")
-        self.verticalLayout_28.setContentsMargins(20, 0, 15, 10)
+        self.verticalLayout_34 = QVBoxLayout(self.resetPasswordVerticalFrame)
+        self.verticalLayout_34.setSpacing(5)
+        self.verticalLayout_34.setObjectName(u"verticalLayout_34")
+        self.verticalLayout_34.setContentsMargins(20, 0, 15, 10)
         self.resetPasswordLabel = QLabel(self.resetPasswordVerticalFrame)
         self.resetPasswordLabel.setObjectName(u"resetPasswordLabel")
         self.resetPasswordLabel.setMinimumSize(QSize(0, 50))
         self.resetPasswordLabel.setMaximumSize(QSize(16777215, 70))
-        self.resetPasswordLabel.setFont(font19)
+        self.resetPasswordLabel.setFont(font4)
         self.resetPasswordLabel.setStyleSheet(u"#resetPasswordLabel {\n"
-"	color: #f3f3f3;\n"
 "	background-color: #2d2e36;\n"
+"	color: #f3f3f3;\n"
+"    font-size: 27px;\n"
+"    font-family: Cairo;\n"
 "}")
         self.resetPasswordLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.resetPasswordLabel.setMargin(0)
 
-        self.verticalLayout_28.addWidget(self.resetPasswordLabel)
+        self.verticalLayout_34.addWidget(self.resetPasswordLabel)
 
         self.resetPasswordEmailLineEdit = QLineEdit(self.resetPasswordVerticalFrame)
         self.resetPasswordEmailLineEdit.setObjectName(u"resetPasswordEmailLineEdit")
-        sizePolicy6.setHeightForWidth(self.resetPasswordEmailLineEdit.sizePolicy().hasHeightForWidth())
-        self.resetPasswordEmailLineEdit.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.resetPasswordEmailLineEdit.sizePolicy().hasHeightForWidth())
+        self.resetPasswordEmailLineEdit.setSizePolicy(sizePolicy5)
         self.resetPasswordEmailLineEdit.setMinimumSize(QSize(265, 34))
         self.resetPasswordEmailLineEdit.setMaximumSize(QSize(16777215, 34))
-        self.resetPasswordEmailLineEdit.setFont(font8)
+        self.resetPasswordEmailLineEdit.setFont(font3)
         self.resetPasswordEmailLineEdit.setStyleSheet(u"#resetPasswordEmailLineEdit {\n"
 "    background-color: #f3f3f3;\n"
 "    border: 2px solid lightgray;\n"
 "    border-radius: 10px; \n"
 "    padding: 0px 5px;\n"
 "    color: black;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "}")
 
-        self.verticalLayout_28.addWidget(self.resetPasswordEmailLineEdit)
+        self.verticalLayout_34.addWidget(self.resetPasswordEmailLineEdit)
 
         self.resetPasswordEmailErrorMessageLabel = QLabel(self.resetPasswordVerticalFrame)
         self.resetPasswordEmailErrorMessageLabel.setObjectName(u"resetPasswordEmailErrorMessageLabel")
-        sizePolicy6.setHeightForWidth(self.resetPasswordEmailErrorMessageLabel.sizePolicy().hasHeightForWidth())
-        self.resetPasswordEmailErrorMessageLabel.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.resetPasswordEmailErrorMessageLabel.sizePolicy().hasHeightForWidth())
+        self.resetPasswordEmailErrorMessageLabel.setSizePolicy(sizePolicy5)
         self.resetPasswordEmailErrorMessageLabel.setMinimumSize(QSize(252, 20))
         self.resetPasswordEmailErrorMessageLabel.setMaximumSize(QSize(16777215, 50))
-        self.resetPasswordEmailErrorMessageLabel.setFont(font18)
+        self.resetPasswordEmailErrorMessageLabel.setFont(font4)
         self.resetPasswordEmailErrorMessageLabel.setStyleSheet(u"#resetPasswordEmailErrorMessageLabel {\n"
-"	color: #d84f4f;\n"
 "	background-color: #2d2e36;\n"
+"	color: #d84f4f;\n"
+"    font-size: 13px;\n"
+"    font-family: Cairo;\n"
 "}")
         self.resetPasswordEmailErrorMessageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.resetPasswordEmailErrorMessageLabel.setWordWrap(True)
         self.resetPasswordEmailErrorMessageLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.verticalLayout_28.addWidget(self.resetPasswordEmailErrorMessageLabel)
+        self.verticalLayout_34.addWidget(self.resetPasswordEmailErrorMessageLabel)
 
         self.sendCodeButtonFrame = QFrame(self.resetPasswordVerticalFrame)
         self.sendCodeButtonFrame.setObjectName(u"sendCodeButtonFrame")
@@ -4115,21 +4299,23 @@ class Ui_NetSpect(object):
         self.sendCodeButtonFrame.setStyleSheet(u"#sendCodeButtonFrame {\n"
 "	background-color: #2d2e36;\n"
 "}")
-        self.sendCodeButtonHorizontalLayout = QHBoxLayout(self.sendCodeButtonFrame)
-        self.sendCodeButtonHorizontalLayout.setSpacing(0)
-        self.sendCodeButtonHorizontalLayout.setObjectName(u"sendCodeButtonHorizontalLayout")
-        self.sendCodeButtonHorizontalLayout.setContentsMargins(0, 10, 0, 10)
+        self.horizontalLayout_40 = QHBoxLayout(self.sendCodeButtonFrame)
+        self.horizontalLayout_40.setSpacing(0)
+        self.horizontalLayout_40.setObjectName(u"horizontalLayout_40")
+        self.horizontalLayout_40.setContentsMargins(0, 10, 0, 10)
         self.sendCodePushButton = QPushButton(self.sendCodeButtonFrame)
         self.sendCodePushButton.setObjectName(u"sendCodePushButton")
         self.sendCodePushButton.setMaximumSize(QSize(120, 36))
-        self.sendCodePushButton.setFont(font16)
+        self.sendCodePushButton.setFont(font4)
         self.sendCodePushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.sendCodePushButton.setStyleSheet(u"#sendCodePushButton  {\n"
-"    background-color: #4e4f5a; \n"
-"    border: 2px solid lightgray;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;                      \n"
-"    color: #f3f3f3;       \n"
+"    background-color: #4e4f5a;\n"
+"    border: 2px solid lightgray;\n"
+"    border-radius: 10px;\n"
+"    padding: 5px;\n"
+"    color: #f3f3f3;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
 "#sendCodePushButton:hover {\n"
@@ -4142,47 +4328,51 @@ class Ui_NetSpect(object):
 "	border-color:#d7d7d7;\n"
 "}")
 
-        self.sendCodeButtonHorizontalLayout.addWidget(self.sendCodePushButton)
+        self.horizontalLayout_40.addWidget(self.sendCodePushButton)
 
 
-        self.verticalLayout_28.addWidget(self.sendCodeButtonFrame)
+        self.verticalLayout_34.addWidget(self.sendCodeButtonFrame)
 
         self.resetPasswordCodeLineEdit = QLineEdit(self.resetPasswordVerticalFrame)
         self.resetPasswordCodeLineEdit.setObjectName(u"resetPasswordCodeLineEdit")
-        sizePolicy6.setHeightForWidth(self.resetPasswordCodeLineEdit.sizePolicy().hasHeightForWidth())
-        self.resetPasswordCodeLineEdit.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.resetPasswordCodeLineEdit.sizePolicy().hasHeightForWidth())
+        self.resetPasswordCodeLineEdit.setSizePolicy(sizePolicy5)
         self.resetPasswordCodeLineEdit.setMinimumSize(QSize(265, 34))
         self.resetPasswordCodeLineEdit.setMaximumSize(QSize(16777215, 34))
-        self.resetPasswordCodeLineEdit.setFont(font20)
+        self.resetPasswordCodeLineEdit.setFont(font5)
         self.resetPasswordCodeLineEdit.setStyleSheet(u"#resetPasswordCodeLineEdit {\n"
 "    background-color: #f3f3f3;\n"
 "    border: 2px solid lightgray;\n"
 "    border-radius: 10px; \n"
 "    padding: 0px 5px;\n"
 "    color: black;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
 "")
         self.resetPasswordCodeLineEdit.setEchoMode(QLineEdit.EchoMode.Normal)
 
-        self.verticalLayout_28.addWidget(self.resetPasswordCodeLineEdit)
+        self.verticalLayout_34.addWidget(self.resetPasswordCodeLineEdit)
 
         self.resetPasswordCodeErrorMessageLabel = QLabel(self.resetPasswordVerticalFrame)
         self.resetPasswordCodeErrorMessageLabel.setObjectName(u"resetPasswordCodeErrorMessageLabel")
-        sizePolicy6.setHeightForWidth(self.resetPasswordCodeErrorMessageLabel.sizePolicy().hasHeightForWidth())
-        self.resetPasswordCodeErrorMessageLabel.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.resetPasswordCodeErrorMessageLabel.sizePolicy().hasHeightForWidth())
+        self.resetPasswordCodeErrorMessageLabel.setSizePolicy(sizePolicy5)
         self.resetPasswordCodeErrorMessageLabel.setMinimumSize(QSize(252, 20))
         self.resetPasswordCodeErrorMessageLabel.setMaximumSize(QSize(16777215, 50))
-        self.resetPasswordCodeErrorMessageLabel.setFont(font18)
+        self.resetPasswordCodeErrorMessageLabel.setFont(font4)
         self.resetPasswordCodeErrorMessageLabel.setStyleSheet(u"#resetPasswordCodeErrorMessageLabel {\n"
-"	color: #d84f4f;\n"
 "	background-color: #2d2e36;\n"
+"	color: #d84f4f;\n"
+"    font-size: 13px;\n"
+"    font-family: Cairo;\n"
 "}")
         self.resetPasswordCodeErrorMessageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.resetPasswordCodeErrorMessageLabel.setWordWrap(True)
         self.resetPasswordCodeErrorMessageLabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse|Qt.TextInteractionFlag.TextSelectableByMouse)
 
-        self.verticalLayout_28.addWidget(self.resetPasswordCodeErrorMessageLabel)
+        self.verticalLayout_34.addWidget(self.resetPasswordCodeErrorMessageLabel)
 
         self.verifyCodeButtonFrame = QFrame(self.resetPasswordVerticalFrame)
         self.verifyCodeButtonFrame.setObjectName(u"verifyCodeButtonFrame")
@@ -4190,21 +4380,23 @@ class Ui_NetSpect(object):
         self.verifyCodeButtonFrame.setStyleSheet(u"#verifyCodeButtonFrame {\n"
 "	background-color: #2d2e36;\n"
 "}")
-        self.verifyCodeButtonHorizontalLayout = QHBoxLayout(self.verifyCodeButtonFrame)
-        self.verifyCodeButtonHorizontalLayout.setSpacing(0)
-        self.verifyCodeButtonHorizontalLayout.setObjectName(u"verifyCodeButtonHorizontalLayout")
-        self.verifyCodeButtonHorizontalLayout.setContentsMargins(0, 10, 0, 10)
+        self.horizontalLayout_41 = QHBoxLayout(self.verifyCodeButtonFrame)
+        self.horizontalLayout_41.setSpacing(0)
+        self.horizontalLayout_41.setObjectName(u"horizontalLayout_41")
+        self.horizontalLayout_41.setContentsMargins(0, 10, 0, 10)
         self.verifyCodePushButton = QPushButton(self.verifyCodeButtonFrame)
         self.verifyCodePushButton.setObjectName(u"verifyCodePushButton")
         self.verifyCodePushButton.setMaximumSize(QSize(120, 36))
-        self.verifyCodePushButton.setFont(font16)
+        self.verifyCodePushButton.setFont(font4)
         self.verifyCodePushButton.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.verifyCodePushButton.setStyleSheet(u"#verifyCodePushButton  {\n"
-"    background-color: #4e4f5a; \n"
-"    border: 2px solid lightgray;  \n"
-"    border-radius: 10px;         \n"
-"    padding: 5px;                      \n"
-"    color: #f3f3f3;       \n"
+"    background-color: #4e4f5a;\n"
+"    border: 2px solid lightgray;\n"
+"    border-radius: 10px;\n"
+"    padding: 5px;\n"
+"    color: #f3f3f3;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
 "#verifyCodePushButton:hover {\n"
@@ -4217,22 +4409,24 @@ class Ui_NetSpect(object):
 "	border-color:#d7d7d7;\n"
 "}")
 
-        self.verifyCodeButtonHorizontalLayout.addWidget(self.verifyCodePushButton)
+        self.horizontalLayout_41.addWidget(self.verifyCodePushButton)
 
 
-        self.verticalLayout_28.addWidget(self.verifyCodeButtonFrame)
+        self.verticalLayout_34.addWidget(self.verifyCodeButtonFrame)
 
         self.cancelResetPasswordProcessLabel = QLabel(self.resetPasswordVerticalFrame)
         self.cancelResetPasswordProcessLabel.setObjectName(u"cancelResetPasswordProcessLabel")
-        sizePolicy6.setHeightForWidth(self.cancelResetPasswordProcessLabel.sizePolicy().hasHeightForWidth())
-        self.cancelResetPasswordProcessLabel.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.cancelResetPasswordProcessLabel.sizePolicy().hasHeightForWidth())
+        self.cancelResetPasswordProcessLabel.setSizePolicy(sizePolicy5)
         self.cancelResetPasswordProcessLabel.setMinimumSize(QSize(250, 20))
         self.cancelResetPasswordProcessLabel.setMaximumSize(QSize(16777215, 20))
-        self.cancelResetPasswordProcessLabel.setFont(font20)
+        self.cancelResetPasswordProcessLabel.setFont(font5)
         self.cancelResetPasswordProcessLabel.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.cancelResetPasswordProcessLabel.setStyleSheet(u"#cancelResetPasswordProcessLabel {\n"
-"	color: #6ba6fd;\n"
 "	background-color: #2d2e36;\n"
+"	color: #6ba6fd;\n"
+"    font-size: 16px;\n"
+"    font-family: Cairo;\n"
 "}\n"
 "\n"
 "#cancelResetPasswordProcessLabel:hover {\n"
@@ -4241,17 +4435,17 @@ class Ui_NetSpect(object):
 "")
         self.cancelResetPasswordProcessLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        self.verticalLayout_28.addWidget(self.cancelResetPasswordProcessLabel)
+        self.verticalLayout_34.addWidget(self.cancelResetPasswordProcessLabel)
 
 
-        self.gridLayout_8.addWidget(self.resetPasswordVerticalFrame, 0, 0, 1, 1)
+        self.gridLayout_9.addWidget(self.resetPasswordVerticalFrame, 0, 0, 1, 1)
 
 
-        self.verticalLayout_19.addWidget(self.resetPasswordFrame)
+        self.verticalLayout_29.addWidget(self.resetPasswordFrame)
 
-        self.verticalSpacer_13 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.verticalSpacer_27 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_19.addItem(self.verticalSpacer_13)
+        self.verticalLayout_29.addItem(self.verticalSpacer_27)
 
 
         self.mainHorizontalFrame.addWidget(self.loginRegisterVerticalFrame)
@@ -4279,45 +4473,48 @@ class Ui_NetSpect(object):
         self.logoLabel.setText(QCoreApplication.translate("NetSpect", u"NetSpect", None))
         self.welcomeLabel.setText(QCoreApplication.translate("NetSpect", u"Welcome User", None))
 #if QT_CONFIG(tooltip)
-        self.logoutIcon.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Logout</p></body></html>", None))
+        self.logoutIcon.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Logout.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.logoutIcon.setText("")
 #if QT_CONFIG(tooltip)
-        self.accountIcon.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Login or Register</p></body></html>", None))
+        self.accountIcon.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Login or Register.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.accountIcon.setText("")
 #if QT_CONFIG(tooltip)
-        self.settingsIcon.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Settings Page</p></body></html>", None))
+        self.settingsIcon.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Settings Page.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.settingsIcon.setText("")
 #if QT_CONFIG(tooltip)
-        self.menuIcon.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Expand Side Menu</p></body></html>", None))
+        self.menuIcon.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Expand Side Menu.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.menuIcon.setText("")
+#if QT_CONFIG(tooltip)
+        self.closeMenuIcon.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Collapse Side Menu.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.closeMenuIcon.setText("")
 #if QT_CONFIG(tooltip)
-        self.homePageIcon.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Home Page</p></body></html>", None))
+        self.homePageIcon.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Home Page.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.homePageIcon.setText("")
         self.homePageLabel.setText(QCoreApplication.translate("NetSpect", u"Home Page", None))
 #if QT_CONFIG(tooltip)
-        self.analyticsIcon.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Analytics Page</p></body></html>", None))
+        self.analyticsIcon.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Analytics Page.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.analyticsIcon.setText("")
         self.analyticsLabel.setText(QCoreApplication.translate("NetSpect", u"Analytics", None))
 #if QT_CONFIG(tooltip)
-        self.reportIcon.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Report Page</p></body></html>", None))
+        self.reportIcon.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Report Page.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.reportIcon.setText("")
         self.reportLabel.setText(QCoreApplication.translate("NetSpect", u"Reports", None))
 #if QT_CONFIG(tooltip)
-        self.infoIcon.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Information Page</p></body></html>", None))
+        self.infoIcon.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Information Page.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.infoIcon.setText("")
         self.infoLabel.setText(QCoreApplication.translate("NetSpect", u"Information", None))
         self.initiateDefenceLabel.setText(QCoreApplication.translate("NetSpect", u"Initiate Detection", None))
 #if QT_CONFIG(tooltip)
-        self.startStopPushButton.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Start/Stop Scanning</p></body></html>", None))
+        self.startStopPushButton.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Start/Stop network scan.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.startStopPushButton.setText(QCoreApplication.translate("NetSpect", u"START", None))
         self.networkInterfaceLabel.setText(QCoreApplication.translate("NetSpect", u"Network Interface:", None))
@@ -4327,16 +4524,16 @@ class Ui_NetSpect(object):
         self.networkInterfaceComboBox.setItemText(3, QCoreApplication.translate("NetSpect", u"wlan0", None))
 
 #if QT_CONFIG(tooltip)
-        self.networkInterfaceComboBox.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Choose your network interface</p></body></html>", None))
+        self.networkInterfaceComboBox.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Choose your network interface.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.runningTimeLabel.setText(QCoreApplication.translate("NetSpect", u"Running Time:", None))
 #if QT_CONFIG(tooltip)
-        self.runningTimeCounter.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Elapsed time since scan started</p></body></html>", None))
+        self.runningTimeCounter.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Time passed since scan started.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.runningTimeCounter.setText(QCoreApplication.translate("NetSpect", u"0:00:00", None))
         self.numberOfDetectionsLabel.setText(QCoreApplication.translate("NetSpect", u"Number of Detections:", None))
 #if QT_CONFIG(tooltip)
-        self.numberOfDetectionsCounter.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Number of detected attacks</p></body></html>", None))
+        self.numberOfDetectionsCounter.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Number of detected attacks.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.numberOfDetectionsCounter.setText(QCoreApplication.translate("NetSpect", u"0", None))
         self.historyLabel.setText(QCoreApplication.translate("NetSpect", u"Alert History", None))
@@ -4404,7 +4601,10 @@ class Ui_NetSpect(object):
         self.programInformationLabel.setText(QCoreApplication.translate("NetSpect", u"Program Information:", None))
         self.netspectVersionLabel.setText(QCoreApplication.translate("NetSpect", u"NetSpect Version:", None))
         self.netspectVersionInfoLabel.setText(QCoreApplication.translate("NetSpect", u"v1.0.0", None))
-        self.githubLabel.setText(QCoreApplication.translate("NetSpect", u"Github:", None))
+        self.githubLabel.setText(QCoreApplication.translate("NetSpect", u"GitHub:", None))
+#if QT_CONFIG(tooltip)
+        self.githubInfoLabel.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Visit NetSpect on GitHub.</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.githubInfoLabel.setText(QCoreApplication.translate("NetSpect", u"<html><head/><body><p><a href=\"https://github.com/Shayhha/NetSpect\"><span style=\" text-decoration: underline; color:#f3f3f3;\">Visit NetSpect Page</span></a></p></body></html>", None))
         self.networkInterfaceInformationLabel.setText(QCoreApplication.translate("NetSpect", u"Network Interface Information:", None))
         self.connectedInterfaceLabel.setText(QCoreApplication.translate("NetSpect", u"Connected Interface:", None))
@@ -4460,7 +4660,7 @@ class Ui_NetSpect(object):
         self.passwordPushButton.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Save your new password.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.passwordPushButton.setText(QCoreApplication.translate("NetSpect", u"Save Password", None))
-        self.interfaceSettingsLabel.setText(QCoreApplication.translate("NetSpect", u"Interface Color Mode:", None))
+        self.interfaceColorModeLabel.setText(QCoreApplication.translate("NetSpect", u"Interface Color Mode:", None))
         self.colorModeComboBox.setItemText(0, QCoreApplication.translate("NetSpect", u"Dark Mode", None))
         self.colorModeComboBox.setItemText(1, QCoreApplication.translate("NetSpect", u"Light Mode", None))
 
@@ -4473,9 +4673,9 @@ class Ui_NetSpect(object):
         self.operationModeComboBox.setItemText(2, QCoreApplication.translate("NetSpect", u"Collection (DNS)", None))
 
 #if QT_CONFIG(tooltip)
-        self.operationModeComboBox.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Select the applocation's opperation mode, 'Real Time Detection' for detecting attacks in real time and 'Data Collection TCP/UDP' or 'Data Collection DNS' for collecting data from current network.</p></body></html>", None))
+        self.operationModeComboBox.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Select the application's operation mode, 'Real Time Detection' for detecting attacks in real time and 'Data Collection TCP/UDP' or 'Data Collection DNS' for collecting data from current network.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
-        self.macAddressBlacklistSettingsLabel.setText(QCoreApplication.translate("NetSpect", u"MAC Address Blacklist:", None))
+        self.macAddressBlacklistLabel.setText(QCoreApplication.translate("NetSpect", u"MAC Address Blacklist:", None))
 #if QT_CONFIG(tooltip)
         self.macAddressListWidget.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Double click an item to delete it from the list.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
@@ -4490,7 +4690,7 @@ class Ui_NetSpect(object):
         self.addMacAddressPushButton.setText(QCoreApplication.translate("NetSpect", u"Add", None))
         self.macAddressBlacklistErrorMessageLabel.setText(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Please enter a valid MAC address.</p></body></html>", None))
 #if QT_CONFIG(tooltip)
-        self.clearHistoryPushButton.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Permanently clear alert history.</p></body></html>", None))
+        self.clearHistoryPushButton.setToolTip(QCoreApplication.translate("NetSpect", u"<html><head/><body><p>Permanently clear your alert history.</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.clearHistoryPushButton.setText(QCoreApplication.translate("NetSpect", u"Clear History", None))
 #if QT_CONFIG(tooltip)

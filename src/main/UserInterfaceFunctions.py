@@ -382,12 +382,13 @@ def ToggleStartStopState(self, state):
     # get the correct styles based on given state
     currentStyleSheet = f'''
         #startStopPushButton {{
-            border-radius: 60px;
             {'background-color: #d84f4f;' if state else 'background-color: #3a8e32;'}
             border: 1px solid black;
+            border-radius: 60px;
             color: black;
+            font-size: 19px;
+            font-family: Cairo;
             font-weight: bold;
-            outline: none;
         }}
 
         #startStopPushButton:hover {{
@@ -694,6 +695,8 @@ def GetDefaultLineEditStyleSheet(self, lineEditName):
             border-radius: 10px;
             padding: 0px 5px;
             color: black;
+            font-size: 15px;
+            font-family: Cairo;
         }}
     '''
     return defaultStylesheet
@@ -917,9 +920,6 @@ class AttackPieChart():
             series = QPieSeries()
             self.ui.pieChart.addSeries(series)
 
-            # create font for title
-            titleFont = QFont('Cairo', 16, QFont.Bold, False) 
-
             # create a legend widget
             self.ui.legendWidget = QWidget()
             legendLayout = QGridLayout(self.ui.legendWidget)
@@ -932,7 +932,7 @@ class AttackPieChart():
             self.ui.pieChart.setBackgroundRoundness(0)
             self.ui.pieChart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#c1d0ef'))
             self.ui.pieChart.setTitle('No Data To Display...')
-            self.ui.pieChart.setTitleFont(titleFont)
+            self.ui.pieChart.setTitleFont(QFont('Cairo', 16, QFont.Bold, False))
 
             # create chart view for pie chart
             self.ui.pieChartView = QChartView(self.ui.pieChart)
@@ -944,16 +944,16 @@ class AttackPieChart():
             VBoxLayout.setSpacing(0)
             VBoxLayout.setContentsMargins(0, 0, 0, 0)
 
-            # add stles to the title
+            # create main title for pie chart section
             self.ui.pieChartTitleLabel = QLabel('Attacks Distribution')
-            self.ui.pieChartTitleLabel.setObjectName('pieChartTitleLabel') 
+            self.ui.pieChartTitleLabel.setObjectName('pieChartTitleLabel')
+            self.ui.pieChartTitleLabel.setFont(QFont('Cairo', 18, QFont.Bold, False))
 
             # setup the pie chart legends in advance
             for i, (sliceName, legendName, sliceColor) in enumerate(AttackPieChart.pieChartLabelDict.values()):
-                # create font for legend labels
-                legendFont = QFont('Cairo', 12, QFont.Bold, False)
+                # create attack type legend labels
                 legendLabel = QLabel(f'{legendName} 0%')
-                legendLabel.setFont(legendFont)
+                legendLabel.setFont(QFont('Cairo', 12, QFont.Bold, False))
                 legendLabel.setObjectName(f'{legendName.replace(' ', '')}LegendLabel') #for example: ARPSpoofingLegendLabel
 
                 # create label for attack types color labels
@@ -997,9 +997,8 @@ def UpdatePieChartAfterAttack(self, attackType):
 
         # if slice does not exist, then create a new slice and add it to the pie chart
         if not found:
-            sliceFont = QFont('Cairo', 11, QFont.Bold, False)
             newSlice = series.append(sliceLabel, 1)
-            newSlice.setLabelFont(sliceFont)
+            newSlice.setLabelFont(QFont('Cairo', 11, QFont.Bold, False))
             newSlice.setLabelVisible(True)
             newSlice.setLabelArmLengthFactor(0.075)
             newSlice.setLabel(f'{sliceLabel} {newSlice.percentage()*100:.1f}%')
@@ -1059,10 +1058,9 @@ def UpdatePieChartAfterLogin(self, pieChartData):
             for attackType, attackCount in pieChartData.items():
                 # check if attack count is greater then zero
                 if attackCount > 0:
-                    # add new slice for attack and update the css of the slice label
-                    sliceFont = QFont('Cairo', 11, QFont.Bold, False)
+                    # add new slice for attack and update attack counter
                     newSlice = newSeries.append(AttackPieChart.pieChartLabelDict.get(attackType)[0], attackCount)
-                    newSlice.setLabelFont(sliceFont)
+                    newSlice.setLabelFont(QFont('Cairo', 11, QFont.Bold, False))
                     newSlice.setLabelVisible(True)
                     newSlice.setLabelArmLengthFactor(0.075)
                     newSlice.setLabelColor(QColor(45, 46, 54, 255) if self.userData.get('lightMode') == 0 else QColor(1, 1, 1, 255))
@@ -1820,10 +1818,13 @@ def ResertDataInCards(self):
         self.ui.attacksPerMonthValueLabel.setText('0')
         self.ui.mostPopularAttackValueLabel.setText('No<br>Data')
         self.ui.mostPopularAttackValueLabel.setStyleSheet(f'''
-            margin: 10px;
-            margin-top: 10px;
-            background-color: transparent;
             color: {'black' if self.userData.get('lightMode') == 0 else '#151519'};
+            background-color: transparent;
+            font-size: 23px;
+            font-family: Days One;
+            font-weight: bold;
+            margin: 10px;
+            margin-top: 0px;
         ''')
 
     except Exception as e:
@@ -1835,7 +1836,7 @@ def UpdateFontSizeInLabel(self, labelObject):
     try:
         # get the current text in the card and set a default value for font size
         currentLength = len(labelObject.text().replace('.', ''))
-        fontSize = 10
+        fontSize = 30
 
         # find the font side and top margin based on the number of digits in the card
         match currentLength:
@@ -1852,10 +1853,12 @@ def UpdateFontSizeInLabel(self, labelObject):
 
         # apply the styles to the object
         labelObject.setStyleSheet(f'''
-            font-size: {fontSize}px;
-            margin: 10px;
-            background-color: transparent;
             color: {'black' if self.userData.get('lightMode') == 0 else '#151519'};
+            background-color: transparent;
+            font-size: {fontSize}px;
+            font-family: Days One;
+            font-weight: bold;
+            margin: 10px;
         ''')
 
     except Exception as e:

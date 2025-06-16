@@ -104,12 +104,10 @@ QHeaderView::section:vertical {
 /* List Widget */
 
 QListWidget {
-   background-color: rgba(198, 198, 198, 0.6);
-   border-radius: 15px;
-   border-style: outset;
-   border-width: 2px;
-   border-color: black;
-   padding: 4px;
+    background-color: rgba(198, 198, 198, 0.6);
+    border-radius: 15px;
+    border: 2px solid black;
+    padding: 4px;
 }
 
 QListWidget::item {
@@ -137,6 +135,8 @@ QTableWidget {
     border-radius: 8px;
     background-color: transparent;
     color: black;
+    font-size: 13px;
+    font-family: Cairo;
     gridline-color: black;
     border: none;
 }
@@ -166,6 +166,8 @@ QTableView {
     border-radius: 8px;
     background-color: transparent;
     color: black;
+    font-size: 13px;
+    font-family: Cairo;
     gridline-color: black;
 }
 
@@ -219,17 +221,21 @@ QCheckBox {
 /*---------------------------------General-Styles---------------------------------*/
 
 #topFrame {
-    background-color: #1E1E20
+    background-color: #1e1e20
 }
 
 #logoLabel {
 	background-color: transparent;
   	color: #f3f3f3;
+    font-size: 35px;
+    font-family: Days One;
 }
 
 #welcomeLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #logoutIcon {
@@ -269,8 +275,10 @@ QCheckBox {
 }
 
 #homePageLabel {
-	color: #f3f3f3;
 	background-color: #2d2e36;
+	color: #f3f3f3;
+    font-size: 21px;
+    font-family: Cairo;
 }
 
 #analyticsIconHorizontalFrame {
@@ -282,8 +290,10 @@ QCheckBox {
 }
 
 #analyticsLabel {
-	color: #f3f3f3;
 	background-color: #2d2e36;
+	color: #f3f3f3;
+    font-size: 21px;
+    font-family: Cairo;
 }
 
 #reportIconHorizontalFrame {
@@ -295,8 +305,10 @@ QCheckBox {
 }
 
 #reportLabel {
-	color: #f3f3f3;
 	background-color: #2d2e36;
+	color: #f3f3f3;
+    font-size: 21px;
+    font-family: Cairo;
 }
 
 #infoIconHorizontalFrame {
@@ -308,8 +320,10 @@ QCheckBox {
 }
 
 #infoLabel {
-	color: #f3f3f3;
 	background-color: #2d2e36;
+	color: #f3f3f3;
+    font-size: 21px;
+    font-family: Cairo;
 }
 
 #loginRegisterVerticalFrame {
@@ -332,29 +346,37 @@ QCheckBox {
 }
 
 #loginLabel {
-	color: #f3f3f3;
 	background-color: #2d2e36;
+	color: #f3f3f3;
+    font-size: 27px;
+    font-family: Cairo;
 }
 
 #loginUsernameLineEdit {
     background-color: #f3f3f3;
     border: 2px solid lightgray;
-    border-radius: 10px;
+    border-radius: 10px; 
     padding: 0px 5px;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #loginPasswordLineEdit {
     background-color: #f3f3f3;
     border: 2px solid lightgray;
-    border-radius: 10px;
+    border-radius: 10px; 
     padding: 0px 5px;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #loginErrorMessageLabel {
-	color: #d84f4f;
 	background-color: #2d2e36;
+	color: #d84f4f;
+    font-size: 13px;
+    font-family: Cairo;
 }
 
 #loginButtonFrame {
@@ -367,6 +389,8 @@ QCheckBox {
     border-radius: 10px;
     padding: 5px;
     color: #f3f3f3;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #loginPushButton:hover {
@@ -380,8 +404,10 @@ QCheckBox {
 }
 
 #moveToRegisterLabel {
-	color: #6ba6fd;
 	background-color: #2d2e36;
+	color: #6ba6fd;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #moveToRegisterLabel:hover {
@@ -404,45 +430,57 @@ QCheckBox {
 }
 
 #registerLabel {
-	color: #f3f3f3;
 	background-color: #2d2e36;
+	color: #f3f3f3;
+    font-size: 27px;
+    font-family: Cairo;
 }
 
 #registerEmailLineEdit {
     background-color: #f3f3f3;
     border: 2px solid lightgray;
-    border-radius: 10px;
+    border-radius: 10px; 
     padding: 0px 5px;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #registerUsernameLineEdit {
     background-color: #f3f3f3;
     border: 2px solid lightgray;
-    border-radius: 10px;
+    border-radius: 10px; 
     padding: 0px 5px;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #registerPasswordLineEdit {
     background-color: #f3f3f3;
     border: 2px solid lightgray;
-    border-radius: 10px;
+    border-radius: 10px; 
     padding: 0px 5px;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #registerConfirmPasswordLineEdit {
     background-color: #f3f3f3;
     border: 2px solid lightgray;
-    border-radius: 10px;
+    border-radius: 10px; 
     padding: 0px 5px;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #registerErrorMessageLabel {
-	color: #d84f4f;
 	background-color: #2d2e36;
+	color: #d84f4f;
+    font-size: 13px;
+    font-family: Cairo;
 }
 
 #registerButtonFrame {
@@ -450,11 +488,13 @@ QCheckBox {
 }
 
 #registerPushButton  {
-    background-color: #4e4f5a; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                     
-    color: #f3f3f3;       
+    background-color: #4e4f5a;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 5px;
+    color: #f3f3f3;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #registerPushButton:hover {
@@ -468,8 +508,10 @@ QCheckBox {
 }
 
 #moveToLoginLabel {
-	color: #6ba6fd;
 	background-color: #2d2e36;
+	color: #6ba6fd;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #moveToLoginLabel:hover {
@@ -477,8 +519,10 @@ QCheckBox {
 }
 
 #moveToForgotPasswordLabel {
-	color: #6ba6fd;
 	background-color: #2d2e36;
+	color: #6ba6fd;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #moveToForgotPasswordLabel:hover {
@@ -491,8 +535,10 @@ QCheckBox {
 }
 
 #cancelResetPasswordProcessLabel {
-	color: #6ba6fd;
 	background-color: #2d2e36;
+	color: #6ba6fd;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #cancelResetPasswordProcessLabel:hover {
@@ -500,34 +546,44 @@ QCheckBox {
 }
 
 #resetPasswordCodeErrorMessageLabel {
-	color: #d84f4f;
 	background-color: #2d2e36;
+	color: #d84f4f;
+    font-size: 13px;
+    font-family: Cairo;
 }
 
 #resetPasswordCodeLineEdit {
     background-color: #f3f3f3;
     border: 2px solid lightgray;
-    border-radius: 10px;
+    border-radius: 10px; 
     padding: 0px 5px;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #resetPasswordEmailErrorMessageLabel {
-	color: #d84f4f;
 	background-color: #2d2e36;
+	color: #d84f4f;
+    font-size: 13px;
+    font-family: Cairo;
 }
 
 #resetPasswordEmailLineEdit {
     background-color: #f3f3f3;
     border: 2px solid lightgray;
-    border-radius: 10px;
+    border-radius: 10px; 
     padding: 0px 5px;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #resetPasswordLabel {
-	color: #f3f3f3;
 	background-color: #2d2e36;
+	color: #f3f3f3;
+    font-size: 27px;
+    font-family: Cairo;
 }
 
 #sendCodeButtonFrame {
@@ -535,11 +591,13 @@ QCheckBox {
 }
 
 #sendCodePushButton  {
-    background-color: #4e4f5a; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                      
-    color: #f3f3f3;       
+    background-color: #4e4f5a;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 5px;
+    color: #f3f3f3;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #sendCodePushButton:hover {
@@ -557,11 +615,13 @@ QCheckBox {
 }
 
 #verifyCodePushButton  {
-    background-color: #4e4f5a; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                      
-    color: #f3f3f3;       
+    background-color: #4e4f5a;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 5px;
+    color: #f3f3f3;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #verifyCodePushButton:hover {
@@ -591,6 +651,9 @@ QCheckBox {
 #initiateDefenceLabel {
 	background-color: transparent;
 	color: black;
+    font-size: 24px;
+    font-family: Cairo;
+    font-weight: bold;
 	padding-top: 5px;
 	padding-left: 5px;
 }
@@ -601,12 +664,13 @@ QCheckBox {
 }
 
 #startStopPushButton[text='START'] {
-    border-radius: 60px;
     background-color: #3a8e32;
     border: 1px solid black;
+    border-radius: 60px;
     color: black;
+    font-size: 19px;
+    font-family: Cairo;
     font-weight: bold;
-    outline: none;
 }
 
 #startStopPushButton[text='START']:hover {
@@ -618,12 +682,13 @@ QCheckBox {
 }
 
 #startStopPushButton[text='STOP'] {
-    border-radius: 60px;
     background-color: #d84f4f;
     border: 1px solid black;
+    border-radius: 60px;
     color: black;
+    font-size: 19px;
+    font-family: Cairo;
     font-weight: bold;
-    outline: none;
 }
 
 #startStopPushButton[text='STOP']:hover {
@@ -647,6 +712,8 @@ QCheckBox {
 #networkInterfaceLabel {
 	background-color: transparent;
 	color: black;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #networkInterfaceComboBoxFrame {
@@ -669,6 +736,8 @@ QCheckBox {
 #networkInterfaceComboBox {
     background-color: transparent;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
     border: 2px outset transparent;
     border-radius: 10px;
     padding: 4px;
@@ -710,11 +779,15 @@ QCheckBox {
 #runningTimeLabel {
 	background-color: transparent;
 	color: black;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #runningTimeCounter {
-    background-color: transparent;
-    color: black;
+	background-color: transparent;
+	color: black;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #numberOfDetectionsHorizontalFrame {
@@ -723,13 +796,17 @@ QCheckBox {
 }
 
 #numberOfDetectionsLabel {
-    background-color: transparent;
-    color: black;
+	background-color: transparent;
+	color: black;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #numberOfDetectionsCounter {
-    background-color: transparent;
-    color: black;
+	background-color: transparent;
+	color: black;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #chartVerticalFrame {
@@ -752,10 +829,13 @@ QCheckBox {
 }
 
 #historyLabel {
-    background-color: transparent;
-    color: black;
-    padding-top: 5px;
-    padding-left: 5px;
+	background-color: transparent;
+	color: black;
+    font-size: 24px;
+    font-family: Cairo;
+    font-weight: bold;
+	padding-top: 5px;
+	padding-left: 5px;
 }
 
 #legendWidget {
@@ -780,8 +860,9 @@ QCheckBox {
     background-color: transparent; 
     border: none; 
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
 }
-
 
 #ARPSpoofingLegendColorLabel {
     background-color: #90cfef; 
@@ -818,10 +899,20 @@ QCheckBox {
 #analyticsYearComboBox {
     background-color: transparent;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
     border: 2px outset transparent;
     border-radius: 10px;
     padding: 4px;
 	padding-left: 10px;
+}
+
+#analyticsYearComboBoxArrow {
+    background-color: lightgray;
+    color: black;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding-left: 10px;
 }
 
 #analyticsYearComboBox QAbstractItemView {
@@ -851,17 +942,12 @@ QCheckBox {
     outline: 0px;
 }
 
-#analyticsYearComboBoxArrow {
-    background-color: lightgray;
-    color: black;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-    padding-left: 10px;
-}
-
 #analyticsYearSelectionLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 21px;
+    font-family: Cairo;
+    font-weight: bold;
 }
 
 #histogramChartVerticalFrame { 
@@ -876,6 +962,9 @@ QCheckBox {
     background-color: rgba(0, 0, 0, 0);
     margin: 0;
     color: #404044;
+    font-size: 24px;
+    font-family: Cairo;
+    font-weight: bold;
 }
 
 #barChartVerticalFrame { 
@@ -890,6 +979,9 @@ QCheckBox {
     background-color: rgba(0, 0, 0, 0);
     margin: 0;
     color: #404044;
+    font-size: 24px;
+    font-family: Cairo;
+    font-weight: bold;
 }
 
 /* Cards Section */
@@ -903,13 +995,18 @@ QCheckBox {
 #attacksPerMonthTitleLabel {
 	background-color: transparent;
 	color: black;
+    font-size: 21px;
+    font-family: Cairo;
+    font-weight: bold;
 }
 
 #attacksPerMonthValueLabel {
-    font-size: 60px;
-	margin: 10px;
 	background-color: transparent;
 	color: black;
+	font-size: 60px;
+    font-family: Days One;
+    font-weight: bold;
+	margin: 10px;
 }
 
 #totalNumOfAttacksVerticalFrame {
@@ -922,13 +1019,18 @@ QCheckBox {
 #totalNumOfAttacksTitleLabel {
 	background-color: transparent;
 	color: black;
+    font-size: 21px;
+    font-family: Cairo;
+    font-weight: bold;
 }
 
 #totalNumOfAttacksValueLabel {
-    font-size: 60px;
-	margin: 10px;
 	background-color: transparent;
 	color: black;
+	font-size: 60px;
+    font-family: Days One;
+    font-weight: bold;
+	margin: 10px;
 }
 
 #mostPopularAttackVerticalFrame {
@@ -941,14 +1043,19 @@ QCheckBox {
 #mostPopularAttackTitleLabel {
 	background-color: transparent;
 	color: black;
-    margin-top: 5px;
+    font-size: 21px;
+    font-family: Cairo;
+    font-weight: bold;
 }
 
 #mostPopularAttackValueLabel {
-	margin: 10px;
-	margin-top: 0px;
 	background-color: transparent;
 	color: black;
+	font-size: 23px;
+    font-family: Days One;
+    font-weight: bold;
+	margin: 10px;
+    margin-top: 0px;
 }
 
 /*-----------------------------Analytics-Window-End-------------------------------*/
@@ -958,6 +1065,9 @@ QCheckBox {
 #reportSelectionLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 24px;
+    font-family: Cairo;
+    font-weight: bold;
 }
 
 #reportDurationComboBoxFrame {
@@ -979,6 +1089,8 @@ QCheckBox {
 #reportDurationComboBox {
     background-color: transparent;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
     border: 2px outset transparent;
     border-radius: 10px;
     padding: 4px;
@@ -1017,35 +1129,52 @@ QCheckBox {
 }
 
 #arpSpoofingCheckBox {
-    spacing: 10px; 
-    color: #f3f3f3; 
+    spacing: 10px;
+    color: #f3f3f3;
+    font-size: 17px;
+    font-family: Cairo;
 }
 
 #portScanningCheckBox {
-    spacing: 10px; 
-    color: #f3f3f3; 
+    spacing: 10px;
+    color: #f3f3f3;
+    font-size: 17px;
+    font-family: Cairo;
 }
 
 #denialOfServiceCheckBox {
-    spacing: 10px; 
-    color: #f3f3f3; 
+    spacing: 10px;
+    color: #f3f3f3;
+    font-size: 17px;
+    font-family: Cairo;
 }
 
 #dnsTunnelingCheckBox {
-    spacing: 10px; 
+    spacing: 10px;
     color: #f3f3f3;
+    font-size: 17px;
+    font-family: Cairo;
 }
 
 #horizontalLine2 {
     color: #f3f3f3
 }
 
+#machineInfoCheckBox {
+    spacing: 10px;
+    color: #f3f3f3;
+    font-size: 17px;
+    font-family: Cairo;
+}
+
 #downloadReportPushButton  {
-    background-color: #4e4f5a; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                  
-    color: #f3f3f3;       
+    background-color: #4e4f5a;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 5px;
+    color: #f3f3f3;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #downloadReportPushButton:hover {
@@ -1060,10 +1189,12 @@ QCheckBox {
 
 #cancelReportPushButton  {
     background-color: #d84f4f;
-    border: 1px solid black;  
-    border-radius: 10px;         
-    padding: 5px;                       
-    color: black;       
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 5px;
+    color: black;
+    font-size: 15px;
+    font-family: Cairo;
 }
 
 #cancelReportPushButton:hover {
@@ -1078,9 +1209,11 @@ QCheckBox {
     border: 2px solid #d3d3d3;
     border-radius: 10px;
     background-color: #f3f3f3;
-    text-align: center;         
-    font-weight: bold;
+    text-align: center;
     color: black;
+    font-size: 15px;
+    font-family: Cairo;
+    font-weight: bold;
 }
 
 #reportProgressBar::chunk {
@@ -1091,6 +1224,9 @@ QCheckBox {
 #reportPreviewLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 24px;
+    font-family: Cairo;
+    font-weight: bold;
 }
 
 #previewTableVerticalFrame {
@@ -1109,6 +1245,9 @@ QCheckBox {
 #machineInformationLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 24px;
+    font-family: Cairo;
+    font-weight: bold;
 }
 
 #OSTypeFrame {
@@ -1119,11 +1258,15 @@ QCheckBox {
 #OSTypeLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #OSTypeInfoLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #OSVersionFrame {
@@ -1134,11 +1277,15 @@ QCheckBox {
 #OSVersionLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #OSVersionInfoLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #architectureFrame {
@@ -1149,11 +1296,15 @@ QCheckBox {
 #architectureLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #architectureInfoLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #hostNameFrame {
@@ -1164,19 +1315,26 @@ QCheckBox {
 #hostNameLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #hostNameInfoLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #programInformationLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 24px;
+    font-family: Cairo;
+    font-weight: bold;
 }
 
-#OSVersionFrame {
+#netspectVersionFrame {
 	background-color: transparent;
 	color: #f3f3f3;
 }
@@ -1184,30 +1342,41 @@ QCheckBox {
 #netspectVersionLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #netspectVersionInfoLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
-#architectureFrame {
+#githubFrame {
 	background-color: transparent;
 }
 
 #githubLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #githubInfoLabel {
-    background-color: transparent;
-    color: #f3f3f3;
+	background-color: transparent;
+	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #networkInterfaceInformationLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 24px;
+    font-family: Cairo;
+    font-weight: bold;
 }
 
 #connectedInterfaceFrame {
@@ -1218,11 +1387,15 @@ QCheckBox {
 #connectedInterfaceLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #connectedInterfaceInfoLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #macAddressFrame {
@@ -1233,11 +1406,15 @@ QCheckBox {
 #macAddressLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #macAddressInfoLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #descriptionFrame {
@@ -1248,11 +1425,15 @@ QCheckBox {
 #descriptionLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #descriptionInfoLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #maxTransmitionUnitFrame {
@@ -1263,16 +1444,23 @@ QCheckBox {
 #maxTransmitionUnitLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #maxTransmitionUnitInfoLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
 }
 
 #myIpAddressesLabel {
 	background-color: transparent;
 	color: #f3f3f3;
+    font-size: 24px;
+    font-family: Cairo;
+    font-weight: bold;
 }
 
 #myIpAddressesFrameInside {
@@ -1281,12 +1469,13 @@ QCheckBox {
 }
 
 #ipAddressesListWidget {
-   background-color: rgba(198, 198, 198, 0.6);
-   border-radius: 15px;
-   border-style: outset;
-   border-width: 2px;
-   border-color: black;
-   padding: 4px;
+    background-color: rgba(198, 198, 198, 0.6);
+    border-radius: 15px;
+    border: 2px solid black;
+    padding: 4px;
+    color: black;
+    font-size: 17px;
+    font-family: Cairo;
 }
 
 #ipAddressesListWidget::item {
@@ -1320,10 +1509,16 @@ QCheckBox {
 
 #userSettingsLabel {
     color: #f3f3f3;
+    font-size: 24px;
+    font-family: Cairo;
+    font-weight: bold;
 }
 
 #changeEmailLabel {
-    color: #f3f3f3
+    color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
+    font-weight: bold;
 }
 
 #emailLineEdit {
@@ -1331,21 +1526,27 @@ QCheckBox {
     border: 2px solid lightgray;
     border-radius: 10px;
     padding: 0px 5px;
-    color: black;     
+    color: black;
+    font-size: 15px;
+    font-family: Cairo;
 }
 
 #saveEmailErrorMessageLabel {
+	background-color: #3c3d4a;
 	color: #d84f4f;
-	background-color: #3C3D4A;
+    font-size: 13px;
+    font-family: Cairo;
 	border: none;
 }
 
 #emailPushButton  {
-    background-color: #4e4f5a; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                      
-    color: #f3f3f3;       
+    background-color: #4e4f5a;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 5px;
+    color: #f3f3f3;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #emailPushButton:hover {
@@ -1359,28 +1560,38 @@ QCheckBox {
 }
 
 #changeUsernameLabel {
-    color: #f3f3f3
+    color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
+    font-weight: bold;
 }
 
 #usernameLineEdit {
     background-color: #f3f3f3;
     border: 2px solid lightgray;
-    border-radius: 10px;
+    border-radius: 10px; 
     padding: 0px 5px;
     color: black;
+    font-size: 15px;
+    font-family: Cairo;
 }
 
 #saveUsernameErrorMessageLabel {
+	background-color: #3c3d4a;
 	color: #d84f4f;
-	background-color: #3C3D4A;
+    font-size: 13px;
+    font-family: Cairo;
+	border: none;
 }
 
 #usernamePushButton  {
-    background-color: #4e4f5a; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                     
-    color: #f3f3f3;       
+    background-color: #4e4f5a;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 5px;
+    color: #f3f3f3;
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #usernamePushButton:hover {
@@ -1394,7 +1605,10 @@ QCheckBox {
 }
 
 #changePasswordLabel {
-    color: #f3f3f3
+    color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
+    font-weight: bold;
 }
 
 #currentPasswordLineEdit {
@@ -1402,7 +1616,9 @@ QCheckBox {
     border: 2px solid lightgray;
     border-radius: 10px;
     padding: 0px 5px;
-    color: black;          
+    color: black;
+    font-size: 15px;
+    font-family: Cairo;
 }
 
 #newPasswordLineEdit {
@@ -1410,7 +1626,9 @@ QCheckBox {
     border: 2px solid lightgray;
     border-radius: 10px;
     padding: 0px 5px;
-    color: black;         
+    color: black;
+    font-size: 15px;
+    font-family: Cairo;   
 }
 
 #confirmPasswordLineEdit {
@@ -1418,21 +1636,28 @@ QCheckBox {
     border: 2px solid lightgray;
     border-radius: 10px;
     padding: 0px 5px;
-    color: black;            
+    color: black;
+    font-size: 15px;
+    font-family: Cairo;         
 }
 
 #savePasswordErrorMessageLabel {
+	background-color: #3c3d4a;
 	color: #d84f4f;
-	background-color: #3C3D4A;
+    font-size: 13px;
+    font-family: Cairo;
+	border: none;
 	line-height: 50%;
 }
 
 #passwordPushButton  {
-    background-color: #4e4f5a; 
-    border: 2px solid lightgray;  
-    border-radius: 10px;         
-    padding: 5px;                   
-    color: #f3f3f3;       
+    background-color: #4e4f5a;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    padding: 5px;
+    color: #f3f3f3;
+    font-size: 16px;
+    font-family: Cairo;  
 }
 
 #passwordPushButton:hover {
@@ -1445,8 +1670,11 @@ QCheckBox {
 	border-color:#d7d7d7;
 }
 
-#interfaceSettingsLabel {
-    color: #f3f3f3
+#interfaceColorModeLabel {
+    color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
+    font-weight: bold;
 }
 
 #colorModeComboBoxFrame {
@@ -1468,6 +1696,8 @@ QCheckBox {
 #colorModeComboBox {
     background-color: transparent;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
     border: 2px outset transparent;
     border-radius: 10px;
     padding: 4px;
@@ -1501,17 +1731,21 @@ QCheckBox {
     outline: 0px;
 }
 
-#macAddressBlacklistSettingsLabel {
-    color: #f3f3f3
+#macAddressBlacklistLabel {
+    color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
+    font-weight: bold;
 }
 
 #macAddressListWidget {
-   background-color: #f3f3f3;
-   border-radius: 15px;
-   border-style: outset;
-   border-width: 2px;
-   border-color: lightgray;
-   padding: 5px;
+    background-color: #f3f3f3;
+    border-radius: 15px;
+    border: 2px solid lightgray;
+    padding: 5px;
+    color: black;
+    font-size: 17px;
+    font-family: Cairo;
 }
 
 #macAddressListWidget::item {
@@ -1542,10 +1776,12 @@ QCheckBox {
 
 #macAddressLineEdit {
     background-color: #f3f3f3;
-    border: 2px solid lightgray;
+    border: 2px solid lightgray; 
     border-radius: 10px;
     padding: 0px 5px;
     color: black;
+    font-size: 15px;
+    font-family: Cairo;
 }
 
 #addMacAddressPushButton  {
@@ -1554,6 +1790,8 @@ QCheckBox {
     border-radius: 10px;         
     padding: 5px;                        
     color: black;       
+    font-size: 16px;
+    font-family: Cairo;    
 }
 
 #addMacAddressPushButton:hover {
@@ -1565,8 +1803,11 @@ QCheckBox {
 }
 
 #macAddressBlacklistErrorMessageLabel {
-	color: #d84f4f;
 	background-color: #3c3d4a;
+	color: #d84f4f;
+    font-size: 13px;
+    font-family: Cairo;
+	border: none;
 }
 
 #clearHistoryPushButton  {
@@ -1575,6 +1816,8 @@ QCheckBox {
     border-radius: 10px;         
     padding: 5px;                      
     color: black;       
+    font-size: 16px;
+    font-family: Cairo;     
 }
 
 #clearHistoryPushButton:hover {
@@ -1591,6 +1834,8 @@ QCheckBox {
     border-radius: 10px;         
     padding: 5px;                      
     color: black;       
+    font-size: 16px;
+    font-family: Cairo;
 }
 
 #deleteAccoutPushButton:hover {
@@ -1603,6 +1848,9 @@ QCheckBox {
 
 #operationModeLabel {
     color: #f3f3f3;
+    font-size: 19px;
+    font-family: Cairo;
+    font-weight: bold;
 }
 
 #operationModeComboBoxFrame {
@@ -1624,6 +1872,8 @@ QCheckBox {
 #operationModeComboBox {
     background-color: transparent;
     color: black;
+    font-size: 16px;
+    font-family: Cairo;
     border: 2px outset transparent;
     border-radius: 10px;
     padding: 4px;

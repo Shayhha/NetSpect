@@ -233,6 +233,11 @@ In conclusion, our project successfully **delivered a real-time IDS** capable of
 
 <br>
 
+### ARP Spoofing Detection Algorithm Pseudocode:
+
+![ARP Spoofing Detection Algorithm Pseudocode](src/interface/Screenshots/arpSpoofingDetectionAlgorithmPseudocode.png)
+<br>*Algorithm pseudocode for detecting ARP Spoofing*
+
 ### Port Scanning & DoS Linear SVM Model:
 
 ![Port Dos Distribution](src/interface/Screenshots/portDosDistribution.png)

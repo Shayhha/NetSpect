@@ -196,7 +196,7 @@ The following screenshots showcase the application's interface, functionality, a
 
 ### Dark Mode:
 ![Login](src/interface/Screenshots/login.png)
-<br>*Login popup with registration and reset passowrd*
+<br>*Login popup with registration and reset password*
 
 <br>
 
@@ -211,7 +211,7 @@ The following screenshots showcase the application's interface, functionality, a
 
 ### Light Mode:
 ![Analytics Page](src/interface/Screenshots/analytics.png)
-<br>*Analytics page for visualizing alert histry by year*
+<br>*Analytics page for visualizing alert history by year*
 
 <br>
 
@@ -232,6 +232,11 @@ To support this effort, we **manually collected two unique datasets** using our 
 In conclusion, our project successfully **delivered a real-time IDS** capable of accurately identifying four critical types of network cyber attacks: Port Scanning, DoS, ARP Spoofing, and DNS Tunneling through an optimized, **multi-threaded solution** integrating detection algorithms and machine learning models, offering a reliable and **user-friendly** solution for modern network security challenges.
 
 <br>
+
+### ARP Spoofing Detection Algorithm Pseudocode:
+
+![ARP Spoofing Detection Algorithm Pseudocode](src/interface/Screenshots/arpSpoofingDetectionAlgorithmPseudocode.png)
+<br>*Algorithm pseudocode for detecting ARP Spoofing*
 
 ### Port Scanning & DoS Linear SVM Model:
 

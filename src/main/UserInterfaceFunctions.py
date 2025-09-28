@@ -311,12 +311,16 @@ def ToggleOperationMode(self):
     if self.ui.operationModeComboBox.currentIndex() == 0:
         self.userData['operationMode'] = 0
         self.ui.initiateDefenceLabel.setText('Initiate Detection')
-        self.ui.trayIcon.toggleDetectionAction.setText('Start Detection')
+        # check if tray icon is initialized
+        if self.ui.trayIcon:
+            self.ui.trayIcon.toggleDetectionAction.setText('Start Detection')
     # else means we need to change to data collection interface
     else:
         self.userData['operationMode'] = 1 if self.ui.operationModeComboBox.currentIndex() == 1 else 2
         self.ui.initiateDefenceLabel.setText('Initiate Collection')
-        self.ui.trayIcon.toggleDetectionAction.setText('Start Collection')
+        # check if tray icon is initialized
+        if self.ui.trayIcon:
+            self.ui.trayIcon.toggleDetectionAction.setText('Start Collection')
 
 
 # method for changing the current page index on the stack widget
@@ -403,19 +407,23 @@ def ToggleStartStopState(self, state):
     # if true means we need to change state of startStop button to "Stop Detection" stylesheet
     if state:
         self.ui.startStopPushButton.setText('STOP') #set button text
-        # we check operation mode state and change tray icon toggle detection action text accordingly
-        if self.ui.operationModeComboBox.currentIndex() == 0:
-            self.ui.trayIcon.toggleDetectionAction.setText('Stop Detection')
-        else:
-            self.ui.trayIcon.toggleDetectionAction.setText('Stop Collection')
+        # check if tray icon is initialized
+        if self.ui.trayIcon:
+            # we check operation mode state and change tray icon toggle detection action text accordingly
+            if self.ui.operationModeComboBox.currentIndex() == 0:
+                self.ui.trayIcon.toggleDetectionAction.setText('Stop Detection')
+            else:
+                self.ui.trayIcon.toggleDetectionAction.setText('Stop Collection')
     # else means we need to change state of startStop button to "Start Detection" stylesheet
     else:
         self.ui.startStopPushButton.setText('START') #set button text
-        # we check operation mode state and change tray icon toggle detection action text accordingly
-        if self.ui.operationModeComboBox.currentIndex() == 0:
-            self.ui.trayIcon.toggleDetectionAction.setText('Start Detection')
-        else:
-            self.ui.trayIcon.toggleDetectionAction.setText('Start Collection')
+        # check if tray icon is initialized
+        if self.ui.trayIcon:
+            # we check operation mode state and change tray icon toggle detection action text accordingly
+            if self.ui.operationModeComboBox.currentIndex() == 0:
+                self.ui.trayIcon.toggleDetectionAction.setText('Start Detection')
+            else:
+                self.ui.trayIcon.toggleDetectionAction.setText('Start Collection')
     # finally set the stylesheet of startStop button based on calculated stylesheet
     self.ui.startStopPushButton.setStyleSheet(currentStyleSheet)
 
@@ -730,7 +738,7 @@ class CustomMessageBox(QDialog):
     isMessageBox = False #represents flag for indicating if message box already exists
 
     # constructor of custom message box class
-    def __init__(self, title, message, iconType, isSelectable=False, parent=None):
+    def __init__(self, title, message, iconType='Information', isSelectable=False, parent=None):
         super().__init__(parent)
 
         # set the message box window title and icon
@@ -740,7 +748,7 @@ class CustomMessageBox(QDialog):
         self.setFont(QFont('Cairo', 13)) #set font size for message box
 
         # create the main vertical layout
-        layout = QVBoxLayout()
+        layout = QVBoxLayout(self)
 
         # create a horizontal layout for the icon and message
         horizontalLayout = QHBoxLayout()
@@ -759,6 +767,7 @@ class CustomMessageBox(QDialog):
         messageLabel = QLabel('<p style="line-height: 0.8;">' + message + '</p>')
         messageLabel.setWordWrap(True) #ensure long messages wrap properly
         messageLabel.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter) #vertically center the text
+        messageLabel.setOpenExternalLinks(True) #open links in an external web browser
         messageLabel.setContentsMargins(0, 0, 0, 10)
         messageLabel.setMinimumWidth(250)
 
@@ -895,8 +904,9 @@ def ShowMessageBox(title, message, iconType='Information', isSelectable=False):
         CustomMessageBox.isMessageBox = True
         result = messageBox.exec()
 
-        # return result value for question message box, else none
-        return result == QDialog.Accepted if iconType == 'Question' else None
+        # return result value for question message box, else true
+        return result == QDialog.Accepted if iconType == 'Question' else True
+    return False #if there's already a message box showing we return false
 
 #------------------------------------------CUSTOM-MESSAGEBOX-END---------------------------------------------#
 
@@ -928,11 +938,11 @@ class AttackPieChart():
             # setup the base chart widget for pie chart
             self.ui.pieChart.legend().setVisible(False)
             self.ui.pieChart.layout().setContentsMargins(0, 0, 0, 0)
-            self.ui.pieChart.setAnimationOptions(QChart.AllAnimations)
             self.ui.pieChart.setBackgroundRoundness(0)
             self.ui.pieChart.setBackgroundBrush(QColor(204, 204, 204, 153) if self.userData.get('lightMode') == 0 else QColor('#c1d0ef'))
             self.ui.pieChart.setTitle('No Data To Display...')
             self.ui.pieChart.setTitleFont(QFont('Cairo', 16, QFont.Bold, False))
+            self.ui.pieChart.setAnimationOptions(QChart.SeriesAnimations)
 
             # create chart view for pie chart
             self.ui.pieChartView = QChartView(self.ui.pieChart)
@@ -1496,7 +1506,7 @@ class AnalyticsBarChart():
             self.ui.barChartTitleLabel.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
 
             # create the chartView object
-            self.ui.barChartView  = QChartView(self.ui.barChart)
+            self.ui.barChartView = QChartView(self.ui.barChart)
             self.ui.barChartView.setRenderHint(QPainter.Antialiasing)
 
             # create a VBoxLayout that the bar chart and title will sit in
@@ -2079,9 +2089,11 @@ class SystemTrayIcon():
 
     # method for initializing system tray icon for various alert messages
     def InitTrayIcon(self):
+        self.ui.trayIcon = None #initialize tray icon to none
+
         # check if system tray is available
         if QSystemTrayIcon.isSystemTrayAvailable():
-            # create tray icon
+            # create tray icon object and initialize it
             self.ui.trayIcon = QSystemTrayIcon(self)
             self.ui.trayIcon.setIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'NetSpectIconTransparent.png')))
             self.ui.trayIcon.setVisible(True)
@@ -2145,30 +2157,34 @@ class SystemTrayIcon():
 
     # method for showing queued tray messages
     def ShowNextTrayMessage(self):
-        # check if tray message queue is not empty
-        if SystemTrayIcon.trayMessageQueue:
-            SystemTrayIcon.isTrayMessageShown = True #set flag to true
+        # check if tray icon is initialized
+        if self.ui.trayIcon:
+            # check if tray message queue is not empty
+            if SystemTrayIcon.trayMessageQueue:
+                SystemTrayIcon.isTrayMessageShown = True #set flag to true
 
-            # pop first tray message and show it in operation system
-            title, message, icon, duration = SystemTrayIcon.trayMessageQueue.pop(0)
-            self.ui.trayIcon.showMessage(title, message, icon, duration)
+                # pop first tray message and show it in operation system
+                title, message, icon, duration = SystemTrayIcon.trayMessageQueue.pop(0)
+                self.ui.trayIcon.showMessage(title, message, icon, duration)
 
-            # schedule the next tray message and repeat until we have shown all queued tray messages
-            QTimer.singleShot(100, lambda: SystemTrayIcon.ShowNextTrayMessage(self))
-        # else we don't have any queued tray messages
-        else:
-            SystemTrayIcon.isTrayMessageShown = False #set flag to false
+                # schedule the next tray message and repeat until we have shown all queued tray messages
+                QTimer.singleShot(100, lambda: SystemTrayIcon.ShowNextTrayMessage(self))
+            # else we don't have any queued tray messages
+            else:
+                SystemTrayIcon.isTrayMessageShown = False #set flag to false
 
 
 # method for showing tray icon messages in operating system
 def ShowTrayMessage(self, title, message, iconType='Information', duration=5000):
-    # get desired tray icon for tray message
-    icon = SystemTrayIcon.GetTrayIcon(self, iconType)
-    # append tray message to tray message queue
-    SystemTrayIcon.trayMessageQueue.append((title, message, icon, duration))
-    # show tray message if not shown
-    if not SystemTrayIcon.isTrayMessageShown:
-        SystemTrayIcon.ShowNextTrayMessage(self)
+    # check if tray icon is initialized
+    if self.ui.trayIcon:
+        # get desired tray icon for tray message
+        icon = SystemTrayIcon.GetTrayIcon(self, iconType)
+        # append tray message to tray message queue
+        SystemTrayIcon.trayMessageQueue.append((title, message, icon, duration))
+        # show tray message if not shown
+        if not SystemTrayIcon.isTrayMessageShown:
+            SystemTrayIcon.ShowNextTrayMessage(self)
 
 #-------------------------------------------SYSTEM-TRAY-ICON-END---------------------------------------------#
 

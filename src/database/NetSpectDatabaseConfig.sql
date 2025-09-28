@@ -9,6 +9,7 @@ USE NetSpect;
 
 -- Drop existing tables if they exist
 IF OBJECT_ID('Users', 'U') IS NOT NULL DROP TABLE Users;
+IF OBJECT_ID('Sessions', 'U') IS NOT NULL DROP TABLE Sessions;
 IF OBJECT_ID('Blacklist', 'U') IS NOT NULL DROP TABLE Blacklist;
 IF OBJECT_ID('Alerts', 'U') IS NOT NULL DROP TABLE Alerts;
 
@@ -27,6 +28,17 @@ CREATE TABLE Users (
 	CHECK (operationMode BETWEEN 0 AND 2),
 	CHECK (isDeleted BETWEEN 0 AND 1),
 	PRIMARY KEY(userId)
+);
+
+
+-- Create Sessions table
+CREATE TABLE Sessions (
+    sessionId UNIQUEIDENTIFIER UNIQUE NOT NULL DEFAULT NEWID(), --represents sessionId of session
+    userId INT UNIQUE NOT NULL, --represents userId of session
+    timestamp VARCHAR(255) NOT NULL DEFAULT (FORMAT(GETUTCDATE(), 'HH:mm:ss dd/MM/yy')), --represents timestamp of session
+    CHECK (timestamp LIKE '[0-2][0-9]:[0-5][0-9]:[0-5][0-9] [0-3][0-9]/[0-1][0-9]/[0-9][0-9]'),
+	PRIMARY KEY(sessionId),
+	FOREIGN KEY (userId) REFERENCES Users(userId)
 );
 
 
@@ -71,4 +83,4 @@ CREATE TABLE Alerts (
 INSERT INTO Users (email, userName, password)  
 VALUES  
 ('shayhha@gmail.com', 'Shay', 'a0ae799a2910f035b250e5175a02576f0ed0970c18ece1e65ce706767fa85c72'),
-('maximsu@ac.sce.ac.il', 'Maxim', '43011903cd7b0638011ffe1eb34d82dd45b74cb2a56a5502aa117cbb35a67d67');
+('maxim.sub21@gmail.com', 'Maxim', '43011903cd7b0638011ffe1eb34d82dd45b74cb2a56a5502aa117cbb35a67d67');

@@ -13,6 +13,8 @@ class SQL_Thread(QThread):
     # define signals for interacting with main gui thread
     loginResultSignal = Signal(dict)
     registrationResultSignal = Signal(dict)
+    checkSessionResultSignal = Signal(dict)
+    deleteSessionResultSignal = Signal(dict)
     changeEmailResultSignal = Signal(dict)
     changeUsernameResultSignal = Signal(dict)
     changePasswordResultSignal = Signal(dict)
@@ -46,7 +48,7 @@ class SQL_Thread(QThread):
     def StopThread(self):
         if self.isRunning():
             self.quit() #exit main loop and end task
-            self.wait() #we wait to ensure thread cleanup
+            self.wait(2000) #we wait to ensure thread cleanup
 
 
     # method for connecting to SQL server database and initialize connection
@@ -150,6 +152,7 @@ class SQL_Thread(QThread):
             self.cursor.execute(query, (username, password))
             result = self.cursor.fetchone()
             
+            # check if we received result, if so initialize user data dictionary
             if result:
                 # represents user data dictionary
                 userData = {
@@ -159,20 +162,30 @@ class SQL_Thread(QThread):
                     'lightMode': result[3],
                     'operationMode': result[4]
                 }
-                
-                # retrieve alert list, pie chart data, analytics chart data, black list and num of detections with helper functions
-                userData['alertList'] = self.GetAlerts(userData.get('userId'))
-                userData['pieChartData'] = self.GetPieChartData(userData.get('userId'))
-                userData['analyticsChartData'] = self.GetAnalyticsChartData(userData.get('userId'))
-                userData['blackList'] = self.GetBlacklistMacs(userData.get('userId'))
-                userData['numberOfDetections'] = len(userData.get('alertList'))
 
-                # set state and result with successful login attempt with user data
-                resultDict['result'] = userData
-                resultDict['state'] = True
+                sessionResult = self.AddSession(userData.get('userId')) #create new session for logged in user
+                # check if we sucessfully created a new session
+                if sessionResult.get('state') and sessionResult.get('result'):
+                    # set session id in user data
+                    userData['sessionId'] = sessionResult.get('result')
+
+                    # retrieve alert list, pie chart data, analytics chart data, black list and num of detections with helper functions
+                    userData['alertList'] = self.GetAlerts(userData.get('userId'))
+                    userData['pieChartData'] = self.GetPieChartData(userData.get('userId'))
+                    userData['analyticsChartData'] = self.GetAnalyticsChartData(userData.get('userId'))
+                    userData['blackList'] = self.GetBlacklistMacs(userData.get('userId'))
+                    userData['numberOfDetections'] = len(userData.get('alertList'))
+
+                    # set state and result with successful login attempt with user data
+                    resultDict['result'] = userData
+                    resultDict['state'] = True
+                
+                else:
+                    resultDict['message'] = 'Failed creating session. Try again later.'
+                    resultDict['error'] = True
             else:
                 resultDict['message'] = 'Invalid username or password. Please try again.'
-        
+
         except Exception as e:
             resultDict['message'] = f'Error logging in: {e}.'
             resultDict['error'] = True
@@ -219,6 +232,122 @@ class SQL_Thread(QThread):
         finally:
             # emit registration signal to main thread
             self.registrationResultSignal.emit(resultDict)
+
+
+    # method for adding session for user in Sessions table
+    @Slot(int)
+    def AddSession(self, userId):
+        resultDict = {'state': True, 'message': '', 'result': None, 'error': False} #represents result dict
+        try:
+            oldSessionResult = self.CheckSession(userId, isSignal=False) #check if user has an active session
+
+            # if there's an old session active we delete it from Sessions table
+            if oldSessionResult.get('state') and oldSessionResult.get('result'):
+                deleteSessionResult = self.DeleteSession(userId, oldSessionResult.get('result'), isSignal=False) #delete old session for user
+                resultDict.update(deleteSessionResult) #update resultDict based on delete session result
+
+            # check if old session deletion was successful, if so add new user session to Sessions table
+            if resultDict.get('state') and not resultDict.get('error'):
+                # insert new session for user into Sessions table
+                query = '''
+                    INSERT INTO Sessions (userId)
+                    OUTPUT INSERTED.sessionId
+                    VALUES (?)
+                '''
+                self.cursor.execute(query, (userId,))
+                result = self.cursor.fetchone()
+
+                # if we received result we return inserted session id as result
+                if result:
+                    self.connection.commit() #commit transaction
+                    resultDict['result'] = result[0] #get inserted session id
+                    resultDict['message'] = 'Added session successfully.'
+                else:
+                    resultDict['message'] = 'Failed adding session.'
+                    resultDict['state'] = False
+
+        except Exception as e:
+            self.connection.rollback() #rollback on error
+            resultDict['message'] = f'Error adding session: {e}.'
+            resultDict['state'] = False
+            resultDict['error'] = True
+        finally:
+            # return resultDict with session id for later use
+            return resultDict
+
+
+    # method to check if given session is active for user in Sessions table
+    @Slot(int, str)
+    def CheckSession(self, userId, sessionId=None, isSignal=True):
+        resultDict = {'state': False, 'message': '', 'result': None, 'error': False} #represents result dict
+        try:
+            # check if session for user is present in Sessions table
+            query = '''
+                SELECT sessionId
+                FROM Sessions 
+                WHERE userId = ?
+                '''
+
+            # check if sessionId given, if so we add it
+            if sessionId:
+                query += 'AND sessionId = ?'
+                self.cursor.execute(query, (userId, sessionId))
+            else:
+                self.cursor.execute(query, (userId,))
+
+            result = self.cursor.fetchone()
+
+            # if we received result we return session id as result
+            if result:
+                resultDict['result'] = result[0] #get active session id
+                resultDict['state'] = True
+            else:
+                resultDict['message'] = 'No matching session found.'
+
+        except Exception as e:
+            resultDict['message'] = f'Error checking session: {e}.'
+            resultDict['error'] = True
+        finally:
+            # if true we emit signal with result to main thread
+            if isSignal:
+                # emit check session signal to main thread
+                self.checkSessionResultSignal.emit(resultDict)
+            # else we return result dictionary
+            else:
+                return resultDict
+
+
+    # method for deleting session for user in Sessions table
+    @Slot(int, str)
+    def DeleteSession(self, userId, sessionId, isSignal=True):
+        resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
+        try:
+            # delete session for user from Sessions table
+            query = '''
+                DELETE FROM Sessions 
+                WHERE userId = ? AND sessionId = ?
+                '''
+            self.cursor.execute(query, (userId, sessionId))
+
+            if self.cursor.rowcount > 0:
+                self.connection.commit() #commit transaction
+                resultDict['message'] = 'Session deleted successfully.'
+                resultDict['state'] = True
+            else:
+                resultDict['message'] = 'No matching session found.'
+
+        except Exception as e:
+            self.connection.rollback() #rollback on error
+            resultDict['message'] = f'Error deleting session: {e}.'
+            resultDict['error'] = True
+        finally:
+            # if true we emit signal with result to main thread
+            if isSignal:
+                # emit delete session signal to main thread
+                self.deleteSessionResultSignal.emit(resultDict)
+            # else we return result dictionary
+            else:
+                return resultDict
 
 
     # method for changing user's email in Users table
@@ -419,9 +548,6 @@ class SQL_Thread(QThread):
     def DeleteAccount(self, userId):
         resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
         try:
-            # set autocommit to false for executing both queries together
-            self.connection.autocommit = False
-
             # delete all alerts for user in Alerts table
             alertsQuery = '''
                 UPDATE Alerts 
@@ -450,8 +576,6 @@ class SQL_Thread(QThread):
             resultDict['message'] = f'Error deleting user account: {e}.'
             resultDict['error'] = True
         finally:
-            # set autocommit back to true for next queries
-            self.connection.autocommit = True
             # emit delete account signal to main thread
             self.deleteAccountResultSignal.emit(resultDict)
 
@@ -461,9 +585,6 @@ class SQL_Thread(QThread):
     def HardDeleteAccount(self, userId):
         resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
         try:
-            # set autocommit to false for executing all queries together
-            self.connection.autocommit = False
-
             # hard delete all blacklisted mac addresses for user in Blacklist table
             blacklistQuery = '''
                 DELETE FROM Blacklist
@@ -497,8 +618,6 @@ class SQL_Thread(QThread):
             resultDict['message'] = f'Error permanently deleting user account: {e}.'
             resultDict['error'] = True
         finally:
-            # set autocommit back to true for next queries
-            self.connection.autocommit = True
             # emit delete account signal to main thread
             self.deleteAccountResultSignal.emit(resultDict)
 
@@ -745,7 +864,7 @@ class SQL_Thread(QThread):
     def DeleteBlacklistMac(self, userId, macAddress):
         resultDict = {'state': False, 'message': '', 'error': False} #represents result dict
         try:
-            # method for deleting blacklisted mac address for user from Blacklist table
+            # delete blacklisted mac address for user from Blacklist table
             query = '''
                 DELETE FROM Blacklist 
                 WHERE userId = ? AND macAddress = ?

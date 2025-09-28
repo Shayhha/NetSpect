@@ -191,7 +191,7 @@ QToolTip {
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <property name="spacing">
-        <number>15</number>
+        <number>20</number>
        </property>
        <property name="sizeConstraint">
         <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
@@ -300,14 +300,14 @@ QToolTip {
          </property>
          <property name="minimumSize">
           <size>
-           <width>40</width>
-           <height>40</height>
+           <width>35</width>
+           <height>35</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>40</width>
-           <height>40</height>
+           <width>35</width>
+           <height>35</height>
           </size>
          </property>
          <property name="cursor">
@@ -327,6 +327,9 @@ QToolTip {
          <property name="pixmap">
           <pixmap>Icons/LogoutLight.png</pixmap>
          </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
          <property name="alignment">
           <set>Qt::AlignmentFlag::AlignCenter</set>
          </property>
@@ -336,14 +339,14 @@ QToolTip {
         <widget class="QLabel" name="accountIcon">
          <property name="minimumSize">
           <size>
-           <width>40</width>
-           <height>40</height>
+           <width>35</width>
+           <height>35</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>40</width>
-           <height>40</height>
+           <width>35</width>
+           <height>35</height>
           </size>
          </property>
          <property name="cursor">
@@ -363,6 +366,9 @@ QToolTip {
          <property name="pixmap">
           <pixmap>Icons/AccountLight.png</pixmap>
          </property>
+         <property name="scaledContents">
+          <bool>true</bool>
+         </property>
          <property name="alignment">
           <set>Qt::AlignmentFlag::AlignCenter</set>
          </property>
@@ -372,14 +378,14 @@ QToolTip {
         <widget class="QLabel" name="settingsIcon">
          <property name="minimumSize">
           <size>
-           <width>40</width>
-           <height>40</height>
+           <width>35</width>
+           <height>35</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>40</width>
-           <height>40</height>
+           <width>35</width>
+           <height>35</height>
           </size>
          </property>
          <property name="cursor">
@@ -398,6 +404,9 @@ QToolTip {
          </property>
          <property name="pixmap">
           <pixmap>Icons/SettingsLight.png</pixmap>
+         </property>
+         <property name="scaledContents">
+          <bool>true</bool>
          </property>
          <property name="alignment">
           <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -535,6 +544,9 @@ QToolTip {
                <property name="pixmap">
                 <pixmap>Icons/BulletedMenuLight.png</pixmap>
                </property>
+               <property name="scaledContents">
+                <bool>true</bool>
+               </property>
                <property name="alignment">
                 <set>Qt::AlignmentFlag::AlignCenter</set>
                </property>
@@ -583,6 +595,9 @@ QToolTip {
                </property>
                <property name="pixmap">
                 <pixmap>Icons/BulletedMenuRotatedLight.png</pixmap>
+               </property>
+               <property name="scaledContents">
+                <bool>true</bool>
                </property>
                <property name="alignment">
                 <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -650,6 +665,9 @@ QToolTip {
                <property name="pixmap">
                 <pixmap>Icons/WorkstationLight.png</pixmap>
                </property>
+               <property name="scaledContents">
+                <bool>true</bool>
+               </property>
                <property name="alignment">
                 <set>Qt::AlignmentFlag::AlignCenter</set>
                </property>
@@ -716,6 +734,9 @@ QToolTip {
           </item>
           <item>
            <widget class="QFrame" name="analyticsIconHorizontalFrame">
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
             <property name="styleSheet">
              <string notr="true">#analyticsIconHorizontalFrame {
 	background-color: #2d2e36;
@@ -768,6 +789,9 @@ QToolTip {
                </property>
                <property name="pixmap">
                 <pixmap>Icons/AnalyticsLight.png</pixmap>
+               </property>
+               <property name="scaledContents">
+                <bool>true</bool>
                </property>
                <property name="alignment">
                 <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -889,6 +913,9 @@ QToolTip {
                </property>
                <property name="pixmap">
                 <pixmap>Icons/DocumentLight.png</pixmap>
+               </property>
+               <property name="scaledContents">
+                <bool>true</bool>
                </property>
                <property name="alignment">
                 <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -1014,6 +1041,9 @@ QToolTip {
                </property>
                <property name="pixmap">
                 <pixmap>Icons/InfoLight.png</pixmap>
+               </property>
+               <property name="scaledContents">
+                <bool>true</bool>
                </property>
                <property name="alignment">
                 <set>Qt::AlignmentFlag::AlignCenter</set>

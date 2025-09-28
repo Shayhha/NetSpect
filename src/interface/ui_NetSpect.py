@@ -168,7 +168,7 @@ class Ui_NetSpect(object):
 "    background-color: #1E1E20;\n"
 "}")
         self.horizontalLayout = QHBoxLayout(self.topFrame)
-        self.horizontalLayout.setSpacing(15)
+        self.horizontalLayout.setSpacing(20)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.horizontalLayout.setSizeConstraint(QLayout.SizeConstraint.SetDefaultConstraint)
         self.horizontalLayout.setContentsMargins(15, 0, 15, 0)
@@ -213,39 +213,42 @@ class Ui_NetSpect(object):
         self.logoutIcon = QLabel(self.topFrame)
         self.logoutIcon.setObjectName(u"logoutIcon")
         self.logoutIcon.setEnabled(True)
-        self.logoutIcon.setMinimumSize(QSize(40, 40))
-        self.logoutIcon.setMaximumSize(QSize(40, 40))
+        self.logoutIcon.setMinimumSize(QSize(35, 35))
+        self.logoutIcon.setMaximumSize(QSize(35, 35))
         self.logoutIcon.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.logoutIcon.setStyleSheet(u"#logoutIcon {\n"
 "	background-color: transparent;\n"
 "}")
         self.logoutIcon.setPixmap(QPixmap(u"Icons/LogoutLight.png"))
+        self.logoutIcon.setScaledContents(True)
         self.logoutIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout.addWidget(self.logoutIcon)
 
         self.accountIcon = QLabel(self.topFrame)
         self.accountIcon.setObjectName(u"accountIcon")
-        self.accountIcon.setMinimumSize(QSize(40, 40))
-        self.accountIcon.setMaximumSize(QSize(40, 40))
+        self.accountIcon.setMinimumSize(QSize(35, 35))
+        self.accountIcon.setMaximumSize(QSize(35, 35))
         self.accountIcon.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.accountIcon.setStyleSheet(u"#accountIcon {\n"
 "	background-color: transparent;\n"
 "}")
         self.accountIcon.setPixmap(QPixmap(u"Icons/AccountLight.png"))
+        self.accountIcon.setScaledContents(True)
         self.accountIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout.addWidget(self.accountIcon)
 
         self.settingsIcon = QLabel(self.topFrame)
         self.settingsIcon.setObjectName(u"settingsIcon")
-        self.settingsIcon.setMinimumSize(QSize(40, 40))
-        self.settingsIcon.setMaximumSize(QSize(40, 40))
+        self.settingsIcon.setMinimumSize(QSize(35, 35))
+        self.settingsIcon.setMaximumSize(QSize(35, 35))
         self.settingsIcon.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.settingsIcon.setStyleSheet(u"#settingsIcon {\n"
 "	background-color: transparent;\n"
 "}")
         self.settingsIcon.setPixmap(QPixmap(u"Icons/SettingsLight.png"))
+        self.settingsIcon.setScaledContents(True)
         self.settingsIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout.addWidget(self.settingsIcon)
@@ -300,6 +303,7 @@ class Ui_NetSpect(object):
 "	background-color: #2d2e36;\n"
 "}")
         self.menuIcon.setPixmap(QPixmap(u"Icons/BulletedMenuLight.png"))
+        self.menuIcon.setScaledContents(True)
         self.menuIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_2.addWidget(self.menuIcon)
@@ -317,6 +321,7 @@ class Ui_NetSpect(object):
 "	background-color: #2d2e36;\n"
 "}")
         self.closeMenuIcon.setPixmap(QPixmap(u"Icons/BulletedMenuRotatedLight.png"))
+        self.closeMenuIcon.setScaledContents(True)
         self.closeMenuIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_2.addWidget(self.closeMenuIcon)
@@ -344,6 +349,7 @@ class Ui_NetSpect(object):
 "\n"
 "}")
         self.homePageIcon.setPixmap(QPixmap(u"Icons/WorkstationLight.png"))
+        self.homePageIcon.setScaledContents(True)
         self.homePageIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_3.addWidget(self.homePageIcon)
@@ -377,6 +383,7 @@ class Ui_NetSpect(object):
 
         self.analyticsIconHorizontalFrame = QFrame(self.sideFrame)
         self.analyticsIconHorizontalFrame.setObjectName(u"analyticsIconHorizontalFrame")
+        self.analyticsIconHorizontalFrame.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.analyticsIconHorizontalFrame.setStyleSheet(u"#analyticsIconHorizontalFrame {\n"
 "	background-color: #2d2e36;\n"
 "}")
@@ -394,6 +401,7 @@ class Ui_NetSpect(object):
 "\n"
 "}")
         self.analyticsIcon.setPixmap(QPixmap(u"Icons/AnalyticsLight.png"))
+        self.analyticsIcon.setScaledContents(True)
         self.analyticsIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_4.addWidget(self.analyticsIcon)
@@ -441,6 +449,7 @@ class Ui_NetSpect(object):
 "	background-color: #2d2e36;\n"
 "}")
         self.reportIcon.setPixmap(QPixmap(u"Icons/DocumentLight.png"))
+        self.reportIcon.setScaledContents(True)
         self.reportIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_5.addWidget(self.reportIcon)
@@ -490,6 +499,7 @@ class Ui_NetSpect(object):
 "	background-color: #2d2e36;\n"
 "}")
         self.infoIcon.setPixmap(QPixmap(u"Icons/InfoLight.png"))
+        self.infoIcon.setScaledContents(True)
         self.infoIcon.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_6.addWidget(self.infoIcon)

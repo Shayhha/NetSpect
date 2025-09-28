@@ -2,7 +2,7 @@ import UserInterfaceFunctions
 from MainFunctions import *
 from SQLHelper import *
 from interface.ui_NetSpect import Ui_NetSpect
-from PySide6.QtCore import Qt, Signal, Slot, QTimer, QRegularExpression, QThread, QMutex, QMutexLocker, QWaitCondition
+from PySide6.QtCore import Qt, Signal, Slot, QTimer, QStandardPaths, QRegularExpression, QThread, QMutex, QMutexLocker, QWaitCondition
 from PySide6.QtGui import QGuiApplication, QValidator, QRegularExpressionValidator
 from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QFileDialog
 from hashlib import sha256
@@ -13,12 +13,14 @@ from string import digits, ascii_letters, ascii_uppercase
 # class that represents main app of NetSpect
 class NetSpect(QMainWindow):
     ui = None #represents main ui object of GUI with all our objects
-    userData = {'userId': None, 'email': None, 'userName': None, 'lightMode': 0, 'operationMode': 0, 'numberOfDetections': 0, 'alertList': [], 'pieChartData': {}, 'analyticsChartData': {}, 'blackList': []} #represents user data in interface
+    server = None #represents listening server for our app to make sure one instance is showing
+    serverName = 'NetSpect_IDS' #represents our listening server name
+    userData = {'userId': None, 'sessionId': None, 'email': None, 'userName': None, 'lightMode': 0, 'operationMode': 0, 'numberOfDetections': 0, 'alertList': [], 'pieChartData': {}, 'analyticsChartData': {}, 'blackList': []} #represents user data in interface
     isDetection = False #represents flag for indicating if detection is active
     resetPasswordValidator = {'resetCode': None, 'timestamp': None, 'newPassword': None} #represents reset password validator dictionary
     emailValidator, usernameValidator, passwordValidator, finalPasswordValidator, macValidator = None, None, None, None, None #represents the validators that hold regexes for various input fields in the program
-    totalTimer, arpTimer, portScanDosTimer, dnsTimer = None, None, None, None #represents timer for each thread for evaluating when to send data
-    totalTimeout, arpTimeout, portScanDosTimout, dnsTimout = 1000, 40000, 40000, 40000 #represents timeout for each timer
+    totalTimer, sessionTimer, arpTimer, portScanDosTimer, dnsTimer = None, None, None, None, None #represents timer for each thread for evaluating when to send data
+    totalTimeout, sessionTimeout, arpTimeout, portScanDosTimout, dnsTimout = 1000, 10000, 40000, 40000, 40000 #represents timeout for each timer
     arpThreshold, portScanDosThreshold, dnsThreshold = 20, 10000, 350 #represents thresholds for each thread
     repeatedAttackTimeout = 2 #represents timeout for repeated attacks, we alert again for attacks from same source after few minutes
     timeElapsed = timedelta() #initialize a timedelta object to track elapsed time
@@ -38,12 +40,13 @@ class NetSpect(QMainWindow):
         self.ui.setupUi(self) #load the ui file of NetSpect
         self.initUI() #call init method
         
-    
+
     # method to initialize GUI methods and events
     def initUI(self):
         # connect timers for detection
-        self.totalTimer, self.arpTimer, self.portScanDosTimer, self.dnsTimer = QTimer(self), QTimer(self), QTimer(self), QTimer(self) #initailize our timers
+        self.totalTimer, self.sessionTimer, self.arpTimer, self.portScanDosTimer, self.dnsTimer = QTimer(self), QTimer(self), QTimer(self), QTimer(self), QTimer(self) #initailize our timers
         self.totalTimer.timeout.connect(self.UpdateRunningTimeCounterLabel) #connect timeout event for total timer
+        self.sessionTimer.timeout.connect(self.CheckActiveSession) #connect timeout event for session timer
         self.arpTimer.timeout.connect(self.SendArpList) #connect timeout event for arp timer
         self.portScanDosTimer.timeout.connect(self.SendPortScanDosDict) #connect timeout event for portScanDos timer
         self.dnsTimer.timeout.connect(self.SendDnsDict) #connect timeout event for dns timer
@@ -102,7 +105,6 @@ class NetSpect(QMainWindow):
         self.InitSQLThread() #call init method for sql thread
         self.InitModels() #call init method for initializing models and scalers
         self.center() #make the app open in center of screen
-        self.show() #show the application
 
 
     # method for making the app open in the center of screen
@@ -157,6 +159,10 @@ class NetSpect(QMainWindow):
             self.reportThread.wait() #wait until the thread finishes execution
             self.CloseReportThread(stateDict) #call close method
 
+        # we check if user is active and has a session, if so we delete his session
+        if self.sqlThread and self.userData.get('userId') and self.userData.get('sessionId'):
+            self.sqlThread.DeleteSession(self.userData.get('userId'), self.userData.get('sessionId')) #delete session
+
         # we check if sql thread is active, if so we close it
         if self.sqlThread:
             self.sqlThread.StopThread() #stop sql thread and close connection
@@ -168,8 +174,50 @@ class NetSpect(QMainWindow):
             self.loggerThread.StopThread() #stop logger thread
             self.loggerThread.wait() #wait until the thread finishes execution
             self.CloseLoggerThread(stateDict) #call close method
-        
+
+        NetSpect.CloseServer() #close listening server
         event.accept() #accept the close event
+
+
+    # function for initializing listening server for managing one instance
+    @staticmethod
+    def InitServer():
+        # check if server is already initialized
+        if NetSpect.server:
+            return True; #return true if already initialized
+
+        # create server to listen for new instances
+        NetSpect.server = QLocalServer()
+
+        # check if failed to listen on our server name, if so we remove old entries and try again
+        if not NetSpect.server.listen(NetSpect.serverName):
+            NetSpect.server.removeServer(NetSpect.serverName) #clear server name entries
+            # try to listen again for our server name, if failed we return false
+            if not NetSpect.server.listen(NetSpect.serverName):
+                NetSpect.server = None #set server back to none
+                return False #return false to indicate failure
+        return True #return true if server listening successfully
+
+
+    # function for checking if listening server is running
+    @staticmethod
+    def CheckServer():
+        socket = QLocalSocket() #create socket for checking is server running
+        socket.connectToServer(NetSpect.serverName) # try to connect to server
+        # wait for server to response to our request,if we receive response we return true
+        if socket.waitForConnected(100):
+            return True #return true to indicate that server is running
+        return False #return false to indicate that server is down
+
+
+    # function for closing listening server
+    @staticmethod
+    def CloseServer():
+        # check if listening server is initialized
+        if NetSpect.server:
+            NetSpect.server.close() #close listening server
+            QLocalServer.removeServer(NetSpect.serverName) #remove server entry
+            NetSpect.server = None #set server back to none
 
 
     # function for hashing given password with sha-256, retuns hex representation
@@ -217,6 +265,8 @@ class NetSpect(QMainWindow):
         # connect relevant signals for sql thread
         self.sqlThread.loginResultSignal.connect(self.LoginResult)
         self.sqlThread.registrationResultSignal.connect(self.RegisterResult)
+        self.sqlThread.checkSessionResultSignal.connect(self.CheckSessionResult)
+        self.sqlThread.deleteSessionResultSignal.connect(self.DeleteSessionResult)
         self.sqlThread.changeEmailResultSignal.connect(self.SaveEmailResult)
         self.sqlThread.changeUsernameResultSignal.connect(self.SaveUsernameResult)
         self.sqlThread.changePasswordResultSignal.connect(self.SavePasswordResult)
@@ -247,7 +297,7 @@ class NetSpect(QMainWindow):
         # else means we need to reset userData dictionary to default state
         else:
             # initialize user data dictionary to default state
-            self.userData = {'userId': None, 'email': None, 'userName': None, 'lightMode': 0, 'operationMode': 0, 
+            self.userData = {'userId': None, 'sessionId': None, 'email': None, 'userName': None, 'lightMode': 0, 'operationMode': 0, 
                                 'numberOfDetections': 0, 'alertList': [], 'pieChartData': {}, 'analyticsChartData': {}, 'blackList': []}
 
         # initialize pie chart, histogram chart and bar chart dictionaries with default states if not initialized
@@ -332,10 +382,16 @@ class NetSpect(QMainWindow):
     # method that sets the text in the info page with the system information of the users machine
     def InitSystemInfo(self, systemDict):
         # initialize system information section (left side)
-        self.ui.OSTypeInfoLabel.setText(systemDict.get('osType')[:15])
-        self.ui.OSVersionInfoLabel.setText(systemDict.get('osVersion')[:15])
-        self.ui.architectureInfoLabel.setText(systemDict.get('architecture')[:15])
-        self.ui.hostNameInfoLabel.setText(systemDict.get('hostName')[:15])
+        if systemDict: #we check if we received a valid system information dictionary
+            self.ui.OSTypeInfoLabel.setText(systemDict.get('osType')[:15])
+            self.ui.OSVersionInfoLabel.setText(systemDict.get('osVersion')[:15])
+            self.ui.architectureInfoLabel.setText(systemDict.get('architecture')[:15])
+            self.ui.hostNameInfoLabel.setText(systemDict.get('hostName')[:15])
+        else: #else means we didnt receive a valid system information dictionary
+            self.ui.OSTypeInfoLabel.setText('None')
+            self.ui.OSVersionInfoLabel.setText('None')
+            self.ui.architectureInfoLabel.setText('None')
+            self.ui.hostNameInfoLabel.setText('None')
 
 
     # method for updating network interface from combobox in gui
@@ -346,23 +402,39 @@ class NetSpect(QMainWindow):
 
         # initialize network information section (right side)
         selectedInterface = NetworkInformation.networkInfo.get(NetworkInformation.selectedInterface)
-        self.ui.connectedInterfaceInfoLabel.setText(selectedInterface.get('name'))
-        self.ui.macAddressInfoLabel.setText(selectedInterface.get('mac'))
-        self.ui.descriptionInfoLabel.setText(selectedInterface.get('description'))
-        self.ui.maxTransmitionUnitInfoLabel.setText(selectedInterface.get('maxTransmitionUnit'))
-        self.ui.ipAddressesListWidget.clear()
-        self.ui.ipAddressesListWidget.addItems(selectedInterface.get('ipv4Addrs') + selectedInterface.get('ipv6Addrs'))
+
+        if selectedInterface: #we check if a network interface is selected
+            self.ui.connectedInterfaceInfoLabel.setText(selectedInterface.get('name'))
+            self.ui.macAddressInfoLabel.setText(selectedInterface.get('mac'))
+            self.ui.descriptionInfoLabel.setText(selectedInterface.get('description'))
+            self.ui.maxTransmitionUnitInfoLabel.setText(selectedInterface.get('maxTransmitionUnit'))
+            self.ui.ipAddressesListWidget.clear()
+            self.ui.ipAddressesListWidget.addItems(selectedInterface.get('ipv4Addrs') + selectedInterface.get('ipv6Addrs'))
+        else: #else means no network interface is selected
+            self.ui.connectedInterfaceInfoLabel.setText('No interface selected')
+            self.ui.macAddressInfoLabel.setText('00:00:00:00:00:00')
+            self.ui.descriptionInfoLabel.setText('None')
+            self.ui.maxTransmitionUnitInfoLabel.setText('None')
+            self.ui.ipAddressesListWidget.clear()
 
 
     # method for showing file dialog for user to choose his desired path and file name
-    def GetPathFromFileDialog(self, title, fileName, extensions):
-        options = QFileDialog.Options()
+    def GetPathFromFileDialog(self, title, fileName, extensions, location='desktop'):
+        options = QFileDialog.Options() #represents options for file dialog
+        defaultDirectory = '' #represents default directory for file dialog
+
+        # check if location given, if so set desired directory for file dialog
+        if location == 'desktop':
+            defaultDirectory = QStandardPaths.writableLocation(QStandardPaths.DesktopLocation)
+        elif location == 'home':
+            defaultDirectory = QStandardPaths.writableLocation(QStandardPaths.HomeLocation)
+
         filePath, _ = QFileDialog.getSaveFileName(
             parent=None, #represents parent window
             caption=title, #represents dialog title
-            dir=fileName, #represents default filename
+            dir=os.path.join(defaultDirectory, fileName), #represents default path with filename
             filter=extensions, #represents supported extensions
-            options=options
+            options=options #represents options for file dialog
         )
         return filePath
 
@@ -434,18 +506,20 @@ class NetSpect(QMainWindow):
                 self.ui.usernameLineEdit.setText(self.userData.get('userName')) #set username of user in settings page
                 self.InitHistoryTable(self.userData.get('alertList')) #initialize our history table
                 self.InitReportTable(self.userData.get('alertList')) #initialize our report table
-                self.InitMacAddresses(self.userData.get('blackList')) #intialize our mac address black list
+                self.InitMacAddresses(self.userData.get('blackList')) #intialize our mac address blacklist
                 UserInterfaceFunctions.UpdatePieChartAfterLogin(self, self.userData.get('pieChartData')) #initialize pie chart
                 UserInterfaceFunctions.UpdateHistogramChartAfterLogin(self, self.userData.get('analyticsChartData').get('histogramChartData')) #initialize histogram chart
                 UserInterfaceFunctions.UpdateBarChartAfterLogin(self, self.userData.get('analyticsChartData').get('barChartData')) #initialize horizontal bar chart
                 UserInterfaceFunctions.SetDataIntoCards(self) #initialize analytics cards section
+                self.sessionTimer.start(self.sessionTimeout) #start session timer for checking session state
                 self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has logged in.', 'INFO') #log login event
 
             # means we set user interface for logged out user
             else:
+                self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has logged out.', 'INFO') #log logout event
                 self.InitUserData() #initialzie user data dictionary to default
                 UserInterfaceFunctions.ToggleUserInterface(self, False) #reset our user interface
-                self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has logged out.', 'INFO') #log logout event
+                self.sessionTimer.stop() #stop session timer
 
 
     # method for updating number of detections counter label in gui
@@ -542,10 +616,7 @@ class NetSpect(QMainWindow):
     def UpdatePortScanDosDict(self, flowTuple, packet):
         # we ensure thread safety with our portScanDos mutex
         with QMutexLocker(self.portScanDosMutex):
-            if flowTuple in self.portScanDosDict: #if flow tuple exists in dict
-                self.portScanDosDict[flowTuple].append(packet) #append to list our packet
-            else: #else we create new entry with flow tuple
-                self.portScanDosDict[flowTuple] = [packet] #create new list with packet
+            self.portScanDosDict.setdefault(flowTuple, []).append(packet) #append packet to flow
             self.tcpUdpCounter += 1 #increment counter
 
         # check if we reached packet threshold
@@ -560,10 +631,7 @@ class NetSpect(QMainWindow):
     def UpdateDnsDict(self, flowTuple, dnsPacket):
         # we ensure thread safety with our dns mutex
         with QMutexLocker(self.dnsMutex):
-            if flowTuple in self.dnsDict: #if flow tuple exists in dict
-                self.dnsDict[flowTuple].append(dnsPacket) #append to list our packet
-            else: #else we create new entry with flow tuple
-                self.dnsDict[flowTuple] = [dnsPacket] #create new list with packet
+            self.dnsDict.setdefault(flowTuple, []).append(dnsPacket) #append packet to flow
             self.dnsCounter += 1 #increment counter
 
         # check if we reached packet threshold
@@ -590,7 +658,7 @@ class NetSpect(QMainWindow):
                 del self.arpList[:batchSize] #remove the first batchSize packets from arp list
 
                 # send arp batch to arp thread for analysis
-                self.arpCounter -= len(arpBatch) #update arp counter
+                self.arpCounter -= batchSize #update arp counter
                 if not self.dataCollectorThread and self.ui.operationModeComboBox.currentIndex() == 0:
                     self.arpThread.ReceiveArpBatch(arpBatch) #send batch to arp thread
                     self.SendLogDict('Main_Thread: Sent arp list for analysis.', 'INFO') #log send event
@@ -737,9 +805,6 @@ class NetSpect(QMainWindow):
     @Slot(dict)
     def CloseSnifferThread(self, stateDict):
         self.snifferThread = None #set thread to none for next detection
-        # we check if it was the last thread, if so we set isDetection flag
-        if not self.arpThread and not self.portScanDosThread and not self.dnsThread:
-            self.isDetection = False
         # in case of an error we stop detection and show error message
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
@@ -753,9 +818,6 @@ class NetSpect(QMainWindow):
     def CloseArpThread(self, stateDict):
         self.arpThread = None #set thread to none for next detection
         ArpSpoofing.isArpTables = False #set our initialized flag to false for arp detection
-        # we check if it was the last thread, if so we set isDetection flag
-        if not self.snifferThread and not self.portScanDosThread and not self.dnsThread:
-            self.isDetection = False
         # in case of an error we stop detection and show error message
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
@@ -768,9 +830,6 @@ class NetSpect(QMainWindow):
     @Slot(dict)
     def ClosePortScanDosThread(self, stateDict):
         self.portScanDosThread = None #set thread to none for next detection
-        # we check if it was the last thread, if so we set isDetection flag
-        if not self.snifferThread and not self.arpThread and not self.dnsThread:
-            self.isDetection = False
         # in case of an error we stop detection and show error message
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
@@ -783,9 +842,6 @@ class NetSpect(QMainWindow):
     @Slot(dict)
     def CloseDnsThread(self, stateDict):
         self.dnsThread = None #set thread to none for next detection
-        # we check if it was the last thread, if so we set isDetection flag
-        if not self.snifferThread and not self.arpThread and not self.portScanDosThread:
-            self.isDetection = False
         # in case of an error we stop detection and show error message
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
@@ -798,9 +854,6 @@ class NetSpect(QMainWindow):
     @Slot(dict)
     def CloseDataCollectorThread(self, stateDict):
         self.dataCollectorThread = None #set thread to none for next detection
-        # we check if it was the last thread, if so we set isDetection flag
-        if not self.snifferThread:
-            self.isDetection = False
         # in case of an error we stop detection and show error message
         if stateDict.get('state') == False and stateDict.get('message'):
             self.StopDetection() #stop detection and stop running threads
@@ -847,77 +900,79 @@ class NetSpect(QMainWindow):
             ArpSpoofing.isArpTables = True #set isArpTable to true indicating we can sniff arp packets
             self.SendLogDict('Arp_Thread: Initialized ARP tables successfully.', 'INFO') #log arp tables initialization event
 
-        # process only if an attack is detected state is false and an attackDict provided
+        # check if state is false and attackDict provided, means we need to alert for new arp spoofing attack
         if result.get('state') == False and result.get('attackDict'):
             type = result.get('type') #represents type of result, 1-ipToMac, 2-macToIp, 3-Both
             attackDict = result.get('attackDict') #represents attack dictionary with all anomalies found
 
-            # handle Ip to Mac anomalies we found in arp spoofing attack (including initialization)
+            # handle IP to MAC anomalies we found in arp spoofing attack (including initialization)
             if type in (1, 3):
                 # represents the ipDict of arp spoofing, for type 3 its nested under 'ipToMac'
                 ipDict = attackDict if type == 1 else attackDict.get('ipToMac', {})
                 for ip, details in ipDict.items():
                     isNewAttack = False #represents a flag for indicating if attack is new or not
 
-                    # we check if detected ip is in our known attacks in arpAttackDict
+                    # we check if detected IP is not in our known attacks in arpAttackDict
                     if ip not in self.arpAttackDict.get('ipToMac', {}):
-                        self.arpAttackDict['ipToMac'][ip] = details #add new ip entry in our arpAttackDict
+                        self.arpAttackDict['ipToMac'][ip] = details #add new IP entry in our arpAttackDict
                         isNewAttack = True #set new attack to true
 
-                    # we check if detected ip is already in our known attacks in arpAttackDict
+                    # we check if detected IP is already in our known attacks in arpAttackDict
                     elif ip in self.arpAttackDict.get('ipToMac', {}):
-                        # we check if its a repeated attack from same source, we alert again after some time
+                        # we check if its a repeated attack from same source, we alert again after specified timeout
                         if NetworkInformation.CompareTimepstemps(self.arpAttackDict['ipToMac'][ip].get('timestamp'), details.get('timestamp'), minutes=self.repeatedAttackTimeout):
+                            self.arpAttackDict['ipToMac'][ip]['srcMac'].update(details.get('srcMac', set())) #update our known MAC addresses in arpAttackDict in IP index
                             self.arpAttackDict['ipToMac'][ip]['timestamp'] = details.get('timestamp') #update timestamp with new attack time
                             isNewAttack = True #set new attack to true
 
-                        # else we check if there is a new mac addresses associated with ip
+                        # else we check if there are new MAC addresses associated with IP
                         else:
-                            # represents new mac addresses we found in arp spoofing attack
-                            details['srcMac'] = details.get('srcMac', set()) - self.arpAttackDict['ipToMac'][ip].get('srcMac', set()) #we substract given set from known attacks set to get new macs
-                            # if true we update our arpAttackDict according to new macs we found
+                            # represents new MAC addresses we found in arp spoofing attack
+                            details['srcMac'] = details.get('srcMac', set()) - self.arpAttackDict['ipToMac'][ip].get('srcMac', set()) #we substract given set from known attacks set to get new MAC addresses
+                            # if true we update our arpAttackDict according to new MAC addresses we found
                             if details.get('srcMac', set()):
-                                self.arpAttackDict['ipToMac'][ip]['srcMac'].update(details.get('srcMac', set())) #update our known macs in arpAttackDict in ip index
+                                self.arpAttackDict['ipToMac'][ip]['srcMac'].update(details.get('srcMac', set())) #update our known MAC addresses in arpAttackDict in IP index
                                 isNewAttack = True #set new attack to true
 
-                    # if attack is new we update tables in gui and add to database
-                    if isNewAttack:
-                        # iterate over each mac in given set and add it to our tables
+                    # if attack is new and not associated with blacklisted MAC address we add alert
+                    if isNewAttack and details.get('spoofedMac') not in self.userData.get('blackList'):
+                        # iterate over each MAC in given set and add it to our tables
                         for mac in details.get('srcMac', set()):
                             self.AddAlert('ARP Spoofing', details.get('srcIp'), mac, details.get('dstIp'), details.get('dstMac'), details.get('protocol'), details.get('timestamp'))
                             self.SendLogDict(f'Main_Thread: New ipToMac ARP Spoofing attack detected from IP {ip}: srcIp: {details.get('srcIp')}, srcMac: {mac}, dstIp: {details.get('dstIp')}, dstMac: {details.get('dstMac')}, protocol: {details.get('protocol')}', 'ALERT') #log alert event
 
-            # handle Mac to Ip anomalies we found in arp spoofing attack (including initialization)
+            # handle MAC to IP anomalies we found in arp spoofing attack (including initialization)
             if type in (2, 3):
                 # represents the macDict of arp spoofing, for type 3 its nested under 'macToIp'
                 macDict = attackDict if type == 2 else attackDict.get('macToIp', {})
                 for mac, details in macDict.items():
                     isNewAttack = False #represents a flag for indicating if attack is new or not
 
-                    # we check if detected mac is in our known attacks in arpAttackDict
+                    # we check if detected MAC is not in our known attacks in arpAttackDict
                     if mac not in self.arpAttackDict.get('macToIp', {}):
-                        self.arpAttackDict['macToIp'][mac] = details #add new mac entry in our arpAttackDict
+                        self.arpAttackDict['macToIp'][mac] = details #add new MAC entry in our arpAttackDict
                         isNewAttack = True #set new attack to true
 
-                    # we check if detected mac is already in our known attacks in arpAttackDict
+                    # we check if detected MAC is already in our known attacks in arpAttackDict
                     elif mac in self.arpAttackDict.get('macToIp', {}):
-                        # we check if its a repeated attack from same source, we alert again after some time
+                        # we check if its a repeated attack from same source, we alert again after specified timeout
                         if NetworkInformation.CompareTimepstemps(self.arpAttackDict['macToIp'][mac].get('timestamp'), details.get('timestamp'), minutes=self.repeatedAttackTimeout):
+                            self.arpAttackDict['macToIp'][mac]['srcIp'].update(details.get('srcIp', set())) #update our known IP addresses in arpAttackDict in MAC index
                             self.arpAttackDict['macToIp'][mac]['timestamp'] = details.get('timestamp') #update timestamp with new attack time
                             isNewAttack = True #set new attack to true
 
-                        # else we check if there is a new ip addresses associated with mac
+                        # else we check if there are new IP addresses associated with MAC
                         else:
-                            # represents new mac addresses we found in arp spoofing attack
-                            details['srcIp'] = details.get('srcIp', set()) - self.arpAttackDict['macToIp'][mac].get('srcIp', set()) #we substract given set from known attacks set to get new ips
-                            # if true we update our arpAttackDict according to new ips we found
+                            # represents new IP addresses we found in arp spoofing attack
+                            details['srcIp'] = details.get('srcIp', set()) - self.arpAttackDict['macToIp'][mac].get('srcIp', set()) #we substract given set from known attacks set to get new IP addresses
+                            # if true we update our arpAttackDict according to new IP addresses we found
                             if details.get('srcIp', set()):
-                                self.arpAttackDict['macToIp'][mac]['srcIp'].update(details.get('srcIp', set())) #update our known ips in arpAttackDict in mac index
+                                self.arpAttackDict['macToIp'][mac]['srcIp'].update(details.get('srcIp', set())) #update our known IP addresses in arpAttackDict in MAC index
                                 isNewAttack = True #set new attack to true
 
-                    # if attack is new we update tables in gui and add to database
-                    if isNewAttack:
-                        # iterate over each ip in given set and add it to our tables
+                    # if attack is new and not associated with blacklisted MAC address we add alert
+                    if isNewAttack and details.get('spoofedMac') not in self.userData.get('blackList'):
+                        # iterate over each IP in given set and add it to our tables
                         for ip in details.get('srcIp', set()):
                             self.AddAlert('ARP Spoofing', ip, details.get('srcMac'), details.get('dstIp'), details.get('dstMac'), details.get('protocol'), details.get('timestamp'))
                             self.SendLogDict(f'Main_Thread: New macToIp ARP Spoofing attack detected from MAC {mac}: srcIp: {ip}, srcMac: {details.get('srcMac')}, dstIp: {details.get('dstIp')}, dstMac: {details.get('dstMac')}, protocol: {details.get('protocol')}', 'ALERT') #log alert event
@@ -926,6 +981,7 @@ class NetSpect(QMainWindow):
     # method for analyzing detection result of port scan and dos attacks 
     @Slot(dict)
     def PortScanDosDetectionResult(self, result):
+        # check if state is false and attackDict provided, means we need to alert for new port scan or dos attack
         if result.get('state') == False and result.get('attackDict'):
             type = result.get('type') #represents type of result, 1-PortScan, 2-DoS
             attackDict = result.get('attackDict') #represents attack dictionary with all anomalies found
@@ -934,18 +990,18 @@ class NetSpect(QMainWindow):
             for flow, details in attackDict.items():
                 isNewAttack = False #represents a flag for indicating if attack is new or not
 
-                # we check if detected flow is in our known attacks in portScanDosAttackDict
+                # we check if detected flow is not in our known attacks in portScanDosAttackDict
                 if flow not in self.portScanDosAttackDict:
                     self.portScanDosAttackDict[flow] = details #add new flow entry in our portScanDosAttackDict
                     isNewAttack = True #set new attack to true
                 
-                # we check if its a repeated attack from same source, we alert again after some time
+                # we check if its a repeated attack from same source, we alert again after specified timeout
                 elif flow in self.portScanDosAttackDict and NetworkInformation.CompareTimepstemps(self.portScanDosAttackDict[flow].get('timestamp'), details.get('timestamp'), minutes=self.repeatedAttackTimeout):
                     self.portScanDosAttackDict[flow]['timestamp'] = details.get('timestamp') #update timestamp with new attack time
                     isNewAttack = True #set new attack to true
                 
-                # if attack is new we update tables in gui and add to database
-                if isNewAttack:
+                # if attack is new and not associated with blacklisted MAC address we add alert
+                if isNewAttack and flow[1] not in self.userData.get('blackList'):
                     # handle anomalies we found in port scan attack and add them to our tables
                     if type in (1, 3) and flow[5] == 1:
                         self.AddAlert('Port Scan', flow[0], flow[1], flow[2], flow[3], flow[4], details.get('timestamp'))
@@ -959,6 +1015,7 @@ class NetSpect(QMainWindow):
     # method for analyzing detection result of dns tunneling attack
     @Slot(dict)
     def DnsDetectionResult(self, result):
+        # check if state is false and attackDict provided, means we need to alert for new dns tunneling attack
         if result.get('state') == False and result.get('attackDict'):
             attackDict = result.get('attackDict') #represents attack dictionary with all anomalies found
 
@@ -966,18 +1023,18 @@ class NetSpect(QMainWindow):
             for flow, details in attackDict.items():
                 isNewAttack = False #represents a flag for indicating if attack is new or not
 
-                # we check if detected flow is in our known attacks in dnsAttackDict
+                # we check if detected flow is not in our known attacks in dnsAttackDict
                 if flow not in self.dnsAttackDict:
                     self.dnsAttackDict[flow] = details #add new flow entry in our dnsAttackDict
                     isNewAttack = True #set new attack to true
                 
-                # we check if its a repeated attack from same source, we alert again after some time
+                # we check if its a repeated attack from same source, we alert again after specified timeout
                 elif flow in self.dnsAttackDict and NetworkInformation.CompareTimepstemps(self.dnsAttackDict[flow].get('timestamp'), details.get('timestamp'), minutes=self.repeatedAttackTimeout):
                     self.dnsAttackDict[flow]['timestamp'] = details.get('timestamp') #update timestamp with new attack time
                     isNewAttack = True #set new attack to true
                 
-                # if attack is new we update tables in gui and add to database
-                if isNewAttack:
+                # if attack is new and not associated with blacklisted MAC address we add alert
+                if isNewAttack and flow[1] not in self.userData.get('blackList'):
                     # handle anomalies we found in dns tunneling attack and add them to our tables
                     self.AddAlert('DNS Tunneling', flow[0], flow[1], flow[2], flow[3], flow[4], details.get('timestamp'))
                     self.SendLogDict(f'Main_Thread: New DNS Tunneling attack detected from IP {flow[0]}: srcIp: {flow[0]}, srcMac: {flow[1]}, dstIp: {flow[2]}, dstMac: {flow[3]}, protocol: {flow[4]}', 'ALERT') #log alert event
@@ -985,6 +1042,7 @@ class NetSpect(QMainWindow):
 
     # method for stopping detection or collection and closing threads
     def StopDetection(self):
+        # we check if detection or data collection is active
         if self.isDetection:
             # we check each thread and close it if running
             if self.snifferThread:
@@ -1006,75 +1064,20 @@ class NetSpect(QMainWindow):
             self.arpCounter, self.tcpUdpCounter, self.dnsCounter = 0, 0, 0 #reset our counters
             self.arpList, self.portScanDosDict, self.dnsDict = [], {}, {} #reset our packet data structures
             self.arpAttackDict, self.portScanDosAttackDict, self.dnsAttackDict = {'ipToMac': {}, 'macToIp': {}}, {}, {} #reset known attacks
+            self.isDetection = False #set isDetection flag back to false
 
 
     # method for starting our threads and detect network cyber attacks in real time or collect datasets for training models, depends on user's choice
     def StartDetection(self):
-        if not self.snifferThread and not self.arpThread and not self.portScanDosThread and not self.dnsThread and not self.dataCollectorThread:
-            # means we start threads for detecting attacks in real time
-            if self.ui.operationModeComboBox.currentIndex() == 0:
-                # set isDetection flag and disable interface and operation mode comboboxes
-                self.isDetection = True #set detection flag
-                UserInterfaceFunctions.ToggleStartStopState(self, True) #change startStop button to red for detection
-                self.ui.networkInterfaceComboBox.setEnabled(False) #disable interfaces combobox
-                self.ui.operationModeComboBox.setEnabled(False) #disable operation mode combobox
-
-                # initialize sniffer thread for real time packet gathering
-                self.snifferThread = Sniffing_Thread(self, NetworkInformation.selectedInterface)
-                # connect relevant signals for sniffer thread
-                self.snifferThread.updateTimerSignal.connect(self.UpdateTimer)
-                self.snifferThread.updateArpListSignal.connect(self.UpdateArpList)
-                self.snifferThread.updatePortScanDosDictSignal.connect(self.UpdatePortScanDosDict)
-                self.snifferThread.updateDnsDictSignal.connect(self.UpdateDnsDict)
-                self.snifferThread.finishSignal.connect(self.CloseSnifferThread)
-
-                # initialize arp thread for arp spoofing detection
-                self.arpThread = Arp_Thread(self)
-                # connect relevant signals for arp thread
-                self.arpThread.detectionResultSignal.connect(self.ArpDetectionResult)
-                self.arpThread.finishSignal.connect(self.CloseArpThread)
-
-                # initialize portScanDos thread for port scan and dos detection
-                self.portScanDosThread = PortScanDos_Thread(self)
-                # connect relevant signals for portScanDos thread
-                self.portScanDosThread.detectionResultSignal.connect(self.PortScanDosDetectionResult)
-                self.portScanDosThread.finishSignal.connect(self.ClosePortScanDosThread)
-
-                # initialize dns thread for dns tunneling detection
-                self.dnsThread = Dns_Thread(self)
-                # connect relevant signals for dns thread
-                self.dnsThread.detectionResultSignal.connect(self.DnsDetectionResult)
-                self.dnsThread.finishSignal.connect(self.CloseDnsThread)
-
-                # start our threads for detection
-                self.snifferThread.start()
-                self.arpThread.start()
-                self.portScanDosThread.start()
-                self.dnsThread.start()
-
-                # log initializing of threads
-                self.SendLogDict('Sniffer_Thread: Starting Network Scan.', 'INFO') #log sniffer start event
-                self.SendLogDict('Arp_Thread: Starting Arp thread.', 'INFO') #log arp start event
-                self.SendLogDict('PortScanDos_Thread: Starting portScanDos thread.', 'INFO') #log portScanDos start event
-                self.SendLogDict('Dns_Thread: Starting Dns thread.', 'INFO') #log dns start event
-
-            # else it means we start threads for data collection
-            else:
-                # set default selected data to be PortScanDos for collecting TCP/UDP flows
-                fileName, selectedData = 'port_scan_dos_benign_dataset.csv', 'PortScanDos'
-
-                # if user selected DNS we set selected data to be DNSTunneling for collecting DNS flows
-                if self.ui.operationModeComboBox.currentIndex() == 2:
-                    fileName, selectedData = 'dns_benign_dataset.csv', 'DNSTunneling'
-
-                # get desired path for data collection from file dialog
-                filePath = self.GetPathFromFileDialog('Save Dataset', fileName, 'CSV Files (*.csv)')
-
-                # if user chose a path we generate csv dataset with our thread
-                if filePath:
+        # we check if user selected an interface
+        if NetworkInformation.selectedInterface:
+            # we check if no threads are running, if so we start our detection or data collection threads
+            if not self.snifferThread and not self.arpThread and not self.portScanDosThread and not self.dnsThread and not self.dataCollectorThread:
+                # means we start threads for detecting attacks in real time
+                if self.ui.operationModeComboBox.currentIndex() == 0:
                     # set isDetection flag and disable interface and operation mode comboboxes
-                    self.isDetection = True #set detection flag
-                    UserInterfaceFunctions.ToggleStartStopState(self, True) #change startStop button to red for collection
+                    self.isDetection = True #set isDetection flag to true
+                    UserInterfaceFunctions.ToggleStartStopState(self, True) #change startStop button to red for detection
                     self.ui.networkInterfaceComboBox.setEnabled(False) #disable interfaces combobox
                     self.ui.operationModeComboBox.setEnabled(False) #disable operation mode combobox
 
@@ -1087,23 +1090,88 @@ class NetSpect(QMainWindow):
                     self.snifferThread.updateDnsDictSignal.connect(self.UpdateDnsDict)
                     self.snifferThread.finishSignal.connect(self.CloseSnifferThread)
 
-                    # initialize data collector thread for collecting datasets for training models
-                    self.dataCollectorThread = Data_Collector_Thread(self, filePath, selectedData)
-                    # connect relevant signals for data collector thread
-                    self.dataCollectorThread.collectionResultSignal.connect(self.CollectionResult)
-                    self.dataCollectorThread.finishSignal.connect(self.CloseDataCollectorThread)
+                    # initialize arp thread for arp spoofing detection
+                    self.arpThread = Arp_Thread(self)
+                    # connect relevant signals for arp thread
+                    self.arpThread.detectionResultSignal.connect(self.ArpDetectionResult)
+                    self.arpThread.finishSignal.connect(self.CloseArpThread)
 
-                    # start our threads for data collection
+                    # initialize portScanDos thread for port scan and dos detection
+                    self.portScanDosThread = PortScanDos_Thread(self)
+                    # connect relevant signals for portScanDos thread
+                    self.portScanDosThread.detectionResultSignal.connect(self.PortScanDosDetectionResult)
+                    self.portScanDosThread.finishSignal.connect(self.ClosePortScanDosThread)
+
+                    # initialize dns thread for dns tunneling detection
+                    self.dnsThread = Dns_Thread(self)
+                    # connect relevant signals for dns thread
+                    self.dnsThread.detectionResultSignal.connect(self.DnsDetectionResult)
+                    self.dnsThread.finishSignal.connect(self.CloseDnsThread)
+
+                    # start our threads for detection
                     self.snifferThread.start()
-                    self.dataCollectorThread.start()
+                    self.arpThread.start()
+                    self.portScanDosThread.start()
+                    self.dnsThread.start()
 
                     # log initializing of threads
                     self.SendLogDict('Sniffer_Thread: Starting Network Scan.', 'INFO') #log sniffer start event
-                    self.SendLogDict('Data_Collector_Thread: Starting data collector thread.', 'INFO') #log data collector start event
+                    self.SendLogDict('Arp_Thread: Starting Arp thread.', 'INFO') #log arp start event
+                    self.SendLogDict('PortScanDos_Thread: Starting portScanDos thread.', 'INFO') #log portScanDos start event
+                    self.SendLogDict('Dns_Thread: Starting Dns thread.', 'INFO') #log dns start event
 
+                # else it means we start threads for data collection
+                else:
+                    # set default selected data to be PortScanDos for collecting TCP/UDP flows
+                    fileName, selectedData = 'port_scan_dos_benign_dataset.csv', 'PortScanDos'
+
+                    # if user selected DNS we set selected data to be DNSTunneling for collecting DNS flows
+                    if self.ui.operationModeComboBox.currentIndex() == 2:
+                        fileName, selectedData = 'dns_benign_dataset.csv', 'DNSTunneling'
+
+                    # get desired path for data collection from file dialog
+                    filePath = self.GetPathFromFileDialog('Save Dataset', fileName, 'CSV Files (*.csv)')
+
+                    # if user chose a path we generate csv dataset with our thread
+                    if filePath:
+                        # set isDetection flag and disable interface and operation mode comboboxes
+                        self.isDetection = True #set isDetection flag to true
+                        UserInterfaceFunctions.ToggleStartStopState(self, True) #change startStop button to red for collection
+                        self.ui.networkInterfaceComboBox.setEnabled(False) #disable interfaces combobox
+                        self.ui.operationModeComboBox.setEnabled(False) #disable operation mode combobox
+
+                        # initialize sniffer thread for real time packet gathering
+                        self.snifferThread = Sniffing_Thread(self, NetworkInformation.selectedInterface)
+                        # connect relevant signals for sniffer thread
+                        self.snifferThread.updateTimerSignal.connect(self.UpdateTimer)
+                        self.snifferThread.updateArpListSignal.connect(self.UpdateArpList)
+                        self.snifferThread.updatePortScanDosDictSignal.connect(self.UpdatePortScanDosDict)
+                        self.snifferThread.updateDnsDictSignal.connect(self.UpdateDnsDict)
+                        self.snifferThread.finishSignal.connect(self.CloseSnifferThread)
+
+                        # initialize data collector thread for collecting datasets for training models
+                        self.dataCollectorThread = Data_Collector_Thread(self, filePath, selectedData)
+                        # connect relevant signals for data collector thread
+                        self.dataCollectorThread.collectionResultSignal.connect(self.CollectionResult)
+                        self.dataCollectorThread.finishSignal.connect(self.CloseDataCollectorThread)
+
+                        # start our threads for data collection
+                        self.snifferThread.start()
+                        self.dataCollectorThread.start()
+
+                        # log initializing of threads
+                        self.SendLogDict('Sniffer_Thread: Starting Network Scan.', 'INFO') #log sniffer start event
+                        self.SendLogDict('Data_Collector_Thread: Starting data collector thread.', 'INFO') #log data collector start event
+           
+           # else one of the threads is still running, we cannot start new network scan
+            else:
+                self.SendLogDict('Main_Thread: One of the threads is still in process, cannot start new scan.', 'INFO') #log event
+                UserInterfaceFunctions.ShowMessageBox('Error Starting Scan', 'One of the threads is still in process, cannot start new scan.', 'Warning')
+
+        # else it means no network interface was selected, we cannot start network scan
         else:
-            self.SendLogDict('Main_Thread: One of the threads is still in process, cannot start new scan.', 'INFO') #log event
-            UserInterfaceFunctions.ShowMessageBox('Error Starting Scan', 'One of the threads is still in process, cannot start new scan.', 'Warning')
+            self.SendLogDict('Main_Thread: No available network interface found, cannot start network scan.', 'INFO') #log event
+            UserInterfaceFunctions.ShowMessageBox('Error Starting Scan', 'No available network interface found, cannot start network scan.', 'Warning')
 
 
     # method for startStop button for starting or stopping detection or collection
@@ -1117,7 +1185,7 @@ class NetSpect(QMainWindow):
 
     #-----------------------------------------------CLICKED-METHODS----------------------------------------------#
 
-    # method for loggin into user's account and intialize our userData dictionary
+    # method for logging into user's account and intialize our userData dictionary
     def LoginButtonClicked(self):
         if self.sqlThread:
             # means we had detection active
@@ -1137,7 +1205,7 @@ class NetSpect(QMainWindow):
                 self.sqlThread.Login(self.ui.loginUsernameLineEdit.text(), NetSpect.ToSHA256(self.ui.loginPasswordLineEdit.text()))
 
 
-    # method for loggin out of user's account and clear user interface
+    # method for logging out of user's account and clear user interface
     def LogoutButtonClicked(self):
         if self.sqlThread:
             # means we had detection active
@@ -1147,7 +1215,10 @@ class NetSpect(QMainWindow):
             else:
                 # check if report thread is active, if so we stop thread
                 if self.reportThread:
-                    self.reportThread.StopThread(True)
+                    self.reportThread.StopThread(True) #stop report thread
+                # check that user is active and has a session, if so we delete his session
+                if self.userData.get('userId') and self.userData.get('sessionId'):
+                    self.sqlThread.DeleteSession(self.userData.get('userId'), self.userData.get('sessionId')) #delete session
                 self.ChangeUserState(False) #call our method to log out and clear interface
 
 
@@ -1199,6 +1270,13 @@ class NetSpect(QMainWindow):
                 # else we process the register request to our sql thread
                 else:
                     self.sqlThread.Register(email, username, NetSpect.ToSHA256(password))
+
+
+    # method for checking if user's session is still active when logged in
+    def CheckActiveSession(self):
+        if self.sqlThread and self.userData.get('userId') and self.userData.get('sessionId'):
+            # check if user's session is still active
+            self.sqlThread.CheckSession(self.userData.get('userId'), self.userData.get('sessionId'))
 
 
     # method for sending a reset password code the user's email to reset the password
@@ -1273,8 +1351,8 @@ class NetSpect(QMainWindow):
 
     # method for adding alert to tables and also to database if user is logged in
     def AddAlert(self, attackType, srcIp, srcMac, dstIp, dstMac, protocol, timestamp):
-        # we add alert only if it does not associated with black listed mac address
-        if self.userData and srcMac not in self.userData.get('blackList'):
+        # check if userData is initialized, if so add alert to tables and update gui
+        if self.userData:
             # add alert as a dictionary into our alertList and tables
             alert = {
                 'interface': NetworkInformation.selectedInterface,
@@ -1339,45 +1417,45 @@ class NetSpect(QMainWindow):
                 UserInterfaceFunctions.ShowMessageBox('No Alerts Found', 'Your alert history is empty. There are no alerts to delete at this time.', 'Information')
 
 
-    # method for adding an item to the mac address blacklist when user clicks the add button in settings page
+    # method for adding an item to the MAC address blacklist when user clicks the add button in settings page
     def AddMacAddressButtonClicked(self):
-        # get user's mac address from line edit and get validator result
+        # get user's MAC address from line edit and get validator result
         newMacAddress = self.ui.macAddressLineEdit.text().lower() #convert characters to lower case for ease of use
         newMacAddressState = self.macValidator.validate(newMacAddress, 0)[0]
 
-        # check if mac address field is not empty
+        # check if MAC address field is not empty
         if not newMacAddress:
             UserInterfaceFunctions.ChangeErrorMessageText(self.ui.macAddressBlacklistErrorMessageLabel, 'Please fill in the MAC address field before adding to blacklist.')
-        # check if user entered a valid mac address
+        # check if user entered a valid MAC address
         elif newMacAddressState != QValidator.Acceptable:
             UserInterfaceFunctions.ChangeErrorMessageText(self.ui.macAddressBlacklistErrorMessageLabel, 'Please enter a valid MAC address.')
-        # check if given mac address already exists in blacklist
+        # check if given MAC address already exists in blacklist
         elif newMacAddress in self.userData.get('blackList'):
             UserInterfaceFunctions.ChangeErrorMessageText(self.ui.macAddressBlacklistErrorMessageLabel, 'This MAC address already exists in blacklist.')
-        # else its a new mac address, we add it to blacklist
+        # else its a new MAC address, we add it to blacklist
         else:
             UserInterfaceFunctions.ClearErrorMessageText(self.ui.macAddressBlacklistErrorMessageLabel)
-            # add mac address to database if user is logged in
+            # add MAC address to database if user is logged in
             if self.sqlThread and self.userData.get('userId'):
                 self.sqlThread.AddBlacklistMac(self.userData.get('userId'), newMacAddress)
             else:
                 self.ui.macAddressListWidget.addItem(newMacAddress)
                 self.ui.macAddressLineEdit.clear()
                 self.userData.setdefault('blackList', []).append(newMacAddress)
-                self.SendLogDict(f'Main_Thread: User has added a new mac address to mac blacklist successfully.', 'INFO') #log add mac event
+                self.SendLogDict(f'Main_Thread: User has added a new MAC address to blacklist successfully.', 'INFO') #log add MAC address event
 
 
-    # method for removing an item from the mac address blacklist when the user clicks the 'delete' button in the contex menu of the list widget
+    # method for removing an item from the MAC address blacklist when the user clicks the 'delete' button in the contex menu of the list widget
     def DeleteMacAddressButtonClicked(self, item):
         self.seletecItemForDelete = item #represents item for deletion
 
-        # delete mac address from database if user is logged in
+        # delete MAC address from database if user is logged in
         if self.sqlThread and self.userData.get('userId'):
             self.sqlThread.DeleteBlacklistMac(self.userData.get('userId'), item.text())
         else:
             self.ui.macAddressListWidget.takeItem(self.ui.macAddressListWidget.row(self.seletecItemForDelete))
             self.userData.setdefault('blackList', []).remove(self.seletecItemForDelete.text())
-            self.SendLogDict(f'Main_Thread: User has removed mac address from mac blacklist successfully.', 'INFO') #log remove mac event
+            self.SendLogDict(f'Main_Thread: User has removed MAC address from blacklist successfully.', 'INFO') #log remove MAC address event
 
 
     # method for saving and updating the user's email address after user clicks save button in settings page
@@ -1551,9 +1629,9 @@ class NetSpect(QMainWindow):
     def LoginResult(self, resultDict):
         # means error occured, we show error pop up
         if resultDict.get('error'):
-            self.SendLogDict('Main_Thread: Error loggin into user account due to server error.', 'ERROR') #log error event
-            UserInterfaceFunctions.ShowMessageBox('Error In Login', 'Error loggin into user account due to server error, please try again later.', 'Critical')
-        # means failed loggin in, we show error message
+            self.SendLogDict('Main_Thread: Error logging into user account due to server error.', 'ERROR') #log error event
+            UserInterfaceFunctions.ShowMessageBox('Error In Login', 'Error logging into user account due to server error, please try again later.', 'Critical')
+        # means failed logging in, we show error message
         elif not resultDict.get('state'):
             UserInterfaceFunctions.ChangeErrorMessageText(self.ui.loginErrorMessageLabel, resultDict.get('message'))
         # means we successfully logged in
@@ -1576,6 +1654,35 @@ class NetSpect(QMainWindow):
             self.SendLogDict(f'Main_Thread: Registered new user with email {self.ui.registerUsernameLineEdit.text()}.', 'INFO') #log register event
             self.sqlThread.Login(self.ui.registerUsernameLineEdit.text(), NetSpect.ToSHA256(self.ui.registerPasswordLineEdit.text())) #call login method to login new user
             UserInterfaceFunctions.ShowMessageBox('Registration Successful', 'You have successfully registered. Logged into your account automatically.', 'Information')
+
+
+    # method for showing check session result from sql thread
+    @Slot(dict)
+    def CheckSessionResult(self, resultDict):
+        # means session has expired or error checking session occured, we logout of user's account
+        if not resultDict.get('state') or resultDict.get('error'):
+            # check if report thread is active, if so we stop thread
+            if self.reportThread:
+                self.reportThread.StopThread(True) #stop report thread
+            # check if detection is active, is so we stop detection
+            if self.isDetection:
+                self.StopDetection() #stop detection
+            self.ChangeUserState(False) #call our method to log out and clear interface
+            # if session has expired we show pop up for session expiration
+            if not resultDict.get('state'):
+                UserInterfaceFunctions.ShowMessageBox('Session Expired', 'Your session has expired. Please log in again to continue.', 'Information')
+            # else if error occured, we show error pop up
+            elif resultDict.get('error'):
+                self.SendLogDict('Main_Thread: Error checking session due to server error.', 'ERROR') #log error event
+                UserInterfaceFunctions.ShowMessageBox('Error Checking Session', 'Error checking session due to server error, please try to log in later.', 'Critical')
+
+
+    # method for showing delete session result from sql thread
+    @Slot(dict)
+    def DeleteSessionResult(self, resultDict):
+        # if error occured while deleting session, we log event
+        if resultDict.get('error'):
+            self.SendLogDict('Main_Thread: Error deleting session due to server error.', 'ERROR') #log error event
 
 
     # method for showing send reset password code result from sql thread
@@ -1663,7 +1770,7 @@ class NetSpect(QMainWindow):
             UserInterfaceFunctions.ShowMessageBox('Alerts Deletion Successful', 'Deleted all alerts history for previously detected attacks.', 'Information')
 
 
-    # method for showing results to the user after adding a mac address to blacklist
+    # method for showing results to the user after adding a MAC address to blacklist
     @Slot(dict)
     def AddMacToBlackListResult(self, resultDict):
         if resultDict.get('error'):
@@ -1676,10 +1783,10 @@ class NetSpect(QMainWindow):
             self.ui.macAddressListWidget.addItem(newMacAddress)
             self.ui.macAddressLineEdit.clear()
             self.userData.setdefault('blackList', []).append(newMacAddress)
-            self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has added a new mac address to mac blacklist successfully.', 'INFO') #log add mac event
+            self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has added a new MAC address to blacklist successfully.', 'INFO') #log add MAC address event
 
 
-    # method for showing results to the user after removing a mac address from blacklist 
+    # method for showing results to the user after removing a MAC address from blacklist 
     @Slot(dict)
     def DeleteMacFromBlackListResult(self, resultDict):
         if resultDict.get('error'):
@@ -1691,7 +1798,7 @@ class NetSpect(QMainWindow):
             self.ui.macAddressListWidget.takeItem(self.ui.macAddressListWidget.row(self.seletecItemForDelete))
             self.userData.setdefault('blackList', []).remove(self.seletecItemForDelete.text())
             self.seletecItemForDelete = None
-            self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has removed mac address from mac blacklist successfully.', 'INFO') #log remove mac event
+            self.SendLogDict(f'Main_Thread: User {self.userData.get('userName')} has removed MAC address from blacklist successfully.', 'INFO') #log remove MAC address event
 
 
     # method for showing results to the user after changing email
@@ -1813,7 +1920,7 @@ class Sniffing_Thread(QThread):
             self.finishSignal.emit({'state': False, 'message': 'Permission denied. Please run again with administrative privileges.'})
         finally:
             self.quit() #exit main loop and end task
-            self.wait() #we wait to ensure thread cleanup
+            self.wait(2000) #we wait to ensure thread cleanup
 
 
     # method for checking when to stop sniffing packets, stop condition
@@ -2141,9 +2248,21 @@ class Report_Thread(QThread):
             stateDict.update({'state': False, 'message': f'An error occurred: {e}.'})
         finally:
             # we check if failed and file was partially written, if so delete it
-            if not stateDict.get('state') and os.path.exists(self.filePath):
-                os.remove(self.filePath) #remove our file
+            if not stateDict.get('state') and Path(self.filePath).exists():
+                self.RemoveFile(self.filePath) #remove our file
             self.finishSignal.emit(stateDict, self.isClosing) #send finish signal to main thread
+
+
+    # method for removing a file from given path
+    def RemoveFile(self, filePath):
+        try:
+            # check if file exists, if so we delete it
+            if os.path.exists(filePath):
+                os.remove(filePath) #remove file
+            return True #return true if file removed successfully
+
+        except Exception: #we catch an exception if error occured
+            return False #return false if failed removing file
 
 
     # method for writing detection report into a text file
@@ -2303,16 +2422,21 @@ class Logger_Thread(QThread):
 
     # method to write log entry into log file and also print it into console
     def WriteLog(self, logDict):
-        # we check if log file is closed or deleted, if so reopen it
-        if not self.logFile or not Path(self.logFilePath).exists():
-            self.logFile = open(self.logFilePath, 'a')
-        
-        # check if logFile is open and write log into file
-        if self.logFile:
-            logLine = f'{logDict.get('timestamp')} [{logDict.get('level')}] {logDict.get('message')}\n'
-            self.logFile.write(logLine)
-            self.logFile.flush()
-            print(logLine, end='')
+        try:
+            # we check if log file is closed or deleted, if so reopen it
+            if not self.logFile or not Path(self.logFilePath).exists():
+                self.logFile = open(self.logFilePath, 'a')
+            
+            # check if logFile is open and write log into file
+            if self.logFile:
+                logLine = f'{logDict.get('timestamp')} [{logDict.get('level')}] {logDict.get('message')}\n'
+                self.logFile.write(logLine)
+                self.logFile.flush()
+                print(logLine, end='')
+            return True #return true if log written successfully
+
+        except Exception: #we catch an exception if error occured
+            return False #return false if failed writing log
 
 #------------------------------------------------------LOGGER-THREAD-END--------------------------------------------------------#
 
@@ -2403,12 +2527,24 @@ class Data_Collector_Thread(QThread):
 #------------------------------------------------------------MAIN---------------------------------------------------------------#
 
 if __name__ == '__main__':
+    #check if listening server is running
+    if NetSpect.CheckServer():
+        print('Another instance is already running.')
+        sys.exit(0)
+
+    #initalize listening server for application
+    if not NetSpect.InitServer():
+        print('Failed to initialize listening server.')
+        sys.exit(1)
+
     #start NetSpect application
     app = QApplication(sys.argv)
     netSpect = NetSpect()
-    try:
-        sys.exit(app.exec())
-    except:
-        print('Exiting')
+    netSpect.show()
+
+    #execute application and return execution code
+    ret = app.exec()
+    print('Exiting.')
+    sys.exit(ret)
 
 #----------------------------------------------------------MAIN-END-------------------------------------------------------------#

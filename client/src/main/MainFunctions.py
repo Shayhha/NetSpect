@@ -3,36 +3,35 @@ import numpy as np
 import pandas as pd
 from abc import ABC, abstractmethod
 from ipaddress import IPv4Interface, IPv6Interface, IPv4Address, IPv6Address
-from scapy.all import AsyncSniffer, srp, get_if_list, IP, IPv6, TCP, UDP, ICMP, ARP, Ether, Raw, conf
+from scapy.all import AsyncSniffer, srp, get_if_list, Packet, Raw, IP, IPv6, TCP, UDP, ICMP, ARP, Ether, conf
 from scapy.layers.dns import DNS
 from PySide6.QtNetwork import QNetworkInterface, QLocalServer, QLocalSocket
 from datetime import datetime, timedelta
 from pathlib import Path
 
 currentDir = Path(__file__).resolve().parent #represents the path to the current working direcotry where this file is located
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))) #ensures that when the main.py file is ran it will run from the src folder in the terminal
 
 #----------------------------------------------Default_Packet------------------------------------------------#
 # abstract class that represents default packet
 class Default_Packet(ABC):
-    protocol = None #represents the packet protocol (TCP, UDP, etc)
-    packet = None #represents the packet object itself for our use later
-    packetType = None #represents the packet type based on scapy known types
-    srcMac = None #represents the source mac address
-    dstMac = None #represents the destination mac address
-    srcIp = None #represents source ip of packet
-    dstIp = None #represents destination ip of packet
-    srcPort = None #represents source port of packet
-    dstPort = None #represents destination port of packet
-    ipParam = None #represents IPv4 / IPv6 fields as tuple (ttl, dscp) / (hopLimit, trafficClass)
-    packetLen = None #size of packet (including headers, IP and payload)
-    headerLen = None #size of packet header (packet specific header with its payload)
-    payloadLen = None #size of payload of packet
-    ipFlagDict = {} #represents ip flags
-    time = None #timestamp of packet
+    protocol: str = None #represents the packet protocol (TCP, UDP, etc)
+    packet: Packet = None #represents the packet object itself for our use later
+    packetType: Packet = None #represents the packet type based on scapy known types
+    srcMac: str = None #represents the source mac address
+    dstMac: str = None #represents the destination mac address
+    srcIp: str = None #represents source ip of packet
+    dstIp: str = None #represents destination ip of packet
+    srcPort: int = None #represents source port of packet
+    dstPort: int = None #represents destination port of packet
+    ipParam: tuple = None #represents IPv4 / IPv6 fields as tuple (ttl, dscp) / (hopLimit, trafficClass)
+    packetLen: int = None #size of packet (including headers, IP and payload)
+    headerLen: int = None #size of packet header (packet specific header with its payload)
+    payloadLen: int = None #size of payload of packet
+    ipFlagDict: dict = {} #represents ip flags
+    time: float = None #timestamp of packet
 
     # constructor for default packet
-    def __init__(self, protocol=None, packet=None):
+    def __init__(self, protocol: str=None, packet: Packet=None) -> None:
         self.protocol = protocol #set protocol of packet
         self.packet = packet #set the packet object
         self.srcMac = self.packet.src #set source mac address
@@ -45,7 +44,7 @@ class Default_Packet(ABC):
 
 
     # method for initializing ip information for packet
-    def IpInfo(self):
+    def IpInfo(self) -> None:
         # we check if packet is TCP or UDP, if so we set source and destination ports
         if self.packet.haslayer(TCP) or self.packet.haslayer(UDP):
             self.srcPort = self.packet.sport #set source port
@@ -76,7 +75,7 @@ class Default_Packet(ABC):
 
 
     # method to return a normalized flow representation of a packet
-    def GetFlowTuple(self):
+    def GetFlowTuple(self) -> tuple:
         currentInterface = NetworkInformation.networkInfo.get(NetworkInformation.selectedInterface) #the values of the selected network interface
         
         # we check if selected network interface is initialized
@@ -98,15 +97,15 @@ class Default_Packet(ABC):
 #----------------------------------------------------TCP-----------------------------------------------------#
 # class that represents TCP packet
 class TCP_Packet(Default_Packet):
-    seqNum = None #represents sequence number of tcp packet
-    ackNum = None #represents acknowledgment number of tcp packet
-    segmentSize = None #represents the tcp segment size of tcp packet
-    windowSize = None #represents window size of tcp packet
-    flagDict = {} #represents the flags dictionary of tcp packet
-    optionDict = {} #represents the option dictionary of tcp packet
+    seqNum: int = None #represents sequence number of tcp packet
+    ackNum: int = None #represents acknowledgment number of tcp packet
+    segmentSize: int = None #represents the tcp segment size of tcp packet
+    windowSize: int = None #represents window size of tcp packet
+    flagDict: dict = {} #represents the flags dictionary of tcp packet
+    optionDict: dict = {} #represents the option dictionary of tcp packet
 
     # constructor for TCP packet
-    def __init__(self, packet=None):
+    def __init__(self, packet: Packet=None) -> None:
         super().__init__('TCP', packet) #call parent ctor
         if packet.haslayer(TCP): #checks if packet is TCP
             self.packetType = TCP #specify the packet type
@@ -116,7 +115,7 @@ class TCP_Packet(Default_Packet):
 
 
     # method for TCP packet information
-    def InitTCP(self): 
+    def InitTCP(self) -> None: 
         if self.packet.haslayer(TCP): #checks if packet is TCP
             self.seqNum = self.packet.seq #set sequence number 
             self.ackNum = self.packet.ack #set acknowledgment number 
@@ -149,7 +148,7 @@ class TCP_Packet(Default_Packet):
 # class that represents UDP packet
 class UDP_Packet(Default_Packet):
     # constructor for UDP packet
-    def __init__(self, packet=None):
+    def __init__(self, packet: Packet=None) -> None:
         super().__init__('UDP', packet) #call parent ctor
         if packet.haslayer(UDP): #checks if packet is UDP
             self.packetType = UDP #set packet type
@@ -160,15 +159,15 @@ class UDP_Packet(Default_Packet):
 #----------------------------------------------------DNS-----------------------------------------------------#
 # class that represents DNS packet
 class DNS_Packet(Default_Packet):
-    dnsType = None #represents type of dns packet, request or response
-    dnsSubType = None #represents sub type of dns packet
-    dnsClass = None #represents class of dns packet
-    dnsDomainName = None #represents dns domain name of dns packet
-    dnsReqOrResCount = None #represents number of requests or responses in dns packet
-    dnsData = None #represents the dns data payload for response dns packets
+    dnsType: str = None #represents type of dns packet, request or response
+    dnsSubType: int = None #represents sub type of dns packet
+    dnsClass: int = None #represents class of dns packet
+    dnsDomainName: bytes = None #represents dns domain name of dns packet
+    dnsReqOrResCount: int = None #represents number of requests or responses in dns packet
+    dnsData: str | bytes | list | None = None #represents the dns data payload for response dns packets
 
     # constructor for DNS packet
-    def __init__(self, packet=None):
+    def __init__(self, packet: Packet=None) -> None:
         super().__init__('DNS', packet) #call parent ctor
         if packet.haslayer(DNS): #checks if packet is DNS
             self.packetType = DNS #set packet type
@@ -177,7 +176,7 @@ class DNS_Packet(Default_Packet):
 
 
     # method for packet information
-    def InitDNS(self):
+    def InitDNS(self) -> None:
         if self.packet.haslayer(DNS): #checks if packet is DNS
             dnsPacket = self.packet[DNS] #save the dns packet in parameter
             # check if its a response packet
@@ -205,14 +204,14 @@ class DNS_Packet(Default_Packet):
 # ---------------------------------------------------ARP-----------------------------------------------------#
 # class that represents ARP packet
 class ARP_Packet(Default_Packet):
-    arpType = None #represents type of arp packet, request or response
-    hwType = None #represents hardware type of arp packet
-    pType = None #represents protocol type of arp packet
-    hwLen = None #represents hardware length of arp packet
-    pLen = None #represents protocol length of arp packet
+    arpType: str = None #represents type of arp packet, request or response
+    hwType: int = None #represents hardware type of arp packet
+    pType: int = None #represents protocol type of arp packet
+    hwLen: int = None #represents hardware length of arp packet
+    pLen: int = None #represents protocol length of arp packet
 
     # constructor for ARP packet
-    def __init__(self, packet=None):
+    def __init__(self, packet: Packet=None) -> None:
         super().__init__('ARP', packet) #call parent ctor
         if packet.haslayer(ARP): #checks if packet is ARP
             self.packetType = ARP #set packet type
@@ -220,7 +219,7 @@ class ARP_Packet(Default_Packet):
             self.InitARP() #call method to initialize ARP specific params
 
     # method for ARP packet information
-    def InitARP(self):
+    def InitARP(self) -> None:
         if self.packet.haslayer(ARP): #checks if packet is ARP
             self.srcMac = self.packet[ARP].hwsrc #set source mac address
             self.dstMac = self.packet[ARP].hwdst #set destination mac address
@@ -238,15 +237,15 @@ class ARP_Packet(Default_Packet):
 # static class that represents network information of network interfaces
 class NetworkInformation(ABC):
     # this list represents the usual network interfaces that are available in various platfroms
-    supportedInterfaces = ['eth', 'wlan', 'en', 'enp', 'wlp', 'Ethernet', 'Wi-Fi', 'lo', '\\Device\\NPF_Loopback']
-    systemInfo = {} #represents a dictionary with all system information about the users machine
-    networkInfo = {} #represents a dict of dicts where each inner dict represents an available network interface
-    selectedInterface = None #represents user-selected interface name for network analysis
-    previousInterface = None #represents previous interface used for network analysis
+    supportedInterfaces: list = ['eth', 'wlan', 'en', 'enp', 'wlp', 'Ethernet', 'Wi-Fi', 'lo', '\\Device\\NPF_Loopback']
+    systemInfo: dict = {} #represents a dictionary with all system information about the users machine
+    networkInfo: dict = {} #represents a dict of dicts where each inner dict represents an available network interface
+    selectedInterface: str = None #represents user-selected interface name for network analysis
+    previousInterface: str = None #represents previous interface used for network analysis
 
     # function for initializing the dict of data about all available interfaces
     @staticmethod
-    def InitNetworkInfo():
+    def InitNetworkInfo() -> list:
         # find all available network interface and collect all data about these interfaces
         NetworkInformation.networkInfo = NetworkInformation.GetNetworkInterfaces()
         # return all available interface names for the user to select in sorted order
@@ -256,7 +255,7 @@ class NetworkInformation(ABC):
 
     # function to print all available interfaces
     @staticmethod
-    def PrintAvailableInterfaces():
+    def PrintAvailableInterfaces() -> None:
         # get a list of all available network interfaces
         interfaces = get_if_list() #call get_if_list method to retrieve the available interfaces
         if interfaces: #if there are interfaces we print them
@@ -274,11 +273,11 @@ class NetworkInformation(ABC):
 
     # function for retrieving interface name from GUID number (Windows only)
     @staticmethod
-    def GuidToStr(guid):
+    def GuidToStr(guid: str) -> str:
         try: #we try to import the specific windows method from scapy library
             from scapy.arch.windows import get_windows_if_list
         except ImportError as e: #we catch an import error if occurred
-            print(f'Error importing module: {e}') #print the error
+            print(f'Error importing module: {e}.') #print the error
             return guid #we exit the function
         interfaces = get_windows_if_list() #use the windows method to get list of guid number interfaces
         for interface in interfaces: #iterating over the list of interfaces
@@ -289,7 +288,7 @@ class NetworkInformation(ABC):
 
     # function for retrieving the network interfaces
     @staticmethod
-    def GetNetworkInterfaces_OLD():
+    def GetNetworkInterfaces_OLD() -> list:
         interfaces = get_if_list() #get a list of the network interfaces
         if sys.platform.startswith('win32'): #if current os is Windows we convert the guid number to interface name
             interfaces = [NetworkInformation.GuidToStr(interface) for interface in interfaces] #get a new list of network interfaces with correct names instead of guid numbers
@@ -299,7 +298,7 @@ class NetworkInformation(ABC):
 
     # function for collecting all available interfaces on the current machine including all their information including name, ipv4 and ipv6 addresses and subnets and more
     @staticmethod
-    def GetNetworkInterfaces():
+    def GetNetworkInterfaces() -> dict:
         Availableinterfaces = QNetworkInterface.allInterfaces() #represents all available network interfaces for machine
         networkInterfaces = {} #represents network interfaces dict where keys are name of interface and value is interface dict
 
@@ -346,7 +345,7 @@ class NetworkInformation(ABC):
 
     # function for getting a correct netmask for a given IP address using QtNetwork
     @staticmethod
-    def GetNetmaskFromIp(Availableinterfaces, ipAddress):
+    def GetNetmaskFromIp(Availableinterfaces: list, ipAddress: str) -> str | None:
         # iterate over each interface and find correct netmask
         for iface in Availableinterfaces:
             for entry in iface.addressEntries():
@@ -358,7 +357,7 @@ class NetworkInformation(ABC):
 
     # function for getting a correct MTU for a given interface using QtNetwork
     @staticmethod
-    def GetMTUFromInterface(Availableinterfaces, interface):
+    def GetMTUFromInterface(Availableinterfaces: list, interface: str) -> str | None:
         # iterate over each interface and find correct interface
         for iface in Availableinterfaces:
             # means we found our matching interface, we return found MTU
@@ -369,7 +368,7 @@ class NetworkInformation(ABC):
 
     # function for getting system information
     @staticmethod
-    def GetSystemInformation():
+    def GetSystemInformation() -> dict:
         NetworkInformation.systemInfo = {
             'osType': str(platform.system()) + ' ' + str(platform.release()),
             'osVersion': str(platform.version()),
@@ -381,13 +380,13 @@ class NetworkInformation(ABC):
 
     # function for getting current timespamp in format hh:mm:ss dd:mm:yy
     @staticmethod
-    def GetCurrentTimestamp():
+    def GetCurrentTimestamp() -> str:
         return datetime.now().strftime('%H:%M:%S %d/%m/%y') #get timestamp for attack in our format
     
 
     # function that compares difference between two timespamps in minutes 
     @staticmethod
-    def CompareTimepstemps(timestampOld, timestampNew, minutes=1):
+    def CompareTimestamps(timestampOld: str, timestampNew: str, minutes: int=1) -> bool:
         # convert strings to datetime objects
         timeOld = datetime.strptime(timestampOld, '%H:%M:%S %d/%m/%y')
         timeNew = datetime.strptime(timestampNew, '%H:%M:%S %d/%m/%y')
@@ -400,13 +399,13 @@ class NetworkInformation(ABC):
 #-----------------------------------------------ARP-SPOOFING-------------------------------------------------#
 # class for throwing custom exeption with str method for showing arpSpoofing detection information
 class ArpSpoofingException(Exception):
-    def __init__(self, message, type, attackDict):
+    def __init__(self, message: str, type: int, attackDict: dict) -> None:
         super().__init__(message)
         self.type = type #represents the type of attack, 1 means we found ip assigned to many macs, 2 means mac assigned to many ips
         self.attackDict = attackDict #represents attack dict of ARP spoofing incident
 
     # str representation of ARP spoofing exception for showing results
-    def __str__(self):
+    def __str__(self) -> str:
         details = '\n##### ARP SPOOFING ATTACK #####\n'
         if self.type == 1:
             details += '\n'.join([
@@ -425,12 +424,12 @@ class ArpSpoofingException(Exception):
 
 # class that represents a single ARP table, contains an IP to MAC table and an inverse table, has a static method for initing both ARP tables
 class ArpTable():
-    subnet = None #3-tuple (subnet(real) , range(/24) , netmask)
-    arpTable = None #regular IP to MAC ARP table
-    invArpTable = None #inverse ARP table, MAC to IP
+    subnet: tuple = None #3-tuple (subnet(real) , range(/24) , netmask)
+    arpTable: dict = None #regular IP to MAC ARP table
+    invArpTable: dict = None #inverse ARP table, MAC to IP
 
     # constructor of ArpTable class
-    def __init__(self, subnet, arpTable, invArpTable):
+    def __init__(self, subnet: tuple, arpTable: dict, invArpTable: dict) -> None:
         self.subnet = subnet 
         self.arpTable = arpTable
         self.invArpTable = invArpTable
@@ -438,7 +437,7 @@ class ArpTable():
 
     # fucntion that initializes the static ARP table for storing IP-MAC pairs 
     @staticmethod
-    def InitArpTable(ipRange='192.168.1.0/24', isInit=False):
+    def InitArpTable(ipRange: str='192.168.1.0/24', isInit: bool=False) -> tuple:
         arpTable = {} #represents our ARP table dict (IP to MAC)
         invArpTable = {} #represents our inverse (MAC to IP), used for verification
         totalAttackDict = {'ipToMac': {}, 'macToIp': {}} #represents total attack dict with anomalies
@@ -501,13 +500,13 @@ class ArpTable():
 
 # static class that represents the detection of ARP Spoofing attack using an algorithem to detect duplications in ARP tables based on collected ARP packets
 class ArpSpoofing(ABC):
-    arpTables = {} #represents all ARP tables where the key of the table is the subnet, each inner ARP table is a tuple (arpTable, invArpTable) with mapping of IP->MAC and MAC->IP in each table in tuple
-    ipSubnetCache = {} #represents a dict with cache of all ip addresses with their matched subnet
-    isArpTables = False #represents initialization state of arpTables dict
+    arpTables: dict = {} #represents all ARP tables where the key of the table is the subnet, each inner ARP table is a tuple (arpTable, invArpTable) with mapping of IP->MAC and MAC->IP in each table in tuple
+    ipSubnetCache: dict = {} #represents a dict with cache of all ip addresses with their matched subnet
+    isArpTables: bool = False #represents initialization state of arpTables dict
 
     # function that iterates over available ipv4 subnets and initializes an ARP table for each one
     @staticmethod
-    def InitAllArpTables():
+    def InitAllArpTables() -> dict:
         # represents result of ARP initialization dictionary {state: T/F, type: 3-InitArp, attackDict: {}}
         result = {'state': True, 'type': 3, 'attackDict': {}}
         totalAttackDict = {'ipToMac': {}, 'macToIp': {}} #represents total attack dict with anomalies
@@ -553,7 +552,7 @@ class ArpSpoofing(ABC):
 
     # function for getting the correct subnet given an IP address
     @staticmethod
-    def GetSubnetForIP(ipAddress): 
+    def GetSubnetForIP(ipAddress: str) -> IPv4Interface | None: 
         try:
             # convert given IP address into IPv4 address object
             ipObject = IPv4Address(ipAddress)
@@ -578,7 +577,7 @@ class ArpSpoofing(ABC):
 
     # function for printing all ARP tables
     @staticmethod
-    def PrintArpTables():
+    def PrintArpTables() -> None:
         if ArpSpoofing.arpTables:
             print('All ARP Tables:')
             for subnet, arpTableObject in ArpSpoofing.arpTables.items():
@@ -591,7 +590,7 @@ class ArpSpoofing(ABC):
 
     # function for processing ARP packets and check for ARP spoofing attacks
     @staticmethod
-    def ProcessARP(arpList):
+    def ProcessARP(arpList: list) -> dict:
         # represents result of analysis dictionary {state: T/F, type: 1-ipToMac / 2-macToIp, attackDict: {}}
         result = {'state': False, 'type': 1, 'attackDict': {}}
         attackDict = {} #represents attack dict with anomalies
@@ -695,7 +694,7 @@ class ArpSpoofing(ABC):
             result.update({'state': False, 'type': e.type, 'attackDict': e.attackDict}) #indication of attack
             print(e)
         except Exception as e: #we catch an exception if something happend
-            print(f'Error occurred: {e}')
+            print(f'Error occurred: {e}.')
         finally:
             return result
 
@@ -704,13 +703,13 @@ class ArpSpoofing(ABC):
 #----------------------------------------------PORT-SCANNING-DoS---------------------------------------------#
 # class for throwing custom exeption with str method for showing portScanDos detection information
 class PortScanDoSException(Exception):
-    def __init__(self, message, type, attackDict):
+    def __init__(self, message: str, type: int, attackDict: dict) -> None:
         super().__init__(message)
         self.type = type #represents the type of attack, 1 means we detected PortScan attack, 2 means we detected DoS attack
         self.attackDict = attackDict #represents the attack dict with detected attack flows
 
     # str representation of port scan and dos exception for showing results
-    def __str__(self):
+    def __str__(self) -> str:
         attackName = 'PortScan' if self.type == 1 else 'DoS'
         if self.type == 3:
             attackName = 'PortScan and DoS'
@@ -723,7 +722,7 @@ class PortScanDoSException(Exception):
 # static class that represents the collection and detection of PortScan and DoS attacks
 class PortScanDoS(ABC):
     # represents our selected column names for features we trained SVM model for portScanDos
-    selectedColumns = [
+    selectedColumns: list = [
         'Number of Ports', 'Average Packet Length', 'Packet Length Min', 'Packet Length Max', 
         'Packet Length Std', 'Packet Length Variance', 'Total Length of Fwd Packet', 'Fwd Packet Length Max', 
         'Fwd Packet Length Mean', 'Fwd Packet Length Min', 'Fwd Packet Length Std', 'Bwd Packet Length Max', 
@@ -731,14 +730,14 @@ class PortScanDoS(ABC):
         'Bwd Segment Size Avg', 'Subflow Fwd Bytes', 'SYN Flag Count', 'ACK Flag Count', 'RST Flag Count', 
         'Flow Duration', 'Packets Per Second', 'IAT Max', 'IAT Mean', 'IAT Std'
     ]
-    modelPath = currentDir.parent / 'models' / 'port_scan_dos_svm_model.pkl' #represents path for SVM model for portScanDos
-    scalerPath = currentDir.parent / 'models' / 'port_scan_dos_scaler.pkl' #represents path for scaler for portScanDos
+    modelPath: str = currentDir.parent / 'models' / 'port_scan_dos_svm_model.pkl' #represents path for SVM model for portScanDos
+    scalerPath: str = currentDir.parent / 'models' / 'port_scan_dos_scaler.pkl' #represents path for scaler for portScanDos
     loadedModel = None #represents our SVM model for portScanDos
     loadedScaler = None #represents our scaler for SVM model for portScanDos
 
     # function for initialzing SVM model and scaler for detecting PortScan and DoS attacks
     @staticmethod
-    def InitModel():
+    def InitModel() -> bool:
         try:
             # check that model and scaler exist before attempting to load them
             if not Path(PortScanDoS.modelPath).exists() or not Path(PortScanDoS.scalerPath).exists():
@@ -754,7 +753,7 @@ class PortScanDoS(ABC):
 
     # function for processing the flowDict and creating the dataframe that will be passed to classifier
     @staticmethod
-    def ProcessFlows(portScanDosDict):
+    def ProcessFlows(portScanDosDict: dict) -> dict:
         featuresDict = {} #represents our features dict where each flow tuple has its corresponding features
 
         # iterate over our flow dict and calculate features
@@ -860,7 +859,7 @@ class PortScanDoS(ABC):
 
     # function for predicting PortScanning and DoS attacks given flow dictionary
     @staticmethod
-    def PredictPortDoS(flowDict):
+    def PredictPortDoS(flowDict: dict) -> dict:
         # represents result of analysis dictionary {state: T/F, type: 1-PortScan / 2-DoS / 3-Together, attackDict: {}}
         result = {'state': False, 'type': 1, 'attackDict': {}}
         attackDict = {} #represents attack dict with anomalies
@@ -925,7 +924,7 @@ class PortScanDoS(ABC):
             result.update({'state': False, 'type': e.type, 'attackDict': e.attackDict}) #indication of attack
             print(e)
         except Exception as e: #we catch an exception if something happend
-            print(f'Error occurred: {e}')
+            print(f'Error occurred: {e}.')
         finally:
             return result
 
@@ -934,13 +933,13 @@ class PortScanDoS(ABC):
 #-----------------------------------------------DNS-TUNNELING------------------------------------------------#
 # class for throwing custom exeption with str method for showing dnsTunneling detection information
 class DNSTunnelingException(Exception):
-    def __init__(self, message, type, attackDict):
+    def __init__(self, message: str, type: int, attackDict: dict) -> None:
         super().__init__(message)
         self.type = type #represents the type of dns tunneling attack (default 1)
         self.attackDict = attackDict #represents the attack dict with detected attack flows
 
     # str representation of dns tunneling exception for showing results
-    def __str__(self):
+    def __str__(self) -> str:
         attackName = 'DNS Tunneling'
         details = f'\n##### {attackName.upper()} ATTACK #####\n'
         details += '\n'.join([f'[*] Source IP: {flow[0]}, Source MAC: {flow[1]}, Destination IP: {flow[2]}, Destination MAC: {flow[3]}, Protocol: {flow[4]}, Attack: {attackName}'
@@ -951,7 +950,7 @@ class DNSTunnelingException(Exception):
 # static class that represents the collection and detection of DNS Tunneling attack
 class DNSTunneling(ABC):
     # represents our selected column names for features we trained SVM model for dnsTunneling
-    selectedColumns = [
+    selectedColumns: list = [
         'A Record Count', 'AAAA Record Count', 'CName Record Count', 'TXT Record Count', 'MX Record Count', 'DF Flag Count',
         'Average Response Data Length', 'Min Response Data Length', 'Max Response Data Length', 'Average Domain Name Length',
         'Min Domain Name Length', 'Max Domain Name Length', 'Average Sub Domain Name Length', 'Min Sub Domain Name Length', 
@@ -959,14 +958,14 @@ class DNSTunneling(ABC):
         'Number of Sub Domian Names', 'Total Length of Fwd Packet', 'Total Length of Bwd Packet', 'Total Number of Packets', 
         'Flow Duration', 'IAT Max', 'IAT Mean', 'IAT Std'
     ]
-    modelPath = currentDir.parent / 'models' / 'dns_svm_model.pkl' #represents path for SVM model for dnsTunneling
-    scalerPath = currentDir.parent / 'models' / 'dns_scaler.pkl' #represents path for scaler for dnsTunneling
+    modelPath: str = currentDir.parent / 'models' / 'dns_svm_model.pkl' #represents path for SVM model for dnsTunneling
+    scalerPath: str = currentDir.parent / 'models' / 'dns_scaler.pkl' #represents path for scaler for dnsTunneling
     loadedModel = None #represents our SVM model for dnsTunneling
     loadedScaler = None #represents our scaler for SVM model for dnsTunneling
 
     # function for initialzing SVM model and scaler for detecting dnsTunneling
     @staticmethod
-    def InitModel():
+    def InitModel() -> bool:
         try:
             # check that model and scaler exist before attempting to load them
             if not Path(DNSTunneling.modelPath).exists() or not Path(DNSTunneling.scalerPath).exists():
@@ -982,7 +981,7 @@ class DNSTunneling(ABC):
 
     # function for processing the flowDict and creating the dataframe that will be passed to classifier
     @staticmethod
-    def ProcessFlows(dnsDict): 
+    def ProcessFlows(dnsDict: dict) -> dict: 
         featuresDict = {} #represents our features dict where each flow tuple has its corresponding features
 
         # iterate over our flow dict and calculate features
@@ -1104,7 +1103,7 @@ class DNSTunneling(ABC):
 
     # function for predicting DNS Tunneling attack given flow dictionary
     @staticmethod
-    def PredictDNS(flowDict):
+    def PredictDNS(flowDict: dict) -> dict:
         # represents result of analysis dictionary {state: T/F, type: 1-DnsTunneling, attackDict: {}}
         result = {'state': False, 'type': 1, 'attackDict': {}}
         attackDict = {} #represents attack dict with anomalies
@@ -1149,7 +1148,7 @@ class DNSTunneling(ABC):
             result.update({'state': False, 'type': e.type, 'attackDict': e.attackDict}) #indication of attack
             print(e)
         except Exception as e: #we catch an exception if something happend
-            print(f'Error occurred: {e}')
+            print(f'Error occurred: {e}.')
         finally:
             return result
 
@@ -1162,7 +1161,7 @@ class SaveData(ABC):
 
     # function for saving the collected flows into a CSV file (used to collect benign data)
     @staticmethod
-    def SaveCollectedData(flows, filePath='benign_dataset.csv', selectedColumns=PortScanDoS.selectedColumns):
+    def SaveCollectedData(flows: dict, filePath: str='benign_dataset.csv', selectedColumns: list=PortScanDoS.selectedColumns) -> int:
         collectedRows = 0 # represents number of collected rows
         
         try:
@@ -1186,7 +1185,7 @@ class SaveData(ABC):
 
     # function for saving the collected flows into a txt file
     @staticmethod
-    def SaveFlowsInFile(flows, filePath='detected_flows.txt'):
+    def SaveFlowsInFile(flows: dict, filePath: str='detected_flows.txt') -> bool:
         try:
             # write result of flows captured in txt file
             with open(filePath, 'w', encoding='utf-8') as file:

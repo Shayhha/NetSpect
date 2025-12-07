@@ -1,7 +1,4 @@
-import socket
-import random
-import subprocess
-import platform
+import socket, random, subprocess, platform
 
 # This is a simple script that will generate DNS traffic on the network by sending DNS packets with various flags and sizes 
 # to different DNS servers on different pre-defined domains. For each DNS server there will be a random amount of packets
@@ -13,7 +10,7 @@ import platform
 # traffic as close as possible.
 
 # list of DNS servers
-DNS_SERVERS = [
+DNS_SERVERS: list = [
     '8.8.8.8',         # Google DNS
     '8.8.4.4',         # Google Secondary DNS
     '1.1.1.1',         # Cloudflare DNS
@@ -31,7 +28,7 @@ DNS_SERVERS = [
 ]
 
 # traffic distribution for query types
-QUERY_TYPES = {
+QUERY_TYPES: dict = {
     'A': 70, #IPv4 address
     'AAAA': 20, #IPv6 address
     'MX': 5, #Mail exchange
@@ -40,7 +37,7 @@ QUERY_TYPES = {
 }
 
 # random list of 100 domains that are online
-DOMAINS = [
+DOMAINS: list = [
     'example.org', 'archive.org', 'w3schools.org', 'pythonanywhere.org', 'sciencemag.org',
     'freecodecamp.org', 'openai.org', 'gnu.org', 'mit.edu', 'stanford.edu',
     'bbc.co.uk', 'theguardian.co.uk', 'abc.net.au', 'theaustralian.com.au', 'globeandmail.ca',
@@ -65,13 +62,13 @@ DOMAINS = [
 
 
 # add optional padding to a query
-def addPadding(query):
+def addPadding(query: bytes) -> bytes:
     paddingSize = random.randint(1, 20) #small padding size
     return query + (b'\x00' * paddingSize)
 
 
 # construct a DNS query with specified query type and optional padding
-def constructDNSQuery(domain, queryType):
+def constructDNSQuery(domain: str, queryType: str) -> bytes:
     query = (
         b'\xaa\xbb' #transaction ID
         b'\x01\x00' #standard query
@@ -103,7 +100,7 @@ def constructDNSQuery(domain, queryType):
 
 
 # send a DNS query to a server
-def sendDNSQuery(domain, dnsServer, queryType, port=53):
+def sendDNSQuery(domain: str, dnsServer: str, queryType: str, port: int=53) -> None:
     try:
         # create a socket
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -120,13 +117,13 @@ def sendDNSQuery(domain, dnsServer, queryType, port=53):
         print(f'Received response for {domain} ({queryType}) from {dnsServer}: {response[:40]}...') #truncated for display
 
     except Exception as e:
-        print(f'Error querying {domain} ({queryType}) from {dnsServer}: {e}')
+        print(f'Error querying {domain} ({queryType}) from {dnsServer}: {e}.')
     finally:
         sock.close()
 
 
 # generate and send DNS queries in a loop
-def generateDNSTraffic():
+def generateDNSTraffic() -> None:
     # shuffle the list randomly and divide the list into 3 groups
     random.shuffle(DNS_SERVERS)
     groups = [DNS_SERVERS[i::3] for i in range(3)]
@@ -163,6 +160,6 @@ if __name__ == '__main__':
         subprocess.run(command, shell=True, check=True)
         print('DNS cache cleared successfully.')
     except subprocess.CalledProcessError as e:
-        print(f'Error clearing DNS cache: {e}')
-    except Exception as ex:
-        print(f'An error occurred: {ex}')
+        print(f'Error clearing DNS cache: {e}.')
+    except Exception as e:
+        print(f'An error occurred: {e}.')

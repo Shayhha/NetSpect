@@ -1,4 +1,4 @@
-from PySide6.QtCore import Qt, QTimer, QPropertyAnimation, QEasingCurve, QEasingCurve, QSortFilterProxyModel, QAbstractTableModel, QModelIndex, QMargins
+from PySide6.QtCore import Qt, QObject, QTimer, QPropertyAnimation, QEasingCurve, QEasingCurve, QSortFilterProxyModel, QAbstractTableModel, QPoint, QModelIndex, QMargins
 from PySide6.QtWidgets import QApplication, QMenu, QListWidget, QTableWidget, QTableView, QWidget, QDialog, QPushButton, QLabel, QLineEdit, QStyle, QSizePolicy, QGridLayout, QHeaderView, QSystemTrayIcon, QVBoxLayout, QHBoxLayout, QGraphicsDropShadowEffect, QToolTip
 from PySide6.QtGui import QAction, QColor, QIcon, QPixmap, QFont, QCursor, QPainter, QPen
 from PySide6.QtCharts import QChart, QChartView, QPieSeries, QBarSeries, QHorizontalStackedBarSeries, QBarSet, QBarCategoryAxis, QValueAxis
@@ -10,7 +10,7 @@ currentDir = Path(__file__).resolve().parent #represents the path to the current
 #-------------------------------------------ANIMATION-methodS----------------------------------------------#
 
 # method for openning the left sideframe with an animation
-def OpenSideFrame(self):
+def OpenSideFrame(self) -> None:
     # create animation for sideframe
     self.ui.sideFrame.currentAnimation = QPropertyAnimation(self.ui.sideFrame, b'minimumWidth')
     self.ui.sideFrame.currentAnimation.setDuration(500)
@@ -31,7 +31,7 @@ def OpenSideFrame(self):
 
 
 # method for closing the left sideframe with an animation
-def CloseSideFrame(self):
+def CloseSideFrame(self) -> None:
     # create animation for sideframe
     self.ui.sideFrame.currentAnimation = QPropertyAnimation(self.ui.sideFrame, b'minimumWidth')
     self.ui.sideFrame.currentAnimation.setDuration(500)
@@ -50,7 +50,7 @@ def CloseSideFrame(self):
 
 
 # method for opening the login or register sideframes after clicking the account icon
-def AccountIconClicked(self):
+def AccountIconClicked(self) -> None:
     # create animation for sideframe
     self.ui.loginRegisterVerticalFrame.currentAnimation = QPropertyAnimation(self.ui.loginRegisterVerticalFrame, b'maximumWidth')
     self.ui.loginRegisterVerticalFrame.currentAnimation.setDuration(500)
@@ -82,7 +82,7 @@ def AccountIconClicked(self):
 
 
 # method for changing between the login and register sideframes
-def SwitchBetweenLoginAndRegister(self, showRegister=True):
+def SwitchBetweenLoginAndRegister(self, showRegister: bool=True) -> None:
     # create first animation for closing sideframe
     self.ui.loginRegisterVerticalFrame.currentAnimation = QPropertyAnimation(self.ui.loginRegisterVerticalFrame, b'maximumWidth')
     self.ui.loginRegisterVerticalFrame.currentAnimation.setDuration(200)
@@ -99,7 +99,7 @@ def SwitchBetweenLoginAndRegister(self, showRegister=True):
 
 
 # method for changing between the login and reset password sideframes
-def SwitchBetweenLoginAndForgotPassword(self, showResetPassword=True):
+def SwitchBetweenLoginAndForgotPassword(self, showResetPassword: bool=True) -> None:
     # first animation for closing sideframe
     self.ui.loginRegisterVerticalFrame.currentAnimation = QPropertyAnimation(self.ui.loginRegisterVerticalFrame, b'maximumWidth')
     self.ui.loginRegisterVerticalFrame.currentAnimation.setDuration(200)
@@ -116,7 +116,7 @@ def SwitchBetweenLoginAndForgotPassword(self, showResetPassword=True):
 
 
 # method for toggling between login and register sideframes
-def ToggleLoginRegister(self, showRegister):
+def ToggleLoginRegister(self, showRegister: bool=True) -> None:
     # means we need to switch to register sideframe
     if showRegister:
         # clear all line edits and show register frame
@@ -144,7 +144,7 @@ def ToggleLoginRegister(self, showRegister):
 
 
 # method for toggling between login and reset passowrd sideframes
-def ToggleLoginResetPassword(self, showResetPassword):
+def ToggleLoginResetPassword(self, showResetPassword: bool=True) -> None:
     # means we need to switch to reset password sideframe
     if showResetPassword:
         # clear all line edits and show reset password frame
@@ -178,7 +178,7 @@ def ToggleLoginResetPassword(self, showResetPassword):
 #---------------------------------------------CLICK-FUNCTIONS------------------------------------------------#
 
 # method for hiding side bar labels
-def HideSideBarLabels(self):
+def HideSideBarLabels(self) -> None:
     self.ui.homePageLabel.hide()
     self.ui.analyticsLabel.hide()
     self.ui.reportLabel.hide()
@@ -186,13 +186,13 @@ def HideSideBarLabels(self):
 
 
 # method for showing side bar icons
-def ShowSideBarMenuIcon(self):
+def ShowSideBarMenuIcon(self) -> None:
     self.ui.menuIcon.show()
     self.ui.closeMenuIcon.hide()
 
 
 # method for changing between enter email and enter code screens in reset password
-def ToggleBetweenEmailAndCodeResetPassword(self, isEmail=True):
+def ToggleBetweenEmailAndCodeResetPassword(self, isEmail: bool=True) -> None:
     # means we need to show reset password email frame
     if isEmail:
         # hide reset password code frame and show reset password email frame
@@ -215,7 +215,7 @@ def ToggleBetweenEmailAndCodeResetPassword(self, isEmail=True):
 
 
 # method for showing and hiding the change email, username, password and operation mode from settings page 
-def ToggleSettingsInputFields(self, state=False):
+def ToggleSettingsInputFields(self, state: bool=False) -> None:
     # if true we need to show email, username, password and operation mode
     if state:
         self.ui.settingsChangeVerticalFrame.show()
@@ -231,7 +231,7 @@ def ToggleSettingsInputFields(self, state=False):
 
 
 # method for showing and hiding user interface
-def ToggleUserInterface(self, state=False):
+def ToggleUserInterface(self, state: bool=False) -> None:
     # if true we need to show user logged in labels
     if state:
         self.ui.accountIcon.hide()
@@ -290,7 +290,7 @@ def ToggleUserInterface(self, state=False):
 
 
 # method for showing and hiding report interface
-def ToggleReportInterface(self, state):
+def ToggleReportInterface(self, state: bool) -> None:
     # if true we need to show report interface
     if state:
         self.ui.downloadReportPushButton.hide()
@@ -306,7 +306,7 @@ def ToggleReportInterface(self, state):
 
 
 # method for toggling between detection and collection interfaces
-def ToggleOperationMode(self):
+def ToggleOperationMode(self) -> None:
     # means we need to change to detection interface
     if self.ui.operationModeComboBox.currentIndex() == 0:
         self.userData['operationMode'] = 0
@@ -324,7 +324,7 @@ def ToggleOperationMode(self):
 
 
 # method for changing the current page index on the stack widget
-def ChangePageIndex(self, index):
+def ChangePageIndex(self, index: int) -> None:
     # if index is different from our current index we change to desired page index
     if self.ui.stackedWidget.currentIndex() != index:
         # clear settings page line edits, error messages and clear focus
@@ -339,7 +339,7 @@ def ChangePageIndex(self, index):
 
 
 # method for initializing eye buttons for password line edits in gui
-def InitPasswordLineEditEyeButtons(self):
+def InitPasswordLineEditEyeButtons(self) -> None:
     # get password eye icon
     eyeIcon = QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'EyeOpen.png'))
 
@@ -361,7 +361,7 @@ def InitPasswordLineEditEyeButtons(self):
 
 
 # method for toggling the password visibility using the eye button
-def TogglePasswordVisibility(lineEditWidget, eyeButton):
+def TogglePasswordVisibility(lineEditWidget: QLineEdit, eyeButton: QAction) -> None:
     # check if line edit in password mode
     if lineEditWidget.echoMode() == QLineEdit.Password:
         lineEditWidget.setEchoMode(QLineEdit.Normal) #show the password
@@ -373,7 +373,7 @@ def TogglePasswordVisibility(lineEditWidget, eyeButton):
 
 
 # method for initializing the analytics combobox with year values
-def InitAnalyticsYearCombobox(self):
+def InitAnalyticsYearCombobox(self) -> None:
     # check that barChartData dictionary is initialized before setting comobox itemss
     if self.userData.get('analyticsChartData', {}).get('barChartData', {}):
         self.ui.analyticsYearComboBox.blockSignals(True) #block signals while adding items to year combobox
@@ -382,7 +382,7 @@ def InitAnalyticsYearCombobox(self):
 
 
 # method for toggling between detection or collection states and setting startStop button stylesheet accordingly
-def ToggleStartStopState(self, state):
+def ToggleStartStopState(self, state: bool) -> None:
     # get the correct styles based on given state
     currentStyleSheet = f'''
         #startStopPushButton {{
@@ -429,7 +429,7 @@ def ToggleStartStopState(self, state):
 
 
 # method for toggling between light and dark mode by the user (also used when logging in and out of an account)
-def ToggleColorMode(self):
+def ToggleColorMode(self) -> None:
     try:
         # represents our color mode dictionary with predefiend parameters for changing color mode styles, initialized as dark mode
         colorMode = {'lightMode': 0, 'fileName': 'darkModeStyles.qss', 'iconColor': 'Light', 'labelColor': '#f3f3f3'} 
@@ -502,7 +502,7 @@ def ToggleColorMode(self):
 #---------------------------------------------OTHER-FUNCTIONS------------------------------------------------#
 
 # method for adding a box shadow to the login and register sideframes
-def ApplyShadowLoginRegister(self):
+def ApplyShadowLoginRegister(self) -> None:
     shadow = QGraphicsDropShadowEffect()
     shadow.setBlurRadius(15)
     shadow.setXOffset(-8)
@@ -512,7 +512,7 @@ def ApplyShadowLoginRegister(self):
 
 
 # method for adding a box shadow to the left side bar
-def ApplyShadowSidebar(self):
+def ApplyShadowSidebar(self) -> None:
     shadow = QGraphicsDropShadowEffect()
     shadow.setBlurRadius(5)
     shadow.setXOffset(5)
@@ -522,7 +522,7 @@ def ApplyShadowSidebar(self):
 
 
 # method for clearing login line edits and error message
-def ClearLoginLineEdits(self):
+def ClearLoginLineEdits(self) -> None:
     # clear login line edits and error messages
     self.ui.loginUsernameLineEdit.clear()
     self.ui.loginPasswordLineEdit.clear()
@@ -530,7 +530,7 @@ def ClearLoginLineEdits(self):
 
 
 # method for clearing register line edits and error messag
-def ClearRegisterLineEdits(self):
+def ClearRegisterLineEdits(self) -> None:
     # clear register line edits and error messages
     self.ui.registerEmailLineEdit.clear()
     self.ui.registerUsernameLineEdit.clear()
@@ -540,7 +540,7 @@ def ClearRegisterLineEdits(self):
 
 
 # method for clearing the reset password line edits and error messages
-def ClearResetPasswordLineEdits(self):
+def ClearResetPasswordLineEdits(self) -> None:
     # clear reset password line edits and error messages
     self.ui.resetPasswordEmailLineEdit.clear()
     self.ui.resetPasswordCodeLineEdit.clear()
@@ -549,7 +549,7 @@ def ClearResetPasswordLineEdits(self):
 
 
 # method for clearing all pages line edits end error messages
-def ClearSettingsPageLineEdits(self):
+def ClearSettingsPageLineEdits(self) -> None:
     # clear settings page line edits and clear error messages
     self.ui.emailLineEdit.clear()
     self.ui.usernameLineEdit.clear()
@@ -565,11 +565,11 @@ def ClearSettingsPageLineEdits(self):
     # check if user is logged in, if so we set his email and username back to the line edits
     if self.userData.get('userId'):
         self.ui.emailLineEdit.setText(self.userData.get('email')) #set email of user in settings page
-        self.ui.usernameLineEdit.setText(self.userData.get('userName')) #set username of user in settings page
+        self.ui.usernameLineEdit.setText(self.userData.get('username')) #set username of user in settings page
 
 
 # method that shows right-click menu for copying and deleting items for widget objects
-def ShowContextMenu(self, widgetObject, position, isDelete=False):
+def ShowContextMenu(self, widgetObject: QWidget, position: QPoint, isDelete: bool=False):
     currentStyleSheet = f'''
         #contextMenu {{
             {'background-color: #2d2d2d;' if self.userData.get('lightMode') == 0 else 'background-color: #f3f3f3;'}
@@ -649,27 +649,27 @@ def ShowContextMenu(self, widgetObject, position, isDelete=False):
 
 
 # method that copies the item text to the clipborad
-def CopyToClipboard(text):
+def CopyToClipboard(text: str) -> None:
     clipboard = QApplication.clipboard()  
     clipboard.setText(text)
 
 
 # method for enabling context menu for mac address list widget
-def EnableContextMenuMacAddressListWidget(self):
+def EnableContextMenuMacAddressListWidget(self) -> None:
     # add a context menu to the mac address list widget
     self.ui.macAddressListWidget.setContextMenuPolicy(Qt.CustomContextMenu)
     self.ui.macAddressListWidget.customContextMenuRequested.connect(lambda position : ShowContextMenu(self, self.ui.macAddressListWidget, position, isDelete=True))
 
 
 # method for enabling context menu for ip addresses list widget
-def EnableContextMenuIpAddressesListWidget(self):
+def EnableContextMenuIpAddressesListWidget(self) -> None:
     # add a context menu to the ip addresses list widget
     self.ui.ipAddressesListWidget.setContextMenuPolicy(Qt.CustomContextMenu)
     self.ui.ipAddressesListWidget.customContextMenuRequested.connect(lambda position : ShowContextMenu(self, self.ui.ipAddressesListWidget, position))
 
 
 # method for enabling context menu for history table widget and disable editing
-def EnableContextMenuHistoryTableWidget(self):
+def EnableContextMenuHistoryTableWidget(self) -> None:
    # add a context menu to the history table widget and disbale editing
     self.ui.historyTableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch) #stretch columns
     self.ui.historyTableWidget.verticalHeader().setSectionResizeMode(QHeaderView.Fixed) #fix row heights
@@ -683,19 +683,20 @@ def EnableContextMenuHistoryTableWidget(self):
 
 
 # method for setting the text of an error message like login/register/change email/ etc.
-def ChangeErrorMessageText(errorMessageObject, message):
-    errorMessageObject.setText('<p style="line-height: 0.7;">' + message + '</p>')
-    errorMessageObject.show()
+def ChangeErrorMessageText(errorMessageObject: QLabel, message: str) -> None:
+    if message:
+        errorMessageObject.setText('<p style="line-height: 0.7;">' + message + '</p>')
+        errorMessageObject.show()
 
 
 # method for clearing error message of error message label
-def ClearErrorMessageText(errorMessageObject):
+def ClearErrorMessageText(errorMessageObject: QLabel) -> None:
     errorMessageObject.setText('')
     errorMessageObject.hide()
 
 
 # method for returning the default style sheet of line edit
-def GetDefaultLineEditStyleSheet(self, lineEditName):
+def GetDefaultLineEditStyleSheet(self, lineEditName: str) -> str:
     defaultStylesheet = f''' 
         #{lineEditName} {{
             {'background-color: #f3f3f3;' if self.userData.get('lightMode') == 0 else 'background-color: #ebeff7;'}
@@ -711,7 +712,7 @@ def GetDefaultLineEditStyleSheet(self, lineEditName):
 
 
 # method for changing the styles of a line edit when it does not match the regex
-def NotifyInvalidLineEdit(self, lineEditWidget, lineEditName, errorMessageLabel=None):
+def NotifyInvalidLineEdit(self, lineEditWidget: QLineEdit, lineEditName: str, errorMessageLabel: str=None):
     # get current stylesheet by object name for the given line edit
     defaultStylesheet = GetDefaultLineEditStyleSheet(self, lineEditName)
 
@@ -735,10 +736,10 @@ def NotifyInvalidLineEdit(self, lineEditWidget, lineEditName, errorMessageLabel=
 
 # custom message box class that will be used to show error messages to the user at certain times
 class CustomMessageBox(QDialog):
-    isMessageBox = False #represents flag for indicating if message box already exists
+    isMessageBox: bool = False #represents flag for indicating if message box already exists
 
     # constructor of custom message box class
-    def __init__(self, title, message, iconType='Information', isSelectable=False, parent=None):
+    def __init__(self, title: str, message: str, iconType: str='Information', isSelectable: bool=False, parent: QObject=None):
         super().__init__(parent)
 
         # set the message box window title and icon
@@ -872,19 +873,19 @@ class CustomMessageBox(QDialog):
 
 
     # method for overriting the original accept method and setting isMessageBox flag
-    def accept(self):
+    def accept(self) -> None:
         CustomMessageBox.isMessageBox = False
         super().accept()
 
 
     # method for overriting the original reject method and setting isMessageBox flag
-    def reject(self):
+    def reject(self) -> None:
         CustomMessageBox.isMessageBox = False
         super().reject()
     
 
     # method for mapping the iconType to the appropriate StandardPixmap icon
-    def GetMessageBoxIcon(self, iconType):
+    def GetMessageBoxIcon(self, iconType: str) -> QIcon:
         if iconType == 'Warning':
             return QApplication.style().standardIcon(QStyle.StandardPixmap.SP_MessageBoxWarning)
         elif iconType == 'Critical':
@@ -895,7 +896,7 @@ class CustomMessageBox(QDialog):
 
 
 # method for showing message box window
-def ShowMessageBox(title, message, iconType='Information', isSelectable=False):
+def ShowMessageBox(title: str, message: str, iconType: str='Information', isSelectable: bool=False):
     # iconType options can be Information, Warning, Critical, Question
     if not CustomMessageBox.isMessageBox:
         messageBox = CustomMessageBox(title, message, iconType, isSelectable)
@@ -915,7 +916,7 @@ def ShowMessageBox(title, message, iconType='Information', isSelectable=False):
 # attack pie chart class for showing attacks distribution over time via a pie chart in GUI
 class AttackPieChart():
     # dictionary for mapping attack names, key is the database name text and the value is a tuple with slice label, legend name, color
-    pieChartLabelDict = {
+    pieChartLabelDict: dict = {
         'ARP Spoofing': ('ARP', 'ARP Spoofing', QColor('#90cfef')),
         'Port Scan': ('Port Scan', 'Port Scanning', QColor('#209fdf')),
         'DoS': ('DoS', 'Denial of Service', QColor('#15668f')),
@@ -923,7 +924,7 @@ class AttackPieChart():
     }
 
     # method for creating and initializing an empty attack pie chart
-    def InitAttackPieChart(self):
+    def InitAttackPieChart(self) -> None:
         try:
             # create pie chart and pie chart series
             self.ui.pieChart = QChart()
@@ -991,7 +992,7 @@ class AttackPieChart():
 
 
 # method for updating the pie chart after an attack was detected, expects an attack name like: ARP, DNS, Port Scan, DoS
-def UpdatePieChartAfterAttack(self, attackType):
+def UpdatePieChartAfterAttack(self, attackType: str) -> None:
     try:
         # get slice labels and series for updating pie chart
         sliceLabel = AttackPieChart.pieChartLabelDict.get(attackType)[0]
@@ -1032,7 +1033,7 @@ def UpdatePieChartAfterAttack(self, attackType):
 
 
 # method for updating the text of the pie chart legends and slice labels
-def UpdatePieChartLegendsAndSlices(self):
+def UpdatePieChartLegendsAndSlices(self) -> None:
     try:
         # creating a new dict with legend names like: sliceName: legendName
         pieChartAttackNames = {pieChartValues[0] : pieChartValues[1] for pieChartValues in AttackPieChart.pieChartLabelDict.values()}
@@ -1055,7 +1056,7 @@ def UpdatePieChartLegendsAndSlices(self):
 
 
 # method for updating the pie chart after user login with data from database
-def UpdatePieChartAfterLogin(self, pieChartData):
+def UpdatePieChartAfterLogin(self, pieChartData: dict) -> None:
     try:
         # check if there's at least one attack in pieChartData dictionary
         if any(attackCount > 0 for attackCount in pieChartData.values()):
@@ -1087,7 +1088,7 @@ def UpdatePieChartAfterLogin(self, pieChartData):
 
 
 # method for updating pie chart color mode based on chosen color mode in ui
-def UpdatePieChartColorMode(self):
+def UpdatePieChartColorMode(self) -> None:
     try:
         # set our desired label color based on ui color mode
         labelColor = QColor(45, 46, 54, 255) if self.userData.get('lightMode') == 0 else QColor(1, 1, 1, 255)
@@ -1109,7 +1110,7 @@ def UpdatePieChartColorMode(self):
 
 
 # method for clearing the pie chart and resetting to default empty pie chart
-def ResetPieChartToDefault(self):
+def ResetPieChartToDefault(self) -> None:
     try:
         # clear the pie chart data and set the default title
         self.ui.pieChart.series()[0].clear()
@@ -1136,13 +1137,13 @@ def ResetPieChartToDefault(self):
 # class for initializing the Histogram on the Analytics page
 class AnalyticsHistogramChart():
     # define our attack types and their colors and the months of the year to show in the chart
-    histogramChartAttackTypes = [attackType for attackType in AttackPieChart.pieChartLabelDict]
-    histogramChartAttackColors = [color[2] for color in AttackPieChart.pieChartLabelDict.values()]
-    histogramChartMonths = ['January', 'February', 'March', 'April', 'May', 'June', 
-                                'July', 'August', 'September', 'October', 'November', 'December']
+    histogramChartAttackTypes: list = [attackType for attackType in AttackPieChart.pieChartLabelDict]
+    histogramChartAttackColors: list = [color[2] for color in AttackPieChart.pieChartLabelDict.values()]
+    histogramChartMonths: list = ['January', 'February', 'March', 'April', 'May', 'June', 
+                                    'July', 'August', 'September', 'October', 'November', 'December']
 
     # method for initializing the histogram chart
-    def InitAnalyticsHistogramChart(self):
+    def InitAnalyticsHistogramChart(self) -> None:
         try:
             # create the chart object and set fonts and colors
             self.ui.histogramChart = QChart()
@@ -1194,7 +1195,7 @@ class AnalyticsHistogramChart():
 
 
     # method for showing a tooltip on each bar of the histogram chart when the user hovers it with the mouse
-    def ShowTooltip(self, state, index, barSet):
+    def ShowTooltip(self, state: bool, index: int, barSet: QBarSet) -> None:
         if state:
             # get class name, value and month and show tooltip text
             attackType = barSet.label()
@@ -1204,7 +1205,7 @@ class AnalyticsHistogramChart():
 
 
 # method for updating the grid lines and ticks based on the given maximum value in histogram chart
-def UpdateHistogramChartLines(self, newValue):
+def UpdateHistogramChartLines(self, newValue: int) -> None:
     try:
         # set desired lines to be five lines for fixed uniform look
         desiredLines = 5 #set to five lines in total
@@ -1224,16 +1225,18 @@ def UpdateHistogramChartLines(self, newValue):
 
 
 # method for creating the histogram chart data, axies and bars using the diven data dict, if data dict is None then create an empty histogram chart
-def CreateHistogramChartData(self, histogramChartData=None):
+def CreateHistogramChartData(self, histogramChartData: dict=None) -> None:
     try:
-        # get valid months based on the current month and get selected year from year combobox
+        # get selected year from year combobox and get valid months and get current year and month
         yearComboboxSelection = self.ui.analyticsYearComboBox.currentText()
         validMonths = AnalyticsHistogramChart.histogramChartMonths
+        currentYear = str(datetime.now().year)
+        currentMonth = datetime.now().month
 
         # check if year combobox is set to current year, if so we update the histogram chart months based on valid months
-        if yearComboboxSelection == str(datetime.now().year):
-            currentMonth = datetime.now().month #get current month
-            validMonths = AnalyticsHistogramChart.histogramChartMonths[:currentMonth] #get all the valid months from January untill current month
+        if yearComboboxSelection == currentYear:
+            # update valid months and get all the valid months from January untill current month
+            validMonths = AnalyticsHistogramChart.histogramChartMonths[:currentMonth]
 
         # hide the title and show the chart
         self.ui.histogramChart.setTitle(f'Monthly Network Attacks For Year {yearComboboxSelection}')
@@ -1315,15 +1318,15 @@ def CreateHistogramChartData(self, histogramChartData=None):
 
 
 # method for updating the histogram chart after an attack was detected, expects an attack name like in database: 'ARP Spoofing', 'Port Scan', etc.
-def UpdateHistogramChartAfterAttack(self, attackType):
+def UpdateHistogramChartAfterAttack(self, attackType: str) -> None:
     try:
-        # get selected year from year combobox
+        # get selected year from year combobox and get current year and month
         yearComboboxSelection = self.ui.analyticsYearComboBox.currentText()
+        currentYear = str(datetime.now().year)
+        currentMonth = datetime.now().month
 
         # updating the histogram chart if the user year selection is the current year
-        if yearComboboxSelection == str(datetime.now().year):
-            currentMonth = datetime.now().month #get current month
-
+        if yearComboboxSelection == currentYear:
             # checking in there is any histogram chart data already or not, if not then we need to create the data
             if not self.ui.histogramChart.series():
                 CreateHistogramChartData(self)
@@ -1371,15 +1374,15 @@ def UpdateHistogramChartAfterAttack(self, attackType):
             self.ui.histogramChartVerticalFrame.update() #ensure the chart updates
 
         # update histogramChartData dictionary in userData
-        self.userData.get('analyticsChartData').get('histogramChartData').get(yearComboboxSelection).get(datetime.now().month).setdefault(attackType, 0)
-        self.userData['analyticsChartData']['histogramChartData'][yearComboboxSelection][datetime.now().month][attackType] += 1
+        self.userData.get('analyticsChartData').get('histogramChartData').get(yearComboboxSelection).get(f'{currentMonth:02d}').setdefault(attackType, 0)
+        self.userData['analyticsChartData']['histogramChartData'][yearComboboxSelection][f'{currentMonth:02d}'][attackType] += 1
 
     except Exception as e:
         ShowMessageBox('Error Updating Histogram Chart', 'Error occurred while updating histogram chart after attack, try again later.', 'Critical')
 
 
 # method for updating the histogram chart after user login with data from database
-def UpdateHistogramChartAfterLogin(self, histogramChartData):
+def UpdateHistogramChartAfterLogin(self, histogramChartData: dict) -> None:
     try:
         # check if there's at least one attack in histogramChartData dictionary
         if any(attackCount > 0 for yearData in histogramChartData.values() for monthData in yearData.values() for attackCount in monthData.values()):
@@ -1392,7 +1395,7 @@ def UpdateHistogramChartAfterLogin(self, histogramChartData):
 
 
 # method for updating histogram chart color mode based on chosen color mode in ui
-def UpdateHistogramChartColorMode(self):
+def UpdateHistogramChartColorMode(self) -> None:
     try:
         # set our desired label color based on ui color mode
         labelColor = QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519')
@@ -1430,7 +1433,7 @@ def UpdateHistogramChartColorMode(self):
 
 
 # method for clearing the histogram chart and resetting to default empty histogram chart
-def ResetHistogramChartToDefault(self, hideChart=True):
+def ResetHistogramChartToDefault(self, hideChart: bool=True) -> None:
     try:
         # clear the histogram chart data and set the default title
         for series in self.ui.histogramChart.series():
@@ -1473,11 +1476,11 @@ def ResetHistogramChartToDefault(self, hideChart=True):
 # class for initializing the horizontal bar chart on the Analytics page
 class AnalyticsBarChart():
     # define our attack types and their colors to show in the bar chart
-    barChartAttackTypes = [attackType for attackType in AttackPieChart.pieChartLabelDict]
-    barChartAttackColors = [color[2] for color in AttackPieChart.pieChartLabelDict.values()]
+    barChartAttackTypes: list = [attackType for attackType in AttackPieChart.pieChartLabelDict]
+    barChartAttackColors: list = [color[2] for color in AttackPieChart.pieChartLabelDict.values()]
 
     # method for initializing the hhorizontal bar chart
-    def InitAnalyticsBarChart(self):
+    def InitAnalyticsBarChart(self) -> None:
         try:
             # create the chart object and set fonts and colors
             self.ui.barChart = QChart()
@@ -1529,7 +1532,7 @@ class AnalyticsBarChart():
 
 
     # method for showing a tooltip on each bar of the bar chart when the user hovers it with the mouse
-    def ShowTooltip(self, state, index, barSet):
+    def ShowTooltip(self, state: bool, index: int, barSet: QBarSet) -> None:
         if state:
             # get class name and value and show tooltip text
             attackType = barSet.label()
@@ -1538,7 +1541,7 @@ class AnalyticsBarChart():
 
 
 # method for updating the grid lines and ticks based on the given maximum value in bar chart
-def UpdateBarChartLines(self, newValue):
+def UpdateBarChartLines(self, newValue: int) -> None:
     try:
         # set desired lines to be five lines for fixed uniform look
         desiredLines = 5 #set to five lines in total
@@ -1558,7 +1561,7 @@ def UpdateBarChartLines(self, newValue):
 
 
 # method for creating the bar chart data, axies and bars using the diven data dict, if data dict is None then create an empty bar chart
-def CreateBarChartData(self, barChartData=None):
+def CreateBarChartData(self, barChartData: dict=None) -> None:
     try:
         # get selected year from year combobox
         yearComboboxSelection = self.ui.analyticsYearComboBox.currentText()
@@ -1641,13 +1644,14 @@ def CreateBarChartData(self, barChartData=None):
 
 
 # method for updating the bar chart after an attack was detected, expects an attack name like in database: 'ARP Spoofing', 'Port Scan', etc.
-def UpdateBarChartAfterAttack(self, attackType):
+def UpdateBarChartAfterAttack(self, attackType: str) -> None:
     try:
-        # get selected year from year combobox
+        # get selected year from year combobox and get current year
         yearComboboxSelection = self.ui.analyticsYearComboBox.currentText()
+        currentYear = str(datetime.now().year)
 
         # updating the bar chart if the user year selection is the current year
-        if yearComboboxSelection == str(datetime.now().year):
+        if yearComboboxSelection == currentYear:
             # checking in there is any bar chart data already or not, if not then we need to create the data
             if not self.ui.barChart.series():
                 CreateBarChartData(self)
@@ -1695,7 +1699,7 @@ def UpdateBarChartAfterAttack(self, attackType):
 
 
 # method for updating the bar chart after user login with data from database
-def UpdateBarChartAfterLogin(self, barChartData):
+def UpdateBarChartAfterLogin(self, barChartData: dict) -> None:
     try:
         # check if there's at least one attack in barChartData dictionary
         if any(attackCount > 0 for yearData in barChartData.values() for attackCount in yearData.values()):
@@ -1708,7 +1712,7 @@ def UpdateBarChartAfterLogin(self, barChartData):
 
 
 # method for updating bar chart color mode based on chosen color mode in ui
-def UpdateBarChartColorMode(self):
+def UpdateBarChartColorMode(self) -> None:
     try:
         # set our desired label color based on ui color mode
         labelColor = QColor('black') if self.userData.get('lightMode') == 0 else QColor('#151519')
@@ -1746,7 +1750,7 @@ def UpdateBarChartColorMode(self):
 
 
 # method for clearing the bar chart and resetting to default empty bar chart
-def ResetBarChartToDefault(self, hideChart=True):
+def ResetBarChartToDefault(self, hideChart: bool=True) -> None:
     try:
         # clear the bar chart data and set the default title
         for series in self.ui.barChart.series():
@@ -1787,17 +1791,20 @@ def ResetBarChartToDefault(self, hideChart=True):
 #---------------------------------------------ANALYTICS-CARDS------------------------------------------------#
 
 # method for setting data into the cards section one by one
-def SetDataIntoCards(self):
+def SetDataIntoCards(self) -> None:
     try:
-        currentYear = self.ui.analyticsYearComboBox.currentText()
-        if any(attackCount > 0 for attackCount in self.userData.get('analyticsChartData').get('barChartData').get(currentYear).values()):
+        # get selected year from year combobox
+        yearComboboxSelection = self.ui.analyticsYearComboBox.currentText()
+
+        # check if there's at least one attack in barChartData dictionary we update data in cards
+        if any(attackCount > 0 for attackCount in self.userData.get('analyticsChartData').get('barChartData').get(yearComboboxSelection).values()):
             # update attacks per month and total number of attacks
-            totalNumberOfAttacks = sum(self.userData.get('analyticsChartData').get('barChartData').get(currentYear).values())
+            totalNumberOfAttacks = sum(self.userData.get('analyticsChartData').get('barChartData').get(yearComboboxSelection).values())
             self.ui.totalNumOfAttacksValueLabel.setText(str(totalNumberOfAttacks))
             self.ui.attacksPerMonthValueLabel.setText('{:.2f}'.format(totalNumberOfAttacks / 12))
 
             # update most popular attack
-            mostPopularAttack = max(self.userData.get('analyticsChartData').get('barChartData').get(currentYear), key=self.userData.get('analyticsChartData').get('barChartData').get(currentYear).get)
+            mostPopularAttack = max(self.userData.get('analyticsChartData').get('barChartData').get(yearComboboxSelection), key=self.userData.get('analyticsChartData').get('barChartData').get(yearComboboxSelection).get)
             mostPopularAttack = '<br>'.join(mostPopularAttack.split()) if ' ' in mostPopularAttack else mostPopularAttack #to ensure that there wont be a crash in case of future attack names
             self.ui.mostPopularAttackValueLabel.setText(mostPopularAttack if 'DoS' not in mostPopularAttack else 'Denial of<br>Service') #ensuring that DoS is displayed as Denial of Service
 
@@ -1810,11 +1817,14 @@ def SetDataIntoCards(self):
 
 
 # method for updating the data in the cards after an attack
-def UpdateDataInCardsAfterAttack(self):
+def UpdateDataInCardsAfterAttack(self) -> None:
     try:
-        # only updating the histogram chart if the user year selection is the current year, otherwise it will update when a user changes the combobox value
+        # get selected year from year combobox and get current year
         yearComboboxSelection = self.ui.analyticsYearComboBox.currentText()
-        if yearComboboxSelection == str(datetime.now().year):
+        currentYear = str(datetime.now().year)
+
+        # only updating the cards if the user year selection is the current year, otherwise it will update when a user changes the combobox value
+        if yearComboboxSelection == currentYear:
             SetDataIntoCards(self)
 
     except Exception as e:
@@ -1822,7 +1832,7 @@ def UpdateDataInCardsAfterAttack(self):
 
 
 # method for resetting the data in the cards section to the default values
-def ResertDataInCards(self):
+def ResertDataInCards(self) -> None:
     try:
         self.ui.totalNumOfAttacksValueLabel.setText('0')
         self.ui.attacksPerMonthValueLabel.setText('0')
@@ -1842,7 +1852,7 @@ def ResertDataInCards(self):
 
 
 # method for calculating and resizing the font for the labels in the cards based on the data in them 
-def UpdateFontSizeInLabel(self, labelObject):
+def UpdateFontSizeInLabel(self, labelObject: QLabel) -> None:
     try:
         # get the current text in the card and set a default value for font size
         currentLength = len(labelObject.text().replace('.', ''))
@@ -1880,27 +1890,27 @@ def UpdateFontSizeInLabel(self, labelObject):
 
 # Custom Table Model that will sit inside the TableView object in the report page and will contain all the relevant data and methods
 class CustomTableModel(QAbstractTableModel):
-    reportPreviewColumnHeaders = ['Interface', 'Attack Type', 'Source IP', 'Source MAC', 'Destination IP', 'Destination MAC', 'Protocol', 'Timestamp']
-    alertListData = [] #represents our alerts list in table view
+    reportPreviewColumnHeaders: list = ['Interface', 'Attack Type', 'Source IP', 'Source MAC', 'Destination IP', 'Destination MAC', 'Protocol', 'Timestamp']
+    alertListData: list = [] #represents our alerts list in table view
 
     # constructor of table model class
-    def __init__(self, data=None, parent=None):
+    def __init__(self, data: list=None, parent: QObject=None) -> None:
         super().__init__(parent)
         self.alertListData = data
 
 
     # overwrite inherited method to get number of rows
-    def rowCount(self, parent=None):
+    def rowCount(self, parent: QObject=None) -> int:
         return len(self.alertListData) #get number of rows in the data
 
 
     # overwrite inherited method to get number of columns
-    def columnCount(self, parent=None):
+    def columnCount(self, parent: QObject=None) -> int:
         return len(self.reportPreviewColumnHeaders) + 1 #get number of columns (includes osType)
 
 
     # overwrite inherited method to get data from a specific cell
-    def data(self, index, role=Qt.DisplayRole):
+    def data(self, index: QModelIndex, role: int=Qt.DisplayRole) -> Qt.AlignmentFlag | str | None:
         if not index.isValid():
             return None
 
@@ -1920,15 +1930,15 @@ class CustomTableModel(QAbstractTableModel):
 
 
     # overwrite inherited method to set the column names
-    def headerData(self, section, orientation, role=Qt.DisplayRole):
+    def headerData(self, section: int, orientation: Qt.Orientation, role: int=Qt.DisplayRole) -> str | None:
         if role == Qt.DisplayRole and orientation == Qt.Horizontal:
             if section < len(self.reportPreviewColumnHeaders):
                 return self.reportPreviewColumnHeaders[section]
         return None
-    
-        
+
+
     # overwrite inherited method to set the data into the column
-    def setData(self, index, value, role=Qt.EditRole):
+    def setData(self, index: QModelIndex, value: str, role: int=Qt.EditRole) -> bool:
         if role == Qt.EditRole:
             if index.isValid() and 0 <= index.row() < self.rowCount() and 0 <= index.column() < self.columnCount():
                 self.alertListData[index.row()][index.column()] = value
@@ -1938,7 +1948,7 @@ class CustomTableModel(QAbstractTableModel):
 
 
     # method to add row to report preview table at the first index in top row
-    def AddRow(self, interface, attackType, srcIp, srcMac, dstIp, dstMac, protocol, osType, timestamp):
+    def AddRow(self, interface: str, attackType: str, srcIp: str, srcMac: str, dstIp: str, dstMac: str, protocol: str, osType: str, timestamp: str) -> None:
         # create new row to insert into report preview table at the first index in top row
         row = [interface, attackType, srcIp, srcMac, dstIp, dstMac, protocol, timestamp, osType]
         self.beginInsertRows(QModelIndex(), 0, 0) #begin insertion at top
@@ -1947,14 +1957,14 @@ class CustomTableModel(QAbstractTableModel):
 
 
     # method to add items to a given row by index to report preview table
-    def SetRowItem(self, row, column, value):
+    def SetRowItem(self, row: int, column: int, value: str) -> None:
         # set data at specific row and column
         index = self.index(row, column)
         self.setData(index, value)
 
 
     # method to clear out the data from the report preview table
-    def ClearRows(self):
+    def ClearRows(self) -> None:
         self.beginResetModel() #begin reset model
         self.alertListData.clear() #clear the data list
         self.endResetModel() #end reset model
@@ -1963,32 +1973,32 @@ class CustomTableModel(QAbstractTableModel):
 # Custom Proxy Model for filtering the TableView that is in the report page, this class will hold the filtering logic and methods
 class CustomFilterProxyModel(QSortFilterProxyModel):
     # represents our  alertList columns of our table
-    alertListColumns = [('interface', 0), ('attackType', 1), ('srcIp', 2), ('srcMac', 3), ('dstIp', 4),
-                        ('dstMac', 5), ('protocol', 6), ('osType', 8), ('timestamp', 7)]
-    selectedAttacks = set() #represents selected attacks by checkboxes
-    timeFilter = None #represents time combobox filther option
+    alertListColumns: list = [('interface', 0), ('attackType', 1), ('srcIp', 2), ('srcMac', 3), ('dstIp', 4),
+                              ('dstMac', 5), ('protocol', 6), ('osType', 8), ('timestamp', 7)]
+    selectedAttacks: set = set() #represents selected attacks by checkboxes
+    timeFilter: str = None #represents time combobox filther option
 
     # constructor of filter proxy model class
-    def __init__(self, parent=None):
+    def __init__(self, parent: QObject=None) -> None:
         super().__init__(parent)
         self.selectedAttacks = {'ARP Spoofing', 'Port Scan', 'DoS', 'DNS Tunneling'} #set to all attack types by default
         self.timeFilter = 'All Available Data' #set to all available data by default
 
 
     # method to update selected types and refresh filter (for checkboxes)
-    def SetSelectedAttacks(self, selectedAttacks):
+    def SetSelectedAttacks(self, selectedAttacks: set) -> None:
         self.selectedAttacks = set(selectedAttacks)
         self.invalidateFilter() #triggers re-filtering
 
 
     # method to update time filter and refresh the table (for combobox)
-    def SetTimeFilter(self, timeFilter):
+    def SetTimeFilter(self, timeFilter: str) -> None:
         self.timeFilter = timeFilter
         self.invalidateFilter() #triggers re-filtering
 
 
     # overwrite inherited method that determines if a row should be shown based on filter conditions
-    def filterAcceptsRow(self, sourceRow, sourceParent):
+    def filterAcceptsRow(self, sourceRow: int, sourceParent: QModelIndex) -> bool:
         model = self.sourceModel()
 
         # get timestamp and attack type row data
@@ -2017,7 +2027,7 @@ class CustomFilterProxyModel(QSortFilterProxyModel):
 
 
 # method that will be called when the user clicks on one of the attack checkboxes in the report page (ARP, Port, DoS, DNS)
-def ReportCheckboxToggled(self):
+def ReportCheckboxToggled(self) -> None:
     selectedAttacks = set() #represents a set of all selected attack checkboxes at this point in time
 
     # checking each checkbox if its clicked or not
@@ -2035,12 +2045,12 @@ def ReportCheckboxToggled(self):
 
 
 # method that will be called when the user selects a different time fillter option in the report page (combobox)
-def ReportDurationComboboxChanged(self):
+def ReportDurationComboboxChanged(self) -> None:
     self.ui.proxyReportPreviewTableModel.SetTimeFilter(self.ui.reportDurationComboBox.currentText())
 
 
 # method for getting flitered alert list from proxy model
-def GetFilteredAlerts(self):
+def GetFilteredAlerts(self) -> list:
     filteredAlertList = [] #represents our filtered alerts
     
     # iterate over each filtered row from the proxy model
@@ -2058,7 +2068,7 @@ def GetFilteredAlerts(self):
 
 
 # method for initializing the table view in the report page when the application loads up
-def InitReportTableView(self):
+def InitReportTableView(self) -> None:
     # initialize the report preview table model and custom proxy model for filtering 
     self.ui.reportPreviewTableModel = CustomTableModel(self.userData.get('alertList'))
     self.ui.proxyReportPreviewTableModel = CustomFilterProxyModel()
@@ -2084,11 +2094,11 @@ def InitReportTableView(self):
 
 # system tray icon class that will be used to show alert messages in operation system from system tray icon
 class SystemTrayIcon():
-    isTrayMessageShown = False #represents flag for indicating if tray message is shown
-    trayMessageQueue = [] #represents tray message queue for showing tray messages
+    isTrayMessageShown: bool = False #represents flag for indicating if tray message is shown
+    trayMessageQueue: list = [] #represents tray message queue for showing tray messages
 
     # method for initializing system tray icon for various alert messages
-    def InitTrayIcon(self):
+    def InitTrayIcon(self) -> None:
         self.ui.trayIcon = None #initialize tray icon to none
 
         # check if system tray is available
@@ -2147,7 +2157,7 @@ class SystemTrayIcon():
 
 
     # method to map the iconType to the appropriate QSystemTrayIcon
-    def GetTrayIcon(self, iconType):
+    def GetTrayIcon(self, iconType: str) -> QSystemTrayIcon.MessageIcon:
         if iconType == 'Warning':
             return QSystemTrayIcon.Warning
         elif iconType == 'Critical':
@@ -2156,7 +2166,7 @@ class SystemTrayIcon():
 
 
     # method for showing queued tray messages
-    def ShowNextTrayMessage(self):
+    def ShowNextTrayMessage(self) -> None:
         # check if tray icon is initialized
         if self.ui.trayIcon:
             # check if tray message queue is not empty
@@ -2175,7 +2185,7 @@ class SystemTrayIcon():
 
 
 # method for showing tray icon messages in operating system
-def ShowTrayMessage(self, title, message, iconType='Information', duration=5000):
+def ShowTrayMessage(self, title: str, message: str, iconType: str='Information', duration: int=5000) -> None:
     # check if tray icon is initialized
     if self.ui.trayIcon:
         # get desired tray icon for tray message
@@ -2191,7 +2201,7 @@ def ShowTrayMessage(self, title, message, iconType='Information', duration=5000)
 #----------------------------------------------MAIN-FUNCTION-------------------------------------------------#
 
 # main method that sets up all the ui elements on startup
-def InitUserInterface(self):
+def InitUserInterface(self) -> None:
     # set the title and icon for main window
     self.setWindowTitle('NetSpect™')
     self.setWindowIcon(QIcon(str(currentDir.parent / 'interface' / 'Icons' / 'NetSpectIconTransparent.png')))

@@ -1,48 +1,45 @@
+import time, random
 from flask import Flask, request
-import time
-import random
-import logging
 
 # simple Flask web server class, creates a web server at the given port for performing DoS HTTP GET Flood attacks
-class FlaskServer:
-    port = None #represents the port where the web server will run
+class FlaskServer():
+    port: int = None #represents the port where the web server will run
 
     # constructor of Flask web server
-    def __init__(self, port=8080):
+    def __init__(self, port: int=8090) -> None:
         self.app = Flask(__name__)
         self.port = port
         self._configure_routes()
-        logging.basicConfig(level=logging.INFO)
 
     # define the routes of our web server
-    def _configure_routes(self): 
+    def _configure_routes(self) -> None: 
         @self.app.route('/') #default landing page
-        def home():
-            return "<html><body><h1>GET Request Successful</h1></body></html>"
+        def home() -> str:
+            return '<html><body><h1>GET Request Successful</h1></body></html>'
         
         @self.app.route('/page1', methods=['GET', 'POST']) #route for Page 1
-        def page1():
+        def page1() -> str:
             self.simulate_delay()
             if request.method == 'POST':
                 name = request.form.get('name', 'Anonymous')
-                logging.info(f"Received form submission: name={name}")
-                return f"<html><body><h1>Form Submitted Successfully</h1><p>Name: {name}</p></body></html>"
+                print(f'Received form submission: name={name}')
+                return f'<html><body><h1>Form Submitted Successfully</h1><p>Name: {name}</p></body></html>'
             return self.PAGE1_HTML
 
         @self.app.route('/page2', methods=['GET']) #route for Page 2
-        def page2(): 
+        def page2() -> str: 
             self.simulate_delay()
             return self.PAGE2_HTML
 
     # simple method for sleeping for a random duration to simulate background tasks when switcing between pages
     @staticmethod
-    def simulate_delay(minTime=0.5, maxTime=1.5):
+    def simulate_delay(minTime: float=0.5, maxTime: float=1.5) -> None:
         time.sleep(random.uniform(minTime, maxTime))
 
     # defining simple html and css for Page 1 of the web server
     @property
-    def PAGE1_HTML(self):
-        return """
+    def PAGE1_HTML(self) -> str:
+        return '''
         <!DOCTYPE html>
         <html>
         <head>
@@ -68,12 +65,12 @@ class FlaskServer:
             </form>
         </body>
         </html>
-        """
+        '''
 
     # defining simple html and css for Page 2 of the web server
     @property
-    def PAGE2_HTML(self):
-        return """
+    def PAGE2_HTML(self) -> str:
+        return '''
         <!DOCTYPE html>
         <html>
         <head>
@@ -89,18 +86,18 @@ class FlaskServer:
             <button onclick="window.location.href='/page1'">Go to Page 1</button>
         </body>
         </html>
-        """
+        '''
 
     # simple run function for starting the web server on local host at the given port number
-    def run(self):
+    def run(self) -> None:
         try:
-            logging.info(f"Server started at port {self.port}")
-            self.app.run(host="0.0.0.0", port=self.port)
+            print(f'Server started at port {self.port}')
+            self.app.run(host='0.0.0.0', port=self.port)
         except KeyboardInterrupt:
-            logging.info("Server is shutting down...")
+            print('Server is shutting down...')
 
 
 # main function for starting the Flask server
-if __name__ == "__main__":
+if __name__ == '__main__':
     server = FlaskServer(port=8090)
     server.run() #run the Flask HTTP web server

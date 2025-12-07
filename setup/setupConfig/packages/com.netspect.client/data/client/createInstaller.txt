@@ -1,0 +1,10 @@
+@echo off
+echo Creating NetSpect Installer...
+
+"C:\Qt\QtIFW-4.8.1\bin\binarycreator.exe" ^
+  --config "setup\setupConfig\config\config.xml" ^
+  --packages "setup\setupConfig\packages" ^
+  "setup\NetSpectSetup.exe"
+
+echo Installer Creation Complete.
+pause

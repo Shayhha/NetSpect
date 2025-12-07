@@ -1,6 +1,6 @@
 
-<div align='center'>
-  <img src="src/interface/Icons/NetSpectIconTransparent.png" width="175"/>
+<div align="center">
+  <img src="client/src/interface/Icons/NetSpectIconTransparent.png" width="175"/>
   <div id="toc">
     <ul align="center" style="list-style: none">
       <summary>
@@ -13,8 +13,9 @@
 [![PySide6](https://img.shields.io/badge/PySide6-6.9.0-2C3E50?style=for-the-badge&logo=qt&logoColor=white)](https://doc.qt.io/qtforpython/)
 [![Scapy](https://img.shields.io/badge/Scapy-2.5.0-2C3E50?style=for-the-badge&logo=github&logoColor=white)](https://github.com/secdev/scapy/)
 [![Scikit-learn](https://img.shields.io/badge/Scikit--learn-1.6.0-3499CD?style=for-the-badge)](https://scikit-learn.org/stable/)
-[![SQL Server](https://img.shields.io/badge/SQL%20Server-2022-blue?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)](https://www.microsoft.com/en-us/sql-server/sql-server-2022/)<br>
-[![Npcap](https://img.shields.io/badge/Npcap-1.79-59118e?style=for-the-badge&logo=Caffeine&logoColor=white)](https://npcap.com/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.119.0-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)<br>
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18.0-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Npcap](https://img.shields.io/badge/Npcap-1.84-59118e?style=for-the-badge&logo=Caffeine&logoColor=white)](https://npcap.com/)
 ![Platforms](https://img.shields.io/badge/Platforms-Windows%20%7C%20macOS%20%7C%20Linux-2C3E50?style=for-the-badge&logo=apple&logoColor=white)
 [![GPLv3 License](https://img.shields.io/badge/License-GPLv3-28A745?style=for-the-badge&logo=gnu&logoColor=white)](https://www.gnu.org/licenses/gpl-3.0)
 </div>
@@ -86,6 +87,9 @@ NetSpect cleverly employs a **multi-threaded architecture** to distribute tasks 
 - **System Information**  
   Displays detailed information about the user’s network interface, system details and the current program version.
 
+- **RESTful API Server**  
+  Provides backend API built with FastAPI, handling database operations and exposing RESTful endpoints for client-server interactions.
+
 ### Performance & Compatibility Features
 
 -  **Multithreaded Architecture**  
@@ -97,6 +101,9 @@ NetSpect cleverly employs a **multi-threaded architecture** to distribute tasks 
 -  **Cross-Platform**  
   Compatible with Windows, Linux, and macOS thanks to Python 3.13 and PySide6.
 
+- **Flexible Backend Integration**  
+  Compatible with any RESTful backend framework, enabling easy integration and seamless communication.
+
 <br>  
 
 ## Technologies Used
@@ -104,11 +111,25 @@ NetSpect cleverly employs a **multi-threaded architecture** to distribute tasks 
 | Technology | Purpose |
 |------------|---------|
 | **[Python 3.13](https://www.python.org/downloads/release/python-3130/)** | Core programming language for development and scripting. |
-| **[PySide6](https://doc.qt.io/qtforpython/)** | A framework for building the graphical user interface (GUI). |
+| **[PySide6](https://doc.qt.io/qtforpython/)** | Framework for creating cross-platform graphical user interfaces (GUI). |
 | **[Scapy](https://github.com/secdev/scapy)** | A powerful packet manipulation library used for network traffic analysis. |
-| **[SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-2022)** | Database management system for storing and retrieving user data. |
+| **[FastAPI](https://fastapi.tiangolo.com/)** | High-performance Python framework for building APIs and backends. |
+| **[PostgreSQL](https://www.postgresql.org/)** | Database management system for storing and retrieving user data. |
 | **[Joblib](https://joblib.readthedocs.io/)** | Library utilized for saving and loading machine learning models efficiently. |
 | **[Scikit-learn](https://scikit-learn.org/)** | Machine learning library leveraged for model training and prediction. |
+
+<br>  
+
+## Attack Tools Used
+
+| Tool | Purpose |
+|------|---------|
+| **[Nmap](https://nmap.org/)** | Network scanning tool used to perform TCP SYN scans and find open ports on target machines. |
+| **[Ettercap](https://www.ettercap-project.org/)** | Network attack tool used for performing ARP Spoofing to intercept and alter traffic between hosts. |
+| **[Hping3](https://linux.die.net/man/8/hping3)** | Command-line packet generator used to launch DoS attacks by sending custom TCP SYN floods. |
+| **[HULK](https://github.com/grafov/hulk)** | HTTP DoS tool designed to flood web servers with unique requests to exhaust server resources. |
+| **[GoldenEye](https://github.com/jseidl/GoldenEye)** | HTTP DoS tool that sends requests while keeping connections alive to overload servers. |
+| **[DNSCat2](https://github.com/iagox86/dnscat2)** | DNS attack tool that creates a command-and-control channel using DNS tunneling techniques. |
 
 <br>  
 
@@ -117,7 +138,7 @@ NetSpect cleverly employs a **multi-threaded architecture** to distribute tasks 
 Our project offers two installation options: using a Windows installer for a straightforward setup, or cloning the repository from GitHub for manual installation.
 
 ### Windows Installer:
-Inside the setup folder, locate the NetSpectSetup.7z file and extract it to your preferred location. Then, double-click NetSpectSetup.exe to launch the installation wizard for a quick and easy setup.
+Inside the setup folder, locate the NetSpectSetup.zip file and extract it to your preferred location. Then, double-click NetSpectSetup.exe to launch the installation wizard for a quick and easy setup.
 
 ### Clone The Repository:
 
@@ -130,33 +151,55 @@ cd NetSpect
 
 ### Install Requirements:
 
+#### Client Requirements:
+
 ```shell
+cd client
+pip install -r requirements.txt
+```
+
+#### Server Requirements:
+
+```shell
+cd server
 pip install -r requirements.txt
 ```
 
 <br>
 
 ## Additional Requirements:
-After that, make sure to download and install the ODBC Driver and Npcap by following the instructions below.
-Finally, configure the .env file with your connection string to enable seamless integration with your SQL Server database.
+After that, make sure to download and install Npcap by following the instructions below.
+Finally, configure the .env files with your database credentials to enable seamless integration with your database.
 
-### Install ODBC Driver:
-
-In order to use the application and connect to your SQL Server database, you must install the **[Microsoft ODBC Driver for SQL Server](https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server?view=sql-server-ver15)**.
-
-### Configure .env Database File:
-Navigate to the database folder, create new .env file and insert the following:
+### Client .env Configuration:
+Navigate to the client/src/config folder, create a new .env file and insert the following:
 
 ```shell
-DB_CONNECTION_STRING="
-DRIVER={ODBC Driver 17 for SQL Server};
-SERVER=your_server_name;
-DATABASE=your_database_name;
-Trusted_Connection=yes;
-"
-APP_EMAIL="your_email_address"
-APP_PASSWORD="your_email_password"
-APP_EMAIL_HOST="your_smtp_server"
+SERVER_URL="https://your-netspect-server.com:8000"
+```
+
+### Server .env Configuration:
+Navigate to the server/src/app/config folder, create a new .env file and insert the following:
+
+```shell
+SERVER_MODE="production_or_development"
+SERVER_HOST="your_server_host"
+SERVER_PORT="your_server_port"
+SERVER_WORKERS="your_server_number_of_workers"
+SERVER_STORAGE_URL="your_server_storage_url"
+DB_HOST="your_database_host"
+DB_DATABASE="your_database_name"
+DB_PORT="your_database_port"
+DB_USER="your_database_username"
+DB_PASSWORD="your_database_password"
+DB_POOL_MIN="your_database_pool_min_size"
+DB_POOL_MAX="your_database_pool_max_size"
+MAIL_EMAIL="your_mail_email_address"
+MAIL_HOST="your_mail_smtp_server"
+MAIL_PASSWORD="your_mail_password"
+MAIL_CLIENT_ID="your_mail_client_id"
+MAIL_CLIENT_SECRET="your_mail_client_secret"
+MAIL_CLIENT_TOKEN="your_mail_client_token"
 ```
 
 ### Install Npcap (Only On Windows):
@@ -169,13 +212,15 @@ Navigate to the interface/Fonts folder, extract the Cairo and Days_One ZIP archi
 <br>  
 
 ## How To Run The Application:
+
+### Running The Client:
 If you installed the application using the setup installer, you can launch it using the desktop shortcut.
 
 Otherwise, use the following commands:
 
 - **On Windows**
   ```shell
-  cd src/main
+  cd client/src/main
   python NetSpect.py
   ```
   
@@ -184,38 +229,49 @@ Otherwise, use the following commands:
   > This is necessary because raw packet capturing requires administrative/root permissions on Unix-based systems.
   
   ```shell
-  cd src/main
+  cd client/src/main
   sudo python NetSpect.py
   ```
 
+### Running The Server:
+If you installed the RESTful server using the setup installer, you can launch it using the desktop shortcut.
+
+Otherwise, use the following commands:
+
+```shell
+cd server/src
+python NetSpectServer.py
+```
+
 <br>  
+
 
 ## Screenshots
 
 The following screenshots showcase the application's interface, functionality, and user experience across various scenarios:
 
 ### Dark Mode:
-![Login](src/interface/Screenshots/login.png)
-<br>*Login popup with registration and reset passowrd*
+![Login](client/src/interface/Screenshots/login.png)
+<br>*Login popup with registration and reset password*
 
 <br>
 
-![Home Page](src/interface/Screenshots/homepage.png)
+![Home Page](client/src/interface/Screenshots/homepage.png)
 <br>*Home page and alert history*
 
 <br>
 
-![Report Page](src/interface/Screenshots/report.png)
+![Report Page](client/src/interface/Screenshots/report.png)
 <br>*Report page with filtering and saving alert reports*
 
 
 ### Light Mode:
-![Analytics Page](src/interface/Screenshots/analytics.png)
-<br>*Analytics page for visualizing alert histry by year*
+![Analytics Page](client/src/interface/Screenshots/analytics.png)
+<br>*Analytics page for visualizing alert history by year*
 
 <br>
 
-![Settings Page](src/interface/Screenshots/settings.png)
+![Settings Page](client/src/interface/Screenshots/settings.png)
 <br>*Settings page for user account managment and MAC address blacklist*
 
 <br>  
@@ -233,50 +289,57 @@ In conclusion, our project successfully **delivered a real-time IDS** capable of
 
 <br>
 
+### ARP Spoofing Detection Algorithm Pseudocode:
+
+![ARP Spoofing Detection Algorithm Pseudocode](client/src/interface/Screenshots/arpSpoofingDetectionAlgorithmPseudocode.png)
+<br>*Algorithm pseudocode for detecting ARP Spoofing*
+
 ### Port Scanning & DoS Linear SVM Model:
 
-![Port Dos Distribution](src/interface/Screenshots/portDosDistribution.png)
+![Port Dos Distribution](client/src/interface/Screenshots/portDosDistribution.png)
 <br>*Distribution of benign and attack flows*
 
 <br>
 
-![Port Dos Features](src/interface/Screenshots/portDosFeatures.png)
+![Port Dos Features](client/src/interface/Screenshots/portDosFeatures.png)
 <br>*Feature importance calculation based on linear SVM coefficient*
 
 <br>
 
-![Port Dos Performance](src/interface/Screenshots/portDosPerformance.png)
+![Port Dos Performance](client/src/interface/Screenshots/portDosPerformance.png)
 <br>*Performance metrics and confusion matrix*
 
 <br>
 
-![Port Dos Validation](src/interface/Screenshots/portDosValidation.png)
+![Port Dos Validation](client/src/interface/Screenshots/portDosValidation.png)
 <br>*K-Folds cross-validation to ensure no overffiting during training*
 
 
 ### DNS Tunneling Linear SVM Model:
 
-![DNS Tunneling Distribution](src/interface/Screenshots/dnsTunnelingDistribution.png)
+![DNS Tunneling Distribution](client/src/interface/Screenshots/dnsTunnelingDistribution.png)
 <br>*Distribution of benign and attack flows*
 
 <br>
 
-![DNS Tunneling Features](src/interface/Screenshots/dnsTunnelingFeatures.png)
+![DNS Tunneling Features](client/src/interface/Screenshots/dnsTunnelingFeatures.png)
 <br>*Feature importance calculation based on linear SVM coefficient*
 
 <br>
 
-![DNS Tunneling Performance](src/interface/Screenshots/dnsTunnelingPerformance.png)
+![DNS Tunneling Performance](client/src/interface/Screenshots/dnsTunnelingPerformance.png)
 <br>*Performance metrics and confusion matrix*
 
 <br>
 
-![DNS Tunneling Validation](src/interface/Screenshots/dnsTunnelingValidation.png)
+![DNS Tunneling Validation](client/src/interface/Screenshots/dnsTunnelingValidation.png)
 <br>*K-Folds cross-validation to ensure no overffiting during training*
 
 <br>
 
 ## Dependencies
+
+### Client Dependencies:
 
 Our application relies of the following dependencies in order to work properly:
 > You can install them via the requirements.txt file as mentioned in [Installation & Setup](#installation--setup).
@@ -288,14 +351,24 @@ Our application relies of the following dependencies in order to work properly:
 - joblib
 - scikit-learn
 - python-dotenv
-- pyodbc
 
+### Server Dependencies:
 
-**Important** 
+Our FastAPI RESTful server relies of the following dependencies in order to work properly:
+> You can install them via the npm install command as mentioned in [Installation & Setup](#installation--setup).
+
+- fastapi
+- pydantic
+- uvicorn
+- asyncpg
+- slowapi
+- requests
+- google-auth
+- python-dotenv
+
+### Additional Dependencies:
 - On Windows based systems **[Npcap](https://npcap.com/#download)** must be installed to enable packet analysis and capturing.
 - On Linux and macOS you have to run the application with administrative privileges to enable packet analysis and capturing.
-- In order connect to your SQL Server database you must install **[Microsoft ODBC Driver for SQL Server](https://learn.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server?view=sql-server-ver15)**.
-
 
 <br>  
 

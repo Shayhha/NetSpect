@@ -1,0 +1,31 @@
+@echo off
+echo Creating NetSpect Server Executable...
+
+python -m PyInstaller ^
+  --noconfirm --onedir ^
+  --name NetSpectServer ^
+  --icon=src/app/static/NetSpectIconTransparent.ico ^
+  --paths=src ^
+  --hidden-import=fastapi ^
+  --hidden-import=pydantic ^
+  --hidden-import=uvicorn ^
+  --hidden-import=asyncpg ^
+  --hidden-import=slowapi ^
+  --hidden-import=requests ^
+  --hidden-import=google.auth ^
+  --hidden-import=google.oauth2.credentials ^
+  --hidden-import=dotenv ^
+  --hidden-import=redis ^
+  --hidden-import=pymemcache ^
+  --hidden-import=valkey ^
+  --hidden-import=app.database.database ^
+  --hidden-import=app.utility.serverEnums ^
+  --hidden-import=app.utility.utility ^
+  --hidden-import=app.config.config ^
+  --add-data="src/app/static;app/static" ^
+  --add-data "src/app/config/.env;app/config" ^
+  --add-data "src/app/database/NetSpectDatabaseConfig.sql;app/database" ^
+  src/NetSpectServer.py
+
+echo Executable Creation Complete.
+pause

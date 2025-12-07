@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+  <DisplayName>NetSpect</DisplayName>
+  <Description>NetSpect - Real-Time Intrusion Detection System</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2025-06-01</ReleaseDate>
+  <Default>true</Default>
+  <Script>installscript.qs</Script>
+
+  <Shortcuts>
+    <Shortcut>
+      <Name>NetSpect™</Name>
+      <Target>@RootDir@\client\NetSpect.exe</Target>
+      <Location>Desktop</Location>
+      <Description>NetSpect™ IDS</Description>
+    </Shortcut>
+
+    <Shortcut>
+      <Name>NetSpect™</Name>
+      <Target>@RootDir@\client\NetSpect.exe</Target>
+      <Location>StartMenu\NetSpect</Location>
+      <Description>NetSpect™ IDS</Description>
+    </Shortcut>
+  </Shortcuts>
+</Package>
